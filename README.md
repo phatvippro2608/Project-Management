@@ -27,7 +27,7 @@ Trong đó `don-vi` là thư mục và `don-vi.blade.php` là giao diện sử d
 - `resources/views/auth`: Đặt tên tiếng việt, không dấu mỗi từ cách nhau dấu gạch nối, ví dụ như `don-vi.blade.php`
 - `app/Traits/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ, ví dụ `DonVi.php`
 - `app/Models/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Model**  `DonViModel.php`
-- `app/Http/Controllers/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Controller** `DonViController.php`
+- `app/Http/Controllers/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Controller** `DonViCOntroller.php`
 
 #### 4. Laravel SQL
 
@@ -51,3 +51,8 @@ Sử dụng Laravel SQL RAW https://laravel.com/docs/8.x/database#running-a-sele
 php artisan make:controller DemoController
 ```
 
+#### 6. Laravel Tạo Model
+
+```
+php artisan make:model DemoModel
+```
