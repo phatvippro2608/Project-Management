@@ -1,5 +1,7 @@
-# VENTECH 
+# VENTECH
+### THÔNG TIN DỰ ÁN
 
+### HƯỚNG DẪN SỬ DỤNG LARAVEL
 #### 1. Cấu hình Laravel
 
 Laravel là một PHP Framework mã nguồn mở miễn phí, được phát triển bởi Taylor Otwell với phiên bản đầu tiên được ra mắt vào tháng 6 năm 2011. Laravel ra đời nhằm mục đích hỗ trợ phát triển các ứng dụng web, dựa trên mô hình MVC (Model – View – Controller).
@@ -25,7 +27,6 @@ Trong đó `don-vi` là thư mục và `don-vi.blade.php` là giao diện sử d
 ###### b. Quy định đặt tên
 
 - `resources/views/auth`: Đặt tên tiếng việt, không dấu mỗi từ cách nhau dấu gạch nối, ví dụ như `don-vi.blade.php`
-- `app/Traits/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ, ví dụ `DonVi.php`
 - `app/Models/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Model**  `DonViModel.php`
 - `app/Http/Controllers/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Controller** `DonViCOntroller.php`
 
