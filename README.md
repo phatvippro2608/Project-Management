@@ -39,9 +39,9 @@ Trước tiên điền thông tin cấu hình kết nối CSDL vào file .env
 DB_CONNECTION=mysql
 DB_HOST=database-ventech-2mpAscGVy5Lz9byzkJvBmBfyDS.pippo.io.vn
 DB_PORT=3306
-DB_DATABASE=pippoiov_db_ventech
-DB_USERNAME=pippoiov_db_ventech
-DB_PASSWORD=pippoiov_db_ventech
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
 ```
 
 Sử dụng Laravel SQL RAW https://laravel.com/docs/8.x/database#running-a-select-query
