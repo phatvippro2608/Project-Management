@@ -46,7 +46,7 @@
 .account-list .account-photo {
     background-color: transparent;
     opacity: 1;
-    transform: translateX(-14px);
+    transform: translateX(-28px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
@@ -64,8 +64,14 @@
 .ic-delete {
     font-size: 24px;
     color: red!important;
-    margin-right: 4px;
+    margin-right: 3px;
     cursor: pointer;
+}
+
+.ic-key{
+    font-size: 24px;
+    margin-right: 5px;
+    color: orange;
 }
 
 .ic-add {
