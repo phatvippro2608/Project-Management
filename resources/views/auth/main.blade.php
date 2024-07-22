@@ -293,6 +293,11 @@
                             <i class="bi bi-circle"></i><span>Info</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
                 </ul>
             @endif
 
