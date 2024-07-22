@@ -29,10 +29,10 @@
                     <img src="{{asset('assets/img/logo.png')}}" alt="">
                     <h4 class="fw-semibold py-3">Human Resource Management</h4>
                 </div>
-                <form action="" method="post" id="form-dang-nhap">
+                <form action="{{action('App\Http\Controllers\LoginController@postLogin')}}" method="post" id="login-form">
                     {{ csrf_field() }}
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="mssv" placeholder="" required>
+                        <input type="text" class="form-control" name="username" placeholder="Username" required>
                         <label for="username">Username</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -53,7 +53,7 @@
                     @if(Session::has('msg'))
                         <div class="alert alert-danger" role="alert">
                             <p class="m-0">
-                                <i class="fa-solid fa-xmark"></i>
+                                <i class="bi bi-exclamation-diamond"></i>
                                 {!! Session::get('msg') !!}
                             </p>
                         </div>
