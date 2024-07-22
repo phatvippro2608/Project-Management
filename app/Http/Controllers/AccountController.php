@@ -10,4 +10,9 @@ class AccountController extends Controller
     {
         return view('auth.account.account');
     }
+
+    function add(Request $request)
+    {
+        
+    }
 }
