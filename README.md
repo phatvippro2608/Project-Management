@@ -30,17 +30,17 @@ Trong đó `don-vi` là thư mục và `don-vi.blade.php` là giao diện sử d
 - `app/Models/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Model**  `DonViModel.php`
 - `app/Http/Controllers/*`: Đặt tên theo database và in hoa chữ cái đầu mỗi từ và có hậu tố **Controller** `DonViCOntroller.php`
 
-#### 4. Laravel SQL
+#### 4. Laravel mySQL 
 
 Trước tiên điền thông tin cấu hình kết nối CSDL vào file .env
 
 ``` dotenv
 # Nội dung file .env
 DB_CONNECTION=mysql
-DB_HOST=database-ventech-2mpAscGVy5Lz9byzkJvBmBfyDS.pippo.io.vn
+DB_HOST=localhost
 DB_PORT=3306
-DB_DATABASE=
-DB_USERNAME=
+DB_DATABASE=db_ventech
+DB_USERNAME=root
 DB_PASSWORD=
 ```
 
@@ -56,4 +56,12 @@ php artisan make:controller DemoController
 
 ```
 php artisan make:model DemoModel
+```
+#### 7. Lưu ý
+
+```
++ Sử dụng PHP version 8.1
++ Cú pháp: Đường dẫn đến thư mục public
+    muốn sử dụng "bootstrap.min.css" nằm trong public ta phải thêm {{asset('')}} xong trỏ bắt đầu từ thư mục sau thư mục public là assets bỏ trong href
+    ví du: <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 ```
