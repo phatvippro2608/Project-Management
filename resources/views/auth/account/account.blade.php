@@ -56,10 +56,10 @@
                                                             <i class="bi bi-pencil-square ic-update ic-btn" data="{{json_encode($item)}}"></i>
                                                         </a>
                                                         <a class=" delete">
-                                                            <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true" data="{{ $item['id_account'] }}"></i>
+                                                            <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true" data="{{ $item->id_account }}"></i>
                                                         </a>
                                                         <a class=" key">
-                                                            <i class="bi bi-key ic-key ic-btn" data="{{ $item['id_account'] }}"></i>
+                                                            <i class="bi bi-key ic-key ic-btn" data="{{ $item->id_account }}"></i>
                                                         </a>
                                                     </div>
                                                     <img src="http://ventech.local/assets/img/profile-img.jpg" alt="" class="account-photo rounded-circle p-0 m-0">
@@ -70,13 +70,19 @@
                                                 {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
                                             </td>
                                             <td class="text-center">
-                                                nguyenvana127728@gmail.com
+                                                {{$item->email}}
                                             </td>
                                             <td class="text-center">
-                                                nguyenvanafdfdf
+                                                {{$item->username}}
                                             </td>
                                             <td class="text-center">
-                                                <i class="bi bi-circle-fill account-status"></i>Active
+                                                @if($status==2)
+                                                    <i class="bi bi-circle-fill account-status" style="color: darkgray;"></i>
+                                                @else
+                                                    <i class="bi bi-circle-fill account-status"></i>
+                                                @endif
+
+                                                    {{$status[$item->status]}}
                                             </td>
                                             <td class="text-center">
                                                 Active 16 hours ago
@@ -150,5 +156,14 @@
         $('.md1 .modal-title').text('Add Account');
         $('.md1').modal('show');
     });
+
+    $('.ic-update').click(function () {
+        $('.md1 .modal-title').text('Update Account');
+        $('.md1').modal('show');
+    })
+
+    $('.ic-delete').click(function () {
+        $xn = alert('Xác nhận xóa tài khoản');
+    })
 </script>
 @endsection

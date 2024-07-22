@@ -32,7 +32,7 @@ Route::group(['prefix'=> '/','middleware'=>'isLogin'],function (){
     Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard');
 });
 
-Route::group(['prefix'=>'auth', 'middleware' => 'isLogin'], function() {
+Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
     });
@@ -48,7 +48,7 @@ Route::group(['prefix'=>'auth', 'middleware' => 'isLogin'], function() {
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
-Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');	
+Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
 Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
