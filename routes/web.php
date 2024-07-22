@@ -13,12 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.dashboard.dashboard');
-});
+Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard')->middleware('isLogin');
 
-Route::get('/login', function () {
-    return view('auth.login');
-});
+Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
+Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
+Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');

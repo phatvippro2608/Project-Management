@@ -29,8 +29,8 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <a href="#" class="d-flex align-items-center logo justify-content-center">
-            <img class="d-none d-lg-block" src="assets/img/logo.png" alt="">
-            <img class="d-lg-none" src="assets/img/logo2.png" alt="">
+            <img class="d-none d-lg-block" src="{{asset('assets/img/logo.png')}}" alt="">
+            <img class="d-lg-none" src="{{asset('assets/img/logo2.png')}}" alt="">
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
@@ -232,7 +232,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
+                        <a class="dropdown-item d-flex align-items-center" href="{{action('App\Http\Controllers\LoginController@logOut')}}">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a>
@@ -275,8 +275,6 @@
 </aside>
 
 <main id="main" class="main">
-
-
     @yield('contents')
 </main>
 
