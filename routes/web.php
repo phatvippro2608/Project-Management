@@ -24,7 +24,7 @@ Route::get('/', function (Request $request){
 });
 
 Route::group(['prefix'=> '/','middleware'=>'isLogin'],function (){
-    Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard');
+    Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard');
 });
 
 
