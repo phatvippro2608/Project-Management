@@ -9,20 +9,24 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
 
-    <!-- Favicons -->
-    <link href="{{asset('assets/img/favicon.ico')}}" rel="icon">
-
+    <link href="{{asset('assets/img/logo2.png')}}" rel="icon">
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/account_custom.css')}}" rel="stylesheet">
+
 
     <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('js/jquery.min.js')}}"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<<<<<<< Updated upstream
+=======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+>>>>>>> Stashed changes
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
@@ -32,8 +36,8 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <a href="#" class="d-flex align-items-center logo justify-content-center">
-            <img class="d-none d-lg-block" src="assets/img/logo.png" alt="">
-            <img class="d-lg-none" src="assets/img/logo2.png" alt="">
+            <img class="d-none d-lg-block" src="{{asset('assets/img/logo.png')}}" alt="">
+            <img class="d-lg-none" src="{{asset('assets/img/logo2.png')}}" alt="">
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
@@ -140,7 +144,7 @@
 
                     <li class="message-item">
                         <a href="#">
-                            <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
+                            <img src="{{'assets/img/messages-1.jpg'}}" alt="" class="rounded-circle">
                             <div>
                                 <h4>Maria Hudson</h4>
                                 <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -154,7 +158,7 @@
 
                     <li class="message-item">
                         <a href="#">
-                            <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
+                            <img src="{{asset('assets/img/messages-2.jpg')}}" alt="" class="rounded-circle">
                             <div>
                                 <h4>Anna Nelson</h4>
                                 <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -168,7 +172,7 @@
 
                     <li class="message-item">
                         <a href="#">
-                            <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
+                            <img src="{{'assets/img/messages-3.jpg'}}" alt="" class="rounded-circle">
                             <div>
                                 <h4>David Muldon</h4>
                                 <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -191,7 +195,7 @@
             <li class="nav-item dropdown pe-3">
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                    <img src="{{asset('assets/img/profile-img.jpg')}}" alt="Profile" class="rounded-circle">
                     <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
                 </a>
 
@@ -205,7 +209,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -215,7 +219,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-gear"></i>
                             <span>Account Settings</span>
                         </a>
@@ -225,7 +229,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-question-circle"></i>
                             <span>Need Help?</span>
                         </a>
@@ -292,6 +296,12 @@
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </body>
+<<<<<<< Updated upstream
 <script src="assets/js/main.js"></script>
 @yield('script')
+=======
+<script src="{{asset('assets/js/main.js')}}"></script>
+>>>>>>> Stashed changes
 </html>
+@yield('script')
+

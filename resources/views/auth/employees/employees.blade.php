@@ -25,8 +25,8 @@
                                 Add
                             </div>
                         </div>
-                        <div class="btn btn-success mx-2 at2">
-                            <div class="d-flex align-items-center">
+                        <div class="btn btn-success mx-2">
+                            <div class="d-flex align-items-center at2">
                                 <i class="bi bi-file-earmark-arrow-up-fill pe-2"></i>
                                 Import
                             </div>
@@ -50,6 +50,7 @@
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter text-nowrap datatable">
                                 <thead>
+<<<<<<< Updated upstream
                                     <tr>
                                         <th>Employee Code</th>
                                         <th>Photo</th>
@@ -57,18 +58,25 @@
                                         <th>English Name</th>
                                         <th>Gender</th>
                                         <th>Phone</th>
-                                        <th></th>
                                         <th>Action</th>
                                     </tr>
+=======
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Photo</th>
+                                    <th>Full Name</th>
+                                    <th>English Name</th>
+                                    <th>Gender</th>
+                                    <th>Phone</th>
+                                    <th></th>
+                                </tr>
+
+>>>>>>> Stashed changes
                                 </thead>
                                 <tbody>
                                 @foreach($data as $item)
                                     <tr>
                                         <td>{{$item->employee_code}}</td>
-                                        <td>{{$item->photo}}</td>
-                                        <td>{{$item->first_name + $item->last_name}}</td>
-                                        <td>{{$item->en_name}}</td>
-                                        <td>{{$item->gender}}</td>
                                         <td><img src="{{$item->photo}}" alt="" width="75" height="75"></td>
                                         <td>{{$item->first_name . ' ' . $item->last_name}}</td>
                                         <td>{{$item->english_name}}</td>
@@ -451,6 +459,8 @@
             </div>
         </div>
     </div>
+        </div>
+    </div>
     <div class="modal fade md2">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -482,7 +492,6 @@
             $('.md1').modal('show');
         });
         $('.at2').click(function () {
-
             $('.md2 .modal-title').text('Import Employee');
             $('.md2').modal('show');
         });
@@ -506,10 +515,6 @@
                 .catch(error => {
                     console.error('Error fetching countries:', error);
                 });
-        });
-
-            $('.md2 .modal-title').text('Add Employee');
-            $('.md2').modal('show');
         });
     </script>
 @endsection
