@@ -8,9 +8,12 @@
 
     <title>VenTech - Login</title>
 
-    <link rel="stylesheet" href="{{asset('themes/css/bootstrap.min.css')}}">
-    <script src="{{asset('themes/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('js/jquery.min.js')}}"></script>
+    <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
+
+    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 </head>
 <style>
     .anh-nen {
@@ -23,7 +26,7 @@
         <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-6 col-sm-8 col-auto">
             <div class="p-4 mt-4 bg-white rounded">
                 <div class="text-center py-3">
-                    <img src="{{asset('themes/images/logo.png')}}" alt="">
+                    <img src="{{asset('assets/img/logo.png')}}" alt="">
                     <h4 class="fw-semibold py-3">Human Resource Management</h4>
                 </div>
                 <form action="" method="post" id="form-dang-nhap">
