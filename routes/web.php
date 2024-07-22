@@ -17,4 +17,8 @@ Route::get('/', function () {
     return view('auth.dashboard.dashboard');
 });
 
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
