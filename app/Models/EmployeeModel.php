@@ -15,6 +15,6 @@ class EmployeeModel extends Model
     function getEmployee()
     {
         $perPage = intval(env('ITEM_PER_PAGE'));
-        return DB::table('tb_employee')->paginate($perPage);
+        return DB::table('employee')->paginate($perPage);
     }
 }

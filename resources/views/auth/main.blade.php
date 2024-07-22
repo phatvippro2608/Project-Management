@@ -195,9 +195,9 @@
                     <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                         @php
-                            $data = \Illuminate\Support\Facades\DB::table('tb_account_employee')
-                                ->join('tb_employee', 'tb_account_employee.employee_id', '=', 'tb_employee.employee_id')
-                                ->join('tb_job_title', 'tb_employee.job_title_id', '=', 'tb_job_title.job_title_id')
+                            $data = \Illuminate\Support\Facades\DB::table('account')
+                                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
                                 ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
                                 ->first();
                         @endphp
@@ -208,7 +208,7 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{$data->last_name . " " . $data->first_name}}</h6>
-                        <span>{{$data->job_title_name}}</span>
+                        <span>{{$data->id_job_title}}</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
