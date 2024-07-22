@@ -21,4 +21,12 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
+
+Route::group(['prefix'=>'auth', 'middleware' => 'isLogin'], function() {
+    Route::group(['prefix'=>'/', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/account', 'App\Http\Controllers\AccountController@getView');
+    });
+});
+
+
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
