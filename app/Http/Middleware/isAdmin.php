@@ -2,14 +2,11 @@
 
 namespace App\Http\Middleware;
 
-
-use App\StaticString;
-
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class isLogin
+class isAdmin
 {
     /**
      * Handle an incoming request.
@@ -18,11 +15,6 @@ class isLogin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isLogin = $request->session()->exists(StaticString::SESSION_ISLOGIN);
-        if ($isLogin) {
-            return $next($request);
-        } else {
-            return redirect()->action('App\Http\Controllers\LoginController@getViewLogin');
-        }
+        return $next($request);
     }
 }

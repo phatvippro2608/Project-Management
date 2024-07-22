@@ -28,5 +28,13 @@ Route::group(['prefix'=> '/','middleware'=>'isLogin'],function (){
 });
 
 
+Route::group(['prefix'=>'auth', 'middleware' => 'isLogin'], function() {
+    Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\AccountController@getView');
+    });
+    Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
+    });
+});
 
-Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
+
