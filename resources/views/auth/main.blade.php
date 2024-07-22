@@ -265,7 +265,7 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}">
                         <i class="bi bi-circle"></i><span>Info</span>
                     </a>
                 </li>
