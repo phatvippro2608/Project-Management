@@ -31,7 +31,8 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <a href="#" class="d-flex align-items-center logo justify-content-center">
-            <img src="assets/img/logo.png" alt="">
+            <img class="d-none d-lg-block" src="assets/img/logo.png" alt="">
+            <img class="d-lg-none" src="assets/img/logo2.png" alt="">
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div>
