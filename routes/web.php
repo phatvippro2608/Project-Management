@@ -22,3 +22,7 @@ Route::get('/login', function () {
 });
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
+
+Route::get('progress', 'App\Http\Controllers\ProjectsController@getViewProgress');
+
+Route::get('expenses', 'App\Http\Controllers\ProjectsController@getViewExpenses');
