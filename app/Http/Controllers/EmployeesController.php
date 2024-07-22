@@ -11,11 +11,16 @@ class EmployeesController extends Controller
     function getView()
     {
         $data = new EmployeeModel();
-        return view('auth.employees.employees',[
-            'data' => $data->getEmployee()
-        ]
+        $jobdetails = $data->getAllJobDetails();
+//        dd($jobdetails);
+        return view('auth.employees.employees',
+            [
+                'data' => $data->getEmployee(),
+                'jobdetails'=>$jobdetails,
+            ]
         );
     }
+
 
 
 }

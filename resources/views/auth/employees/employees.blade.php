@@ -68,7 +68,7 @@
                                         <td>{{$item->employee_code}}</td>
                                         <td><img src="{{$item->photo}}" alt="" width="75" height="75"></td>
                                         <td>{{$item->first_name . ' ' . $item->last_name}}</td>
-                                        <td>{{$item->english_name}}</td>
+                                        <td>{{$item->en_name}}</td>
                                         <td>{{$item->gender}}</td>
                                         <td></td>
                                         <td>
@@ -300,6 +300,9 @@
                                         <label class="col-sm-4 col-form-label">Job Title</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobTitles'] as $item)
+                                                    <option value="{{$item->id_job_title}}">{{$item->job_title}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -307,6 +310,9 @@
                                         <label class="col-sm-4 col-form-label">Job Category</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobCategories'] as $item)
+                                                    <option value="{{$item->id_job_category}}">{{$item->job_category_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -314,6 +320,9 @@
                                         <label class="col-sm-4 col-form-label">Position</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobPositions'] as $item)
+                                                    <option value="{{$item->id_position}}">{{$item->position_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -321,6 +330,9 @@
                                         <label class="col-sm-4 col-form-label">Team</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobTeams'] as $item)
+                                                    <option value="{{$item->id_team}}">{{$item->team_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -328,6 +340,9 @@
                                         <label class="col-sm-4 col-form-label">Level</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobLevels'] as $item)
+                                                    <option value="{{$item->id_level}}">{{$item->level_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -341,6 +356,9 @@
                                         <label class="col-sm-4 col-form-label">Type of Contract</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobTypeContract'] as $item)
+                                                    <option value="{{$item->id_type_contract}}">{{$item->type_contract_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -360,6 +378,9 @@
                                         <label class="col-sm-4 col-form-label">Country</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobCountry'] as $item)
+                                                    <option value="{{$item->id_country}}">{{$item->country_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -367,6 +388,9 @@
                                         <label class="col-sm-4 col-form-label">Location</label>
                                         <div class="col-sm-8">
                                             <select class="form-select" aria-label="Default select example">
+                                                @foreach($jobdetails['jobLocation'] as $item)
+                                                    <option value="{{$item->id_location}}">{{$item->location_name}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -434,8 +458,6 @@
                             </div>
                         </div>
                     </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-add">Save</button>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -443,7 +465,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-add">Upload</button>
+                    <button type="submit" class="btn btn-primary btn-add">Save</button>
                 </div>
             </div>
         </div>
