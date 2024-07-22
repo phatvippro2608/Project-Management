@@ -67,7 +67,7 @@
 
                                             </td>
                                             <td class="text-center">
-                                                5673838 - Nguyễn Văn A
+                                                {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
                                             </td>
                                             <td class="text-center">
                                                 nguyenvana127728@gmail.com
