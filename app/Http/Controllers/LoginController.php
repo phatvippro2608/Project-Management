@@ -26,6 +26,7 @@ class LoginController extends Controller
 
         if ($account) {
             $request->session()->put(StaticString::SESSION_ISLOGIN, true);
+            $request->session()->put(StaticString::PERMISSION, $account['permission']);
             $request->session()->put(StaticString::ACCOUNT_ID, $account['id_account']);
             return redirect()->action('App\Http\Controllers\DashboardController@getViewDashboard');
         }
@@ -36,7 +37,7 @@ class LoginController extends Controller
     }
 
     public function logOut(Request $request){
-        $request->session()->forget(StaticString::SESSION_ISLOGIN);
+        $request->session()->flush();
         return redirect()->action('App\Http\Controllers\LoginController@getViewLogin');
     }
 }

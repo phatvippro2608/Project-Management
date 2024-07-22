@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\StaticString;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,10 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        $isAdmin = $request->session()->get(StaticString::PERMISSION) == 2;
+        if ($isAdmin) {
+            return $next($request);
+        }
+        return redirect('/');
     }
 }
