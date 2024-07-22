@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class AccountModel extends Model
 {
 
-    protected $table = 'account';
+    protected $table = 'tb_account_employee';
     protected $primaryKey = 'id_account';
     public $timestamps = true;
     public $incrementing = true;
