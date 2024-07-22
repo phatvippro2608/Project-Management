@@ -50,7 +50,7 @@
                         <div class="table-responsive">
                             <table class="table card-table table-vcenter text-nowrap datatable">
                                 <thead>
-<<<<<<< Updated upstream
+
                                     <tr>
                                         <th>Employee Code</th>
                                         <th>Photo</th>
@@ -60,18 +60,7 @@
                                         <th>Phone</th>
                                         <th>Action</th>
                                     </tr>
-=======
-                                <tr>
-                                    <th>Full Name</th>
-                                    <th>Photo</th>
-                                    <th>Full Name</th>
-                                    <th>English Name</th>
-                                    <th>Gender</th>
-                                    <th>Phone</th>
-                                    <th></th>
-                                </tr>
 
->>>>>>> Stashed changes
                                 </thead>
                                 <tbody>
                                 @foreach($data as $item)
