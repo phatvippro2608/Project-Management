@@ -11,9 +11,8 @@ class EmployeesController extends Controller
     function getView()
     {
         $data = new EmployeeModel();
-        $data = $data->getEmployee();
         return view('auth.employees.employees',[
-            'data' => $data
+            'data' => $data->getEmployee()
         ]
         );
     }
