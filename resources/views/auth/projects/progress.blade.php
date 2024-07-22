@@ -11,7 +11,12 @@
     </nav>
 </div>
 <section class="section employees">
-    <div id="visualization"></div>
+    <div class="from-group col-2">
+        <input type="text" id="ProjectSearch" class="form-control" placeholder="Search project">
+    </div>
+    <div class="from-group" style="margin-top: 2%;">
+        <div id="visualization"></div>
+    </div>
 </section>
 <script type="text/javascript">
     //https://visjs.github.io/vis-timeline/docs/timeline/
@@ -29,7 +34,7 @@
             id: "p3",
         },
         {
-            content: "create",
+            content: "Create",
             id: "asd",
         }
     ]);
@@ -50,23 +55,73 @@
         },
     ]);
     var options = {
+        format: {
+            minorLabels: {
+                weekday: 'D',
+                day: 'D',
+                week: 'w',
+                month: 'MMM',
+                year: 'YYYY'
+            },
+            majorLabels: {
+                weekday: 'YYYY',
+                day: 'MMMM YYYY',
+                week: 'MMMM YYYY',
+                month: 'YYYY',
+                year: ''
+            }
+        },
         orientation: 'top',
         showCurrentTime: false,
         zoomMin: 604800000,
         editable: {
             add: true,
             updateTime: true,
-            updateGroup: true
+            // updateGroup: true,
         },
-        //add custom thay đổi tên các group thành các button primary
+        itemsAlwaysDraggable: {
+            item: false,
+            range: true,
+        },
         groupEditable: true,
-        groupTemplate: function(group){
-            return `<button class="btn btn-primary">${group.content}</button>`;
+        groupTemplate: function(group) {
+            var container = document.createElement("div");
+            var label = document.createElement("span");
+            label.innerHTML = "";
+            container.insertAdjacentElement("afterBegin", label);
+            var button = document.createElement("button");
+            if (group.content == "Create") {
+                button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
+            } else {
+                button.innerHTML = group.content;
+            }
+            button.classList.add("btn");
+            button.addEventListener("click", function() {
+                console.log(group.id);
+            });
+            container.insertAdjacentElement("beforeEnd", button);
+            return container;
         },
+
     };
     var timeline = new vis.Timeline(container);
     timeline.setOptions(options);
     timeline.setGroups(groups);
     timeline.setItems(items);
+
+    //hàm search timeline
+    document.getElementById('ProjectSearch').addEventListener('input', function(e) {
+        var searchQuery = e.target.value.toLowerCase();
+        //convert groups to array
+        var group = groups.get();
+        //filter groups
+        var filteredGroups = group.filter(function(group) {
+            if (group.content == "Create") {
+                return true;
+            }
+            return group.content.toLowerCase().includes(searchQuery);
+        });
+        timeline.setGroups(new vis.DataSet(filteredGroups));
+    });
 </script>
 @endsection
