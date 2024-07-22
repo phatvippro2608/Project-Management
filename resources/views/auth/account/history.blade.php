@@ -37,9 +37,10 @@
                                 <thead>
                                 <tr>
                                     <th style="width: 112px"></th>
+                                    <th class="text-center">Code</th>
                                     <th class="text-center">Full Name</th>
-                                    <th class="text-center">Gmail</th>
                                     <th class="text-center">Username</th>
+                                    <th class="text-center">Password</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Last Active</th>
                                     <th class="text-center">Created At</th>
@@ -47,45 +48,80 @@
 
                                 </thead>
                                 <tbody class="account-list">
-                                    @foreach($account as $item)
-                                        <tr class="account-item">
-                                            <td class="text-right">
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="action-buttons ">
-                                                        <a class=" edit">
-                                                            <i class="bi bi-pencil-square ic-update ic-btn" data="{{json_encode($item)}}"></i>
-                                                        </a>
-                                                        <a class=" delete">
-                                                            <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true" data="{{ $item['id_account'] }}"></i>
-                                                        </a>
-                                                        <a class=" key">
-                                                            <i class="bi bi-key ic-key ic-btn" data="{{ $item['id_account'] }}"></i>
-                                                        </a>
-                                                    </div>
-                                                    <img src="http://ventech.local/assets/img/profile-img.jpg" alt="" class="account-photo rounded-circle p-0 m-0">
-                                                </div>
+                                <tr class="account-item">
+                                    <td class="text-right">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="action-buttons ">
+                                                <a class=" edit">
+                                                    <i class="bi bi-pencil-square ic-update ic-btn"></i>
+                                                </a>
+                                                <a class=" delete">
+                                                    <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                            <img src="http://ventech.local/assets/img/profile-img.jpg" alt="" class="account-photo rounded-circle p-0 m-0">
+                                        </div>
 
-                                            </td>
-                                            <td class="text-center">
-                                                5673838 - Nguyễn Văn A
-                                            </td>
-                                            <td class="text-center">
-                                                nguyenvana127728@gmail.com
-                                            </td>
-                                            <td class="text-center">
-                                                nguyenvanafdfdf
-                                            </td>
-                                            <td class="text-center">
-                                                <i class="bi bi-circle-fill account-status"></i>Active
-                                            </td>
-                                            <td class="text-center">
-                                                Active 16 hours ago
-                                            </td>
-                                            <td class="text-center">
-                                                16 years ago
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    </td>
+                                    <td class="text-center ">
+                                        5673838
+                                    </td>
+                                    <td class="text-center">
+                                        Nguyễn Văn A
+                                    </td>
+                                    <td class="text-center">
+                                        nguyenvana
+                                    </td>
+                                    <td class="text-center">
+                                        password
+                                    </td>
+                                    <td class="text-center">
+                                        <i class="bi bi-circle-fill account-status"></i>Active
+                                    </td>
+                                    <td class="text-center">
+                                        Active 16 hours ago
+                                    </td>
+                                    <td class="text-center">
+                                        16 years ago
+                                    </td>
+                                </tr>
+                                <tr class="account-item">
+                                    <td class="text-right">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="action-buttons ">
+                                                <a class=" edit">
+                                                    <i class="bi bi-pencil-square ic-update ic-btn"></i>
+                                                </a>
+                                                <a class=" delete">
+                                                    <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                            <img src="http://ventech.local/assets/img/profile-img.jpg" alt="" class="account-photo rounded-circle p-0 m-0">
+                                        </div>
+
+                                    </td>
+                                    <td class="text-center ">
+                                        5673838
+                                    </td>
+                                    <td class="text-center">
+                                        Nguyễn Văn A
+                                    </td>
+                                    <td class="text-center">
+                                        nguyenvana
+                                    </td>
+                                    <td class="text-center">
+                                        password
+                                    </td>
+                                    <td class="text-center">
+                                        <i class="bi bi-circle-fill account-status"></i>Active
+                                    </td>
+                                    <td class="text-center">
+                                        Active 16 hours ago
+                                    </td>
+                                    <td class="text-center">
+                                        16 years ago
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -145,10 +181,10 @@
     </div>
 @endsection
 @section('script')
-<script>
-    $('.btn-add').click(function () {
-        $('.md1 .modal-title').text('Add Account');
-        $('.md1').modal('show');
-    });
-</script>
+    <script>
+        $('.btn-add').click(function () {
+            $('.md1 .modal-title').text('Add Account');
+            $('.md1').modal('show');
+        });
+    </script>
 @endsection

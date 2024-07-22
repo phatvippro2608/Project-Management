@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 class EmployeeModel extends Model
 {
     use HasFactory;
+    protected $table = 'employees';
+    protected $primaryKey = 'id_employee';
     function getEmployee()
     {
         $perPage = intval(env('ITEM_PER_PAGE'));
