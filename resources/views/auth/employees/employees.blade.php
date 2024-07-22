@@ -18,40 +18,36 @@
                     <div class="card-header">
                         Employee List
                     </div>
-                    <div class="card-body m-1">
+                    <div class="card-body mt-2">
                         <div class="btn btn-primary mx-2">
                             <div class="d-flex align-items-center at1">
-                                <span class="material-symbols-outlined">
-                                    add
-                                </span>
+                                <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+{{--                                <span class="material-symbols-outlined">--}}
+{{--                                    add--}}
+{{--                                </span>--}}
                                 Add
                             </div>
                         </div>
                         <div class="btn btn-success mx-2 at2">
                             <div class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    upload_2
-                                </span>
+                                <i class="bi bi-file-earmark-arrow-up-fill pe-2"></i>
+{{--                                <span class="material-symbols-outlined">--}}
+{{--                                    upload_2--}}
+{{--                                </span>--}}
                                 Import
                             </div>
                         </div>
                         <div class="btn btn-success mx-2">
                             <div class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    download_2
-                                </span>
+                                <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
+{{--                                <span class="material-symbols-outlined">--}}
+{{--                                    download_2--}}
+{{--                                </span>--}}
                                 Export
                             </div>
                         </div>
                         <div class="card-body border-bottom py-3">
                             <div class="d-flex">
-                                <div class="text-secondary">
-                                    Show
-                                    <div class="mx-2 d-inline-block">
-                                        <input type="text" class="form-control form-control-sm" value="8" size="3" aria-label="Invoices count">
-                                    </div>
-                                    entries
-                                </div>
                                 <div class="ms-auto text-secondary">
                                     Search:
                                     <div class="ms-2 d-inline-block">
@@ -70,22 +66,37 @@
                                         <th>English Name</th>
                                         <th>Gender</th>
                                         <th>Phone</th>
-                                        <th></th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($data as $item)
                                     <tr>
                                         <td>{{$item->employee_code}}</td>
-                                        <td>{{$item->photo}}</td>
-                                        <td>{{$item->first_name + $item->last_name}}</td>
-                                        <td>{{$item->en_name}}</td>
+                                        <td><img src="{{$item->photo}}" alt="" width="75" height="75"></td>
+                                        <td>{{$item->first_name . ' ' . $item->last_name}}</td>
+                                        <td>{{$item->english_name}}</td>
                                         <td>{{$item->gender}}</td>
+                                        <td></td>
+                                        <td>
+                                            <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            |
+                                            <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
                         </div>
+                        @if ($data->hasPages())
+                            <div class="box-footer">
+                                {{$data->links('auth.component.pagination')}}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
