@@ -203,7 +203,7 @@
 @endsection
 @section('script')
     <script>
-        $('.btnLuu').click(function (event, back = true) {
+        $('.btnLuu').click(function (event) {
             $.ajax({
                 url: '{{ action('App\Http\Controllers\ProfileController@postProfile')}}',
                 type: "POST",
@@ -221,6 +221,10 @@
                     result = JSON.parse(result);
                     if (result.status === 200) {
                         toastr.success(result.message, "Lưu thành công");
+                        console.log('iii');
+                        setTimeout(function (){
+                            location.reload()
+                        },250);
                     } else if (result.status === 400) {
                         toastr.error(result.message, "Lỗi");
                     } else {

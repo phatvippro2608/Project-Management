@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Profile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 class ProfileModel extends Model
 {
     use HasFactory;
+    use Profile;
 
     function getProfile()
     {
@@ -23,7 +25,7 @@ class ProfileModel extends Model
         return ['profiles' => $profiles];
     }
 
-    function updateProfile($id_account)
+    function updateProfile()
     {
         $query =
             "
@@ -42,7 +44,7 @@ class ProfileModel extends Model
                         job_detail.id_job_position = job_position.id_position AND
                         job_detail.id_job_country = job_country.id_country AND
                         employees.id_contact = contacts.id_contact AND
-                        account.id_employee = $id_account
+                        account.id_employee = :id_account
                 ";
 
         $par = [
@@ -53,6 +55,7 @@ class ProfileModel extends Model
             'permanent_address' => $this->permanent_address,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
+            'id_account'=>$this->id_account
         ];
         return DB::update($query, $par);
     }
