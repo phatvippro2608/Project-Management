@@ -1,3 +1,4 @@
+<?php use App\StaticString;?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +9,7 @@
     <title>Project Management</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{asset('assets/img/logo2.png')}}" rel="icon">
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -17,18 +19,19 @@
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/account_custom.css')}}" rel="stylesheet">
-
-
-    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('js/jquery.min.js')}}"></script>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+
+    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    @yield('head')
+
 </head>
 
 <body>
@@ -275,16 +278,54 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-menu-button-wide"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
+            @if(in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), array(1,2)))
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Info</span>
+                        </a>
+                    </li>
+                </ul>
+            @endif
+
+            @if(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION)==1)
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Info</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+            @endif
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Project List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
+                <i class="bi bi-basket-fill"></i><span>Material Management</span>
             </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}">
-                        <i class="bi bi-circle"></i><span>Info</span>
-                    </a>
-                </li>
-            </ul>
         </li>
     </ul>
 
@@ -295,15 +336,14 @@
 </main>
 
 
-<footer id="footer" class="footer">
-    <div class="copyright">
-        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved
-    </div>
-</footer>
+{{--<footer id="footer" class="footer">--}}
+{{--    <div class="copyright">--}}
+{{--        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved--}}
+{{--    </div>--}}
+{{--</footer>--}}
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </body>
 <script src="{{asset('assets/js/main.js')}}"></script>
 </html>
 @yield('script')
-

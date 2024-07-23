@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\StaticString;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,10 @@ class isSuperAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        $isSuperAdmin = $request->session()->get(StaticString::PERMISSION)==1;
+        if ($isSuperAdmin) {
+            return $next($request);
+        }
+        return redirect('/');
     }
 }
