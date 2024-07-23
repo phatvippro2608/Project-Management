@@ -18,6 +18,15 @@
     .vis-item.high {
         background-color: green; 
     }
+
+    .progress-percentage {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50%;
+        color: white;
+        font-weight: bold;
+    }
 </style>
 <div class="pagetitle">
     <h1>Progress</h1>
@@ -46,30 +55,16 @@
     document.addEventListener("DOMContentLoaded", function() {
         var container = document.getElementById('visualization');
         var groups = new vis.DataSet([
-            { content: "Project 1", id: "p1" },
-            { content: "Project 2", id: "p2" },
-            { content: "Project 3", id: "p3" },
-            { content: "Create", id: "asd" }
+            { id: "p1", content: "Project 1"},
+            { id: "p2", content: "Project 2"},
+            { id: "p3", content: "Project 3"},
+            { id: "create", content: "Create" }
         ]);
         var items = new vis.DataSet([
-            { 
-                start: new Date(2024, 0, 10), 
-                end: new Date(2024, 0, 20), 
-                group: "p1", 
-                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>'
-             },
-            { 
-                start: new Date(2024, 0, 28), 
-                end: new Date(2024, 2, 26), 
-                group: "p2", 
-                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>' 
-            },
-            { 
-                start: new Date(2024, 1, 22), 
-                end: new Date(2024, 4, 26), 
-                group: "p3", 
-                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>' 
-            }
+            { start: new Date(2024, 0, 10), end: new Date(2024, 0, 20), group: "p1", subgroup: "sub1"},
+            { start: new Date(2024, 0, 28), end: new Date(2024, 2, 26), group: "p2",},
+            { start: new Date(2024, 1, 22), end: new Date(2024, 4, 26), group: "p3",},
+            { start: new Date(2024, 0, 15), end: new Date(2024, 0, 25), group: "p1", subgroup: "sub2"}
         ]);
 
         function getProgressClass(percentage) {
@@ -101,19 +96,29 @@
                     day: 'D',
                     week: 'w',
                     month: 'MMM',
-                    year: 'YYYY'
+                    quarter: 'Q%q',
+                    year: 'YYYY',
                 },
                 majorLabels: {
                     weekday: 'YYYY',
                     day: 'MMMM YYYY',
                     week: 'MMMM YYYY',
                     month: 'YYYY',
+                    quarter: 'YYYY Q%q',
                     year: ''
                 }
             },
             orientation: 'top',
             showCurrentTime: false,
-            zoomMin: 604800000,
+            // Ngày
+            // zoomMin: 864000000,
+            // zoomMax: 1296000000,
+            // Tháng
+            zoomMin: 12960000000,
+            zoomMax: 38880000000,
+            // Quý
+            // zoomMin: 38880000000,
+            // zoomMax: 116640000000, 
             editable: {
                 add: true,
                 updateTime: true,
@@ -123,11 +128,32 @@
                 range: true,
             },
             groupEditable: true,
+            // groupTemplate: function(group) {
+            //     var container = document.createElement("div");
+            //     var label = document.createElement("span");
+            //     label.innerHTML = "";
+            //     label.innerHTML = group.content;
+            //     container.insertAdjacentElement("afterBegin", label);
+            //     var button = document.createElement("button");
+            //     if (group.content == "Create") {
+            //         button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
+            //     } else {
+            //         button.innerHTML = group.content;
+            //     }
+            //     button.classList.add("btn");
+            //     button.addEventListener("click", function() {
+            //         console.log(group.id);
+            //     });
+            //     container.insertAdjacentElement("beforeEnd", button);
+            //     return container;
+            // },
             groupTemplate: function(group) {
                 var container = document.createElement("div");
-                var label = document.createElement("span");
-                label.innerHTML = "";
-                container.insertAdjacentElement("afterBegin", label);
+                var groupHeader = document.createElement("div");
+                groupHeader.className = "group-header";
+                // var label = document.createElement("span");
+                // label.innerHTML = group.content;
+                // groupHeader.appendChild(label);
                 var button = document.createElement("button");
                 if (group.content == "Create") {
                     button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
@@ -138,9 +164,30 @@
                 button.addEventListener("click", function() {
                     console.log(group.id);
                 });
-                container.insertAdjacentElement("beforeEnd", button);
+                container.appendChild(button);
+
+                // Lấy các subgroup tương ứng cho nhóm hiện tại
+                var subgroupItems = items.get({ group: group.id });
+                if (subgroupItems.length > 0) {
+                    var subgroupNames = [];
+                    subgroupItems.forEach(function(item) {
+                        if (item.subgroup) {
+                            subgroupNames.push(item.subgroup);
+                        }
+                    });
+                    if (subgroupNames.length > 0) {
+                        var subgroupLabel = document.createElement("span");
+                        subgroupLabel.className = "subgroup-name";
+                        subgroupLabel.innerHTML = `<br>` + subgroupNames.join('<br>');
+                        groupHeader.appendChild(subgroupLabel);
+                    }
+                }
+                
                 return container;
             },
+            // stack: false,
+            // subgroupStack: false,
+            subgroupOrder: 'first-show',
         };
 
         var timeline = new vis.Timeline(container);
