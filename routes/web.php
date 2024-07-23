@@ -1,6 +1,11 @@
 <?php
 
+use App\StaticString;
 use Illuminate\Support\Facades\Route;
+
+use Illuminate\Http\Request;
+
+use App\Http\Controllers\MaterialsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,10 +17,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
+Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
+Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
-Route::get('/', function () {
-    return view('auth.dashboard.dashboard');
-});
+Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
+    Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
 
     Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
@@ -32,10 +39,11 @@ Route::get('/', function () {
     });
 });
 
-Route::get('/progress', 'App\Http\Controllers\ProgressController@getViewProgress');
+Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
-
-Route::get('progress', 'App\Http\Controllers\ProjectsController@getViewProgress');
-
-Route::get('expenses', 'App\Http\Controllers\ProjectsController@getViewExpenses');
+Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
+Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
+Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
+Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
+Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
