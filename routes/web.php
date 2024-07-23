@@ -39,10 +39,8 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
     });
 });
-
-
-
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
+Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
 Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
 Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
