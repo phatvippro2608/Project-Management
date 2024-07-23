@@ -301,6 +301,19 @@
                 </ul>
             @endif
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Project List</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
 
             <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
                 <i class="bi bi-basket-fill"></i><span>Material Management</span>
