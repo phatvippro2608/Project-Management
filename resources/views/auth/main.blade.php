@@ -18,6 +18,7 @@
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/account_custom.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/app.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -304,6 +305,10 @@
 
             <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
                 <i class="bi bi-basket-fill"></i><span>Material Management</span>
+            </a>
+
+            <a class="nav-link" href="{{action('App\Http\Controllers\ProjectController@getViewProjectList')}}">
+                <i class="bi bi-briefcase"></i><span>Project List</span>
             </a>
         </li>
     </ul>

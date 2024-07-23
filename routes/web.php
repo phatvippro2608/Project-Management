@@ -38,6 +38,10 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     Route::group(['prefix'=>'/profile', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
     });
+
+    Route::group(['prefix'=>'/project', 'middleware' => 'isAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\ProjectController@getViewProjectList');
+    });
 });
 
 
