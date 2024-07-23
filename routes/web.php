@@ -27,6 +27,9 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
+        Route::put('/add', 'App\Http\Controllers\AccountController@add');
+        Route::post('/update', 'App\Http\Controllers\AccountController@update');
+        Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
     });
 
 

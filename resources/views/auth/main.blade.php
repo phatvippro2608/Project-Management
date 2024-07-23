@@ -9,6 +9,7 @@
     <title>Project Management</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{asset('assets/img/logo2.png')}}" rel="icon">
     <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -24,6 +25,7 @@
 
     <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    @yield('head')
 </head>
 
 <body>
@@ -328,11 +330,11 @@
 </main>
 
 
-<footer id="footer" class="footer">
-    <div class="copyright">
-        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved
-    </div>
-</footer>
+{{--<footer id="footer" class="footer">--}}
+{{--    <div class="copyright">--}}
+{{--        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved--}}
+{{--    </div>--}}
+{{--</footer>--}}
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </body>
