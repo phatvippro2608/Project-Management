@@ -286,10 +286,10 @@
             @endif
 
             @if(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION)==1)
-                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-menu-button-wide"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{action('App\Http\Controllers\AccountController@getView')}}">
                             <i class="bi bi-circle"></i><span>Info</span>
