@@ -17,10 +17,12 @@
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/account_custom.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/toastr.css')}}" rel="stylesheet">
 
 
     <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('js/jquery.min.js')}}"></script>
+    <script src="{{asset('js/toastr.min.js')}}"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -188,19 +190,18 @@
                 </ul>
 
             </li>
-
+            @php
+                $data = \Illuminate\Support\Facades\DB::table('account')
+                    ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                    ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                    ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+                    ->first();
+            @endphp
             <li class="nav-item dropdown pe-3">
-
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                    <img src="{{$data->photo}}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
                     <span class="d-none d-md-block dropdown-toggle ps-2">
-                        @php
-                            $data = \Illuminate\Support\Facades\DB::table('account')
-                                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                                ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
-                                ->first();
-                        @endphp
+
                         {{$data->last_name . " " . $data->first_name}}
                     </span>
                 </a>
