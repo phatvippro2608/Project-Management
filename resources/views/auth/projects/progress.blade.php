@@ -52,9 +52,24 @@
             { content: "Create", id: "asd" }
         ]);
         var items = new vis.DataSet([
-            { start: new Date(2024, 0, 10), end: new Date(2024, 0, 20), group: "p1", title: '30%' },
-            { start: new Date(2024, 0, 28), end: new Date(2024, 2, 26), group: "p2", title: '50%' },
-            { start: new Date(2024, 1, 22), end: new Date(2024, 4, 26), group: "p3", title: '80%' }
+            { 
+                start: new Date(2024, 0, 10), 
+                end: new Date(2024, 0, 20), 
+                group: "p1", 
+                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>'
+             },
+            { 
+                start: new Date(2024, 0, 28), 
+                end: new Date(2024, 2, 26), 
+                group: "p2", 
+                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>' 
+            },
+            { 
+                start: new Date(2024, 1, 22), 
+                end: new Date(2024, 4, 26), 
+                group: "p3", 
+                content: '<div style="position: relative; height: 100%;"><div style="position: absolute; top: 50%; transform: translateY(-50%); width: 100%;"><div style="width: 30%; background-color: lightblue; height: 20px; display: inline-block;"></div><span style="position: absolute; left: 50%; transform: translateX(-50%);">30%</span></div></div>' 
+            }
         ]);
 
         function getProgressClass(percentage) {
