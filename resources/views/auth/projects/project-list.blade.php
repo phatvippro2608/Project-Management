@@ -32,12 +32,20 @@
                             <th scope="col">Sale</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Budget</th>
                         </tr>
                         </thead>
                         <tbody>
-
+                        @foreach($inprogress_projects as $project)
+                            <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td><b>...</b></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td><b>...</b></td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -57,12 +65,20 @@
                             <th scope="col">Sale</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Budget</th>
                         </tr>
                         </thead>
                         <tbody>
-
+                            @foreach($inspection_projects as $project)
+                            <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td><b>...</b></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td><b>...</b></td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -82,12 +98,20 @@
                             <th scope="col">Sale</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Budget</th>
                         </tr>
                         </thead>
                         <tbody>
-
+                        @foreach($survey_projects as $project)
+                            <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td><b>...</b></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td><b>...</b></td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -107,12 +131,20 @@
                             <th scope="col">Sale</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Budget</th>
                         </tr>
                         </thead>
                         <tbody>
-
+                        @foreach($support_projects as $project)
+                            <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td><b>...</b></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td><b>...</b></td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -132,12 +164,20 @@
                             <th scope="col">Sale</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Budget</th>
                         </tr>
                         </thead>
                         <tbody>
-
+                        @foreach($closed_projects as $project)
+                            <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td><b>...</b></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td><b>...</b></td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>

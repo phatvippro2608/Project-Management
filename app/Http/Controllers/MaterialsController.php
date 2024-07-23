@@ -10,7 +10,7 @@ class MaterialsController extends Controller
 {
     function getView()
     {
-        $materials = MaterialsModel::all();   
+        $materials = MaterialsModel::all();
 
         $sub_total = $materials->sum('total_price');
         $vat_of_goods = $materials->sum(function($material){
@@ -43,7 +43,7 @@ class MaterialsController extends Controller
         ]);
 
         MaterialsModel::create($validated);
-        
+
         return redirect()->route('materials.index')->with('success', 'Thêm vật tư thành công');
     }
 
