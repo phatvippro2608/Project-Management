@@ -17,9 +17,22 @@ Route::get('/', function () {
     return view('auth.dashboard.dashboard');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
+    Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\AccountController@getView');
+    });
+
+
+    Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
+    });
+
+
+    Route::group(['prefix'=>'/profile', 'middleware' => 'isAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
+    });
 });
+
+Route::get('/progress', 'App\Http\Controllers\ProgressController@getViewProgress');
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 
