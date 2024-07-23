@@ -55,7 +55,9 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
-
+        'limits' => [
+            'file_size' => 10 * 1024 * 1024, // Kích thước tối đa 10MB
+        ],
     ],
 
     /*

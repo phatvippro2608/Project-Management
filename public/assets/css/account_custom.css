@@ -1,0 +1,102 @@
+.account-photo {
+    max-height: 36px!important;
+}
+
+.account-list tr:hover td{
+    background-color: #f3f3f3;
+}
+
+
+/**
+ * Search
+ */
+.search-container {
+    position: relative;
+}
+.search-button {
+    position: absolute;
+    right: 10px; /* Điều chỉnh khoảng cách bên phải */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.form-control {
+    padding-right: 40px; /* Đảm bảo đủ chỗ cho biểu tượng */
+}
+
+
+.account-list tr {
+    position: relative;
+}
+
+.account-list .action-buttons {
+    cursor: pointer;
+    background-color: transparent;
+    opacity: 0;
+    transform: translateX(-56px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.account-list tr:hover .action-buttons {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.account-list .account-photo {
+    background-color: transparent;
+    opacity: 1;
+    transform: translateX(-28px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.account-list tr:hover .account-photo {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.ic-update {
+    font-size: 24px;
+    margin-right: 3px;
+}
+
+.ic-delete {
+    font-size: 24px;
+    color: red!important;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+.ic-key{
+    font-size: 24px;
+    margin-right: 5px;
+    color: orange;
+}
+
+.ic-add {
+    font-size: 24px;
+}
+
+.ic-btn:hover {
+    opacity: 0.5;
+}
+
+a{
+    text-decoration: none;
+}
+
+td {
+    vertical-align: middle;
+}
+
+.account-status{
+    font-size: 12px;
+    padding-bottom: 3px;
+    margin-right: 4px;
+    color: green;
+}
+
+.offine{
+    color: darkgray;
+}
