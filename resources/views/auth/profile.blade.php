@@ -221,7 +221,6 @@
                     result = JSON.parse(result);
                     if (result.status === 200) {
                         toastr.success(result.message, "Lưu thành công");
-                        console.log('iii');
                         setTimeout(function (){
                             location.reload()
                         },250);
