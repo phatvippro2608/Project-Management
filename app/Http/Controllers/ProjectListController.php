@@ -36,4 +36,24 @@ class ProjectListController extends Controller
                 'support_projects',
                 'closed_projects'));
     }
+
+    public function InsPJ(Request $request)
+    {
+        $validated = $request->validate([
+            'project_name' => 'required',
+            'project_description' => 'nullable|string',
+            'project_address' => 'nullable|string',
+            'project_main_contractor' => 'nullable|string',
+            'project_contact_name' => 'nullable|string',
+            'project_contact_website' => 'nullable|string',
+            'project_contact_phone' => 'nullable|string',
+            'project_contact_adress' => 'nullable|string',
+            'project_date_start' => 'nullable|date',
+            'project_date_end' => 'nullable|date',
+        ]);
+
+        ProjectListModel::create($validated);
+
+        return redirect('auth.projects.project-list')->with('success', 'Thêm dự án thành công');
+    }
 }
