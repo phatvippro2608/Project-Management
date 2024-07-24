@@ -1,16 +1,6 @@
 @extends('auth.main')
 
 @section('contents')
-    <div class="pagetitle">
-        <h1>Dashboard</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </nav>
-    </div>
-
     <section class="section dashboard">
         <div class="row">
             <div class="col-lg-12">
@@ -41,7 +31,7 @@
                                         <i class="bi bi-people"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>100</h6>
+                                        <h6>{{$team_c}}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +47,7 @@
                                         <i class="bi bi-briefcase"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>100</h6>
+                                        <h6>{{$project_c}}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +63,7 @@
                                         <i class="bi bi-list-task"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>100</h6>
+                                        <h6>@if($task_c) $task_c @else 0 @endif</h6>
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +79,7 @@
                                         <i class="bi bi-list-task"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>100</h6>
+                                        <h6>@if($sub_c) $sub_c @else 0 @endif</h6>
                                     </div>
                                 </div>
                             </div>
