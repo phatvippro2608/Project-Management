@@ -48,6 +48,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
 });
+
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
@@ -56,3 +57,6 @@ Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('m
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
+// Budget
+Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
