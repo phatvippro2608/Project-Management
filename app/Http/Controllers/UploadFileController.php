@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Images;
+use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
@@ -86,33 +87,45 @@ class UploadFileController extends Controller
     public function imageUpload(Request $request)
     {
         if ($request->hasFile('filepond')) {
-            $files = $request->file('filepond');
-            $uploadedFiles = [];
-
-            foreach ($files as $file) {
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('assets/img'), $filename);
-                $uploadedFiles[] = $filename;
-            }
-
-            return response()->json(['success' => 'Files uploaded successfully.', 'files' => $uploadedFiles]);
+            $file = $request->file('filepond');
+            $file_name = $file->getClientOriginalName();
+            $folder = uniqid('img-', true);
+            $file->storeAs('images/tmp/' . $folder, $file_name);
+            TemporaryFile::create([
+                'folder' => $folder,
+                'file' => $file
+            ]);
+            return $folder;
         }
-
-        return response()->json(['error' => 'No files uploaded.']);
+        return '';
     }
 
-    public function imageDelete(Request $request)
+    public function imageDelete(Request $request){
+        $temporaryImage = TemporaryFile::where('folder', $request->getContent())->first();
+        if($temporaryImage){
+            Storage::deleteDirectory('images/tmp/' . $temporaryImage->folder);
+            TemporaryFile::where('folder', $request->getContent())->delete();
+        }
+        return response()->noContent();
+    }
+
+    public function imageStore(Request $request)
     {
-        dd($request->getContent());
-//        $filename = $request->get('filename');
-//        $path = public_path('assets/img/') . $filename;
-//
-//        if (File::exists($path)) {
-//            File::delete($path);
-//            return response()->json(['success' => 'File deleted successfully.']);
+//        $temporaryImages = TemporaryFile::all();
+////        foreach($temporaryImages as $temporaryImage){
+////            Storage::deleteDirectory('images/tmp/' . $temporaryImage->folder);
+////            TemporaryFile::where('folder', $request->getContent())->delete();
+////        }
+//        foreach ($temporaryImages as $temporaryImage) {
+//            Storage::copy('images/tmp/' . $temporaryImage->folder . '/' . $temporaryImage->file, 'assets/images/'.$temporaryImage->folder.'/'.$temporaryImage->file);
+//            Images::create([
+//                'name' => $temporaryImage->file,
+//                'path' => $temporaryImage->folder.'/'.$temporaryImage->file,
+//            ]);
+//            Storage::deleteDirectory('images/tmp/'.$temporaryImage->folder);
+//            TemporaryFile::where('folder', $request->getContent())->delete();
 //        }
-//
-//        return response()->json(['error' => 'File not found.'], 404);
+//        return redirect()->route('view_image_upload');
+        dd('hello');
     }
-
 }

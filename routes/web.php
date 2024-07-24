@@ -59,6 +59,7 @@ Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('
 
 Route::get('/image-upload', function (){
     return view('auth.image-upload');
-});
-Route::post('/image-upload', 'App\Http\Controllers\UploadFileController@imageUpload');
-Route::delete('/image-upload', 'App\Http\Controllers\UploadFileController@imageDelete');
+})->name('view_image_upload');
+Route::post('/imageUpload', 'App\Http\Controllers\UploadFileController@imageUpload');
+Route::delete('/imageDelete', 'App\Http\Controllers\UploadFileController@imageDelete');
+Route::post('/form-upload', 'App\Http\Controllers\UploadFileController@imageStore');

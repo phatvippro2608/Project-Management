@@ -3,14 +3,18 @@
 @section('contents')
     <div class="row">
         <div class="col-6">
-            <input type="file"
-                   class="filepond"
-                   name="filepond[]"
-                   multiple
-                   data-allow-reorder="true"
-                   data-max-file-size="3MB"
-                   data-max-files="3"
-                   accept="image/png, image/jpeg, image/gif">
+            <form action="{{action('App\Http\Controllers\UploadFileController@imageStore')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file"
+                       class="filepond"
+                       name="filepond"
+                       multiple
+                       data-allow-reorder="true"
+                       data-max-file-size="3MB"
+                       data-max-files="3"
+                       accept="image/png, image/jpeg, image/gif">
+                <button type="submit">Submit</button>
+            </form>
         </div>
     </div>
 
@@ -30,19 +34,10 @@
             document.querySelector('input'),
             {
                 server: {
-                    process: {
-                        url: '{{ action('App\Http\Controllers\UploadFileController@imageUpload') }}',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        }
-                    },
-                    revert: {
-                        url: '{{ action('App\Http\Controllers\UploadFileController@imageDelete') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        }
+                    process:'/imageUpload',
+                    revert: '/imageDelete',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
                     }
                 }
             }
