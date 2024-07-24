@@ -45,10 +45,10 @@
         <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
             <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
         </div>
-        <div class="from-group col-3 float-end d-inline-flex justify-content-around">
-            <button id="btnW" type="button" class="btn btn-secondary">Week</button>
-            <button id="btnM" type="button" class="btn btn-secondary">Month</button>
-            <button id="btnY" type="button" class="btn btn-secondary">Year</button>
+        <div class="from-group col-3 float-end d-inline-flex">
+            <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
+            <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
+            <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
         </div>
     </div>
 
