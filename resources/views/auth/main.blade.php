@@ -313,6 +313,11 @@
                             <i class="bi bi-circle"></i><span>Project List</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Project Manager</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
