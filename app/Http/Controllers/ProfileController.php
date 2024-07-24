@@ -11,7 +11,7 @@ class ProfileController extends Controller
     function getViewProfile()
     {
         $data = new ProfileModel();
-        return view('auth.profile', ['profiles' => $data->getProfile()]);
+        return view('auth.employees.profile', ['profiles' => $data->getProfile()]);
     }
 
     function postProfile(Request $request)
@@ -32,6 +32,5 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return json_encode((object)["status" => 400, "message" => "Action Faild"]);
         }
-
     }
 }

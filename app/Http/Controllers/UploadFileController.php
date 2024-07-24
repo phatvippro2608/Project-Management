@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class UploadFileController extends Controller
@@ -80,6 +81,38 @@ class UploadFileController extends Controller
             ->update(['photo' => $photo_filename]);
 
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
+    }
+
+    public function imageUpload(Request $request)
+    {
+        if ($request->hasFile('filepond')) {
+            $files = $request->file('filepond');
+            $uploadedFiles = [];
+
+            foreach ($files as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/img'), $filename);
+                $uploadedFiles[] = $filename;
+            }
+
+            return response()->json(['success' => 'Files uploaded successfully.', 'files' => $uploadedFiles]);
+        }
+
+        return response()->json(['error' => 'No files uploaded.']);
+    }
+
+    public function imageDelete(Request $request)
+    {
+        dd($request->getContent());
+//        $filename = $request->get('filename');
+//        $path = public_path('assets/img/') . $filename;
+//
+//        if (File::exists($path)) {
+//            File::delete($path);
+//            return response()->json(['success' => 'File deleted successfully.']);
+//        }
+//
+//        return response()->json(['error' => 'File not found.'], 404);
     }
 
 }

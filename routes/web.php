@@ -56,3 +56,9 @@ Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('m
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
+
+Route::get('/image-upload', function (){
+    return view('auth.image-upload');
+});
+Route::post('/image-upload', 'App\Http\Controllers\UploadFileController@imageUpload');
+Route::delete('/image-upload', 'App\Http\Controllers\UploadFileController@imageDelete');
