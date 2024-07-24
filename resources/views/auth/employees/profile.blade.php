@@ -18,7 +18,9 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                        <img src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}" class="rounded-circle object-fit-cover" width="100" height="100">
+                        <img
+                            src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
+                            class="rounded-circle object-fit-cover" width="100" height="100">
                         <h2>{{$profiles['profiles']->first_name  . ' ' . $profiles['profiles']->last_name }}</h2>
                         <h3>{{$profiles['profiles']->position_name}}</h3>
                     </div>
@@ -34,27 +36,35 @@
                         <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
 
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" aria-selected="true" role="tab">Overview</button>
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"
+                                        aria-selected="true" role="tab">Overview
+                                </button>
                             </li>
 
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" aria-selected="false" tabindex="-1" role="tab">Edit Profile</button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit"
+                                        aria-selected="false" tabindex="-1" role="tab">Edit Profile
+                                </button>
                             </li>
 
 
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" aria-selected="false" tabindex="-1" role="tab">Change Password</button>
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"
+                                        aria-selected="false" tabindex="-1" role="tab">Change Password
+                                </button>
                             </li>
 
                         </ul>
                         <div class="tab-content pt-2">
 
-                            <div class="tab-pane fade show active profile-overview" id="profile-overview" role="tabpanel">
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview"
+                                 role="tabpanel">
                                 <h5 class="card-title">Profile Details</h5>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->first_name  . ' ' . $profiles['profiles']->last_name }}</div>
+                                    <div
+                                        class="col-lg-9 col-md-8">{{$profiles['profiles']->first_name  . ' ' . $profiles['profiles']->last_name }}</div>
                                 </div>
 
                                 <div class="row">
@@ -94,62 +104,85 @@
                                 <!-- Profile Edit Form -->
                                 <form>
                                     <div class="row mb-3">
-                                        <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                                        <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile
+                                            Image</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <img src="assets/img/profile-img.jpg" alt="Profile">
-                                            <div class="pt-2">
-                                                <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                                                <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img
+                                                        src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
+                                                        alt="Profile" class="rounded-circle object-fit-cover" width="100"
+                                                        height="100">
+                                                </div>
+                                                <div class="col-10 pl-4">
+                                                    <div class="">
+                                                        <div class=" p-0 mb-2" >
+                                                            <input type="file" class="form-control photo" name="">
+                                                        </div>
+                                                        <button class="btn btn-primary btn_photo">
+                                                            Upload
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First
+                                            Name</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="" type="text" class="form-control" id="first_name" value="{{$profiles['profiles']->first_name}}">
+                                            <input name="" type="text" class="form-control" id="first_name"
+                                                   value="{{$profiles['profiles']->first_name}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="" type="text" class="form-control" id="last_name" value="{{$profiles['profiles']->last_name}}">
+                                            <input name="" type="text" class="form-control" id="last_name"
+                                                   value="{{$profiles['profiles']->last_name}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="job" type="text" class="form-control" id="position_name" value="{{$profiles['profiles']->position_name}}">
+                                            <input name="job" type="text" class="form-control" id="position_name"
+                                                   value="{{$profiles['profiles']->position_name}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="country" type="text" class="form-control" id="country_name" value="{{$profiles['profiles']->country_name}}">
+                                            <input name="country" type="text" class="form-control" id="country_name"
+                                                   value="{{$profiles['profiles']->country_name}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="address" type="text" class="form-control" id="permanent_address" value="{{$profiles['profiles']->permanent_address}}">
+                                            <input name="address" type="text" class="form-control"
+                                                   id="permanent_address"
+                                                   value="{{$profiles['profiles']->permanent_address}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="phone" type="text" class="form-control" id="phone_number" value="{{$profiles['profiles']->phone_number}}">
+                                            <input name="phone" type="text" class="form-control" id="phone_number"
+                                                   value="{{$profiles['profiles']->phone_number}}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="email" type="email" class="form-control" id="email" value="{{$profiles['profiles']->email}}">
+                                            <input name="email" type="text" class="form-control" id="email"
+                                                   value="{{$profiles['profiles']->email}}">
                                         </div>
                                     </div>
 
@@ -165,23 +198,29 @@
                                 <!-- Change Password Form -->
                                 <form>
                                     <div class="row mb-3">
-                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
+                                            Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="password" type="password" class="form-control" id="currentPassword">
+                                            <input name="password" type="password" class="form-control"
+                                                   id="currentPassword">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
+                                            Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="newpassword" type="password" class="form-control" id="newPassword">
+                                            <input name="newpassword" type="password" class="form-control"
+                                                   id="newPassword">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
+                                            Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                                            <input name="renewpassword" type="password" class="form-control"
+                                                   id="renewPassword">
                                         </div>
                                     </div>
 
@@ -221,9 +260,9 @@
                     result = JSON.parse(result);
                     if (result.status === 200) {
                         toastr.success(result.message, "Lưu thành công");
-                        setTimeout(function (){
+                        setTimeout(function () {
                             location.reload()
-                        },250);
+                        }, 250);
                     } else if (result.status === 400) {
                         toastr.error(result.message, "Lỗi");
                     } else {
@@ -235,5 +274,38 @@
                 }
             });
         });
+
+        $('.btn_photo').click(function () {
+            let filePhoto = $('.photo')[0].files[0];
+            let formData = new FormData();
+
+            if (filePhoto) {
+                formData.append('photo', filePhoto);
+            }
+
+            formData.append('id_employee', {{$profiles['profiles']->id_employee}} );
+
+            $.ajax({
+                url: '{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Thao tác thành công");
+                        // setTimeout(function () {
+                        //     window.location.reload();
+                        // }, 500);
+                    } else {
+                        toastr.error(result.message, "Thao tác thất bại");
+                    }
+                }
+            });
+        })
     </script>
 @endsection
