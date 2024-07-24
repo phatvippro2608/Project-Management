@@ -4,22 +4,31 @@
     <style type="text/css">
         #visualization {
             width: 100%;
-            height: 70vh;
-            border: 1px solid lightgray;
+            height: 100vh;
+            /* border: 1px solid lightgray; */
         }
 
         /* .vis-selected {
-                    border-color: red !important;
-                    background-color: blue !important;
-                } */
+                                        border-color: red !important;
+                                        background-color: blue !important;
+                                    } */
         .vis-subproject {
             background-color: var(--bg-light) !important;
             border: none;
-            border-bottom: 1px solid lightgray;
         }
 
         .vis-subproject .vis-inner {
             padding-left: 20px !important;
+        }
+
+        .vis-label.vis-nesting-group:before {
+            transition: translateX 2s;
+            transform: translateX(0);
+
+        }
+
+        .vis-label.vis-nesting-group.expanded:before {
+            transform: translateX(90deg);
         }
     </style>
     <div class="pagetitle">
@@ -59,7 +68,7 @@
                     </div>
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button> -->
+                                                <button type="button" class="btn btn-primary">Save changes</button> -->
                     </div>
                 </div>
             </div>
@@ -77,38 +86,29 @@
                     </div>
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button> -->
+                                                <button type="button" class="btn btn-primary">Save changes</button> -->
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
     <script type="text/javascript">
         //https://visjs.github.io/vis-timeline/docs/timeline/
         var container = document.getElementById('visualization');
-        var groups = new vis.DataSet([{
-                content: "Project 1",
-                id: "p1",
-                nestedGroups: ["sub1"],
-            },
-            {
+        var groups = new vis.DataSet([
+            @foreach ($sql as $item)
+                {
+                    content: '{{ $item->project_name }}',
+                    id: '{{ $item->project_id }}'
+                },
+            @endforeach {
                 content: "Project 2",
                 id: "p2",
                 nestedGroups: ["sub2"],
             },
             {
-                content: "Project 3",
-                id: "p3",
-            },
-            {
                 content: "Create",
                 id: "Create",
-            },
-            {
-                content: "SubProject 1",
-                id: "sub1",
-                className: "vis-subproject",
             },
             {
                 content: "SubProject 2",
@@ -116,20 +116,17 @@
                 className: "vis-subproject",
             }
         ]);
-        var items = new vis.DataSet([{
-                start: new Date(2024, 0, 10),
-                end: new Date(2024, 0, 20),
-                group: "p1",
-            },
-            {
+        var items = new vis.DataSet([
+            @foreach ($sql as $item)
+                {
+                    start: new Date('{{ $item->project_date_start }}'),
+                    end: new Date('{{ $item->project_date_end }}'),
+                    group: '{{  $item->project_id  }}',
+                },
+            @endforeach {
                 start: new Date(2024, 0, 28),
                 end: new Date(2024, 2, 26),
                 group: "p2",
-            },
-            {
-                start: new Date(2024, 1, 22),
-                end: new Date(2024, 4, 26),
-                group: "p3",
             },
             {
                 start: new Date(2024, 2, 22),
@@ -190,14 +187,10 @@
         timeline.setOptions(options);
         timeline.setGroups(groups);
         timeline.setItems(items);
-        timeline.on('doubleClick', function(properties) {
-            properties.event.preventDefault();
-        });
+
         timeline.on('item:add', function(event, properties, senderId) {
             event.preventDefault();
         });
-
-
 
         //hàm search timeline
         document.getElementById('ProjectSearch').addEventListener('input', function(e) {
