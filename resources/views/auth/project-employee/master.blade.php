@@ -1,5 +1,5 @@
 <?php use App\StaticString;?>
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{asset('assets/js/toastr.min.js')}}"></script>
-@yield('head')
+    @yield('head')
 </head>
 
 <body>
@@ -303,34 +303,30 @@
                         </a>
                     </li>
                 </ul>
-            @endif
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{action('App\Http\Controllers\TeamController@getView')}}">
-                    <i class="bi bi-people"></i><span>Team List</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Project List</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Project Manager</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+        @endif
 
-
-            <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
-                <i class="bi bi-basket-fill"></i><span>Material Management</span>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
+            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project Manager</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+        <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
+            <i class="bi bi-basket-fill"></i><span>Material Management</span>
+        </a>
         </li>
     </ul>
 
@@ -339,13 +335,6 @@
 <main id="main" class="main">
     @yield('contents')
 </main>
-
-
-{{--<footer id="footer" class="footer">--}}
-{{--    <div class="copyright">--}}
-{{--        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved--}}
-{{--    </div>--}}
-{{--</footer>--}}
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </body>

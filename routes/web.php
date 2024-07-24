@@ -32,6 +32,11 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
     });
 
+    Route::group(['prefix'=>'/team', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\TeamController@getView');
+    });
+
+
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
@@ -47,7 +52,14 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
+
+
 });
+
+
+
+
+
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
