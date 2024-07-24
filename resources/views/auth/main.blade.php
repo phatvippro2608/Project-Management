@@ -314,12 +314,10 @@
                     </li>
                 </ul>
 
-            @endif
-            <li class="nav-item">
                 <a class="nav-link collapsed" href="{{action('App\Http\Controllers\TeamController@getView')}}">
                     <i class="bi bi-people"></i><span>Team List</span>
                 </a>
-            </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>

@@ -53,57 +53,55 @@
 
                                 </thead>
                                 <tbody class="account-list">
-                                @foreach($account as $item)
                                     <tr class="account-item">
                                         <td class="text-right">
                                             <div class="d-flex align-items-center justify-content-center">
                                                 <div class="action-buttons ">
                                                     <a class=" edit">
                                                         <i class="bi bi-pencil-square ic-update ic-btn"
-                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
                                                     </a>
                                                     <a class=" delete">
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="{{ $item->id_account }}"></i>
+                                                           data="id"></i>
                                                     </a>
                                                     <a class=" key">
                                                         <i class="bi bi-key ic-key ic-btn"
-                                                           data="{{ $item->id_account }}"></i>
+                                                           data="id"></i>
                                                     </a>
                                                 </div>
-                                                <img src="http://ventech.local/assets/img/profile-img.jpg" alt=""
+                                                <img src="" alt=""
                                                      class="account-photo rounded-circle p-0 m-0">
                                             </div>
 
                                         </td>
                                         <td class="text-center">
-                                            {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->email}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->username}}
-                                        </td>
-                                        <td class="text-center">
-                                            @if($status[$item->status] == 'Offine')
-                                                <i class="bi bi-circle-fill account-status offine"></i>
-                                            @elseif($status[$item->status] == 'Locked')
-                                                <i class="bi bi-circle-fill account-status" style="color:red;"></i>
-                                            @else
-                                                <i class="bi bi-circle-fill account-status"></i>
-                                            @endif
 
-                                            {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-                                            Active 16 hours ago
+
                                         </td>
                                         <td class="text-center">
-                                            16 years ago
+
+                                        </td>
+                                        <td class="text-center">
+{{--                                            @if($status[$item->status] == 'Offine')--}}
+{{--                                                <i class="bi bi-circle-fill account-status offine"></i>--}}
+{{--                                            @elseif($status[$item->status] == 'Locked')--}}
+{{--                                                <i class="bi bi-circle-fill account-status" style="color:red;"></i>--}}
+{{--                                            @else--}}
+{{--                                                <i class="bi bi-circle-fill account-status"></i>--}}
+{{--                                            @endif--}}
+
+{{--                                            {{$status[$item->status]}}--}}
+                                        </td>
+                                        <td class="text-center">
+
+                                        </td>
+                                        <td class="text-center">
+
                                         </td>
                                     </tr>
-                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -126,10 +124,10 @@
                             </label>
                             <select class="form-select name1" aria-label="Default">
                                 <option value="-1">No select</option>
-                                @foreach($employees as $employee)
-                                    <option value="{{$employee->id_employee}}">{{$employee->employee_code}}
-                                        - {{$employee->first_name}} {{$employee->last_name}}</option>
-                                @endforeach
+{{--                                @foreach($employees as $employee)--}}
+{{--                                    <option value="{{$employee->id_employee}}">{{$employee->employee_code}}--}}
+{{--                                        - {{$employee->first_name}} {{$employee->last_name}}</option>--}}
+{{--                                @endforeach--}}
                             </select>
 
                         </div>
@@ -152,9 +150,9 @@
                                 Status
                             </label>
                             <select class="form-select name4" aria-label="Default">
-                                @foreach($status as $key => $val)
-                                    <option value="{{$key}}">{{$val}}</option>
-                                @endforeach
+{{--                                @foreach($status as $key => $val)--}}
+{{--                                    <option value="{{$key}}">{{$val}}</option>--}}
+{{--                                @endforeach--}}
                             </select>
                         </div>
                         <div class="col-md-6" style="margin-top: 1rem">
@@ -162,9 +160,9 @@
                                 Permission
                             </label>
                             <select class="form-select name5" aria-label="Default">
-                                @foreach($permission as $key => $val)
-                                    <option value="{{$key}}">{{$val}}</option>
-                                @endforeach
+{{--                                @foreach($permission as $key => $val)--}}
+{{--                                    <option value="{{$key}}">{{$val}}</option>--}}
+{{--                                @endforeach--}}
                             </select>
                         </div>
                     </div>
