@@ -35,12 +35,18 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
+        Route::put('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
+        Route::post('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
+        Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
     });
 
 
     Route::group(['prefix'=>'/profile', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
+        Route::post('/update', 'App\Http\Controllers\ProfileController@postProfile');
     });
+
+    Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
 });
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
