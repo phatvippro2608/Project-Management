@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class ProjectListModel extends Model
+class Submenu extends Model
 {
     use HasFactory;
-    protected $table = 'projects';
 
-    protected $primaryKey = 'project_id';
-
+    public function getData($sql){
+        return $data=DB::select($sql);
+    }
 
 }
