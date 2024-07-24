@@ -4,7 +4,6 @@
     <div class="row">
         <div class="col-6">
             <form action="{{action('App\Http\Controllers\UploadFileController@imageStore')}}" method="POST" enctype="multipart/form-data">
-                @csrf
                 <input type="file"
                        class="filepond"
                        name="filepond"

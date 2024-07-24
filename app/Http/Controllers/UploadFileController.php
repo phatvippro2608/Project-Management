@@ -126,6 +126,5 @@ class UploadFileController extends Controller
 //            TemporaryFile::where('folder', $request->getContent())->delete();
 //        }
 //        return redirect()->route('view_image_upload');
-        dd('hello');
     }
 }
