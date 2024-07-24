@@ -14,13 +14,13 @@ class ProfileModel extends Model
 
     function getProfile()
     {
-        $profiles = DB::table('employees')
-            ->join('account', 'employees.id_employee', '=', 'account.id_employee')
+        $profiles = DB::table('account')
+            ->join('employees', 'employees.id_employee', '=', 'account.id_employee')
             ->join('job_detail', 'employees.id_employee', '=', 'job_detail.id_employee')
             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
             ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-            ->where('employees.id_employee', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+            ->where('account.id_account', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
             ->first();
         return ['profiles' => $profiles];
     }

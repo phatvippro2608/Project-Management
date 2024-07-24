@@ -13,7 +13,6 @@ class ProfileController extends Controller
         $data = new ProfileModel();
         return view('auth.employees.profile', ['profiles' => $data->getProfile()]);
     }
-
     function postProfile(Request $request)
     {
         try {
