@@ -26,21 +26,14 @@
                                 </div>
                             </div>
                             <div class="ms-auto text-secondary">
-                                {{--                                <form action="">--}}
-                                {{--                                    <div class="input-group input-group">--}}
-                                {{--                                        <input name="keyw" type="text"--}}
-                                {{--                                               value="{{ request()->input('keyw') }}"--}}
-                                {{--                                               class="form-control"--}}
-                                {{--                                               placeholder="Search ...">--}}
-                                {{--                                        <span class="input-group-btn">--}}
-                                {{--                                    <button type="submit" class="btn btn-info btn-flat">Search</button>--}}
-                                {{--                                    </span>--}}
-                                {{--                                    </div>--}}
-                                {{--                                </form>--}}
                                 <div class="search-container w-100">
-                                    <input type="text" class="form-control form-control-md" aria-label="Search invoice"
-                                           placeholder="Search ...">
-                                    <i class="bi bi-search search-button"></i>
+                                    <form method="GET" action="{{ action('App\Http\Controllers\AccountController@getView') }}" class="d-flex w-100">
+                                        <input name="keyw" type="text"
+                                               value="{{ request()->input('keyw') }}"
+                                               class="form-control form-control-md" aria-label="Search invoice"
+                                               placeholder="Search ...">
+                                        <button type="submit" class="btn btn-link p-0"><i class="bi bi-search search-button"></i></button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

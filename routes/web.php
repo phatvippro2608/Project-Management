@@ -43,7 +43,9 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::group(['prefix'=>'/profile', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
+        Route::post('/update', 'App\Http\Controllers\ProfileController@postProfile');
     });
+
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
 });
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
