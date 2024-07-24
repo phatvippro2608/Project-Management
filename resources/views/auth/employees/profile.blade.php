@@ -148,16 +148,22 @@
                                     <div class="row mb-3">
                                         <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="job" type="text" class="form-control" id="position_name"
-                                                   value="{{$profiles['profiles']->position_name}}">
+                                            <select class="form-select" id="position_name" aria-label="Default select example">
+                                                @foreach($dataEmployee['jobPositions'] as $item)
+                                                    <option value="{{$item->id_position}}">{{$item->position_name}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="country" type="text" class="form-control" id="country_name"
-                                                   value="{{$profiles['profiles']->country_name}}">
+                                            <select class="form-select" id="country_name" aria-label="Default select example">
+                                                @foreach($dataEmployee['jobCountry'] as $item)
+                                                    <option value="{{$item->id_country}}">{{$item->country_name}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
