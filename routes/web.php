@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
-
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +69,12 @@ Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('m
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
+
+Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
+Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
+Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
+
 // Budget
 Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
 Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
+
