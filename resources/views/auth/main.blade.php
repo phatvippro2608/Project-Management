@@ -349,11 +349,6 @@
                 <i class="bi bi-people"></i><span>Team List</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                <i class="bi bi-basket-fill"></i><span>Material Management</span>
-            </a>
-        </li>
 
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
@@ -364,6 +359,11 @@
                 <li>
                     <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
                         <i class="bi bi-circle"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
+                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>
