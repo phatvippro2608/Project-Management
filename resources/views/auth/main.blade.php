@@ -276,7 +276,6 @@
 
                 </ul>
             </li>
-
         </ul>
     </nav>
 
@@ -286,9 +285,8 @@
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
-
         <li class="nav-item">
-            <a class="nav-link " href="#">
+            <a class="nav-link " href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
@@ -308,29 +306,7 @@
                     </li>
                 </ul>
             @endif
-
-            @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
-                <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-person"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Info</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-                            <i class="bi bi-circle"></i><span>History</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>Team List</span>
-                </a>
-        @endif
+        </li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                href="#">
@@ -349,12 +325,48 @@
                 </li>
             </ul>
         </li>
+        <li class="nav-item">
+            @if(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION)==1)
+                <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-person"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Info</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+            @endif
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                <i class="bi bi-people"></i><span>Team List</span>
+            </a>
+        </li>
 
-
-
-        <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-            <i class="bi bi-basket-fill"></i><span>Material Management</span>
-        </a>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
+                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                    </a>
+                </li>
+            </ul>
         </li>
     </ul>
 

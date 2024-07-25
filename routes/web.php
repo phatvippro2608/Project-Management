@@ -23,7 +23,10 @@ Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
 Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
-    Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
+    Route::get('/', function (){
+        return redirect('/dashboard');
+    });
+    Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
 
     Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
@@ -37,7 +40,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     });
 
     Route::group(['prefix'=>'/team', 'middleware' => 'isSuperAdmin'], function() {
-        Route::get('/', 'App\Http\Controllers\TeamController@getView');
+        Route::get('/team', 'App\Http\Controllers\TeamController@getView');
     });
 
 
@@ -82,4 +85,11 @@ Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('t
 
 Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
 Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
+
+Route::get('/project/{id}/budget/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editBudget'])->name('budget.edit');
+Route::get('/project/{id}/budget/edit/{costGroupId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
+
+
+//Inventory Management
+Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
