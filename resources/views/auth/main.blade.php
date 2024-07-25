@@ -217,7 +217,7 @@
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
 
-                    <img src="{{ $data->photo }}" alt="Profile" class="rounded-circle object-fit-cover"
+                    <img src="{{asset('/uploads/'.$data->id_employee.'/'.$data->photo)}}" alt="Profile" class="rounded-circle object-fit-cover"
                          width="36" height="36">
 
                     <span class="d-none d-md-block dropdown-toggle ps-2">
