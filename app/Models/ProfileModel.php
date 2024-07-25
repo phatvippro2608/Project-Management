@@ -20,7 +20,7 @@ class ProfileModel extends Model
             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
             ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-            ->where('account.id_account', 4)
+            ->where('account.id_account', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
             ->first();
         return ['profiles' => $profiles];
     }
