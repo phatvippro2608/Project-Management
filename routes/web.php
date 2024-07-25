@@ -43,6 +43,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::put('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::post('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
+        Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
     });
 
 
@@ -52,8 +53,8 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
-
-
+    Route::post('/upload_photo', 'App\Http\Controllers\UploadFileController@uploadPhoto');
+    Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
 });
 
 

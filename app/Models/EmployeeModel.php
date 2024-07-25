@@ -16,6 +16,7 @@ class EmployeeModel extends Model
     {
         $perPage = intval(env('ITEM_PER_PAGE'));
         return DB::table('employees')
+            ->join('job_detail', 'employees.id_employee', '=', 'job_detail.id_employee')
             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
             ->paginate($perPage);
     }
