@@ -38,14 +38,17 @@ class EmployeesController extends Controller
             'first_name'=>$request->input('first_name'),
             'last_name'=>$request->input('last_name'),
             'en_name'=>$request->input('en_name'),
+            'photo' => null,
             'gender'=>$request->input('gender'),
             'marital_status' =>$request->input('marital_status'),
             'military_service' =>$request->input('military_service'),
             'date_of_birth'=> $request->date_of_birth,
             'national'=>$request->input('national'),
-            'id_contact'=>$id_contact
+            'id_contact'=>$id_contact,
+            'fired' => 'false'
         ];
-        if(DB::table('employees')->insert($dataEmployee)){
+        $id_employee = DB::table('employees')->insertGetId($dataEmployee);
+        if(DB::table('job_detail')->where('id_employee',$id_employee)->insert(['id_employee' => $id_employee])){
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         }else{
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);

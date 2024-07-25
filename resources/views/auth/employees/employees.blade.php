@@ -68,7 +68,10 @@
                                             <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
                                             @php
                                                 $imagePath = public_path('uploads/' . $item->id_employee . '/' . $item->photo);
-                                                $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/logo2.png');
+                                                if($item->photo != null){
+                                                $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/avt.png');
+
+                                                }
                                             @endphp
 
                                             <td><img src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
@@ -740,15 +743,6 @@
             </div>
         </div>
     </div>
-{{--    </div>--}}
-{{--    <form id="uploadForm" enctype="multipart/form-data">--}}
-{{--        @csrf--}}
-{{--        <div class="mb-3">--}}
-{{--            <label for="formFileSm" class="form-label">Small file input example</label>--}}
-{{--            <input class="form-control form-control-sm" id="formFileSm" name="file" type="file">--}}
-{{--        </div>--}}
-{{--        <button class="btn btn-primary" type="submit">Upload</button>--}}
-{{--    </form>--}}
 @endsection
 @section('script')
     <script>
@@ -779,7 +773,6 @@
                     'phone_number': $('.md1 .phone_number').val(),
                 };
 
-
                 $.ajax({
                     url: _put,
                     type: 'PUT',
@@ -789,15 +782,15 @@
                     data: data,
 
                     success: function (result) {
-                        // result = JSON.parse(result);
-                        // if (result.status === 200) {
-                        //     toastr.success(result.message, "Thao tác thành công");
-                        //     setTimeout(function () {
-                        //         window.location.reload();
-                        //     }, 500);
-                        // } else {
-                        //     toastr.error(result.message, "Thao tác thất bại");
-                        // }
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
                     }
                 });
             });
@@ -961,29 +954,39 @@
             $('.md3 .first_name').val(data.first_name);
             $('.md3 .last_name').val(data.last_name);
             $('.md3 .en_name').val(data.en_name);
-            $('.md3 .photo_show').attr('src','{{asset('/uploads/')}}'+ '/' + data.id_employee + '/' + data.photo);
+            $('.md3 .photo_show').attr('src', data.photo != null ? '{{asset('/uploads/')}}'+ '/' + data.id_employee + '/' + data.photo : '{{asset('/assets/img/avt.png')}}');
             let dataCV = JSON.parse(data.cv);
+            $('.cv-list').empty();
+            $('.certificate_list').empty();
+            $('.medical_list').empty();
+            if(dataCV){
+                dataCV.forEach(function(filename, index) {
+                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td></tr>';
+                    $('.cv-list').append(row);
+                });
+            }
 
-            dataCV.forEach(function(filename, index) {
-                let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
-                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + cvLink + '" target="_blank">' + filename + '</a></td></tr>';
-                $('.cv-list').append(row);
-            });
 
             let dataMedical = JSON.parse(data.medical);
-            dataMedical.forEach(function(item, index) {
-                let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
-                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td>'+ item.medical_checkup_issue_date+'</td></tr>';
-                $('.medical_list').append(row);
-            });
+            if(dataMedical){
+                dataMedical.forEach(function(item, index) {
+                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td></tr>';
+                    $('.medical_list').append(row);
+                });
+            }
 
             let dataCertificate = JSON.parse(data.certificates);
-            console.log(dataCertificate);
-            dataCertificate.forEach(function(item, index) {
-                let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
-                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td>'+item.certificate_type_name+'</td><td>'+ item.end_date_certificate+'</td></tr>';
-                $('.certificate_list').append(row);
-            });
+            if(dataCertificate){
+                dataCertificate.forEach(function(item, index) {
+                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td></tr>';
+                    $('.certificate_list').append(row);
+                });
+            }
+
+
             $('.md3 input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
             $('.md3 input[name="marital_status"][value="' + data.marital_status + '"]').prop('checked', true);
             $('.md3 input[name="military_service"][value="' + data.military_service + '"]').prop('checked', true);
