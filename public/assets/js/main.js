@@ -93,3 +93,14 @@
     onscroll(document, toggleBacktotop)
   }
 })();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(link => {
+        if (link.href === window.location.href) {
+            link.classList.remove('collapsed');
+        }else{
+            link.classList.add('collapsed');
+        }
+    });
+});
