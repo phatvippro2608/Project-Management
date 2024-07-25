@@ -341,6 +341,27 @@ use App\StaticString; ?>
                 @endif
             </li>
 
+            @php
+                $data = \Illuminate\Support\Facades\DB::table('account')
+                    ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                    ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                    ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+                    ->first();
+            @endphp
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    @php
+                        $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                        $defaultPhoto = asset('assets/img/avt.png');
+                        $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                    @endphp
+
+                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
+                    <span class="d-none d-md-block dropdown-toggle ps-2">
+                        {{$data->last_name . " " . $data->first_name}}
+                    </span>
+                </a>
+
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-calendar-check"></i><span>Attendance</span><i class="bi bi-chevron-down ms-auto"></i>
