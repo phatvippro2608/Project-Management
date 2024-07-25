@@ -23,7 +23,10 @@ Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
 Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
-    Route::get('/', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
+    Route::get('/', function (){
+        return redirect('/dashboard');
+    });
+    Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
 
     Route::group(['prefix'=>'/account', 'middleware' => 'isSuperAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
