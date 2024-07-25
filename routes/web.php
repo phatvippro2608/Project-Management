@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProgressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,10 +66,6 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 });
 
 
-
-
-
-
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
@@ -77,6 +74,13 @@ Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('m
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
+
+Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
+Route::post('/update-item', [ProgressController::class, 'updateItem']);
+Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
+Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
+Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
