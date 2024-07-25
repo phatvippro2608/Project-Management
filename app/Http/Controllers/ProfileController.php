@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
 use App\Models\ProfileModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,10 @@ class ProfileController extends Controller
     function getViewProfile()
     {
         $data = new ProfileModel();
-        return view('auth.employees.profile', ['profiles' => $data->getProfile()]);
+        $employee = new EmployeeModel();
+//        dd($data->getProfile());
+        return view('auth.employees.profile', ['profiles' => $data->getProfile(),
+                                                    'dataEmployee' => $employee->getAllJobDetails()]);
     }
     function postProfile(Request $request)
     {
@@ -33,4 +37,5 @@ class ProfileController extends Controller
         }
 
     }
+
 }
