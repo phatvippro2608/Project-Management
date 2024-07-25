@@ -80,14 +80,16 @@
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-            <form id="edit-task-form">
+                <form id="edit-task-form">
+                    @csrf
                     <div class="modal-header">
-                        <input type="text" class="form-control modal-title fs-5 no-background" id="taskname" name="taskname" placeholder="[Task Name]" require>
+                        <input type="text" id="task_id" name="task_id" hidden required>
+                        <input type="text" class="form-control modal-title fs-5 no-background" id="taskname" name="taskname" required>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
-                            <div class="form-group">
+                            <div class="form-group" id="subTaskHol">
                                 <div><strong><i class="bi bi-diagram-2"></i> Add a sub-task</strong></div>
                                 <div id="e-subtasks-holder">
                                 </div>
@@ -101,7 +103,7 @@
                         <div class="form-group col-6" style="border-left: 1px solid;">
                             <div class="form-group">
                                 <label><strong><i class="bi bi-person-circle"></i> Assigned</strong></label>
-                                <input class="form-control assign-user" type="text" name="users" autocomplete="off" placeholder="Search..." onfocus="showDropdown(this)">
+                                <input class="form-control assign-user" type="text" id="users" name="users" autocomplete="off" placeholder="Search..." onfocus="showDropdown(this)">
                                 <div class="dropdown-content">
                                     <div class="dropdown-item" data-value="Edge">
                                         <img src="path/to/edge.png" alt="Edge" width="20" height="20"> Edge
@@ -118,10 +120,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
                 </form>
-                <div class="modal-footer">
-                    <button id="submit-edit-task" type="button" class="btn btn-primary">Save</button>
-                </div>
             </div>
         </div>
     </div>
@@ -160,11 +162,11 @@
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="s_date"><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                <input class="form-control" type="date" id="s_date" name="s_date">
+                                <input class="form-control" type="date" name="s_date">
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" id="e_date" name="e_date">
+                                <input class="form-control" type="date" name="e_date">
                             </div>
                         </div>
                     </div>
@@ -264,15 +266,13 @@
             var container = document.createElement("div");
             var button = document.createElement("button");
             if (group.id.split('_')[0] == 'task') {
-                button.setAttribute("data-bs-toggle", "modal");
-                button.setAttribute("data-bs-target", "#modalViewTask");
                 button.setAttribute("data-task-id", group.id.split('_')[1]);
+                button.setAttribute("onclick", "getTask(this)");
                 button.innerHTML = group.content;
             }
             if (group.id.split('_')[0] == 'subtask') {
-                button.setAttribute("data-bs-toggle", "modal");
-                button.setAttribute("data-bs-target", "#modalViewTask");
                 button.setAttribute("data-subtask-id", group.id.split('_')[1]);
+                button.setAttribute("onclick", "getSubTask(this)");
                 button.innerHTML = group.content;
             }
             if (group.id == "create") {
@@ -421,7 +421,7 @@
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
             <div class="col-10">
-                <input id="subtask${c_subtaskCount}" name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+                <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
             </div>
             <div class="col-1">
                 <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
@@ -429,7 +429,6 @@
         `;
         document.getElementById('c-subtasks-holder').appendChild(subtask);
     }
-
     var e_subtaskCount = 0;
     function e_addSubTask(){
         e_subtaskCount++;
@@ -439,7 +438,7 @@
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
             <div class="col-10">
-                <input id="subtask${e_subtaskCount}" name="subtask${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+                <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
             </div>
             <div class="col-1">
                 <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
@@ -462,25 +461,30 @@
             data: data,
             success: function(response){
                 console.log(response);
-                var task = response.tasks;
+                var tasks = response.tasks;
                 var subtasks = response.subtasks;
                 var newgroups=new vis.DataSet();
                 var newitems=new vis.DataSet();
-                for (var i = 0; i < task.length; i++) {
-                    newgroups.add({
-                        content: task[i].task_name,
-                        id: 'task_' + task[i].task_id,
-                        //lập qua subtask để thêm vào nestedGroups nếu subtask có task_id trùng với task_id của task còn néu không có thì không thêm thuộc tính nestedGroups
+                for (var i = 0; i < tasks.length; i++) {
+                    let newGroup = {
+                        content: tasks[i].task_name,
+                        id: 'task_' + tasks[i].task_id,
                         nestedGroups: subtasks.filter(function(subtask){
-                            return subtask.task_id == task[i].task_id;
+                            return subtask.task_id == tasks[i].task_id;
                         }).map(function(subtask){
                             return 'subtask_' + subtask.sub_task_id;
                         }),
-                    });
+                    };
+                    if (newGroup.nestedGroups.length == 0) {
+                        console.log("asd");
+                        delete newGroup.nestedGroups;
+                    }
+                    newgroups.add(newGroup);
+
                     newitems.add({
-                        start: new Date(task[i].start_date),
-                        end: new Date(task[i].end_date),
-                        group: 'task_' + task[i].task_id,
+                        start: new Date(tasks[i].start_date),
+                        end: new Date(tasks[i].end_date),
+                        group: 'task_' + tasks[i].task_id,
                     });
                 }
                 for (var i = 0; i < subtasks.length; i++) {
@@ -510,50 +514,137 @@
         });
     });
 
-    // function getTask(e){
-    //     //lấy task theo id từ dữ liệu custom attribute
-    //     var task_id = e.getAttribute('data-task-id');
-    //     $.ajax({
-    //         type: 'get',
-    //         url: '{{ url('task') }}/task'+task_id,
-    //         data: {
-    //             _token: '{{ csrf_token() }}'
-    //         },
-    //         success: function(response){
-    //             var task = response.task;
-    //             var subtasks = response.subtasks;
-    //             var task_id = task.task_id;
-    //             var subtask_id = subtasks.map(function(subtask){
-    //                 return subtask.sub_task_id;
-    //             });
-    //             $('#taskname').val(task.task_name);
-    //             $('#request').val(task.request);
-    //             $('#s_date').val(task.start_date);
-    //             $('#e_date').val(task.end_date);
-    //             $('#edit-task-form').attr('data-task-id', task_id);
-    //             $('#edit-task-form').attr('data-subtask-id', subtask_id);
-    //             $('#e-subtasks-holder').html('');
-    //             for (var i = 0; i < subtasks.length; i++) {
-    //                 var subtask = document.createElement('div');
-    //                 subtask.classList.add('row');
-    //                 subtask.style.marginTop = '1%';
-    //                 subtask.style.marginBottom = '1%';
-    //                 subtask.innerHTML = `
-    //                     <div class="col-10">
-    //                         <input id="subtask${subtasks[i].sub_task_id}" name="subtask${subtasks[i].sub_task_id}" type="text" class="form-control" value="${subtasks[i].sub_task_name}">
-    //                     </div>
-    //                     <div class="col-1">
-    //                         <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-    //                     </div>
-    //                 `;
-    //                 document.getElementById('e-subtasks-holder').appendChild(subtask);
-    //             }
-    //             $('#modalViewTask').modal('show');
-    //         },
-    //         error: function(response){
-    //             console.log(response);
-    //         }
-    //     });
-    // }
+    function getTask(e){
+        var task_id = e.getAttribute('data-task-id');
+        $.ajax({
+            type: 'get',
+            url: '{{ url('task') }}/task/'+task_id,
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response){
+                var task = response.task;
+                var subtasks = response.subtasks;
+
+                var task_id = task.task_id;
+                var subtask_id = subtasks.map(function(subtask){
+                    return subtask.sub_task_id;
+                });
+                $('#subTaskHol').show();
+                $('#task_id').val("task_"+task_id);
+                $('#taskname').val(task.task_name);
+                $('#request').val(task.request);
+                $('#users').val(task.engineers);
+                $('#s_date').val(task.start_date);
+                $('#e_date').val(task.end_date);
+                $('#e-subtasks-holder').html('');
+                for (var i = 0; i < subtasks.length; i++) {
+                    var subtask = document.createElement('div');
+                    subtask.classList.add('row');
+                    subtask.style.marginTop = '1%';
+                    subtask.style.marginBottom = '1%';
+                    subtask.innerHTML = `
+                        <div class="col-10">
+                            <input name="subtask_${subtasks[i].sub_task_id}" type="text" class="form-control" value="${subtasks[i].sub_task_name}">
+                        </div>
+                        <div class="col-1">
+                            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+                        </div>
+                    `;
+                    document.getElementById('e-subtasks-holder').appendChild(subtask);
+                }
+                $('#modalViewTask').modal('show');
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    function getSubTask(e){
+        var subtask_id = e.getAttribute('data-subtask-id');
+        $.ajax({
+            type: 'get',
+            url: '{{ url('task') }}/subtask/'+subtask_id,
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response){
+                var subtask = response.subtask;
+                $('#task_id').val("subtask_"+subtask.sub_task_id);
+                $('#subTaskHol').hide();
+                $('#e-subtasks-holder').html('');
+                $('#taskname').val(subtask.sub_task_name);
+                $('#request').val(subtask.request);
+                $('#users').val(subtask.engineers);
+                $('#s_date').val(subtask.start_date);
+                $('#e_date').val(subtask.end_date);
+                $('#modalViewTask').modal('show');
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    }
+
+    $('#edit-task-form').submit(function(e){
+        e.preventDefault();
+        var form = $(this);
+        var data = form.serialize();
+        $.ajax({
+            type: 'post',
+            url: '{{ route('task.update') }}',
+            data: data,
+            success: function(response){
+                var tasks = response.tasks;
+                var subtasks = response.subtasks;
+                var newgroups=new vis.DataSet();
+                var newitems=new vis.DataSet();
+                for (var i = 0; i < tasks.length; i++) {
+                    let newGroup = {
+                        content: tasks[i].task_name,
+                        id: 'task_' + tasks[i].task_id,
+                        nestedGroups: subtasks.filter(function(subtask){
+                            return subtask.task_id == tasks[i].task_id;
+                        }).map(function(subtask){
+                            return 'subtask_' + subtask.sub_task_id;
+                        }),
+                    };
+                    if (newGroup.nestedGroups.length == 0) {
+                        console.log("asd");
+                        delete newGroup.nestedGroups;
+                    }
+                    newgroups.add(newGroup);
+                    newitems.add({
+                        start: new Date(tasks[i].start_date),
+                        end: new Date(tasks[i].end_date),
+                        group: 'task_' + tasks[i].task_id,
+                    });
+                }
+                for (var i = 0; i < subtasks.length; i++) {
+                    newgroups.add({
+                        content: subtasks[i].sub_task_name,
+                        id: 'subtask_' + subtasks[i].sub_task_id,
+                        className: 'vis-subTask',
+                    });
+                    newitems.add({
+                        start: new Date(subtasks[i].start_date),
+                        end: new Date(subtasks[i].end_date),
+                        group: 'subtask_' + subtasks[i].sub_task_id,
+                    });
+                }
+                newgroups.add({
+                    content: 'Create',
+                    id: 'create',
+                });
+                timeline.setGroups(newgroups);
+                timeline.setItems(newitems);
+                $('#modalViewTask').modal('hide');
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    });
 </script>
 @endsection

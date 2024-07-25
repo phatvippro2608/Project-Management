@@ -7,13 +7,9 @@ use Illuminate\Http\Request;
 
 class ProjectsController extends Controller
 {
-    function getViewProgress()
+    function getView()
     {
         return view('auth.projects.progress');
     }
 
-    function getViewExpenses()
-    {
-        return view('auth.projects.expenses');
-    }
 }

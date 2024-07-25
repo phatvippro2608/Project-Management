@@ -42,10 +42,10 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 });
 
 Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
-Route::post('/update-item', [ProgressController::class, 'updateItem']);
 Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
 Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
+Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
