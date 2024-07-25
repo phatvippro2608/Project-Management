@@ -72,18 +72,34 @@ class AccountController extends Controller
     {
         $id_employee = $request->input('id_employee');
         $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
-        $auto_pwd = $request->input('auto_pwd');
 
-        if($auto_pwd == 'true')
-            $password = $this->randomUserPwd(20);
+        if($permission==1){
+            if(AccountModel::where('permission',1)->count()>=3){
+                return $this->status('Đã quá số lượng Super Admin', 500);
+            };
+        }
+
+        if($id_employee == -1){
+            return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
+        }
+
+        if(AccountModel::where('email', $email)->count()>=1){
+            return $this->status('Email đã tồn tại', 500);
+        }
+
+        if(AccountModel::where('username', $username)->count()>=1){
+            return $this->status('Username đã tồn tại', 500);
+        }
+
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
         $i = [
             'id_employee' => $id_employee,
             'username' => $username,
-            'email' => null,
+            'email' => $email,
             'password' => $hashPass,
             'status' => $status,
             'permission' => $permission,
@@ -99,22 +115,31 @@ class AccountController extends Controller
         $id_account = $request->input('id_account');
         $id_employee = $request->input('id_employee');
         $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
-        $auto_pwd = $request->input('auto_pwd');
-
-        if($auto_pwd == 'true')
-            $password = $this->randomUserPwd(20);
+//        $auto_pwd = $request->input('auto_pwd');
+//
+//        if($auto_pwd == 'true')
+//            $password = $this->randomUserPwd(20);
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
+
+        if($permission==1){
+            if(AccountModel::where('permission',1)->where('id_account','!=',$id_account)->count()+AccountModel::where('id_account',$id_account)->where('permission',1)->count()>=3){
+                return $this->status('Đã quá số lượng Super Admin', 500);
+            };
+        }
+
         $i = [
             'id_employee' => $id_employee,
             'username' => $username,
-            'email' => null,
-            'password' => $hashPass,
-            'status' => $status,
+            'email' => $email,
             'permission' => $permission,
+            'status' => $status,
         ];
+        if(!empty($password))
+            $i['password'] = $hashPass;
         if(AccountModel::where('id_account',$id_account)->update($i)){
             return $this->status('Cập nhật thành công', 200);
         };
