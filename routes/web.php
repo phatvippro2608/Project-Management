@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\ProgressController;
-
-use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\TaskController;
 
 /*
