@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
+use App\Http\Controllers\ProgressController;
 
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\TaskController;
@@ -43,6 +44,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 });
 
 Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
+Route::post('/update-item', [ProgressController::class, 'updateItem']);
 Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
 Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
