@@ -215,15 +215,17 @@ use App\StaticString; ?>
                 @endphp
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        @php
+                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                            $defaultPhoto = asset('assets/img/avt.png');
+                            $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                        @endphp
 
-                        <img src="{{asset('/uploads/'.$data->id_employee.'/'.$data->photo)}}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
-
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-
-                            {{ $data->last_name . ' ' . $data->first_name }}
-                        </span>
+                        {{$data->last_name . " " . $data->first_name}}
+                    </span>
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
@@ -348,19 +350,6 @@ use App\StaticString; ?>
                     ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
                     ->first();
             @endphp
-            <li class="nav-item dropdown pe-3">
-                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    @php
-                        $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
-                        $defaultPhoto = asset('assets/img/avt.png');
-                        $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
-                    @endphp
-
-                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
-                    <span class="d-none d-md-block dropdown-toggle ps-2">
-                        {{$data->last_name . " " . $data->first_name}}
-                    </span>
-                </a>
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse" href="#">
