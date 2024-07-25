@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
 
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\TaskController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +43,9 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 });
 
 Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
+Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
+Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
