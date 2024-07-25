@@ -13,7 +13,7 @@ class ProfileController extends Controller
     {
         $data = new ProfileModel();
         $employee = new EmployeeModel();
-//        dd($data->getProfile());
+//        dd($employee->getAllJobDetails());
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
                                                     'dataEmployee' => $employee->getAllJobDetails()]);
 
