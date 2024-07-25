@@ -127,4 +127,11 @@ class AccountController extends Controller
         };
         return $this->status('Xóa thất bại', 500);
     }
+
+    function demoView()
+    {
+        return view('auth.account.account_import_demo');
+    }
+
+
 }
