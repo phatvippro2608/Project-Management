@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Models;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class SpreadSheetModel extends Controller
+class SpreadSheetModel extends Model
 {
     public static function readExcel($file)
     {
