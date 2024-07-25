@@ -35,8 +35,8 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
-        Route::post('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
-        Route::put('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
+//        Route::post('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
+        Route::put('/postEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
     });

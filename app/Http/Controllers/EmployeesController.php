@@ -45,7 +45,6 @@ class EmployeesController extends Controller
             'national'=>$request->input('national'),
             'id_contact'=>$id_contact
         ];
-        dd($dataEmployee);
         if(DB::table('employees')->insert($dataEmployee)){
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         }else{

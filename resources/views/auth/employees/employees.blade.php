@@ -753,7 +753,7 @@
 @section('script')
     <script>
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
-        let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
+        {{--let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";--}}
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
         let _upload = "{{ action('App\Http\Controllers\UploadFileController@uploadFile')}}";
         let _upload_photo = "{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}";
@@ -779,23 +779,25 @@
                     'phone_number': $('.md1 .phone_number').val(),
                 };
 
+
                 $.ajax({
                     url: _put,
-                    type: 'POST',
+                    type: 'PUT',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: data,
+
                     success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
+                        // result = JSON.parse(result);
+                        // if (result.status === 200) {
+                        //     toastr.success(result.message, "Thao tác thành công");
+                        //     setTimeout(function () {
+                        //         window.location.reload();
+                        //     }, 500);
+                        // } else {
+                        //     toastr.error(result.message, "Thao tác thất bại");
+                        // }
                     }
                 });
             });
