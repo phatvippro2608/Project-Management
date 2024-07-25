@@ -121,21 +121,31 @@
                                             Image</label>
                                         <div class="col-md-8 col-lg-9">
                                             <div class="row">
-                                                <div class="col-2">
+                                                <div class="col-md-2 position-relative text-center">
                                                     <img
+
                                                         src="{{$photoExists ? $photoPath : $defaultPhoto}}"
                                                         alt="Profile" class="rounded-circle object-fit-cover" width="100"
+
+                                                        id="profileImage"
+                                                        src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
+                                                        alt="Profile"
+                                                        class="rounded-circle object-fit-cover"
+                                                        width="100"
+
                                                         height="100">
-                                                </div>
-                                                <div class="col-10 pl-4">
-                                                    <div class="">
-                                                        <div class=" p-0 mb-2" >
-                                                            <input type="file" class="form-control photo" name="">
-                                                        </div>
-                                                        <button class="btn btn-primary btn_photo">
-                                                            Upload
-                                                        </button>
+                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
+                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
+                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
                                                     </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 mt-2 text-center">
+                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
+                                                        Upload
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
