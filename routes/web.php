@@ -75,7 +75,7 @@ Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
 Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
-// Budget
+
 Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
 Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
 

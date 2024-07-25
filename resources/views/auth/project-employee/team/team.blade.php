@@ -1,4 +1,20 @@
 @extends('auth.main')
+@section('head')
+    <style>
+        .custom-checkbox-lg {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 1px;
+            margin-right: 5px;
+        }
+        .custom-checkbox-lg input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 1px;
+            margin-right: 5px;
+        }
+    </style>
+@endsection
 @section('contents')
     <div class="pagetitle">
         <h1>Team List</h1>
@@ -54,9 +70,10 @@
                                 </thead>
                                 <tbody class="account-list">
                                     <tr class="account-item">
-                                        <td class="text-right">
+                                        <td class="text-center">
                                             <div class="d-flex align-items-center justify-content-center">
-                                                <div class="action-buttons ">
+                                                <div class="d-flex align-items-center">
+                                                    <input type="checkbox" name="" id="" class="custom-checkbox-lg">
                                                     <a class=" edit">
                                                         <i class="bi bi-pencil-square ic-update ic-btn"
                                                            data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
@@ -65,13 +82,8 @@
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
                                                            data="id"></i>
                                                     </a>
-                                                    <a class=" key">
-                                                        <i class="bi bi-key ic-key ic-btn"
-                                                           data="id"></i>
-                                                    </a>
                                                 </div>
-                                                <img src="" alt=""
-                                                     class="account-photo rounded-circle p-0 m-0">
+
                                             </div>
 
                                         </td>
