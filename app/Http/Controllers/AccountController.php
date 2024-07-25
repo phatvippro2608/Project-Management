@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountModel;
 use App\Models\EmployeeModel;
+use App\Models\SpreadsheetModel;
 use App\StaticString;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class AccountController extends Controller
@@ -133,5 +135,18 @@ class AccountController extends Controller
         return view('auth.account.account_import_demo');
     }
 
-
+    function import(Request $request)
+    {
+        $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
+        $c = true;
+        foreach ($dataExcel['data'] as $item) {
+            if($c){$c = false; continue;};
+            $data = [
+                'email' => trim($item[0]),
+                'ho_ten' => trim($item[1]),
+            ];
+            DB::table('account_import')->insert($data);
+        }
+        return $this->status('Import thành công', 200);
+    }
 }
