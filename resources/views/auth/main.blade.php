@@ -366,11 +366,11 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
+                <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
                    href="#">
                     <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
                             <i class="bi bi-circle"></i><span>Dashboard</span>
