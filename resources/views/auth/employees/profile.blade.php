@@ -17,12 +17,25 @@
 
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
+                        @php
+                            $data = \Illuminate\Support\Facades\DB::table('account')
+                            ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                            ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                            ->where(
+                            'id_account',
+                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                            )
+                            ->first();
+                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                            $defaultPhoto = asset('assets/img/avt.png');
+                            $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                        @endphp
                         <img
-                            src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
+                            src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
                             class="rounded-circle object-fit-cover" width="100" height="100">
-                        <h2>{{$profiles['profiles']->first_name  . ' ' . $profiles['profiles']->last_name }}</h2>
-                        <h3>{{$profiles['profiles']->position_name}}</h3>
+                        <h2>{{$data->first_name  . ' ' . $data->last_name }}</h2>
+                        <h3>{{$data->id_job_position}}</h3>
                     </div>
                 </div>
 
@@ -64,7 +77,7 @@
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Full Name</div>
                                     <div
-                                        class="col-lg-9 col-md-8">{{$profiles['profiles']->first_name  . ' ' . $profiles['profiles']->last_name }}</div>
+                                        class="col-lg-9 col-md-8">{{$data->first_name  . ' ' . $data->last_name }}</div>
                                 </div>
 
                                 <div class="row">
@@ -74,27 +87,27 @@
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Job</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->position_name}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->id_job_position}}</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Country</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->country_name}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->id_job_country}}</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Address</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->permanent_address}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->permanent_address}}</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Phone</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->phone_number}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->phone_number}}</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Email</div>
-                                    <div class="col-lg-9 col-md-8">{{$profiles['profiles']->email}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->email}}</div>
                                 </div>
 
                             </div>
@@ -110,11 +123,16 @@
                                             <div class="row">
                                                 <div class="col-md-2 position-relative text-center">
                                                     <img
+
+                                                        src="{{$photoExists ? $photoPath : $defaultPhoto}}"
+                                                        alt="Profile" class="rounded-circle object-fit-cover" width="100"
+
                                                         id="profileImage"
                                                         src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
                                                         alt="Profile"
                                                         class="rounded-circle object-fit-cover"
                                                         width="100"
+
                                                         height="100">
                                                     <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-camera text-white fw-bold fs-2"></i>
@@ -138,7 +156,7 @@
                                             Name</label>
                                         <div class="col-md-8 col-lg-9">
                                             <input name="" type="text" class="form-control" id="first_name"
-                                                   value="{{$profiles['profiles']->first_name}}">
+                                                   value="{{$data->first_name}}">
                                         </div>
                                     </div>
 
@@ -146,7 +164,7 @@
                                         <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                                         <div class="col-md-8 col-lg-9">
                                             <input name="" type="text" class="form-control" id="last_name"
-                                                   value="{{$profiles['profiles']->last_name}}">
+                                                   value="{{$data->last_name}}">
                                         </div>
                                     </div>
 
@@ -155,7 +173,7 @@
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="position_name" aria-label="Default select example">
                                                 @foreach($dataEmployee['jobPositions'] as $item)
-                                                    <option value="{{$item->id_position}}"  {{ $item->id_position == $profiles['profiles']->id_position ? 'selected' : '' }}>{{$item->position_name}}</option>
+                                                    <option value="{{$item->id_position}}"  {{ $item->id_position == $data->id_job_position ? 'selected' : '' }}>{{$item->position_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -166,7 +184,7 @@
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="country_name" aria-label="Default select example">
                                                 @foreach($dataEmployee['jobCountry'] as $item)
-                                                    <option value="{{$item->id_country}}" {{ $item->id_country == $profiles['profiles']->id_country ? 'selected' : '' }}>{{$item->country_name}}</option>
+                                                    <option value="{{$item->id_country}}" {{ $item->id_country == $data->id_job_country ? 'selected' : '' }}>{{$item->country_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -177,7 +195,7 @@
                                         <div class="col-md-8 col-lg-9">
                                             <input name="address" type="text" class="form-control"
                                                    id="permanent_address"
-                                                   value="{{$profiles['profiles']->permanent_address}}">
+                                                   value="{{$data->permanent_address}}">
                                         </div>
                                     </div>
 
@@ -185,7 +203,7 @@
                                         <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                                         <div class="col-md-8 col-lg-9">
                                             <input name="phone" type="text" class="form-control" id="phone_number"
-                                                   value="{{$profiles['profiles']->phone_number}}">
+                                                   value="{{$data->phone_number}}">
                                         </div>
                                     </div>
 
@@ -193,7 +211,7 @@
                                         <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                         <div class="col-md-8 col-lg-9">
                                             <input name="email" type="text" class="form-control" id="email"
-                                                   value="{{$profiles['profiles']->email}}">
+                                                   value="{{$data->email}}">
                                         </div>
                                     </div>
 
@@ -294,7 +312,7 @@
                 formData.append('photo', filePhoto);
             }
 
-            formData.append('id_employee', {{$profiles['profiles']->id_employee}} );
+            formData.append('id_employee', {{$data->id_employee}} );
 
             $.ajax({
                 url: '{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}',
