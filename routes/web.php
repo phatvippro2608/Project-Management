@@ -36,7 +36,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     });
 
     Route::group(['prefix'=>'/team', 'middleware' => 'isSuperAdmin'], function() {
-        Route::get('/', 'App\Http\Controllers\TeamController@getView');
+        Route::get('/team', 'App\Http\Controllers\TeamController@getView');
     });
 
 
