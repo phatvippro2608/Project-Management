@@ -63,23 +63,35 @@
                                 </thead>
                                 <tbody>
                                 @foreach($data as $item)
-                                    <tr>
-                                        <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
-                                        <td><img src="{{asset('/uploads/'.$item->id_employee.'/'.$item->photo)}}" alt="" width="75" height="75"></td>
-                                        <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                        <td>{{$item->en_name}}</td>
-                                        <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
-                                        <td>{{$item->phone_number}}</td>
-                                        <td>
-                                            <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            |
-                                            <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    @if($item->fired == "false")
+                                        <tr>
+                                            <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
+                                            @php
+                                                $imagePath = public_path('uploads/' . $item->id_employee . '/' . $item->photo);
+                                                $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/logo2.png');
+                                            @endphp
+
+                                            <td><img src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
+                                            <td>{{$item->last_name . ' ' . $item->first_name}}</td>
+                                            <td>{{$item->en_name}}</td>
+                                            <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
+                                            <td>{{$item->phone_number}}</td>
+                                            <td>
+                                                <?php
+                                                    $id = $item->id_employee;
+                                                    $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                                    $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                                ?>
+                                                <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                |
+                                                <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>
@@ -213,269 +225,19 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                </form><!-- End General Form Elements -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row p-3">
-                        <div class="card border border-primary rounded-4 p-0">
-                            <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
-                                Personal Contacts
-                            </div>
-                            <div class="card-body bg-white rounded-bottom-4">
-                                <!-- General Form Elements -->
-                                <form>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control phone_number" name="">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control passport_number" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Passport place of Issue</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control passport_place_issue" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Issue</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control passport_issue_date" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Expiry</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control passport_expiry_date" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-4">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Citizen identity Card Number</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control cic_number" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-4">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Citizen place of issue</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control cic_place_issue" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Issue</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control cic_issue_date" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Expiry</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control cic_expiry_date" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-4">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Place of Residence</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control current_residence" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-4">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Permanent Address</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control permanent_address" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">Medical Check-up Date</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control medical_checkup_date" name="">
+                                            <div class="row mb-3">
+                                                <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control phone_number" name="">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </form><!-- End General Form Elements -->
                             </div>
                         </div>
                     </div>
-                    <div class="row p-3">
-                        <div class="card border border-primary rounded-4 p-0 m-0">
-                            <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
-                                Job Details
-                            </div>
-                            <div class="card-body bg-white rounded-bottom-4">
 
-                            <!-- General Form Elements -->
-                            <form>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Job Title</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_title" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTitles'] as $item)
-                                                <option value="{{$item->id_job_title}}">{{$item->job_title}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Job Category</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_category" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobCategories'] as $item)
-                                                <option value="{{$item->id_job_category}}">{{$item->job_category_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Position</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_position" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobPositions'] as $item)
-                                                <option value="{{$item->id_position}}">{{$item->position_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Team</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_team" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTeams'] as $item)
-                                                <option value="{{$item->id_team}}">{{$item->team_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Level</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_level" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobLevels'] as $item)
-                                                <option value="{{$item->id_level}}">{{$item->level_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
-                                    <div class="col-sm-8">
-                                        <input type="email" class="form-control email" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">Start Date</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control start_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">End Date</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control end_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Type of Contract</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_type_contract" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTypeContract'] as $item)
-                                                <option value="{{$item->id_type_contract}}">{{$item->type_contract_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Country</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_country" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobCountry'] as $item)
-                                                <option value="{{$item->id_country}}">{{$item->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Location</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_location" aria-label="Default select example">
-                                            @foreach($jobdetails['jobLocation'] as $item)
-                                                <option value="{{$item->id_location}}">{{$item->location_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </form><!-- End General Form Elements -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row p-3">
-                        <div class="col-6 p-0 pe-2">
-                            <div class="card border border-primary rounded-4 p-0">
-                                <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
-                                    Personal Details
-                                </div>
-                                <div class="card-body bg-white rounded-bottom-4">
-
-                                    <!-- General Form Elements -->
-                                    <form>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">File Name</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr></tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="row mb-3">
-                                            <label for="inputNumber" class="col-sm-2 col-form-label">Upload</label>
-                                            <div class="col-sm-10">
-                                                <input class="form-control personal" type="file" id="" multiple="multiple">
-                                            </div>
-                                        </div>
-                                    </form><!-- End General Form Elements -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 p-0 ps-2">
-                            <div class="card border border-primary rounded-4">
-                                <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
-                                    Certificate
-                                </div>
-                                <div class="card-body bg-white rounded-bottom-4">
-                                    <form>
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">File Name</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr></tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="row mb-3">
-                                            <label for="inputNumber" class="col-sm-2 col-form-label">Upload</label>
-                                            <div class="col-sm-10">
-                                                <input class="form-control certificate" type="file" id="" multiple="multiple">
-                                            </div>
-                                        </div>
-                                    </form><!-- End General Form Elements -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-add">Add</button>
                 </div>
@@ -649,7 +411,7 @@
                         </div>
                     </div>
                     <div class="row p-3">
-                        <div class="card border border-primary rounded-4 p-0">
+                        <div class="card border border-primary rounded-4 p-0 m-0">
                             <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
                                 Personal Contacts
                             </div>
@@ -856,13 +618,14 @@
                                     <form>
                                         <table class="table table-hover">
                                             <thead>
-                                            <tr>
-                                                <th>CV</th>
-                                                <th scope="col" >
-                                                    <a href="" class="cv"></a>
-                                                </th>
-                                            </tr>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Filename</th>
+                                                </tr>
                                             </thead>
+                                            <tbody class="cv-list">
+
+                                            </tbody>
                                         </table>
                                         <div class="row mb-3">
                                             <label for="inputNumber" class="col-sm-2 col-form-label">Upload</label>
@@ -879,7 +642,47 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 p-0 ps-2">
+                        <div class="col-6 p-0 pe-2">
+                            <div class="card border border-primary rounded-4 p-0">
+                                <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
+                                    Medical CheckUp
+                                </div>
+                                <div class="card-body bg-white rounded-bottom-4">
+
+                                    <!-- General Form Elements -->
+                                    <form>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Filename</th>
+                                                <th>Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="medical_list">
+
+                                            </tbody>
+                                        </table>
+                                        <div class="row mb-3">
+                                            <label for="inputNumber" class="col-sm-2 col-form-label">Upload</label>
+                                            <div class="col-sm-10">
+                                                <div class="row p-0 mx-1 mb-2">
+                                                    <input type="date" class="form-control medical_checkupdate mb-2">
+                                                    <input class="form-control medical_checkup" type="file" id="" multiple="multiple">
+                                                </div>
+                                                <div class="row p-0 mx-1 mb-2">
+                                                    <button class="btn btn-primary btn_upload_medical">Upload</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form><!-- End General Form Elements -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col">
                             <div class="card border border-primary rounded-4">
                                 <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
                                     Certificate
@@ -891,16 +694,38 @@
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">File Name</th>
+                                                <th scope="col">Type</th>
+                                                <th scope="col">Expiry Date</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr></tr>
+                                            <tbody class="certificate_list">
                                             </tbody>
                                         </table>
                                         <div class="row mb-3">
-                                            <label for="inputNumber" class="col-sm-2 col-form-label">Upload</label>
-                                            <div class="col-sm-10">
-                                                <input class="form-control certificate" type="file" id="" multiple="multiple">
+                                            <label for="inputNumber" class="col-sm-1 col-form-label me-0">Upload</label>
+                                            <div class="col-sm-11">
+                                                <div class="row">
+                                                    <div class="col-4 p-0">
+                                                        <select class="form-select type_certificate" aria-label="Default select example">
+                                                            @foreach($type_certificate as $item)
+                                                                <option value="{{$item->id_certificate_type}}">{{$item->certificate_type_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-3 ps-2 p-0">
+                                                        <input class="form-control certificate_end_date" type="date" id="">
+                                                    </div>
+                                                    <div class="col-4 ps-2 p-0">
+                                                        <input class="form-control certificate_file" type="file" id="" multiple="multiple">
+                                                    </div>
+                                                    <div class="col-1 ps-2 p-0">
+                                                        <button class="btn btn-primary btn_upload_certificate pb-0">
+                                                            <span class="material-symbols-outlined">
+                                                                upload
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </form><!-- End General Form Elements -->
@@ -933,11 +758,47 @@
         let _upload = "{{ action('App\Http\Controllers\UploadFileController@uploadFile')}}";
         let _upload_photo = "{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}";
         let _upload_personal_profile = "{{action('App\Http\Controllers\UploadFileController@uploadPersonalProfile')}}";
+        let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
+        let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
 
+            $('.btn-add').click(function () {
+                // Collect form data
+                let data = {
+                    'employee_code': $('.md1 .employee_code').val(),
+                    'first_name': $('.md1 .first_name').val(),
+                    'last_name': $('.md1 .last_name').val(),
+                    'en_name': $('.md1 .en_name').val(),
+                    'gender': $('.md1 input[name="gender"]:checked').val(),
+                    'marital_status': $('.md1 input[name="marital_status"]:checked').val(),
+                    'military_service': $('.md1 input[name="military_service"]:checked').val(),
+                    'date_of_birth': $('.md1 .date_of_birth').val(),
+                    'national': $('.md1 .national :checked').val(),
+                    'phone_number': $('.md1 .phone_number').val(),
+                };
 
+                $.ajax({
+                    url: _put,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: data,
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    }
+                });
+            });
         });
         $('.at2').click(function () {
             $('.md2 .modal-title').text('Import Employee');
@@ -946,8 +807,7 @@
         let nation ="";
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));
-            console.log(data)
-
+            console.log(data);
             $('.btn_photo').click(function () {
                 let filePhoto = $('.md3 .photo')[0].files[0];
                 let formData = new FormData();
@@ -982,6 +842,7 @@
             })
 
             $('.btn_upload_personal_profile').click(function () {
+                event.preventDefault();
                 let files = $('.md3 .personal')[0].files;
                 let formData = new FormData();
 
@@ -1008,9 +869,9 @@
                         }
                         if (result.status === 200) {
                             toastr.success(result.message, "Thao tác thành công");
-                            // setTimeout(function () {
-                            //     window.location.reload();
-                            // }, 500);
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
                         } else {
                             toastr.error(result.message, "Thao tác thất bại");
                         }
@@ -1021,14 +882,106 @@
                 });
             });
 
+            $('.md3 .btn_upload_medical').click(function () {
+                event.preventDefault();
+                let file = $('.md3 .medical_checkup')[0].files[0];
+                let formData = new FormData();
+
+
+                formData.append('medical_file', file);
+                formData.append('id_employee', data.id_employee);
+                formData.append('medical_checkup_date', $('.medical_checkupdate').val());
+                $.ajax({
+                    url: _upload_medical_checkup,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (typeof result === 'string') {
+                            result = JSON.parse(result); // Nếu result là chuỗi JSON, chuyển nó thành object
+                        }
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("An error occurred during the upload process", "Thao tác thất bại");
+                    }
+                });
+            })
+            $('.md3 .btn_upload_certificate').click(function () {
+                event.preventDefault();
+                let file = $('.md3 .certificate_file')[0].files[0];
+                let formData = new FormData();
+                formData.append('certificate_file', file);
+                formData.append('id_employee', data.id_employee);
+                formData.append('certificate_end_date', $('.certificate_end_date').val());
+                formData.append('type_certificate', $('.type_certificate').val());
+                $.ajax({
+                    url: _upload_certificate,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (typeof result === 'string') {
+                            result = JSON.parse(result);
+                        }
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        toastr.error("An error occurred during the upload process", "Thao tác thất bại");
+                    }
+                });
+            })
+
             populateCountrySelect('national',data.national);
             $('.md3 .employee_code').val(data.employee_code);
             $('.md3 .first_name').val(data.first_name);
             $('.md3 .last_name').val(data.last_name);
             $('.md3 .en_name').val(data.en_name);
             $('.md3 .photo_show').attr('src','{{asset('/uploads/')}}'+ '/' + data.id_employee + '/' + data.photo);
-            $('.md3 .cv').text(data.cv);
-            $('.md3 .cv').attr('href','{{asset('/uploads/')}}'+ '/' + data.id_employee + '/' + data.cv);
+            let dataCV = JSON.parse(data.cv);
+
+            dataCV.forEach(function(filename, index) {
+                let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
+                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + cvLink + '" target="_blank">' + filename + '</a></td></tr>';
+                $('.cv-list').append(row);
+            });
+
+            let dataMedical = JSON.parse(data.medical);
+            dataMedical.forEach(function(item, index) {
+                let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
+                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td>'+ item.medical_checkup_issue_date+'</td></tr>';
+                $('.medical_list').append(row);
+            });
+
+            let dataCertificate = JSON.parse(data.certificates);
+            console.log(dataCertificate);
+            dataCertificate.forEach(function(item, index) {
+                let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
+                let row = '<tr><td>' + (index + 1) + '</td><td><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td>'+item.certificate_type_name+'</td><td>'+ item.end_date_certificate+'</td></tr>';
+                $('.certificate_list').append(row);
+            });
             $('.md3 input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
             $('.md3 input[name="marital_status"][value="' + data.marital_status + '"]').prop('checked', true);
             $('.md3 input[name="military_service"][value="' + data.military_service + '"]').prop('checked', true);
@@ -1086,106 +1039,6 @@
         populateCountrySelect('countrySelect','Vietnam');
 
 
-        $('.btn-add').click(function () {
-            // Collect form data
-            let data = {
-                'employee_code': $('.employee_code').val(),
-                'first_name': $('.first_name').val(),
-                'last_name': $('.last_name').val(),
-                'en_name': $('.en_name').val(),
-                'gender': $('input[name="gender"]:checked').val(),
-                'marital_status': $('input[name="marital_status"]:checked').val(),
-                'military_service': $('input[name="military_service"]:checked').val(),
-                'date_of_birth': $('.date_of_birth').val(),
-                'national': $('.national :checked').val(),
-                'phone_number': $('.phone_number').val(),
-                'passport_number': $('.passport_number').val(),
-                'passport_place_issue': $('.passport_place_issue').val(),
-                'passport_issue_date': $('.passport_issue_date').val(),
-                'passport_expiry_date': $('.passport_expiry_date').val(),
-                'cic_number': $('.cic_number').val(),
-                'cic_place_issue': $('.cic_place_issue').val(),
-                'cic_issue_date': $('.cic_issue_date').val(),
-                'cic_expiry_date': $('.cic_expiry_date').val(),
-                'current_residence': $('.current_residence').val(),
-                'permanent_address': $('.permanent_address').val(),
-                'medical_checkup_date': $('.medical_checkup_date').val(),
-                'job_title': $('.job_title').val(),
-                'job_category': $('.job_category').val(),
-                'job_position': $('.job_position').val(),
-                'job_team': $('.job_team').val(),
-                'job_level': $('.job_level').val(),
-                'email': $('.email').val(),
-                'start_date': $('.start_date').val(),
-                'end_date': $('.end_date').val(),
-                'job_type_contract': $('.job_type_contract').val(),
-                'job_country': $('.job_country').val(),
-                'job_location': $('.job_location').val()
-            };
 
-            $.ajax({
-                url: _put,
-                type: "PUT",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: data,
-                success: function (result) {
-                    result = JSON.parse(result);
-
-                    if (result.status === 200) {
-                        // File upload handling
-                        let filePhoto = $('.photo')[0].files[0];
-                        let filePersonal = $('.personal')[0].files;
-                        let fileCertificates = $('.certificate')[0].files;
-                        let formData = new FormData();
-
-                        if (filePhoto) {
-                            formData.append('photo', filePhoto);
-                        }
-
-                        if (filePersonal.length > 0) {
-                            for (let i = 0; i < filePersonal.length; i++) {
-                                formData.append('personal[]', filePersonal[i]);
-                            }
-                        }
-
-                        if (fileCertificates.length > 0) {
-                            for (let i = 0; i < fileCertificates.length; i++) {
-                                formData.append('certificate[]', fileCertificates[i]);
-                            }
-                        }
-                        formData.append('id_employee', result.id_employee);
-
-                        $.ajax({
-                            url: _upload,
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                            success: function (result) {
-                                result = JSON.parse(result);
-                                if (result.status === 200) {
-                                    toastr.success(result.message, "Thao tác thành công");
-                                    setTimeout(function () {
-                                        window.location.reload();
-                                    }, 500);
-                                } else {
-                                    toastr.error(result.message, "Thao tác thất bại");
-                                }
-                            }
-                        });
-                    } else {
-                        toastr.error(result.message);
-                    }
-                },
-                error: function(xhr) {
-                    toastr.error('An error occurred while saving employee data');
-                }
-            });
-        });
     </script>
 @endsection

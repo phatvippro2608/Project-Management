@@ -35,8 +35,8 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
-        Route::put('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
-        Route::post('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
+        Route::post('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
+        Route::put('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
     });
@@ -50,7 +50,11 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
     Route::post('/upload_photo', 'App\Http\Controllers\UploadFileController@uploadPhoto');
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
+    Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
+    Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
+
 });
+
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
