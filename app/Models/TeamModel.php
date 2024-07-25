@@ -5,12 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectListModel extends Model
+class TeamModel extends Model
 {
     use HasFactory;
-    protected $table = 'projects';
-
-    protected $primaryKey = 'project_id';
-
-
+    protected $table = 'team';
 }
