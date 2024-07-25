@@ -293,6 +293,25 @@
         </li>
 
         <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Deparment</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Designation</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
             @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
                    href="#">
@@ -307,24 +326,7 @@
                 </ul>
             @endif
         </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
-                        <i class="bi bi-circle"></i><span>Project List</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
-                        <i class="bi bi-circle"></i><span>Project Manager</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+
         <li class="nav-item">
             @if(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION)==1)
                 <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse" href="#">
@@ -344,6 +346,85 @@
                 </ul>
             @endif
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-calendar-check"></i><span>Attendance</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Attendance List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Add Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Attendance Report</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Holiday</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Leave Type</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Leave Application</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Earned Leave</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Leave Report</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project Manager</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
                 <i class="bi bi-people"></i><span>Team List</span>
@@ -367,6 +448,20 @@
                     </a>
                 </li>
             </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link " href="">
+                <i class="bi bi-clipboard2-fill"></i>
+                <span>Notice</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link " href="">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
         </li>
     </ul>
 
