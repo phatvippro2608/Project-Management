@@ -48,8 +48,7 @@
                                     <th class="text-center">Gmail</th>
                                     <th class="text-center">Username</th>
                                     <th class="text-center">Status</th>
-                                    <th class="text-center">Last Active</th>
-                                    <th class="text-center">Created At</th>
+                                    <th class="text-center">Last Updated</th>
                                 </tr>
 
                                 </thead>
@@ -63,12 +62,8 @@
                                                         <i class="bi bi-pencil-square ic-update ic-btn"
                                                            data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
                                                     </a>
-                                                    <a class=" delete">
+                                                    <a class="delete me-2">
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="{{ $item->id_account }}"></i>
-                                                    </a>
-                                                    <a class=" key">
-                                                        <i class="bi bi-key ic-key ic-btn"
                                                            data="{{ $item->id_account }}"></i>
                                                     </a>
                                                 </div>
@@ -98,10 +93,7 @@
                                             {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-                                            Active 16 hours ago
-                                        </td>
-                                        <td class="text-center">
-                                            16 years ago
+                                            {{$item->updated_at}}
                                         </td>
                                     </tr>
                                 @endforeach
