@@ -63,7 +63,7 @@
                                         <i class="bi bi-list-task"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>@if($task_c) $task_c @else 0 @endif</h6>
+                                        <h6>@if($task_c) {{$task_c}} @else 0 @endif</h6>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                                         <i class="bi bi-list-task"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>@if($sub_c) $sub_c @else 0 @endif</h6>
+                                        <h6>@if($sub_c) {{$sub_c}} @else 0 @endif</h6>
                                     </div>
                                 </div>
                             </div>

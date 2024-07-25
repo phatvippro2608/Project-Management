@@ -17,9 +17,8 @@ class DashboardController extends Controller
         $team_c = 5;
         $project_c = count(ProjectModel::all());
 
-        $task_sql = "SELECT COUNT(*) FROM tasks";
-        $task_c = DB::select($task_sql); //TaskModel::all()->count();
-        $sub_c = 0; //Submenu::all()->count();
+        $task_c = DB::table('tasks')->count();
+        $sub_c = DB::table('sub_tasks')->count();
         return view('auth.dashboard.dashboard',[
             'em_c'=>$em_c,
             'team_c'=>$team_c,
