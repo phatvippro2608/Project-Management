@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
-
+use App\Http\Controllers\ProgressController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +40,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
 });
 
 Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
+Route::post('/update-item', [ProgressController::class, 'updateItem']);
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');

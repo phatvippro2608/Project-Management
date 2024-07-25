@@ -1,126 +1,122 @@
 @extends('auth.main')
 
 @section('contents')
-<style type="text/css">
-#visualization {
-    width: 100%;
-    height: 100vh;
-    /* border: 1px solid lightgray; */
-}
+    <style type="text/css">
+        #visualization {
+            width: 100%;
+            height: 100vh;
+            /* border: 1px solid lightgray; */
+        }
 
-/* .vis-selected {
-                                        border-color: red !important;
-                                        background-color: blue !important;
-                                    } */
-.vis-subTask {
-    background-color: var(--bg-light) !important;
-    border: none;
-}
+        .vis-subTask {
+            background-color: var(--bg-light) !important;
+            border: none;
+        }
 
-.vis-subTask .vis-inner {
-    padding-left: 20px !important;
-}
+        .vis-subTask .vis-inner {
+            padding-left: 20px !important;
+        }
 
-.vis-label.vis-nesting-group:before {
-    transition: translateX 2s;
-    transform: translateX(0);
+        .vis-label.vis-nesting-group:before {
+            transition: translateX 2s;
+            transform: translateX(0);
 
-}
+        }
 
-.vis-label.vis-nesting-group.expanded:before {
-    transform: translateX(90deg);
-}
-</style>
-<div class="pagetitle">
-    <h1>Progress</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Progress</li>
-        </ol>
-    </nav>
-</div>
-<section class="section employees">
-    <div class="row justify-content-between">
-        <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
-            <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
-        </div>
-        <div class="from-group col-3 float-end d-inline-flex">
-            <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
-            <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
-            <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
-        </div>
+        .vis-label.vis-nesting-group.expanded:before {
+            transform: translateX(90deg);
+        }
+    </style>
+    <div class="pagetitle">
+        <h1>Progress</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Progress</li>
+            </ol>
+        </nav>
     </div>
+    <section class="section employees">
+        <div class="row justify-content-between">
+            <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
+                <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+            </div>
+            <div class="from-group col-3 float-end d-inline-flex">
+                <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
+                <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
+                <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
+            </div>
+        </div>
 
-    <div class="from-group" style="margin-top: 2%;">
-        <div id="visualization"></div>
-    </div>
+        <div class="from-group" style="margin-top: 2%;">
+            <div id="visualization"></div>
+        </div>
 
-    <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Task name</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button> -->
+        <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Task name</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="modal fade" id="modalViewSubTask" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">SubTask name</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button> -->
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">create Task</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button> -->
+        <div class="modal fade" id="modalViewSubTask" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">SubTask name</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<script type="text/javascript">
-//https://visjs.github.io/vis-timeline/docs/timeline/
-var container = document.getElementById('visualization');
-var groups = new vis.DataSet([
+
+        <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">create Task</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="text" name="csrf-token" hidden value="{{ csrf_token() }}" id="csrf-token">
+    </section>
+    <script type="text/javascript">
+        //https://visjs.github.io/vis-timeline/docs/timeline/
+        var container = document.getElementById('visualization');
+        var groups = new vis.DataSet([
             @foreach ($tasks as $task)
                 @php
-                    $taskSubtasks = $subtasks->filter(function($subtask) use ($task) {
+                    $taskSubtasks = $subtasks->filter(function ($subtask) use ($task) {
                         return $subtask->task_id == $task->task_id;
                     });
-                @endphp
-                {
+                @endphp {
                     content: '{{ $task->task_name }}',
                     id: 'task_{{ $task->task_id }}',
                     @if ($taskSubtasks->isNotEmpty())
@@ -138,26 +134,25 @@ var groups = new vis.DataSet([
                     id: 'subtask_{{ $subtask->sub_task_id }}',
                     className: 'vis-subTask',
                 },
-            @endforeach
-            {
+            @endforeach {
                 content: 'Create',
                 id: 'create',
             },
-            
+
         ]);
         var items = new vis.DataSet([
             @foreach ($tasks as $item)
                 {
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
-                    group: 'task_{{  $item->task_id  }}',
+                    group: 'task_{{ $item->task_id }}',
                 },
             @endforeach
             @foreach ($subtasks as $item)
                 {
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
-                    group: 'subtask_{{  $item->sub_task_id  }}',
+                    group: 'subtask_{{ $item->sub_task_id }}',
                 },
             @endforeach
         ]);
@@ -200,12 +195,12 @@ var groups = new vis.DataSet([
                     button.setAttribute("data-bs-target", "#modalCreateTask");
                     button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
                 }
-                if(group.id.split('_')[0] == 'task') {
+                if (group.id.split('_')[0] == 'task') {
                     button.setAttribute("data-bs-toggle", "modal");
                     button.setAttribute("data-bs-target", "#modalViewTask");
                     button.innerHTML = group.content;
                 }
-                if(group.id.split('_')[0] == 'subtask') {
+                if (group.id.split('_')[0] == 'subtask') {
                     button.setAttribute("data-bs-toggle", "modal");
                     button.setAttribute("data-bs-target", "#modalViewSubTask");
                     button.innerHTML = group.content;
@@ -215,16 +210,51 @@ var groups = new vis.DataSet([
                 container.insertAdjacentElement("beforeEnd", button);
                 return container;
             },
+            onMove: function(e) {
+                var csrfToken = document.getElementById('csrf-token')?.value;
+                if (!csrfToken) {
+                    console.error('CSRF token is missing.');
+                    return;
+                }
+                var itemId = e.group;
+                if (!itemId) {
+                    console.error('Item ID is missing.');
+                    return;
+                }
+                var startDate = e.start?.toISOString().slice(0, 10);
+                var endDate = e.end?.toISOString().slice(0, 10);
 
+                var data = {
+                    item_id: itemId,
+                    start_date: startDate,
+                    end_date: endDate,
+                };
+                console.log(data);
+                fetch('/update-item', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log(data.message);
+                        } else {
+                            console.log(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            },
         };
         var timeline = new vis.Timeline(container);
         timeline.setOptions(options);
         timeline.setGroups(groups);
         timeline.setItems(items);
-
-        timeline.on('item:add', function(event, properties, senderId) {
-            event.preventDefault();
-        });
 
         //hàm search timeline
         document.getElementById('TaskSearch').addEventListener('input', function(e) {
@@ -272,5 +302,5 @@ var groups = new vis.DataSet([
 
             timeline.setWindow(startOfYear, endOfYear);
         });
-</script>
+    </script>
 @endsection
