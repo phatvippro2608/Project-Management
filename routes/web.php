@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
-
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,12 +35,18 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
     });
 
+    Route::group(['prefix'=>'/team', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\TeamController@getView');
+    });
+
+
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::put('/putEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::post('/postEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
+        Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
     });
 
 
@@ -50,7 +56,14 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
+    Route::post('/upload_photo', 'App\Http\Controllers\UploadFileController@uploadPhoto');
+    Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
 });
+
+
+
+
+
 
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
@@ -60,6 +73,14 @@ Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('m
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
-// Budget
+
+Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
+Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
+Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
+
+
 Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
 Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
+
+//Inventory Management
+Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');

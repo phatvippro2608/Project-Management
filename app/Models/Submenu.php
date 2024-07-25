@@ -10,7 +10,7 @@ class Submenu extends Model
 {
     use HasFactory;
 
-    public function getData($sql){
+    public static function getData($sql){
         return $data=DB::select($sql);
     }
 

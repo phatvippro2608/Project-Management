@@ -84,4 +84,22 @@ class EmployeesController extends Controller
 
     }
 
+    function getEmployee(Request $request,$id_employee){
+        $data_employee = DB::table('employees')->where('id_employee',$id_employee)->first();
+        $id_contact = DB::table('employees')->where('id_employee',$id_employee)->value('id_contact');
+        $data_contact = DB::table('contacts')->where('id_contact',$id_contact)->first();
+        $data_job_detail = DB::table('job_detail')
+            ->where('id_employee',$id_employee)
+            ->first();
+        Log::info(json_encode($data_job_detail));
+        $data = new EmployeeModel();
+        $jobdetails = $data->getAllJobDetails();
+        return view('auth.employees.info',[
+            'data_employee' => $data_employee,
+            'data_contact' => $data_contact,
+            'data_job_detail' => $data_job_detail,
+            'jobdetails' => $jobdetails
+        ]);
+    }
+
 }
