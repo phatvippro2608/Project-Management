@@ -150,7 +150,7 @@
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="position_name" aria-label="Default select example">
                                                 @foreach($dataEmployee['jobPositions'] as $item)
-                                                    <option value="{{$item->id_position}}">{{$item->position_name}}</option>
+                                                    <option value="{{$item->id_position}}"  {{ $item->id_position == $profiles['profiles']->id_position ? 'selected' : '' }}>{{$item->position_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -161,7 +161,7 @@
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="country_name" aria-label="Default select example">
                                                 @foreach($dataEmployee['jobCountry'] as $item)
-                                                    <option value="{{$item->id_country}}">{{$item->country_name}}</option>
+                                                    <option value="{{$item->id_country}}" {{ $item->id_country == $profiles['profiles']->id_country ? 'selected' : '' }}>{{$item->country_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -304,9 +304,9 @@
                     result = JSON.parse(result);
                     if (result.status === 200) {
                         toastr.success(result.message, "Thao tác thành công");
-                        // setTimeout(function () {
-                        //     window.location.reload();
-                        // }, 500);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 500);
                     } else {
                         toastr.error(result.message, "Thao tác thất bại");
                     }

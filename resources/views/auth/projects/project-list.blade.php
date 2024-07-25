@@ -38,7 +38,9 @@
                         <tbody>
                         @foreach($inprogress_projects as $project)
                             <tr>
-                                <td>{{ $project->project_id }}</td>
+                                <td>
+                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                </td>
                                 <td>{{ $project->project_name }}</td>
                                 <td><b>...</b></td>
                                 <td>{{ $project->project_date_start }}</td>
@@ -71,7 +73,9 @@
                         <tbody>
                             @foreach($inspection_projects as $project)
                             <tr>
-                                <td>{{ $project->project_id }}</td>
+                                <td>
+                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                </td>
                                 <td>{{ $project->project_name }}</td>
                                 <td><b>...</b></td>
                                 <td>{{ $project->project_date_start }}</td>
@@ -104,7 +108,9 @@
                         <tbody>
                         @foreach($survey_projects as $project)
                             <tr>
-                                <td>{{ $project->project_id }}</td>
+                                <td>
+                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                </td>
                                 <td>{{ $project->project_name }}</td>
                                 <td><b>...</b></td>
                                 <td>{{ $project->project_date_start }}</td>
@@ -137,7 +143,9 @@
                         <tbody>
                         @foreach($support_projects as $project)
                             <tr>
-                                <td>{{ $project->project_id }}</td>
+                                <td>
+                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                </td>
                                 <td>{{ $project->project_name }}</td>
                                 <td><b>...</b></td>
                                 <td>{{ $project->project_date_start }}</td>
@@ -170,7 +178,9 @@
                         <tbody>
                         @foreach($closed_projects as $project)
                             <tr>
-                                <td>{{ $project->project_id }}</td>
+                                <td>
+                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                </td>
                                 <td>{{ $project->project_name }}</td>
                                 <td><b>...</b></td>
                                 <td>{{ $project->project_date_start }}</td>

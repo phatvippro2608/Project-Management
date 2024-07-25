@@ -16,6 +16,7 @@ class ProfileController extends Controller
 //        dd($data->getProfile());
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
                                                     'dataEmployee' => $employee->getAllJobDetails()]);
+
     }
     function postProfile(Request $request)
     {
