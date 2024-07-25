@@ -16,7 +16,7 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $isAdmin = $request->session()->get(StaticString::PERMISSION) == 2;
+        $isAdmin = $request->session()->get(StaticString::PERMISSION) == 2 || $request->session()->get(StaticString::PERMISSION) == 1;
         if ($isAdmin) {
             return $next($request);
         }

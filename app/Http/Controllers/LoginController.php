@@ -21,7 +21,7 @@ class LoginController extends Controller
     {
         $account = AccountModel::where([
             'username' => $request->username,
-            'password' =>  password_hash($request->password, PASSWORD_BCRYPT),
+            'password' =>  $request->password//password_hash($request->password, PASSWORD_BCRYPT),
         ])->first();
 
         if ($account) {
