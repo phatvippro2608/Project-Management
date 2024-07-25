@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\MaterialsController;
-
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +32,11 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
     });
 
+    Route::group(['prefix'=>'/team', 'middleware' => 'isSuperAdmin'], function() {
+        Route::get('/', 'App\Http\Controllers\TeamController@getView');
+    });
+
+
 
     Route::group(['prefix'=>'/employees', 'middleware' => 'isAdmin'], function() {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
@@ -51,6 +56,12 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
     Route::post('/upload_photo', 'App\Http\Controllers\UploadFileController@uploadPhoto');
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
 });
+
+
+
+
+
+
 Route::get('/employees', 'App\Http\Controllers\EmployeesController@getView');
 Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
@@ -58,4 +69,13 @@ Route::post('/materials', [MaterialsController::class, 'store'])->name('material
 Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
 Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
+
+
+Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
+Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
+Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
+
+// Budget
+Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
 
