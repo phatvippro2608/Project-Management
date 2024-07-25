@@ -79,3 +79,5 @@ Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('t
 Route::get('/project/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
 Route::get('/project/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
 
+//Inventory Management
+Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
