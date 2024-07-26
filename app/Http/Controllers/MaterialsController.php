@@ -26,8 +26,8 @@ class MaterialsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'material_code' => 'required|string|max:50',
-            'material_name' => 'required|string|max:255',
+            'material_code' => 'required|string',
+            'material_name' => 'required|string',
             'description' => 'nullable|string',
             'brand' => 'nullable|string|max:255',
             'origin' => 'nullable|string|max:255',
