@@ -11,7 +11,7 @@
             </div>
         @endif
 
-        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addMaterialModal">Add</button>
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">Add</button>
         <button class="btn btn-primary mb-4">Import</button>
         <button class="btn btn-primary mb-4">Export</button>
         <button class="btn btn-primary mb-4">Filter</button>
@@ -195,89 +195,43 @@
         </div>
 
 
-        <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addMaterialModalLabel">Add New Material</h5>
+                        <h5 class="modal-title" id="addProjectModalLabel">Add new project</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <form action="" method="POST">
                     <div class="modal-body">
-                        <form action="{{ route('materials.store') }}" method="POST">
-                            @csrf
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="material_code" class="form-label">Code</label>
-                                    <input type="text" class="form-control" id="material_code" name="material_code" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="material_name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="material_name" name="material_name" required>
-                                </div>
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="project_title" class="form-label">Project Title</label>
+                                <input type="text" class="form-control" id="project_title" name="project_title" required>
+                                <label for="project_date_start" class="form-label">Project Start Date</label>
+                                <input type="text" class="form-control" id="project_date_start" name="project_date_start" required>
+                                <label for="project_date_end" class="form-label">Project End Date</label>
+                                <input type="text" class="form-control" id="project_date_end" name="project_date_end" required>
+                                <label for="project_summanry" class="form-label">Summary</label>
+                                <textarea name="project_summanry" id="project_summanry" rows="3" class="form-control"></textarea>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="description" name="description"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="brand" class="form-label">Brand</label>
-                                    <input type="text" class="form-control" id="brand" name="brand">
-                                </div>
+                            <div class="col-md-6">
+                                <label for="project_details" class="form-label">Details</label>
+                                <textarea name="project_details" id="project_details" rows="8" class="form-control"></textarea>
+                                <label for="project_phase" class="form-label">Phase</label>
+                                <select name="project_phase" id="project_phase" class="form-control">
+                                    <option value="">Upcoming</option>
+                                </select>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="origin" class="form-label">Origin</label>
-                                    <input type="text" class="form-control" id="origin" name="origin">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="unit" class="form-label">Unit</label>
-                                    <input type="text" class="form-control" id="unit" name="unit">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="quantity" class="form-label">Quantity</label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="unit_price" class="form-label">Unit Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="labor_price" class="form-label">Labor Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="labor_price" name="labor_price">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="total_price" class="form-label">Total Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="total_price" name="total_price">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="vat" class="form-label">VAT</label>
-                                    <input type="number" step="0.01" class="form-control" id="vat" name="vat">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="delivery_time" class="form-label">Delivery Time</label>
-                                    <input type="text" class="form-control" id="delivery_time" name="delivery_time">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="warranty_time" class="form-label">Warranty Time</label>
-                                    <input type="text" class="form-control" id="warranty_time" name="warranty_time">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks"></textarea>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Material</button>
-                        </form>
+                        </div>
+
                     </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Close" class="btn btn-danger">
+                        <input type="submit" value="Submit" class="btn btn-success">
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
