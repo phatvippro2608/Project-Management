@@ -227,6 +227,7 @@
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
                     group: 'task_{{  $item->task_id  }}',
+                    title: 'Start: {{ $item->start_date }}<br>End: {{ $item->end_date }}'
                 },
             @endif
         @endforeach
@@ -236,6 +237,7 @@
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
                     group: 'subtask_{{  $item->sub_task_id  }}',
+                    title: 'Start: {{ $item->start_date }}<br>End: {{ $item->end_date }}'
                 },
             @endif
         @endforeach
@@ -263,8 +265,8 @@
         zoomMax: 365.25 * 24 * 60 * 60 * 1000 * 5,
         editable: {
             add: false,
-            updateTime: true,
-            // updateGroup: true,
+            updateTime: false,
+            updateGroup: false,
         },
         itemsAlwaysDraggable: {
             item: false,
@@ -491,6 +493,7 @@
                         start: new Date(tasks[i].start_date),
                         end: new Date(tasks[i].end_date),
                         group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
                     });
                 }
                 for (var i = 0; i < subtasks.length; i++) {
@@ -503,6 +506,7 @@
                         start: new Date(subtasks[i].start_date),
                         end: new Date(subtasks[i].end_date),
                         group: 'subtask_' + subtasks[i].sub_task_id,
+                        title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
                     });
                 }
                 newgroups.add({
@@ -628,6 +632,7 @@
                         start: new Date(tasks[i].start_date),
                         end: new Date(tasks[i].end_date),
                         group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
                     });
                 }
                 for (var i = 0; i < subtasks.length; i++) {
@@ -640,6 +645,7 @@
                         start: new Date(subtasks[i].start_date),
                         end: new Date(subtasks[i].end_date),
                         group: 'subtask_' + subtasks[i].sub_task_id,
+                        title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
                     });
                 }
                 newgroups.add({
@@ -689,6 +695,7 @@
                         start: new Date(tasks[i].start_date),
                         end: new Date(tasks[i].end_date),
                         group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
                     });
                 }
                 for (var i = 0; i < subtasks.length; i++) {
@@ -701,6 +708,7 @@
                         start: new Date(subtasks[i].start_date),
                         end: new Date(subtasks[i].end_date),
                         group: 'subtask_' + subtasks[i].sub_task_id,
+                        title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
                     });
                 }
                 newgroups.add({
