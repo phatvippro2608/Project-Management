@@ -30,7 +30,7 @@ class AccountController extends Controller
             ->paginate($perPage);
 
 //        $account = AccountModel::getAll();
-        $sql = "SELECT * from employees WHERE id_employee NOT IN(SELECT id_employee from account)";
+        $sql = "SELECT * from employees";
         $employees = DB::select($sql);
         $status = $this->status;
         return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => $this->permission]);
