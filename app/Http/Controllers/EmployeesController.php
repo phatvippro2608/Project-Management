@@ -131,9 +131,12 @@ class EmployeesController extends Controller
 
     function getEmployee(Request $request,$id_employee){
         $data_employee = DB::table('employees')
-            ->join('passport', 'passport.id_employee', '=', 'employees.id_employee')
-            ->join('medical_checkup', 'medical_checkup.id_employee', '=', 'employees.id_employee')
-            ->where('employees.id_employee',$id_employee)->first();
+            ->where('id_employee',$id_employee)->first();
+        $data_passport = DB::table('passport')
+            ->where('id_employee',$id_employee)->first();
+        $data_medical_checkup = DB::table('medical_checkup')
+            ->where('id_employee',$id_employee)->first();
+
         $id_contact = DB::table('employees')->where('id_employee',$id_employee)->value('id_contact');
         $data_contact = DB::table('contacts')
             ->where('id_contact',$id_contact)->first();
@@ -155,6 +158,7 @@ class EmployeesController extends Controller
             'data_job_detail' => $data_job_detail,
             'jobdetails' => $jobdetails,
             'email' => $email,
+            'data_passport' => $data_passport,
             'data_cv' => $data_cv,
             'data_medical_checkup' => $data_medical_checkup,
             'data_certificate' => $data_certificate

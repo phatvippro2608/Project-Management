@@ -140,25 +140,25 @@
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control passport_number" name="" value="{{$data_employee->passport_number}}">
+                            <input type="text" class="form-control passport_number" name="" value="{{$data_passport ? $data_passport->passport_number : ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Passport place of Issue</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control passport_place_issue" name="" value="{{$data_employee->passport_place_issue}}">
+                            <input type="text" class="form-control passport_place_issue" name="" value="{{$data_passport ? $data_passport->passport_place_issue : ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Issue</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control passport_issue_date" name="" value="{{ \Carbon\Carbon::parse($data_employee->passport_issue_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control passport_issue_date" name="" value="{{$data_passport ?  \Carbon\Carbon::parse($data_passport->passport_issue_date)->format('Y-m-d') : '' }}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Expiry</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control passport_expiry_date" name="" value="{{ \Carbon\Carbon::parse($data_employee->passport_expiry_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control passport_expiry_date" name="" value="{{$data_passport ?  \Carbon\Carbon::parse($data_passport->passport_expiry_date)->format('Y-m-d') : '' }}}}">
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -200,7 +200,8 @@
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Medical Check-up Date</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control medical_checkup_date" name="" value="{{ \Carbon\Carbon::parse($data_employee->medical_checkup_issue_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control medical_checkup_date" name=""
+                                   value="{{ $data_medical_checkup && $data_medical_checkup->isNotEmpty() ? $data_medical_checkup->first()->medical_checkup_issue_date : '' }}">
                         </div>
                     </div>
                 </form><!-- End General Form Elements -->
@@ -347,12 +348,14 @@
                             @php
                                 $dataCV = json_decode($data_cv);
                             @endphp
-                            @foreach ($dataCV as $index => $item)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td><a target="_blank" href="{{ asset('/uploads/' . $data_employee->id_employee . '/' . $item) }}">{{ $item }}</a></td>
-                                </tr>
-                            @endforeach
+                            @if($dataCV)
+                                @foreach ($dataCV as $index => $item)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><a target="_blank" href="{{ asset('/uploads/' . $data_employee->id_employee . '/' . $item) }}">{{ $item }}</a></td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </form><!-- End General Form Elements -->
@@ -380,13 +383,15 @@
                                 @php
                                     $dataMedical = json_decode($data_medical_checkup);
                                 @endphp
-                                @foreach ($dataMedical as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->medical_checkup_file) }}">{{ $item->medical_checkup_file }}</a></td>
-                                        <td>{{ $item->medical_checkup_issue_date }}</td>
-                                    </tr>
-                                @endforeach
+                                @if($dataMedical)
+                                    @foreach ($dataMedical as $index => $item)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->medical_checkup_file) }}">{{ $item->medical_checkup_file }}</a></td>
+                                            <td>{{ $item->medical_checkup_issue_date }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </form><!-- End General Form Elements -->
@@ -415,14 +420,16 @@
                                 @php
                                     $dataCertificate = json_decode($data_certificate);
                                 @endphp
-                                @foreach($dataCertificate as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->certificate) }}">{{ $item->certificate }}</a></td>
-                                        <td>{{ $item->certificate_type_name}}</td>
-                                        <td>{{ $item->end_date_certificate }}</td>
-                                    </tr>
-                                @endforeach
+                                @if($dataCertificate)
+                                    @foreach($dataCertificate as $index => $item)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->certificate) }}">{{ $item->certificate }}</a></td>
+                                            <td>{{ $item->certificate_type_name}}</td>
+                                            <td>{{ $item->end_date_certificate }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </form><!-- End General Form Elements -->
