@@ -91,57 +91,36 @@
         </div>
         <div class="row gx-5">
             <div class="col-lg-8">
-                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i>Lịch sử</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Recent</h4>
+
                 <div class="row">
                     <div class="col-lg-12 border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                         <div class="p-3">
                             <div class="row">
-                                <div class="col-lg-6">
+                                @foreach($recent_project as $item)
+                                <div class="col-lg-12">
                                     <div class="card card-hover shadow-none">
                                         <div class="card-body p-2">
                                             <div class="d-flex align-items-center">
                                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                                    <i class="bi bi-cart"></i>
+                                                    <i class="bi bi-briefcase"></i>
                                                 </div>
                                                 <div class="ps-3">
-                                                    <h6>145</h6>
-                                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                                    <h6 class="fw-bolder">{{$item->project_name}}</h6>
+                                                    <span class="text-success small pt-1 fw-bold">{{$item->created_at}}</span> <span class="text-muted small pt-2 ps-1">increase</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="card card-hover shadow-none">
-                                        <div class="card-body p-2">
-                                            <div class="d-flex align-items-center">
-                                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                                    <i class="bi bi-cart"></i>
-                                                </div>
-                                                <div class="ps-3">
-                                                    <h6>145</h6>
-                                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="card card-hover shadow-none">
-                                        <div class="card-body p-2">
-                                            <div class="d-flex align-items-center">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i>Lịch sử</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Todo list</h4>
                 <div class="row">
                     <div class="col-lg-12 border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                         <div class="row">
