@@ -79,7 +79,7 @@ Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('mate
 Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
 
 
-Route::get('/progress', 'App\Http\Controllers\ProgressController@getView');
+Route::get('/progress', [ProgressController::class, 'getView']);
 Route::post('/update-item', [ProgressController::class, 'updateItem']);
 Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');

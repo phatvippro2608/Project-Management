@@ -114,13 +114,15 @@ class TaskController extends Controller
                     if ($subtask) {
                         $subtask->sub_task_name = $value;
                         $subtask->save();
+                        $subtask_ids[] = explode('_', $key)[1];
                     } else {
                         SubTaskModel::create([
                             'task_id' => $task->task_id,
                             'sub_task_name' => $value,
                         ]);
+                        $subtask_ids[] = $task->task_id;
                     }
-                    $subtask_ids[] = explode('_', $key)[1];
+                    
                 }
             }
             SubTaskModel::where('task_id', $task->task_id)->whereNotIn('sub_task_id', $subtask_ids)->delete();
