@@ -135,5 +135,18 @@
         $(document).ready(function() {
             $('#tasksTable').DataTable();
         });
+
+
+        $('#tasksTable').on('click', '.delete-btn', function() {
+            var row = $(this).closest('tr');
+            row.remove();
+            reindexRows();
+        });
+
+        function reindexRows() {
+            $('#tasksTable tbody tr').each(function(index) {
+                $(this).find('td:first').text(index + 1);
+            });
+        }
     </script>
 @endsection
