@@ -67,9 +67,13 @@
                                         <tr>
                                             <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
                                             @php
-                                                $imagePath = public_path($item->photo);
+                                                $imageUrl = asset('assets/img/avt.png'); // Default image URL
+
                                                 if($item->photo != null){
-                                                    $imageUrl = file_exists($imagePath) ? asset($item->photo) : asset('assets/img/avt.png');
+                                                    $imagePath = public_path($item->photo);
+                                                    if(file_exists($imagePath)) {
+                                                        $imageUrl = asset($item->photo);
+                                                    }
                                                 }
                                             @endphp
 
