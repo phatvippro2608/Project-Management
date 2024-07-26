@@ -1,4 +1,6 @@
-<?php use App\StaticString; ?>
+<?php
+
+use App\StaticString; ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +40,11 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
+    </script>
+    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
+        type="text/css" />
     @yield('head')
 
 </head>
@@ -216,16 +223,20 @@
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                         data-bs-toggle="dropdown">
+                        @php
+                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                            $defaultPhoto = asset('assets/img/avt.png');
+                            $photoExists =
+                                !empty($data->photo) &&
+                                file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                        @endphp
 
-                        <img src="{{ $data->photo }}" alt="Profile" class="rounded-circle object-fit-cover"
-                            width="36" height="36">
-
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                            class="rounded-circle object-fit-cover" width="36" height="36">
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-
                             {{ $data->last_name . ' ' . $data->first_name }}
                         </span>
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
@@ -276,7 +287,6 @@
 
                     </ul>
                 </li>
-
             </ul>
         </nav>
 
@@ -286,12 +296,31 @@
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
-
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link "
+                    href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Deparment</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Designation</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <li class="nav-item">
@@ -308,7 +337,9 @@
                         </li>
                     </ul>
                 @endif
+            </li>
 
+            <li class="nav-item">
                 @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
                     <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
                         href="#">
@@ -326,11 +357,79 @@
                             </a>
                         </li>
                     </ul>
-
-                    <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                        <i class="bi bi-people"></i><span>Team List</span>
-                    </a>
                 @endif
+            </li>
+
+            @php
+                $data = \Illuminate\Support\Facades\DB::table('account')
+                    ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                    ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                    ->where(
+                        'id_account',
+                        \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                    )
+                    ->first();
+            @endphp
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-calendar-check"></i><span>Attendance</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Attendance List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Add Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Attendance Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Holiday</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Leave Type</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Leave Application</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Earned Leave</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Leave Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                     href="#">
@@ -347,18 +446,53 @@
                             <i class="bi bi-circle"></i><span>Project Manager</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ action([\App\Http\Controllers\ProgressController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Progress</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                    <i class="bi bi-people"></i><span>Team List</span>
+                </a>
+            </li>
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a
+                            href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link collapsed"
+                            href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
+                            <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                <i class="bi bi-basket-fill"></i><span>Material Management</span>
-            </a>
+            <li class="nav-item">
+                <a class="nav-link " href="">
+                    <i class="bi bi-clipboard2-fill"></i>
+                    <span>Notice</span>
+                </a>
+            </li>
 
-            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                <i class="bi bi-bank"></i><span>Department</span>
-            </a>
+            <li class="nav-item">
+                <a class="nav-link " href="">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
             </li>
         </ul>
 
@@ -370,9 +504,9 @@
 
 
     {{-- <footer id="footer" class="footer"> --}}
-    {{--    <div class="copyright"> --}}
-    {{--        &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
-    {{--    </div> --}}
+    {{-- <div class="copyright"> --}}
+    {{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
+    {{-- </div> --}}
     {{-- </footer> --}}
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
