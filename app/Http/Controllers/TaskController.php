@@ -114,13 +114,14 @@ class TaskController extends Controller
                     if ($subtask) {
                         $subtask->sub_task_name = $value;
                         $subtask->save();
+                        $subtask_ids[] = explode('_', $key)[1];
                     } else {
-                        SubTaskModel::create([
+                        $subtask = SubTaskModel::create([
                             'task_id' => $task->task_id,
                             'sub_task_name' => $value,
                         ]);
+                        $subtask_ids[] = $subtask->sub_task_id;
                     }
-                    $subtask_ids[] = explode('_', $key)[1];
                 }
             }
             SubTaskModel::where('task_id', $task->task_id)->whereNotIn('sub_task_id', $subtask_ids)->delete();
@@ -132,6 +133,24 @@ class TaskController extends Controller
             $subtask->start_date = $validatedData['s_date'];
             $subtask->end_date = $validatedData['e_date'];
             $subtask->save();
+        }
+        $tasks = DB::table('tasks')->get();
+        $subtasks = DB::table('sub_tasks')
+            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
+            ->select('sub_tasks.*')
+            ->get();
+        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
+    }
+
+    public function delete($id)
+    {
+        $idtype = explode('_', $id)[0];
+        $id = explode('_', $id)[1];
+        if ($idtype == 'task') {
+            SubTaskModel::where('task_id', $id)->delete();
+            TaskModel::find($id)->delete();
+        } else {
+            SubTaskModel::find($id)->delete();
         }
         $tasks = DB::table('tasks')->get();
         $subtasks = DB::table('sub_tasks')

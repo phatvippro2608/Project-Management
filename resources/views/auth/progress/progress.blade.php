@@ -85,7 +85,15 @@
                     <div class="modal-header">
                         <input type="text" id="task_id" name="task_id" hidden required>
                         <input type="text" class="form-control modal-title fs-5 no-background" id="taskname" name="taskname" required>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="dropdown">
+                            <button class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
+                                <li><a class="dropdown-item" id="dl_task_id" href="#">Delete</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
@@ -135,7 +143,7 @@
                     @csrf
                     <div class="modal-header">
                         <input type="text" class="form-control modal-title fs-5 no-background" name="taskname" placeholder="[Task Name]" required>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
@@ -460,7 +468,6 @@
             url: '{{ route('task.create') }}',
             data: data,
             success: function(response){
-                console.log(response);
                 var tasks = response.tasks;
                 var subtasks = response.subtasks;
                 var newgroups=new vis.DataSet();
@@ -476,7 +483,6 @@
                         }),
                     };
                     if (newGroup.nestedGroups.length == 0) {
-                        console.log("asd");
                         delete newGroup.nestedGroups;
                     }
                     newgroups.add(newGroup);
@@ -506,6 +512,8 @@
                 timeline.setGroups(newgroups);
                 timeline.setItems(newitems);
                 c_subtaskCount = 0;
+                form[0].reset();
+                $('#c-subtasks-holder').html('');
                 $('#modalCreateTask').modal('hide');
             },
             error: function(response){
@@ -532,6 +540,7 @@
                 });
                 $('#subTaskHol').show();
                 $('#task_id').val("task_"+task_id);
+                $('#dl_task_id').attr('data-task-id', "task_"+task_id);
                 $('#taskname').val(task.task_name);
                 $('#request').val(task.request);
                 $('#users').val(task.engineers);
@@ -572,6 +581,7 @@
             success: function(response){
                 var subtask = response.subtask;
                 $('#task_id').val("subtask_"+subtask.sub_task_id);
+                $('#dl_task_id').attr('data-task-id', "subtask_"+subtask.sub_task_id);
                 $('#subTaskHol').hide();
                 $('#e-subtasks-holder').html('');
                 $('#taskname').val(subtask.sub_task_name);
@@ -611,7 +621,6 @@
                         }),
                     };
                     if (newGroup.nestedGroups.length == 0) {
-                        console.log("asd");
                         delete newGroup.nestedGroups;
                     }
                     newgroups.add(newGroup);
@@ -646,5 +655,66 @@
             }
         });
     });
-</script>
+    //khi nút delete được click thì sẽ gọi hàm delete qua link task.delete
+    $('#dl_task_id').click(function(e){
+        e.preventDefault();
+        //'{{ url('task') }}/task/'+task_id,
+        var task_id = $(this).attr('data-task-id');
+        $.ajax({
+            type: 'post',
+            url: '{{ url('task') }}/delete/'+task_id,
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response){
+                var tasks = response.tasks;
+                var subtasks = response.subtasks;
+                var newgroups=new vis.DataSet();
+                var newitems=new vis.DataSet();
+                for (var i = 0; i < tasks.length; i++) {
+                    let newGroup = {
+                        content: tasks[i].task_name,
+                        id: 'task_' + tasks[i].task_id,
+                        nestedGroups: subtasks.filter(function(subtask){
+                            return subtask.task_id == tasks[i].task_id;
+                        }).map(function(subtask){
+                            return 'subtask_' + subtask.sub_task_id;
+                        }),
+                    };
+                    if (newGroup.nestedGroups.length == 0) {
+                        delete newGroup.nestedGroups;
+                    }
+                    newgroups.add(newGroup);
+                    newitems.add({
+                        start: new Date(tasks[i].start_date),
+                        end: new Date(tasks[i].end_date),
+                        group: 'task_' + tasks[i].task_id,
+                    });
+                }
+                for (var i = 0; i < subtasks.length; i++) {
+                    newgroups.add({
+                        content: subtasks[i].sub_task_name,
+                        id: 'subtask_' + subtasks[i].sub_task_id,
+                        className: 'vis-subTask',
+                    });
+                    newitems.add({
+                        start: new Date(subtasks[i].start_date),
+                        end: new Date(subtasks[i].end_date),
+                        group: 'subtask_' + subtasks[i].sub_task_id,
+                    });
+                }
+                newgroups.add({
+                    content: 'Create',
+                    id: 'create',
+                });
+                timeline.setGroups(newgroups);
+                timeline.setItems(newitems);
+                $('#modalViewTask').modal('hide');
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    });
+    </script>
 @endsection
