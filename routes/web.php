@@ -54,6 +54,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::put('/postEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
+        Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
     });
 
 
