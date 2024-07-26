@@ -47,7 +47,7 @@ use App\StaticString; ?>
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="#" class="d-flex align-items-center logo justify-content-center">
+            <a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}" class="d-flex align-items-center logo justify-content-center">
                 <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
                 <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
             </a>
