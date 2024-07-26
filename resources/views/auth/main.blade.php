@@ -1,11 +1,7 @@
 <?php
 
 use App\StaticString; ?>
-<?php
 
-use App\StaticString; ?>
-
-<!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,11 +24,13 @@ use App\StaticString; ?>
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
@@ -44,6 +42,7 @@ use App\StaticString; ?>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
 
@@ -55,7 +54,6 @@ use App\StaticString; ?>
 </head>
 
 <body>
-    <header id="header" class="header fixed-top d-flex align-items-center">
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
@@ -74,32 +72,14 @@ use App\StaticString; ?>
                         <i class="bi bi-search"></i>
                     </a>
                 </li>
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li>
 
-                <li class="nav-item dropdown">
                 <li class="nav-item dropdown">
 
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
                         <span class="badge bg-primary badge-number">4</span>
                     </a>
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-bell"></i>
-                        <span class="badge bg-primary badge-number">4</span>
-                    </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                        <li class="dropdown-header">
-                            You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
                             You have 4 new notifications
@@ -117,18 +97,7 @@ use App\StaticString; ?>
                                 <p>30 min. ago</p>
                             </div>
                         </li>
-                        <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                        </li>
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -141,18 +110,7 @@ use App\StaticString; ?>
                                 <p>1 hr. ago</p>
                             </div>
                         </li>
-                        <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                        </li>
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -165,30 +123,11 @@ use App\StaticString; ?>
                                 <p>2 hrs. ago</p>
                             </div>
                         </li>
-                        <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                        </li>
 
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
 
-                        <li class="notification-item">
-                            <i class="bi bi-info-circle text-primary"></i>
-                            <div>
-                                <h4>Dicta reprehenderit</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>4 hrs. ago</p>
-                            </div>
-                        </li>
                         <li class="notification-item">
                             <i class="bi bi-info-circle text-primary"></i>
                             <div>
@@ -204,26 +143,13 @@ use App\StaticString; ?>
                         <li class="dropdown-footer">
                             <a href="#">Show all notifications</a>
                         </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li class="dropdown-footer">
-                            <a href="#">Show all notifications</a>
-                        </li>
 
-                    </ul>
                     </ul>
 
                 </li>
-                </li>
 
                 <li class="nav-item dropdown">
-                <li class="nav-item dropdown">
 
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number">3</span>
-                    </a><!-- End Messages Icon -->
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-chat-left-text"></i>
                         <span class="badge bg-success badge-number">3</span>
@@ -237,28 +163,7 @@ use App\StaticString; ?>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                        <li class="dropdown-header">
-                            You have 3 new messages
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
 
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>Maria Hudson</h4>
-                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                    <p>4 hrs. ago</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                         <li class="message-item">
                             <a href="#">
                                 <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">
@@ -303,28 +208,11 @@ use App\StaticString; ?>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li class="message-item">
-                            <a href="#">
-                                <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">
-                                <div>
-                                    <h4>David Muldon</h4>
-                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                    <p>8 hrs. ago</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
 
                         <li class="dropdown-footer">
                             <a href="#">Show all messages</a>
                         </li>
-                        <li class="dropdown-footer">
-                            <a href="#">Show all messages</a>
-                        </li>
 
-                    </ul>
                     </ul>
 
                 </li>
@@ -365,7 +253,6 @@ use App\StaticString; ?>
                         </span>
 
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
@@ -397,25 +284,7 @@ use App\StaticString; ?>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-gear"></i>
-                                <span>Account Settings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <i class="bi bi-question-circle"></i>
-                                <span>Need Help?</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
                         <li>
                             <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-question-circle"></i>
@@ -440,17 +309,11 @@ use App\StaticString; ?>
                 </li>
             </ul>
         </nav>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
 
     </header>
-    </header>
 
 
 
-    <aside id="sidebar" class="sidebar">
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -461,33 +324,7 @@ use App\StaticString; ?>
                     <span>Dashboard</span>
                 </a>
             </li>
-        <ul class="sidebar-nav" id="sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link "
-                    href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
-                    <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
-                    href="#">
-                    <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Deparment</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Designation</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
                     href="#">
@@ -521,8 +358,6 @@ use App\StaticString; ?>
                             </a>
                         </li>
                     </ul>
-                @endif
-            </li>
                 @endif
             </li>
 
@@ -611,39 +446,7 @@ use App\StaticString; ?>
                             <i class="bi bi-circle"></i><span>Earned Leave</span>
                         </a>
                     </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Holiday</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Leave Type</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Leave Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Earned Leave</span>
-                        </a>
-                    </li>
 
-                    <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Leave Report</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
                     <li>
                         <a href="">
                             <i class="bi bi-circle"></i><span>Leave Report</span>
@@ -728,20 +531,9 @@ use App\StaticString; ?>
                 </a>
             </li>
         </ul>
-            <li class="nav-item">
-                <a class="nav-link " href="">
-                    <i class="bi bi-gear-fill"></i>
-                    <span>Settings</span>
-                </a>
-            </li>
-        </ul>
 
     </aside>
-    </aside>
 
-    <main id="main" class="main">
-        @yield('contents')
-    </main>
     <main id="main" class="main">
         @yield('contents')
     </main>
@@ -752,11 +544,7 @@ use App\StaticString; ?>
     {{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
     {{-- </div> --}}
     {{-- </footer> --}}
-    {{-- <footer id="footer" class="footer"> --}}
-    {{-- <div class="copyright"> --}}
-    {{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
-    {{-- </div> --}}
-    {{-- </footer> --}}
+
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
