@@ -212,14 +212,17 @@ use App\StaticString; ?>
                 </li>
                 @php
 
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                ->where(
-                'id_account',
-                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                )
-                ->first();
+                    $data = \Illuminate\Support\Facades\DB::table('account')
+                                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                                ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                                ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                                ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                                ->where(
+                                'account.id_account',
+                                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                                )
+                                ->first();
                 @endphp
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -238,7 +241,7 @@ use App\StaticString; ?>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                            <span>{{ $data->id_job_title }}</span>
+                            <span>{{ $data->position_name }}</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
