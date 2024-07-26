@@ -805,6 +805,7 @@
             var data = JSON.parse($(this).attr('data'));
             console.log(data);
             $('.btn_photo').click(function () {
+                event.preventDefault();
                 let filePhoto = $('.md3 .photo')[0].files[0];
                 let formData = new FormData();
 
@@ -964,10 +965,10 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: { path: imagePath + '/' + data.photo },
+                data: { path: data.photo },
                 success: function(response) {
                     if (response.exists) {
-                        $('.md3 .photo_show').attr('src', imagePath + '/' + data.photo);
+                        $('.md3 .photo_show').attr('src', '{{asset('')}}' + data.photo);
                     } else {
                         $('.md3 .photo_show').attr('src', defaultImage);
                     }

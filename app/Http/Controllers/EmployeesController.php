@@ -126,6 +126,7 @@ class EmployeesController extends Controller
     public function checkFileExists(Request $request)
     {
         $filePath = public_path($request->input('path'));
+        Log::info($filePath);
         return response()->json(['exists' => file_exists($filePath)]);
     }
 }
