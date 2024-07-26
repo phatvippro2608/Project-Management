@@ -24,10 +24,6 @@
                                 <input type="text" class="form-control" id="department_name" name="department_name"
                                     required>
                             </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description"></textarea>
-                            </div>
                             <button type="submit" class="btn btn-primary">Add Department</button>
                         </form>
                     </div>
@@ -53,10 +49,6 @@
                                 <input type="text" class="form-control" id="edit_department_name" name="department_name"
                                     required>
                             </div>
-                            <div class="mb-3">
-                                <label for="edit_description" class="form-label">Description</label>
-                                <textarea class="form-control" id="edit_description" name="description"></textarea>
-                            </div>
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
                     </div>
@@ -81,36 +73,37 @@
             </div>
         </div>
 
-        <table id="departmentsTable" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Department Name</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="departmentsTableBody">
-                @foreach ($departments as $department)
+        <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+            <h3 class="text-left mb-4">Departments List</h3>
+            <table id="departmentsTable" class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $department->department_name }}</td>
-                        <td>{{ $department->description }}</td>
-                        <td>
-                            <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="{{ $department->id }}">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            |
-                            <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                data-id="{{ $department->id }}">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </td>
+                        <th>Department Name</th>
+                        <th>Action</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="departmentsTableBody">
+                    @foreach ($departments as $department)
+                        <tr>
+                            <td>{{ $department->department_name }}</td>
+                            <td>
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="{{ $department->department_id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                |
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="{{ $department->department_id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
 
@@ -132,20 +125,17 @@
                             $('#successModal').modal('show');
 
                             table.row.add([
-                                (table.rows().count() + 1),
                                 response.department.department_name,
-                                response.department.description,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.department.id + '">' +
+                                response.department.department_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.department.id + '">' +
+                                response.department.department_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
-
                             $('#addDepartmentForm')[0].reset();
                         }
                     },
@@ -158,13 +148,17 @@
             $('#departmentsTable').on('click', '.edit-btn', function() {
                 var departmentId = $(this).data('id');
 
+                if (!departmentId) {
+                    alert('Department ID not found.');
+                    return;
+                }
+
                 $.ajax({
-                    url: '{{ url('task/departments') }}/' + departmentId + '/edit',
+                    url: '{{ url('departments') }}/' + departmentId + '/edit',
                     method: 'GET',
                     success: function(response) {
-                        $('#editDepartmentId').val(response.department.id);
+                        $('#editDepartmentId').val(response.department.department_id);
                         $('#edit_department_name').val(response.department.department_name);
-                        $('#edit_description').val(response.department.description);
                         $('#editDepartmentModal').modal('show');
                     },
                     error: function(xhr) {
@@ -178,7 +172,7 @@
                 var departmentId = $('#editDepartmentId').val();
 
                 $.ajax({
-                    url: '{{ url('task/departments') }}/' + departmentId,
+                    url: '{{ url('departments') }}/' + departmentId,
                     method: 'PUT',
                     data: $(this).serialize(),
                     success: function(response) {
@@ -189,16 +183,14 @@
                             var row = table.row($('button[data-id="' + departmentId + '"]')
                                 .parents('tr'));
                             row.data([
-                                row.index() + 1,
                                 response.department.department_name,
-                                response.department.description,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.department.id + '">' +
+                                response.department.department_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.department.id + '">' +
+                                response.department.department_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
@@ -216,7 +208,7 @@
 
                 if (confirm('Are you sure you want to delete this department?')) {
                     $.ajax({
-                        url: '{{ url('task/departments') }}/' + departmentId,
+                        url: '{{ url('departments') }}/' + departmentId,
                         method: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'
@@ -232,6 +224,12 @@
                     });
                 }
             });
+
+            function reindexRows() {
+                $('#departmentsTable tbody tr').each(function(index) {
+                    $(this).find('td:first').text(index + 1);
+                });
+            }
         });
     </script>
 @endsection
