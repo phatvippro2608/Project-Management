@@ -94,7 +94,6 @@ class UploadFileController extends Controller
         $request->validate([
             'photo' => 'nullable|file|max:1048576', // 10MB
         ]);
-
         $photo = $request->file('photo');
         $id_employee = $request->input('id_employee');
         $directoryPath = public_path('uploads/' . $id_employee);

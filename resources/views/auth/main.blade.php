@@ -344,6 +344,7 @@ use App\StaticString; ?>
                 </ul>
             </li>
 
+            <li class="nav-heading">Employees</li>
             <li class="nav-item">
                 @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
                     <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
@@ -360,6 +361,7 @@ use App\StaticString; ?>
                 @endif
             </li>
 
+            <li class="nav-heading">HR Manager</li>
             <li class="nav-item">
                 @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
                     <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
@@ -454,10 +456,15 @@ use App\StaticString; ?>
             </li>
 
             <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                    <i class="bi bi-people"></i><span>Team List</span>
+                </a>
+            </li>
 
+            <li class="nav-heading">Project Mnagement</li>
+            <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
-                    href="#">
-
+                   href="#">
                     <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -479,34 +486,37 @@ use App\StaticString; ?>
                 </ul>
             </li>
 
+            <li class="nav-heading">Warehouse Management</li>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>Team List</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-
                 <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
-                    href="#">
-
+                   href="#">
                     <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-
-                        <a
-                            href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
-
+                        <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
                             <i class="bi bi-circle"></i><span>Dashboard</span>
                         </a>
                     </li>
                     <li>
 
                         <a class="nav-link collapsed"
-                            href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-
+                           href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
                             <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-gear-wide-connected"></i><span>Utilities</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Activity Log</span>
                         </a>
                     </li>
                 </ul>
