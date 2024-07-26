@@ -478,11 +478,6 @@ use App\StaticString; ?>
                             <i class="bi bi-circle"></i><span>Project Manager</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ action([\App\Http\Controllers\ProgressController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Progress</span>
-                        </a>
-                    </li>
                 </ul>
             </li>
 
