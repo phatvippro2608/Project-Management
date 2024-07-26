@@ -181,6 +181,7 @@
                                         <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="position_name" aria-label="Default select example">
+                                                <option value="">No Select</option>
                                                 @foreach( $dataEmployee['jobPositions'] as $item)
                                                     <option value="{{$item->id_position}}"  @if($info){{ $item->id_position == $info->id_job_position ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
                                                 @endforeach
@@ -192,6 +193,7 @@
                                         <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="country_name" aria-label="Default select example">
+                                                <option value="">No Select</option>
                                                 @foreach($dataEmployee['jobCountry'] as $item)
                                                     <option value="{{$item->id_country}}" @if($country){{ $item->id_country == $country->id_job_country ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
                                                 @endforeach
@@ -280,6 +282,7 @@
                 url: '{{ action('App\Http\Controllers\ProfileController@postProfile')}}',
                 type: "POST",
                 data: {
+                    'id_employee': "{{$employ_detail['id_employee']}}",
                     '_token': "{{ csrf_token() }}",
                     'first_name': $('#first_name').val(),
                     'last_name': $('#last_name').val(),
