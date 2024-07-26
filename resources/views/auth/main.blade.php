@@ -222,11 +222,16 @@ use App\StaticString; ?>
                                 ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
                                 ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
                                 ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                                ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
-                                ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+
                                 ->where(
                                 'account.id_account',
                                 \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                                )
+                                ->first();
+                    $info = \Illuminate\Support\Facades\DB::table('job_detail')
+                                ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                                ->where(
+                                    'job_detail.id_employee', $data->id_employee
                                 )
                                 ->first();
                 @endphp
@@ -251,7 +256,7 @@ use App\StaticString; ?>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                            <span>{{ $data->position_name }}</span>
+                            <span>@if($info) {{$info->position_name}} @endif</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
