@@ -9,6 +9,7 @@ use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\HolidaysController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,3 +108,11 @@ Route::post('/departments', [DepartmentController::class, 'store'])->name('depar
 Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
 Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
+//Holiday
+Route::resource('holidays', HolidaysController::class);
+Route::get('holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
+Route::post('/holidays', [HolidaysController::class, 'store'])->name('holidays.store');
+Route::get('holidays/{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
+Route::put('holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
+Route::delete('holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');

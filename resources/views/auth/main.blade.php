@@ -219,16 +219,16 @@ use App\StaticString; ?>
                 @php
 
                     $data = \Illuminate\Support\Facades\DB::table('account')
-                                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                                ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                                ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
-                                ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
-                                ->where(
-                                'account.id_account',
-                                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                                )
-                                ->first();
+                        ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                        ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                        ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                        ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                        ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                        ->where(
+                            'account.id_account',
+                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                        )
+                        ->first();
                 @endphp
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
@@ -420,7 +420,7 @@ use App\StaticString; ?>
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="">
+                        <a href="{{ action([\App\Http\Controllers\HolidaysController::class, 'getView']) }}">
                             <i class="bi bi-circle"></i><span>Holiday</span>
                         </a>
                     </li>
