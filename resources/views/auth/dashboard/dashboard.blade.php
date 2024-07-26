@@ -99,7 +99,7 @@
                             <div class="row">
                                 @foreach($recent_project as $item)
                                 <div class="col-lg-12">
-                                    <div class="card card-hover shadow-none">
+                                    <a href="../project/{{$item->project_id}}" class="card card-hover shadow-none">
                                         <div class="card-body p-2">
                                             <div class="d-flex align-items-center">
                                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -107,11 +107,11 @@
                                                 </div>
                                                 <div class="ps-3">
                                                     <h6 class="fw-bolder">{{$item->project_name}}</h6>
-                                                    <span class="text-success small pt-1 fw-bold">{{$item->created_at}}</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                                    <span class="text-success small pt-1 fw-bold">{{$item->created_at}}</span> <span class="text-muted small pt-2 ps-1"></span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 @endforeach
                             </div>

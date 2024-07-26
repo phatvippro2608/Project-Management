@@ -19,9 +19,7 @@
                         <div class="d-inline-flex align-items-center">
                             <div class="btn btn-primary mx-2 btn-add">
                                 <div class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    add
-                                </span>
+                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                                     Add Account
                                 </div>
                             </div>

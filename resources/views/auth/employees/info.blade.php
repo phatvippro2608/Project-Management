@@ -140,25 +140,25 @@
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control passport_number" name="" value="{{$data_contact->passport_number}}">
+                            <input type="text" class="form-control passport_number" name="" value="{{$data_passport ? $data_passport->passport_number : ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Passport place of Issue</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control passport_place_issue" name="" value="{{$data_contact->passport_place_issue}}">
+                            <input type="text" class="form-control passport_place_issue" name="" value="{{$data_passport ? $data_passport->passport_place_issue : ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Issue</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control passport_issue_date" name="" value="{{ \Carbon\Carbon::parse($data_contact->passport_issue_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control passport_issue_date" name="" value="{{$data_passport ?  \Carbon\Carbon::parse($data_passport->passport_issue_date)->format('Y-m-d') : '' }}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Expiry</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control passport_expiry_date" name="" value="{{ \Carbon\Carbon::parse($data_contact->passport_expiry_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control passport_expiry_date" name="" value="{{$data_passport ?  \Carbon\Carbon::parse($data_passport->passport_expiry_date)->format('Y-m-d') : '' }}}}">
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -200,7 +200,8 @@
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Medical Check-up Date</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control medical_checkup_date" name="" value="{{ \Carbon\Carbon::parse($data_contact->medical_checkup_date)->format('Y-m-d') }}">
+                            <input type="date" class="form-control medical_checkup_date" name=""
+                                   value="{{ $data_medical_checkup && $data_medical_checkup->isNotEmpty() ? $data_medical_checkup->first()->medical_checkup_issue_date : '' }}">
                         </div>
                     </div>
                 </form><!-- End General Form Elements -->
@@ -230,7 +231,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Job Category</label>
                         <div class="col-sm-8">
-                            <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobCategories'][$data_job_detail->id_job_category]) ? $jobdetails['jobCategories'][$data_job_detail->id_job_category -1 ]->job_category_name : '' }}">
+                            <input type="text" name="" id="" class="form-control" data="" value="{{ isset($jobdetails['jobCategories'][$data_job_detail->id_job_category-1]) ? $jobdetails['jobCategories'][$data_job_detail->id_job_category - 1 ]->job_category_name : '' }}">
 {{--                            <select class="form-select job_category" aria-label="Default select example" name="">--}}
 {{--                                @foreach($jobdetails['jobCategories'] as $item)--}}
 {{--                                    <option value="{{$item->id_job_category}}">{{$item->job_category_name}}</option>--}}
@@ -252,7 +253,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Team</label>
                         <div class="col-sm-8">
-                            <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTeams'][$data_job_detail->id_job_team]) ? $jobdetails['jobTeams'][$data_job_detail->id_job_team - 1]->team_name : '' }}">
+                            <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTeams'][$data_job_detail->id_job_team-12]) ? $jobdetails['jobTeams'][$data_job_detail->id_job_team - 12]->team_name : '' }}">
 {{--                            <select class="form-select job_team" aria-label="Default select example" name="">--}}
 {{--                                @foreach($jobdetails['jobTeams'] as $item)--}}
 {{--                                    <option value="{{$item->id_team}}">{{$item->team_name}}</option>--}}
@@ -274,7 +275,7 @@
                     <div class="row mb-3">
                         <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
                         <div class="col-sm-8">
-                            <input type="email" class="form-control email" name="" value="{{$data_job_detail->email}}">
+                            <input type="email" class="form-control email" name="" value="{{$email}}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -314,7 +315,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Location</label>
                         <div class="col-sm-8">
-                            <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLocation'][$data_job_detail->id_job_location]) ? $jobdetails['jobLocation'][$data_job_detail->id_job_location - 1]->location_name : '' }}">
+                            <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLocation'][$data_job_detail->id_job_location-3]) ? $jobdetails['jobLocation'][$data_job_detail->id_job_location - 3]->location_name : '' }}">
 {{--                            <select class="form-select job_location" aria-label="Default select example">--}}
 {{--                                @foreach($jobdetails['jobLocation'] as $item)--}}
 {{--                                    <option value="{{$item->id_location}}">{{$item->location_name}}</option>--}}
@@ -339,19 +340,67 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File Name</th>
+                                <th>#</th>
+                                <th>Filename</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr></tr>
+                            <tbody class="cv-list">
+                            @php
+                                $dataCV = json_decode($data_cv);
+                            @endphp
+                            @if($dataCV)
+                                @foreach ($dataCV as $index => $item)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><a target="_blank" href="{{ asset('/uploads/' . $data_employee->id_employee . '/' . $item) }}">{{ $item }}</a></td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </form><!-- End General Form Elements -->
                 </div>
             </div>
         </div>
-        <div class="col-6 p-0 ps-2">
+        <div class="col-6 p-0 pe-2">
+            <div class="card border border-primary rounded-4 p-0">
+                <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
+                    Medical CheckUp
+                </div>
+                <div class="card-body bg-white rounded-bottom-4">
+
+                    <!-- General Form Elements -->
+                    <form>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Filename</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody class="medical_list">
+                                @php
+                                    $dataMedical = json_decode($data_medical_checkup);
+                                @endphp
+                                @if($dataMedical)
+                                    @foreach ($dataMedical as $index => $item)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->medical_checkup_file) }}">{{ $item->medical_checkup_file }}</a></td>
+                                            <td>{{ $item->medical_checkup_issue_date }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </form><!-- End General Form Elements -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <div class="card border border-primary rounded-4">
                 <div class="card-header bg-primary text-white rounded-top-4 fs-5 mb-2">
                     Certificate
@@ -363,11 +412,24 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">File Name</th>
-                                <th scope="col">Type of Certificate</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Expiry Date</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr></tr>
+                            <tbody class="certificate_list">
+                                @php
+                                    $dataCertificate = json_decode($data_certificate);
+                                @endphp
+                                @if($dataCertificate)
+                                    @foreach($dataCertificate as $index => $item)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->certificate) }}">{{ $item->certificate }}</a></td>
+                                            <td>{{ $item->certificate_type_name}}</td>
+                                            <td>{{ $item->end_date_certificate }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </form><!-- End General Form Elements -->

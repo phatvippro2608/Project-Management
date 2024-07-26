@@ -31,8 +31,6 @@ class ProfileModel extends Model
             "
                 UPDATE employees
                 INNER JOIN job_detail ON employees.id_employee = job_detail.id_employee
-                INNER JOIN job_position ON job_detail.id_job_position = job_position.id_position
-                INNER JOIN job_country ON job_detail.id_job_country = job_country.id_country
                 INNER JOIN contacts ON employees.id_contact = contacts.id_contact
                 INNER JOIN account ON employees.id_employee = account.id_employee
                 SET
@@ -43,7 +41,7 @@ class ProfileModel extends Model
                     contacts.permanent_address = :permanent_address,
                     contacts.phone_number = :phone_number,
                     account.email = :email
-                WHERE account.id_account = :id_account
+                WHERE account.id_employee = :id_employee
            ";
 
         $par = [
@@ -54,7 +52,7 @@ class ProfileModel extends Model
             'permanent_address' => $this->permanent_address,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
-            'id_account'=>$this->id_account
+            'id_employee'=>$this->id_employee
         ];
 
         return DB::update($query, $par);
