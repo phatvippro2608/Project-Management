@@ -89,5 +89,17 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i>Lịch sử</h4>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i>Lịch sử</h4>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection
