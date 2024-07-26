@@ -30,7 +30,8 @@ class AccountController extends Controller
             ->paginate($perPage);
 
 //        $account = AccountModel::getAll();
-        $employees = EmployeeModel::all();
+        $sql = "SELECT * from employees";
+        $employees = DB::select($sql);
         $status = $this->status;
         return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => $this->permission]);
     }
@@ -82,6 +83,10 @@ class AccountController extends Controller
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
+
+        if(AccountModel::where('id_employee',$id_employee)->count()>=1){
+            return $this->status('Tài khoản đã tồn tại', 500);
+        };
 
         if($id_employee == -1){
             return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);

@@ -81,7 +81,7 @@ class UploadFileController extends Controller
         DB::table('employees')
             ->where('id_employee', $id_employee)
             ->update([
-                'photo' => $photo_filename,
+                'photo' => 'uploads/'.$id_employee . '/' . $photo_filename,
                 'cv' => json_encode($uploadedPersonalFiles),
             ]);
 //        DB:table('contacts')->insert([])
@@ -94,7 +94,6 @@ class UploadFileController extends Controller
         $request->validate([
             'photo' => 'nullable|file|max:1048576', // 10MB
         ]);
-
         $photo = $request->file('photo');
         $id_employee = $request->input('id_employee');
         $directoryPath = public_path('uploads/' . $id_employee);
@@ -144,7 +143,7 @@ class UploadFileController extends Controller
 
         DB::table('employees')
             ->where('id_employee', $id_employee)
-            ->update(['photo' => $photo_filename]);
+            ->update(['photo' => 'uploads/' . $id_employee.'/'.$photo_filename]);
 
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
     }
