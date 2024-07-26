@@ -57,7 +57,7 @@ use App\StaticString; ?>
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="#" class="d-flex align-items-center logo justify-content-center">
+            <a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}" class="d-flex align-items-center logo justify-content-center">
                 <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
                 <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
             </a>
@@ -239,11 +239,11 @@ use App\StaticString; ?>
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                         data-bs-toggle="dropdown">
                         @php
-                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                            $photoPath = asset($data->photo);
                             $defaultPhoto = asset('assets/img/avt.png');
                             $photoExists =
                                 !empty($data->photo) &&
-                                file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                                file_exists(public_path($data->photo));
                         @endphp
 
                         <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
