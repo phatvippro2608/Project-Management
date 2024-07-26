@@ -11,4 +11,6 @@ class ProjectListModel extends Model
     protected $table = 'projects';
 
     protected $primaryKey = 'project_id';
+
+
 }

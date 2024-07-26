@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountModel;
 use App\Models\EmployeeModel;
+use App\Models\SpreadsheetModel;
 use App\StaticString;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class AccountController extends Controller
@@ -28,7 +30,8 @@ class AccountController extends Controller
             ->paginate($perPage);
 
 //        $account = AccountModel::getAll();
-        $employees = EmployeeModel::all();
+        $sql = "SELECT * from employees";
+        $employees = DB::select($sql);
         $status = $this->status;
         return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => $this->permission]);
     }
@@ -70,18 +73,38 @@ class AccountController extends Controller
     {
         $id_employee = $request->input('id_employee');
         $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
-        $auto_pwd = $request->input('auto_pwd');
 
-        if($auto_pwd == 'true')
-            $password = $this->randomUserPwd(20);
+        if($permission==1){
+            if(AccountModel::where('permission',1)->count()>=3){
+                return $this->status('Đã quá số lượng Super Admin', 500);
+            };
+        }
+
+        if(AccountModel::where('id_employee',$id_employee)->count()>=1){
+            return $this->status('Tài khoản đã tồn tại', 500);
+        };
+
+        if($id_employee == -1){
+            return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
+        }
+
+        if(AccountModel::where('email', $email)->count()>=1){
+            return $this->status('Email đã tồn tại', 500);
+        }
+
+        if(AccountModel::where('username', $username)->count()>=1){
+            return $this->status('Username đã tồn tại', 500);
+        }
+
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
         $i = [
             'id_employee' => $id_employee,
             'username' => $username,
-            'email' => null,
+            'email' => $email,
             'password' => $hashPass,
             'status' => $status,
             'permission' => $permission,
@@ -97,22 +120,31 @@ class AccountController extends Controller
         $id_account = $request->input('id_account');
         $id_employee = $request->input('id_employee');
         $username = $request->input('username');
+        $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
-        $auto_pwd = $request->input('auto_pwd');
-
-        if($auto_pwd == 'true')
-            $password = $this->randomUserPwd(20);
+//        $auto_pwd = $request->input('auto_pwd');
+//
+//        if($auto_pwd == 'true')
+//            $password = $this->randomUserPwd(20);
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
+
+        if($permission==1){
+            if(AccountModel::where('permission',1)->where('id_account','!=',$id_account)->count()+AccountModel::where('id_account',$id_account)->where('permission',1)->count()>=3){
+                return $this->status('Đã quá số lượng Super Admin', 500);
+            };
+        }
+
         $i = [
             'id_employee' => $id_employee,
             'username' => $username,
-            'email' => null,
-            'password' => $hashPass,
-            'status' => $status,
+            'email' => $email,
             'permission' => $permission,
+            'status' => $status,
         ];
+        if(!empty($password))
+            $i['password'] = $hashPass;
         if(AccountModel::where('id_account',$id_account)->update($i)){
             return $this->status('Cập nhật thành công', 200);
         };
@@ -126,5 +158,25 @@ class AccountController extends Controller
             return $this->status('Xóa tài khoản thành công', 200);
         };
         return $this->status('Xóa thất bại', 500);
+    }
+
+    function demoView()
+    {
+        return view('auth.account.account_import_demo');
+    }
+
+    function import(Request $request)
+    {
+        $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
+        $c = true;
+        foreach ($dataExcel['data'] as $item) {
+            if($c){$c = false; continue;};
+            $data = [
+                'email' => trim($item[0]),
+                'ho_ten' => trim($item[1]),
+            ];
+            DB::table('account_import')->insert($data);
+        }
+        return $this->status('Import thành công', 200);
     }
 }
