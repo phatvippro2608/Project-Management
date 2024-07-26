@@ -9,6 +9,7 @@ use App\SVStaticString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use function Laravel\Prompts\select;
 
 class LoginController extends Controller
 {
@@ -19,7 +20,9 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
-        $account = AccountModel::where('username', $request->username)->first();
+        $sql = "SELECT password FROM account WHERE username = $request->username or email = $request->username LIMIT 1";
+//        $account = AccountModel::where('username', $request->username)->first();
+        $account = DB::select($sql);
         if (!$account) {
             return redirect()
                 ->action('App\Http\Controllers\LoginController@postLogin')
