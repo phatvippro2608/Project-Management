@@ -69,8 +69,7 @@
                                             @php
                                                 $imagePath = public_path('uploads/' . $item->id_employee . '/' . $item->photo);
                                                 if($item->photo != null){
-                                                $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/avt.png');
-
+                                                    $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/avt.png');
                                                 }
                                             @endphp
 
@@ -84,12 +83,14 @@
                                                     $id = $item->id_employee;
                                                     $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
                                                     $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                                    $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                                    $item->email = \Illuminate\Support\Facades\DB::table('account')->where('id_employee', $id)->value('email');
                                                 ?>
                                                 <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 |
-                                                <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4">
+                                                <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
                                             </td>
@@ -318,7 +319,7 @@
                                                 <div class="col-sm-8">
                                                     <div class="row p-0 m-0">
                                                         <div class="col-4">
-                                                            <img class="photo_show" src="" alt="" width="100" height="100">
+                                                            <img class="photo_show" src="{{asset('/assets/img/avt.png')}}" alt="123" width="100" height="100">
                                                         </div>
                                                         <div class="col-8">
                                                             <div class="row p-0 mx-1 mb-2">
@@ -560,7 +561,7 @@
                                     <div class="row mb-3">
                                         <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
                                         <div class="col-sm-8">
-                                            <input type="email" class="form-control email" name="">
+                                            <input type="email" class="form-control email" name="" disabled>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -682,7 +683,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col">
@@ -754,6 +754,7 @@
         let _upload_personal_profile = "{{action('App\Http\Controllers\UploadFileController@uploadPersonalProfile')}}";
         let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
+        let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
@@ -954,7 +955,26 @@
             $('.md3 .first_name').val(data.first_name);
             $('.md3 .last_name').val(data.last_name);
             $('.md3 .en_name').val(data.en_name);
-            $('.md3 .photo_show').attr('src', data.photo != null ? '{{asset('/uploads/')}}'+ '/' + data.id_employee + '/' + data.photo : '{{asset('/assets/img/avt.png')}}');
+            let imagePath = "/uploads/" + data.id_employee;
+            let defaultImage = "{{ asset('assets/img/avt.png') }}";
+
+            $.ajax({
+                url: _check_file_exists, // Create a route to check if the file exists
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: { path: imagePath + '/' + data.photo },
+                success: function(response) {
+                    if (response.exists) {
+                        $('.md3 .photo_show').attr('src', imagePath + '/' + data.photo);
+                    } else {
+                        $('.md3 .photo_show').attr('src', defaultImage);
+                    }
+                }
+            });
+
+            $('.md3 .photo_show').attr('src', '');
             let dataCV = JSON.parse(data.cv);
             $('.cv-list').empty();
             $('.certificate_list').empty();
@@ -992,10 +1012,13 @@
             $('.md3 input[name="military_service"][value="' + data.military_service + '"]').prop('checked', true);
             $('.md3 .date_of_birth').val(data.date_of_birth);
             $('.md3 .phone_number').val(data.phone_number);
-            $('.md3 .passport_number').val(data.passport_number);
-            $('.md3 .passport_place_issue').val(data.passport_place_issue);
-            $('.md3 .passport_issue_date').val(data.passport_issue_date);
-            $('.md3 .passport_expiry_date').val(data.passport_expiry_date);
+            let dataPassport = JSON.parse(data.passport);
+            if(dataPassport[0]){
+                $('.md3 .passport_number').val(dataPassport[0].passport_number);
+                $('.md3 .passport_place_issue').val(dataPassport[0].passport_place_issue);
+                $('.md3 .passport_issue_date').val(dataPassport[0].passport_issue_date);
+                $('.md3 .passport_expiry_date').val(dataPassport[0].passport_expiry_date);
+            }
             $('.md3 .cic_number').val(data.cic_number);
             $('.md3 .cic_place_issue').val(data.cic_place_issue);
             $('.md3 .cic_issue_date').val(data.cic_issue_date);
@@ -1003,20 +1026,44 @@
             $('.md3 .current_residence').val(data.current_residence);
             $('.md3 .permanent_address').val(data.permanent_address);
             $('.md3 .medical_checkup_date').val(data.medical_checkup_date);
-            $('.md3 .job_title select').val(data.job_title);
-            $('.md3 .job_category select').val(data.job_category);
-            $('.md3 .job_position select').val(data.job_position);
-            $('.md3 .job_team select').val(data.job_team);
-            $('.md3 .job_level select').val(data.job_level);
+            $('.md3 .job_title').val(data.id_job_title);
+            $('.md3 .job_category').val(data.id_job_category);
+            $('.md3 .job_position').val(data.id_job_position);
+            $('.md3 .job_team').val(data.id_job_team);
+            $('.md3 .job_level').val(data.id_job_level);
             $('.md3 .email').val(data.email);
             $('.md3 .start_date').val(data.start_date);
             $('.md3 .end_date').val(data.end_date);
-            $('.md3 .job_type_contract select').val(data.job_type_contract);
-            $('.md3 .job_country select').val(data.job_country);
-            $('.md3 .job_location select').val(data.job_location);
+            $('.md3 .job_type_contract').val(data.id_job_type_contract);
+            $('.md3 .job_country').val(data.id_job_country);
+            $('.md3 .job_location').val(data.id_job_location);
             $('.md3 .modal-title').text('Update Employee');
             $('.md3').modal('show');
 
+        })
+        $('.at4').click(function () {
+            var id = $(this).attr('data');
+            if (confirm("Do you want to remove this employee?")){
+                $.ajax({
+                    url: _delete,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {'id':id},
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    }
+                });
+            }
         })
         function populateCountrySelect(selectElementId, countrySelete) {
             $(document).ready(function() {
