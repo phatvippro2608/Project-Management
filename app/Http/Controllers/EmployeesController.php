@@ -55,6 +55,62 @@ class EmployeesController extends Controller
         }
     }
     function post(Request $request){
+        $dataEmployee = json_decode($request->dataEmployee, true);
+        $dataPassport = json_decode($request->dataPassport, true);
+        $dataContact = json_decode($request->dataContact, true);
+        $dataJob = json_decode($request->dataJob, true);
+        $id_employee = $request->id_employee;
+        $id_contact = $request->id_contact;
+
+        try {
+            $employeeExists = DB::table('employees')->where('id_employee', $id_employee)->exists();
+            if ($employeeExists) {
+                DB::table('employees')
+                    ->where('id_employee', $id_employee)
+                    ->update($dataEmployee);
+            } else {
+                $dataEmployee['id_employee'] = $id_employee;
+                DB::table('employees')->insert($dataEmployee);
+            }
+
+            $passportExists = DB::table('passport')->where('id_employee', $id_employee)->exists();
+            if ($passportExists) {
+                DB::table('passport')
+                    ->where('id_employee', $id_employee)
+                    ->update($dataPassport);
+            } else {
+                $dataPassport['id_employee'] = $id_employee;
+                DB::table('passport')->insert($dataPassport);
+            }
+
+            $contactExists = DB::table('contacts')->where('id_contact', $id_contact)->exists();
+            if ($contactExists) {
+                DB::table('contacts')
+                    ->where('id_contact', $id_contact)
+                    ->update($dataContact);
+            } else {
+                $dataContact['id_contact'] = $id_contact;
+                DB::table('contacts')->insert($dataContact);
+            }
+
+            $jobDetailExists = DB::table('job_detail')->where('id_employee', $id_employee)->exists();
+            if ($jobDetailExists) {
+                DB::table('job_detail')
+                    ->where('id_employee', $id_employee)
+                    ->update($dataJob);
+            } else {
+                $dataJob['id_employee'] = $id_employee;
+                DB::table('job_detail')->insert($dataJob);
+            }
+
+            DB::commit();
+
+            return json_encode((object)["status" => 200, "message" => "Action Success"]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return json_encode((object)["status" => 500, "message" => "Action Failed"]);
+        }
+
 
     }
 
@@ -126,6 +182,7 @@ class EmployeesController extends Controller
     public function checkFileExists(Request $request)
     {
         $filePath = public_path($request->input('path'));
+        Log::info($filePath);
         return response()->json(['exists' => file_exists($filePath)]);
     }
 }
