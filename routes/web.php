@@ -85,6 +85,7 @@ Route::post('/progress', [TaskController::class, 'create'])->name('task.create')
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
 Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
 Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
+Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
