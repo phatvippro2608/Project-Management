@@ -164,15 +164,22 @@
                                     <a class="btn" onclick="c_addSubTask()"><i class="bi bi-plus"></i>Add</a>
                                 </div>
                                 <div class="form-group" style="margin: 2% 0;">
-                                    <label class="form-group"><strong><i class="bi bi-body-text"></i>
-                                            Request</strong></label>
+                                    <label class="form-group">
+                                        <strong>
+                                            <i class="bi bi-body-text"></i>
+                                            Request
+                                        </strong>
+                                    </label>
                                     <textarea class="form-control" placeholder="Enter your request" style="resize: none;" name="request"></textarea>
                                 </div>
                             </div>
                             <div class="form-group col-6" style="border-left: 1px solid;">
                                 <div class="form-group">
-                                    <label for="users"><strong><i class="bi bi-person-circle"></i>
-                                            Assigned</strong></label>
+                                    <label for="users"><strong>
+                                            <i class="bi bi-person-circle"></i>
+                                            Assigned
+                                        </strong>
+                                    </label>
                                     <input class="form-control" type="text" name="users" autocomplete="off"
                                         placeholder="Search..." onfocus="showDropdown(this)">
                                     <div class="dropdown-content">
@@ -183,8 +190,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
-                                    <label for="s_date"><strong><i class="bi bi-calendar"></i> Start
-                                            date</strong></label>
+                                    <label for="s_date">
+                                        <strong>
+                                            <i class="bi bi-calendar"></i>
+                                            Start date
+                                        </strong>
+                                    </label>
                                     <input class="form-control" type="date" onchange="checkDate()" name="s_date">
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
@@ -479,6 +490,7 @@
             e.preventDefault();
             var form = $(this);
             var data = form.serialize();
+            data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
                 url: '{{ route('task.create') }}',
@@ -615,6 +627,7 @@
             e.preventDefault();
             var form = $(this);
             var data = form.serialize();
+            data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
                 url: '{{ route('task.update') }}',

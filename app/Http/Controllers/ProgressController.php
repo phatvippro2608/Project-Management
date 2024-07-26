@@ -25,13 +25,14 @@ class ProgressController extends Controller
     function getViewHasID($id)
     {
         $phases = DB::table("phases")->where('project_id', $id)->get();
+        
         $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
         $subtasks = DB::table('sub_tasks')
             ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
             ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
             ->select('sub_tasks.*')
             ->get();
-        return view('auth.progress.progress', compact('tasks', 'subtasks'));
+        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id'));
     }
 
     public function updateItem(Request $request)
