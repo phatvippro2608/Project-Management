@@ -427,6 +427,18 @@
                     this.value = labor_price.slice(0, 9);
                 }
             });
+
+            $('#materialsTable').on('click', '.delete-btn', function() {
+                var row = $(this).closest('tr');
+                row.remove();
+                reindexRows();
+            });
+
+            function reindexRows() {
+                $('#materialsTable tbody tr').each(function(index) {
+                    $(this).find('td:first').text(index + 1);
+                });
+            }
         });
     </script>
 @endsection
