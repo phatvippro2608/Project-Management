@@ -124,6 +124,10 @@ class AccountController extends Controller
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
+
+        if(AccountModel::where('id_employee',$id_employee)->where('id_account','!=',$id_account)->count()>=1){
+            return $this->status('Tài khoản đã tồn tại', 500);
+        };
 //        $auto_pwd = $request->input('auto_pwd');
 //
 //        if($auto_pwd == 'true')
