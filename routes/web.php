@@ -99,4 +99,5 @@ Route::get('/project/{id}/budget/edit/{costGroupId}', [\App\Http\Controllers\Pro
 
 
 //Inventory Management
+
 Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
