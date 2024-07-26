@@ -41,9 +41,9 @@
                                         )
                                         ->first();
 
-                                    $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                                    $photoPath = asset($data->photo);
                                     $defaultPhoto = asset('assets/img/avt.png');
-                                    $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                                    $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
 
 
                             @endphp
@@ -139,7 +139,7 @@
                                             <div class="row">
                                                 <div class="col-md-2 position-relative text-center">
                                                     <img
-
+                                                        id="profileImage"
                                                         src="{{$photoExists ? $photoPath : $defaultPhoto}}"
                                                         alt="Profile" class="rounded-circle object-fit-cover" width="100"
                                                         height="100">
