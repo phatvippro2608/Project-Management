@@ -22,8 +22,10 @@
                             ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
                             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
                             ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                            ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                            ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
                             ->where(
-                            'id_account',
+                            'account.id_account',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
@@ -35,7 +37,7 @@
                             src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
                             class="rounded-circle object-fit-cover" width="100" height="100">
                         <h2>{{$data->first_name  . ' ' . $data->last_name }}</h2>
-                        <h3>{{$data->id_job_position}}</h3>
+                        <h3>{{$data->position_name}}</h3>
                     </div>
                 </div>
 
@@ -87,12 +89,12 @@
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Job</div>
-                                    <div class="col-lg-9 col-md-8">{{$data->id_job_position}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->position_name}}</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Country</div>
-                                    <div class="col-lg-9 col-md-8">{{$data->id_job_country}}</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->country_name}}</div>
                                 </div>
 
                                 <div class="row">
@@ -220,38 +222,33 @@
                                 <!-- Change Password Form -->
                                 <form>
                                     <div class="row mb-3">
-                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current
-                                            Password</label>
+                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="password" type="password" class="form-control"
-                                                   id="currentPassword">
+                                            <input name="current_password" type="password" class="form-control" id="currentPassword" required>
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New
-                                            Password</label>
+                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="newpassword" type="password" class="form-control"
-                                                   id="newPassword">
+                                            <input name="new_password" type="password" class="form-control" id="newPassword" required>
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
-                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New
-                                            Password</label>
+                                        <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
                                         <div class="col-md-8 col-lg-9">
-                                            <input name="renewpassword" type="password" class="form-control"
-                                                   id="renewPassword">
+                                            <input name="renew_password" type="password" class="form-control" id="renewPassword" required>
                                         </div>
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-primary">Change Password</button>
+                                        <button type="button" class="btn btn-primary btnChangePwd">Change Password</button>
                                     </div>
-                                </form><!-- End Change Password Form -->
-
+                                </form>
+{{--                                        <button class="btnChangePwd">dfsfs</button>--}}
                             </div>
+
 
                         </div><!-- End Bordered Tabs -->
 
@@ -329,5 +326,34 @@
                 }
             });
         })
+
+        $('.btnChangePwd').click(function (event) {
+            $.ajax({
+                url: '{{ action('App\Http\Controllers\ProfileController@changePassword')}}',
+                type: "POST",
+                data: {
+                    '_token': "{{ csrf_token() }}",
+                    'currentPassword': $('#currentPassword').val(),
+                    'newPassword': $('#newPassword').val(),
+                    'renewPassword': $('#renewPassword').val(),
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Lưu thành công");
+                        setTimeout(function () {
+                            location.reload()
+                        }, 500);
+                    } else if (result.status === 400) {
+                        toastr.error(result.message, "Lỗi");
+                    } else {
+                        toastr.error(result.message, "Thao tác thất bại");
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
     </script>
 @endsection

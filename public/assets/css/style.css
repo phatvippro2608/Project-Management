@@ -1213,3 +1213,12 @@ h6 {
     left: 0;
     cursor: pointer;
 }
+
+.card-hover{
+    transition: background-color 0.2s linear;
+}
+
+.card-hover:hover{
+    background-color: rgba(0,0,0,0.05);
+    cursor: pointer;
+}
