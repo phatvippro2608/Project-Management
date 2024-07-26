@@ -120,7 +120,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i>Lịch sử</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Todo list</h4>
                 <div class="row">
                     <div class="col-lg-12 border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                         <div class="row">
