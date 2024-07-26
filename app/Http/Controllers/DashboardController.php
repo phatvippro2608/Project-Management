@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $task_c = DB::table('tasks')->count();
         $sub_c = DB::table('sub_tasks')->count();
 
-        $sql = "SELECT projects.project_name, TIME(recent_project.created_at) as created_at FROM account, recent_project, projects WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id AND DATE(recent_project.created_at) = CURDATE()  LIMIT 5";
+        $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at FROM account, recent_project, projects WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id AND DATE(recent_project.created_at) = CURDATE()  LIMIT 5";
         $recent_project = DB::select($sql);
 
         return view('auth.dashboard.dashboard',[

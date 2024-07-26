@@ -20,8 +20,7 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
-        $sql = "SELECT password FROM account WHERE username = $request->username or email = $request->username LIMIT 1";
-//        $account = AccountModel::where('username', $request->username)->first();
+        $sql = "SELECT * FROM account WHERE username = '$request->username' or email = '$request->username' LIMIT 1";
         $account = DB::select($sql);
         if (!$account) {
             return redirect()
@@ -29,10 +28,10 @@ class LoginController extends Controller
                 ->with('msg', 'Username or password is incorrect');
         }
 
-        if (password_verify($request->password, $account['password'])) {
+        if (password_verify($request->password, $account[0]->password)) {
             $request->session()->put(StaticString::SESSION_ISLOGIN, true);
-            $request->session()->put(StaticString::PERMISSION, $account['permission']);
-            $request->session()->put(StaticString::ACCOUNT_ID, $account['id_account']);
+            $request->session()->put(StaticString::PERMISSION, $account[0]->permission);
+            $request->session()->put(StaticString::ACCOUNT_ID, $account[0]->id_account);
             return redirect()->action('App\Http\Controllers\DashboardController@getViewDashboard');
         }
 
