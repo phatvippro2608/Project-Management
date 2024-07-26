@@ -275,7 +275,7 @@
         zoomMax: 365.25 * 24 * 60 * 60 * 1000 * 5,
         editable: {
             add: false,
-            updateTime: false,
+            updateTime: true,
             updateGroup: false,
         },
         itemsAlwaysDraggable: {
@@ -305,6 +305,39 @@
             container.insertAdjacentElement("beforeEnd", button);
             return container;
         },
+        // onMove: function(e) {
+        //         var csrfToken = document.getElementById('csrf-token')?.value;
+        //         if (!csrfToken) {
+        //             console.error('CSRF token is missing.');
+        //             return;
+        //         }
+        //         var itemId = e.group;
+        //         if (!itemId) {
+        //             console.error('Item ID is missing.');
+        //             return;
+        //         }
+        //         var startDate = e.start?.toISOString().slice(0, 10);
+        //         var endDate = e.end?.toISOString().slice(0, 10);
+
+        //         var data = {
+        //             item_id: itemId,
+        //             start_date: startDate,
+        //             end_date: endDate,
+        //         };
+        //         fetch('/update-item', {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': csrfToken,
+        //                 },
+        //                 body: JSON.stringify(data),
+        //             })
+        //             .then(response => response.json())
+        //             .catch(error => {
+        //                 console.error('Error:', error);
+        //             });
+        //     },
+
     };
     var timeline = new vis.Timeline(container);
     timeline.setOptions(options);
