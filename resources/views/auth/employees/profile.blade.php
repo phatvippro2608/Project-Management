@@ -126,13 +126,6 @@
 
                                                         src="{{$photoExists ? $photoPath : $defaultPhoto}}"
                                                         alt="Profile" class="rounded-circle object-fit-cover" width="100"
-
-                                                        id="profileImage"
-                                                        src="{{asset('/uploads/'.$profiles['profiles']->id_employee.'/'.$profiles['profiles']->photo)}}"
-                                                        alt="Profile"
-                                                        class="rounded-circle object-fit-cover"
-                                                        width="100"
-
                                                         height="100">
                                                     <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-camera text-white fw-bold fs-2"></i>
