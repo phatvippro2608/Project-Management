@@ -1,5 +1,7 @@
 .account-photo {
     max-height: 36px!important;
+    width: 36px!important;
+    height: 36px!important;
 }
 
 .account-list tr:hover td{
