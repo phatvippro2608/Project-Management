@@ -22,13 +22,16 @@ use App\StaticString; ?>
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
@@ -38,7 +41,9 @@ use App\StaticString; ?>
 
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
+
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
     @yield('head')
 
 </head>
@@ -170,7 +175,9 @@ use App\StaticString; ?>
 
                         <li class="message-item">
                             <a href="#">
+
                                 <img src="{{ asset('assets/img/messages-2.jpg') }}" alt="" class="rounded-circle">
+
                                 <div>
                                     <h4>Anna Nelson</h4>
                                     <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -204,37 +211,46 @@ use App\StaticString; ?>
 
                 </li>
                 @php
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                ->where(
-                'id_account',
-                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                )
-                ->first();
+
+                    $data = \Illuminate\Support\Facades\DB::table('account')
+                                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                                ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                                ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                                ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                                ->where(
+                                'account.id_account',
+                                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                                )
+                                ->first();
                 @endphp
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        @php
+                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
+                            $defaultPhoto = asset('assets/img/avt.png');
+                            $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
+                        @endphp
 
-                        <img src="{{asset('/uploads/'.$data->id_employee.'/'.$data->photo)}}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
-
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
                         <span class="d-none d-md-block dropdown-toggle ps-2">
+                        {{$data->last_name . " " . $data->first_name}}
+                    </span>
 
-                            {{ $data->last_name . ' ' . $data->first_name }}
-                        </span>
                     </a>
-
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                            <span>{{ $data->id_job_title }}</span>
+                            <span>{{ $data->position_name }}</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
                         <li>
+
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('App\Http\Controllers\ProfileController@getViewProfile') }}">
+
                                 <i class="bi bi-person"></i>
                                 <span>My Profile</span>
                             </a>
@@ -264,7 +280,9 @@ use App\StaticString; ?>
                         </li>
 
                         <li>
+
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('App\Http\Controllers\LoginController@logOut') }}">
+
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sign Out</span>
                             </a>
@@ -276,6 +294,7 @@ use App\StaticString; ?>
         </nav>
 
     </header>
+
 
 
     <aside id="sidebar" class="sidebar">
@@ -338,12 +357,23 @@ use App\StaticString; ?>
                         </a>
                     </li>
                 </ul>
+
                 @endif
             </li>
 
+            @php
+                $data = \Illuminate\Support\Facades\DB::table('account')
+                    ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                    ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                    ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+                    ->first();
+            @endphp
+
             <li class="nav-item">
+
                 <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-calendar-check"></i><span>Attendance</span><i class="bi bi-chevron-down ms-auto"></i>
+
                 </a>
                 <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -399,7 +429,9 @@ use App\StaticString; ?>
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
+
                     <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -413,11 +445,6 @@ use App\StaticString; ?>
                             <i class="bi bi-circle"></i><span>Project Manager</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ action([\App\Http\Controllers\ProgressController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Progress</span>
-                        </a>
-                    </li>
                 </ul>
             </li>
 
@@ -428,17 +455,23 @@ use App\StaticString; ?>
             </li>
 
             <li class="nav-item">
+
                 <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse" href="#">
+
                     <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
+
                         <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
+
                             <i class="bi bi-circle"></i><span>Dashboard</span>
                         </a>
                     </li>
                     <li>
+
                         <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
+
                             <i class="bi bi-basket-fill"></i><span>Material Management</span>
                         </a>
                     </li>
@@ -473,7 +506,9 @@ use App\StaticString; ?>
     {{-- </div> --}}
     {{-- </footer> --}}
 
+
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
 

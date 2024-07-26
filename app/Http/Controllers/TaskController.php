@@ -45,10 +45,12 @@ class TaskController extends Controller
             'users' => 'nullable|string',
             's_date' => 'required|date',
             'e_date' => 'required|date|after_or_equal:s_date',
+            'id' => 'required|integer|exists:projects,id',
         ]);
 
         $task = TaskModel::create([
             'task_name' => $validatedData['taskname'],
+            'phase_id'=> $validatedData['request'],
             'request' => $validatedData['request'],
             'engineers' => $validatedData['users'],
             'start_date' => $validatedData['s_date'],
@@ -93,6 +95,7 @@ class TaskController extends Controller
             'users' => 'nullable|string',
             's_date' => 'nullable|date',
             'e_date' => 'nullable|date|after_or_equal:s_date',
+            'id' => 'required|integer|exists:projects,id',
         ]);
         //$id được tách từ task_id để lấy id của task và loại task
         $idtype = explode('_', $validatedData['task_id'])[0];
@@ -114,6 +117,7 @@ class TaskController extends Controller
                     if ($subtask) {
                         $subtask->sub_task_name = $value;
                         $subtask->save();
+                        $subtask_ids[] = explode('_', $key)[1];
                         $subtask_ids[] = explode('_', $key)[1];
                     } else {
                         $subtask = SubTaskModel::create([

@@ -27,12 +27,15 @@
                             </div>
                             <div class="ms-auto text-secondary">
                                 <div class="search-container w-100">
-                                    <form method="GET" action="{{ action('App\Http\Controllers\AccountController@getView') }}" class="d-flex w-100">
+                                    <form method="GET"
+                                          action="{{ action('App\Http\Controllers\AccountController@getView') }}"
+                                          class="d-flex w-100">
                                         <input name="keyw" type="text"
                                                value="{{ request()->input('keyw') }}"
                                                class="form-control form-control-md" aria-label="Search invoice"
                                                placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i class="bi bi-search search-button"></i></button>
+                                        <button type="submit" class="btn btn-link p-0"><i
+                                                class="bi bi-search search-button"></i></button>
                                     </form>
                                 </div>
                             </div>
@@ -45,7 +48,7 @@
                                 <tr>
                                     <th style="width: 112px"></th>
                                     <th class="text-center">Full Name</th>
-                                    <th class="text-center">Gmail</th>
+                                    <th class="text-center">Email</th>
                                     <th class="text-center">Username</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Last Updated</th>
@@ -55,7 +58,7 @@
                                 <tbody class="account-list">
                                 @foreach($account as $item)
                                     <tr class="account-item">
-                                        <td class="text-right">
+                                        <td class="text-center">
                                             <div class="d-flex align-items-center justify-content-center">
                                                 <div class="action-buttons ">
                                                     <a class=" edit">
@@ -67,8 +70,7 @@
                                                            data="{{ $item->id_account }}"></i>
                                                     </a>
                                                 </div>
-                                                <img src="http://ventech.local/assets/img/profile-img.jpg" alt=""
-                                                     class="account-photo rounded-circle p-0 m-0">
+                                                <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
                                             </div>
 
                                         </td>
@@ -130,6 +132,12 @@
                     <div class="row">
                         <div class="col-md-12" style="margin-top: 1rem">
                             <label for="">
+                                Email
+                            </label>
+                            <input type="email" class="form-control email">
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="">
                                 Username
                             </label>
                             <input type="text" class="form-control name2">
@@ -171,11 +179,36 @@
 @endsection
 @section('script')
     <script>
+        function generatePassword(length) {
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const specialCharacters = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+            const allCharacters = uppercase + lowercase + numbers + specialCharacters;
+
+            let password = '';
+
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * allCharacters.length);
+                password += allCharacters[randomIndex];
+            }
+
+            return password;
+        }
+
+        $('.name3').val(generatePassword(20));
         $('.name3').prop('disabled', $('.auto_pwd').is(':checked'));
         $('.auto_pwd').change(function () {
             $('.name3').prop('disabled', $('.auto_pwd').is(':checked'));
+            if ($('.auto_pwd').is(':checked'))
+                $('.name3').val(generatePassword(20));
+            else
+                $('.name3').val('');
         })
-
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add Account');
             $('.md1 .passName').text('Password');
@@ -183,6 +216,17 @@
             $('.md1').modal('show');
 
             $('.at2').click(function () {
+
+                if (!validateEmail($('.email').val())) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                if ($('.name2').val().trim() === '') {
+                    alert('Please enter a username.');
+                    return;
+                }
+
                 $.ajax({
                     url: `{{action('App\Http\Controllers\AccountController@add')}}`,
                     type: "PUT",
@@ -192,6 +236,7 @@
                     data: {
                         'id_employee': $('.name1').val(),
                         'username': $('.name2').val(),
+                        'email': $('.email').val(),
                         'password': $('.name3').val(),
                         'status': $('.name4').val(),
                         'permission': $('.name5').val(),
@@ -220,11 +265,26 @@
             var data = JSON.parse($(this).attr('data'));
             $('.name1').val(data.id_employee);
             $('.name2').val(data.username);
+            $('.email').val(data.email);
+            $('.name3').val('');
+            $('.name3').prop('disabled',false);
+            $('.auto_pwd').prop('checked',false);
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
             $('.md1').modal('show');
 
             $('.at2').click(function () {
+
+                if (!validateEmail($('.email').val())) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+
+                if ($('.name2').val().trim() === '') {
+                    alert('Please enter a username.');
+                    return;
+                }
+
                 $.ajax({
                     url: `{{action('App\Http\Controllers\AccountController@update')}}`,
                     type: "POST",
@@ -235,6 +295,7 @@
                         'id_account': data.id_account,
                         'id_employee': $('.name1').val(),
                         'username': $('.name2').val(),
+                        'email': $('.email').val(),
                         'password': $('.name3').val(),
                         'status': $('.name4').val(),
                         'permission': $('.name5').val(),

@@ -43,4 +43,11 @@ class EmployeeModel extends Model
             'jobLocation' => $jobLocation,
         ];
     }
+    public function getTypeCertificate(){
+        return DB::table('certificate_type')->get();
+    }
+    public static function getMedicalCheckUp(){
+        return DB::table('medical_checkup')->get();
+    }
+
 }
