@@ -20,16 +20,16 @@ class DepartmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'department_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
         ]);
 
-        $department = DepartmentModel::create($request->all());
+        $department = DepartmentModel::create($validated);
+
         return response()->json([
             'success' => true,
-            'message' => 'Department created successfully.',
             'department' => $department,
+            'message' => 'Department added successfully',
         ]);
     }
 

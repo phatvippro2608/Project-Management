@@ -50,4 +50,5 @@ class EmployeeModel extends Model
         return DB::table('medical_checkup')->get();
     }
 
+
 }
