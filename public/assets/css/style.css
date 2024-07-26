@@ -1220,4 +1220,5 @@ h6 {
 
 .card-hover:hover{
     background-color: rgba(0,0,0,0.05);
+    cursor: pointer;
 }
