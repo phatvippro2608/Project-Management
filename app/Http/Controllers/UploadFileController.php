@@ -81,7 +81,7 @@ class UploadFileController extends Controller
         DB::table('employees')
             ->where('id_employee', $id_employee)
             ->update([
-                'photo' => $photo_filename,
+                'photo' => 'uploads/'.$id_employee . '/' . $photo_filename,
                 'cv' => json_encode($uploadedPersonalFiles),
             ]);
 //        DB:table('contacts')->insert([])
