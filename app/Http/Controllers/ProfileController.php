@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountModel;
 use App\Models\EmployeeModel;
 use App\Models\ProfileModel;
+use App\StaticString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +15,7 @@ class ProfileController extends Controller
     {
         $data = new ProfileModel();
         $employee = new EmployeeModel();
-//        dd($data->getProfile());
+//        dd($employee->getAllJobDetails());
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
                                                     'dataEmployee' => $employee->getAllJobDetails()]);
 
@@ -39,4 +41,32 @@ class ProfileController extends Controller
 
     }
 
+
+    function changePassword(Request $request)
+    {
+
+        $currentPassword = $request->input('currentPassword');
+        $newPassword = $request->input('newPassword');
+        $renewPassword = $request->input('renewPassword');
+
+        if ($newPassword !== $renewPassword) {
+            return json_encode((object)["status" => 400, "message" => "Mật khẩu mới không khớp"]);
+        }
+
+        $id_account = $request->session()->get(StaticString::ACCOUNT_ID);
+        $account = AccountModel::where('id_account', $id_account)->first();
+
+        if (!$account || !password_verify($currentPassword, $account->password)) {
+            return json_encode((object)["status" => 400, "message" => "Mật khẩu hiện tại không đúng"]);
+        }
+
+        $hashPass = password_hash($renewPassword, PASSWORD_BCRYPT);
+        $account->password = $hashPass;
+        $account->save();
+
+        if ($account->save()) {
+            return json_encode((object)["status" => 200, "message" => "Đổi mật khẩu thành công"]);
+        }
+        return json_encode((object)["status" => 500, "message" => "Đổi mật khẩu thất bại"]);
+    }
 }
