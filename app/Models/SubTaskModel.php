@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskModel extends Model
+class SubTaskModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'tasks';
-    protected $primaryKey = 'task_id';
+    protected $table = 'sub_tasks';
+    protected $primaryKey = 'sub_task_id';
 
     protected $fillable = [
-        'task_name',
+        'sub_task_name',
+        'task_id',
         'request',
-        'engineers',
         'start_date',
         'end_date',
     ];

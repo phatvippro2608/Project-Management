@@ -93,3 +93,38 @@
     onscroll(document, toggleBacktotop)
   }
 })();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(link => {
+        if (link.href === window.location.href) {
+            link.classList.remove('collapsed');
+        }else{
+            link.classList.add('collapsed');
+        }
+    });
+});
+
+const btnPhoto = document.querySelector('.btn_photo')
+const overlays = document.querySelectorAll('.overlay-upload');
+const fileInput = document.getElementById('fileInput');
+const profileImage = document.getElementById('profileImage');
+
+overlays.forEach(overlay => {
+    overlay.addEventListener('click', function() {
+        fileInput.click();
+    });
+});
+
+
+fileInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            profileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    btnPhoto.classList.remove('d-none')
+});
