@@ -331,7 +331,7 @@ use App\StaticString; ?>
                 <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Deparment</span>
+                            <i class="bi bi-bar-chart-fill"></i><span>Deparment</span>
                         </a>
                     </li>
                     <li>
@@ -424,7 +424,7 @@ use App\StaticString; ?>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ action([\App\Http\Controllers\HolidaysController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Holiday</span>
+                            <i class="bi bi-balloon-heart"></i><span>Holiday</span>
                         </a>
                     </li>
                     <li>
@@ -466,7 +466,7 @@ use App\StaticString; ?>
                     </li>
                     <li>
                         <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Project Manager</span>
+                            <i class="bi bi-box-seam-fill"></i><span>Project Manager</span>
                         </a>
                     </li>
                     <li>
