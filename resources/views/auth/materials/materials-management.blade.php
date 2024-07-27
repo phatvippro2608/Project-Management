@@ -260,7 +260,7 @@
                     data: $(this).serialize(),
                     success: function(response) {
                         if (response.success) {
-                            alert(response.message);
+                            toastr.success(response.message, "Successful");
 
                             const formatter = new Intl.NumberFormat('de-DE', {
                                 useGrouping: true
@@ -315,7 +315,7 @@
                         }
                     },
                     error: function(xhr) {
-                        alert('An error occurred.');
+                        toastr.error(response.message, "Error");
                     }
                 });
             });
@@ -324,28 +324,50 @@
                 var materialId = $(this).data('id');
                 var row = $(this).closest('tr');
 
-                if (confirm('Are you sure you want to delete this material?')) {
-                    $.ajax({
-                        url: '{{ url('materials') }}/' + materialId,
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                alert(response.message);
-                                table.row(row).remove().draw();
-                                updateTotals(response.sub_total, response.vat_of_goods, response
-                                    .grand_total);
-                            } else {
-                                alert('Failed to delete the material.');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ url('materials') }}/' + materialId,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        response.message,
+                                        'success'
+                                    );
+                                    table.row(row).remove().draw();
+                                    updateTotals(response.sub_total, response
+                                        .vat_of_goods, response.grand_total);
+                                } else {
+                                    Swal.fire(
+                                        'Failed!',
+                                        'Failed to delete the material.',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function(xhr) {
+                                Swal.fire(
+                                    'Error!',
+                                    'An error occurred.',
+                                    'error'
+                                );
                             }
-                        },
-                        error: function(xhr) {
-                            alert('An error occurred.');
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
 
             $('#materialsTable').on('click', '.edit-btn', function() {

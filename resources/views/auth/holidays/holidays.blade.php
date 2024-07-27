@@ -196,7 +196,7 @@
                     success: function(response) {
                         if (response.success) {
                             $('#addHolidayModal').modal('hide');
-                            toastr.success(response.message, "Lưu thành công");
+                            toastr.success(response.message, "Successful");
 
                             $('#holidaysTable').DataTable().row.add([
                                 response.holiday.name,
@@ -219,7 +219,7 @@
                         }
                     },
                     error: function(xhr) {
-                        toastr.error(response.message, "Thao tác thất bại");
+                        toastr.error(response.message, "Error");
                     }
                 });
             });
@@ -291,87 +291,112 @@
                 var holidaysID = $(this).data('id');
                 var row = $(this).parents('tr');
 
-                if (confirm('Are you sure you want to delete this holiday?')) {
-                    $.ajax({
-                        url: '{{ url('holidays') }}/' + holidaysID,
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                toastr.success(response.message, "Deleted successfully");
-                                table.row(row).remove().draw();
-                            } else {
-                                toastr.error("Failed to delete holiday.", "Operation Failed");
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ url('holidays') }}/' + holidaysID,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    toastr.success(response.message,
+                                        "Deleted successfully");
+                                    table.row(row).remove().draw();
+                                } else {
+                                    toastr.error("Failed to delete holiday.",
+                                        "Operation Failed");
+                                }
+                            },
+                            error: function(xhr) {
+                                toastr.error("An error occurred.", "Operation Failed");
                             }
-                        },
-                        error: function(xhr) {
-                            toastr.error("An error occurred.", "Operation Failed");
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
 
-            const startDateInput = document.getElementById('start_date');
-            const endDateInput = document.getElementById('end_date');
-            const daysInput = document.getElementById('days');
-            const monthYearInput = document.getElementById('month_year');
 
-            const today = new Date().toISOString().split('T')[0];
-            startDateInput.setAttribute('min', today);
+            function addDateValidation(startDateInput, endDateInput, daysInput, monthYearInput) {
+                function calculateDays() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
 
-            function calculateDays() {
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
+                    if (startDate && endDate && startDate <= endDate) {
+                        const timeDiff = endDate.getTime() - startDate.getTime();
+                        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                        daysInput.value = daysDiff;
 
-                if (startDate && endDate && startDate <= endDate) {
-                    const timeDiff = endDate.getTime() - startDate.getTime();
-                    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-                    daysInput.value = daysDiff;
-                } else {
-                    daysInput.value = '';
+                        endDateInput.setAttribute('min', startDateInput.value);
+                    } else {
+                        daysInput.value = '';
+                        endDateInput.removeAttribute('min');
+                    }
+
+                    const minMonthYear = startDate.toISOString().slice(0, 7);
+                    const maxMonthYear = endDate.toISOString().slice(0, 7);
+
+                    monthYearInput.setAttribute('min', minMonthYear);
+                    monthYearInput.setAttribute('max', maxMonthYear);
+
+                    if (new Date(monthYearInput.value + '-01') < startDate || new Date(monthYearInput.value +
+                            '-01') > endDate) {
+                        monthYearInput.value = '';
+                    }
                 }
 
-                const minMonthYear = startDate.toISOString().slice(0, 7);
-                const maxMonthYear = endDate.toISOString().slice(0, 7);
+                function validateEndDate() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
 
-                monthYearInput.setAttribute('min', minMonthYear);
-                monthYearInput.setAttribute('max', maxMonthYear);
+                    if (endDate < startDate) {
+                        endDateInput.value = startDateInput.value;
+                    }
 
-                if (new Date(monthYearInput.value + '-01') < startDate || new Date(monthYearInput.value + '-01') >
-                    endDate) {
-                    monthYearInput.value = '';
+                    calculateDays();
                 }
+
+                function validateDates() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
+
+                    if (endDate < startDate) {
+                        endDateInput.value = startDateInput.value;
+                    }
+
+                    calculateDays();
+                }
+
+                startDateInput.addEventListener('change', validateDates);
+                endDateInput.addEventListener('change', validateDates);
+
+                startDateInput.addEventListener('input', validateDates);
+                endDateInput.addEventListener('input', validateDates);
             }
 
-            function validateEndDate() {
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
 
-                if (endDate < startDate) {
-                    endDateInput.value = startDateInput.value;
-                }
+            addDateValidation(
+                document.getElementById('start_date'),
+                document.getElementById('end_date'),
+                document.getElementById('days'),
+                document.getElementById('month_year')
+            );
 
-                calculateDays();
-            }
-
-            function validateDates() {
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
-
-                if (endDate < startDate) {
-                    endDateInput.value = startDateInput.value;
-                }
-
-                calculateDays();
-            }
-
-            startDateInput.addEventListener('change', validateDates);
-            endDateInput.addEventListener('change', validateDates);
-
-            startDateInput.addEventListener('input', validateDates);
-            endDateInput.addEventListener('input', validateDates);
+            addDateValidation(
+                document.getElementById('edit_start_date'),
+                document.getElementById('edit_end_date'),
+                document.getElementById('edit_days'),
+                document.getElementById('edit_year')
+            );
         });
     </script>
 @endsection
