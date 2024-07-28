@@ -4,8 +4,7 @@
     <style type="text/css">
         #visualization {
             width: 100%;
-            height: 100vh;
-            background: white;
+            height: 80vh;
         }
 
         .vis-subTask {
@@ -69,20 +68,25 @@
             </ol>
         </nav>
     </div>
-    <section class="section employees">
-        <div class="row justify-content-between">
-            <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
-                <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+    <div class="section employees">
+        <div class="card">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
+                        <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+                    </div>
+                    <div class="from-group col-2 float-end d-inline-flex">
+                        <button id="btnD" type="button" style="margin: 0 1%" class="btn btn-primary">Day</button>
+                        <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-primary">Month</button>
+                        <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-primary">Year</button>
+                    </div>
+                </div>
             </div>
-            <div class="from-group col-2 float-end d-inline-flex">
-                <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-primary">Week</button>
-                <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-primary">Month</button>
-                <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-primary">Year</button>
+            <div class="card-body">
+                <div class="from-group" style="margin-top: 1%;">
+                    <div id="visualization"></div>
+                </div>
             </div>
-        </div>
-
-        <div class="from-group" style="margin-top: 1%;">
-            <div id="visualization"></div>
         </div>
 
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
@@ -198,7 +202,7 @@
         </div>
     </div>
     <input type="text" name="csrf-token" hidden value="{{ csrf_token() }}" id="csrf-token">
-    </section>
+    </div>
     <script type="text/javascript">
     var container = document.getElementById('visualization');
     var groups = new vis.DataSet([
@@ -299,9 +303,10 @@
             if (group.id == "create") {
                 button.setAttribute("data-bs-toggle", "modal");
                 button.setAttribute("data-bs-target", "#modalCreateTask");
-                button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
+                button.innerHTML = '<i class="bi bi-plus"></i>' + group.content;
             }
             button.classList.add("btn");
+            button.classList.add("btn-light");
             container.insertAdjacentElement("beforeEnd", button);
             return container;
         },
@@ -333,7 +338,7 @@
         timeline.setGroups(new vis.DataSet(filteredGroups));
     });
 
-    document.getElementById('btnW').addEventListener('click', function() {
+    document.getElementById('btnD').addEventListener('click', function() {
         timeline.setOptions({
             zoomMin: 7 * 24 * 60 * 60 * 1000 * 3,
             zoomMax: 7 * 24 * 60 * 60 * 1000 * 5,
