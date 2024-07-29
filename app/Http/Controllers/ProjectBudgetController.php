@@ -10,6 +10,8 @@ use Validator;
 
 class ProjectBudgetController extends Controller
 {
+    
+
     public function getView($id)
     {
         $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
@@ -29,14 +31,27 @@ class ProjectBudgetController extends Controller
     public function showProjects()
     {
         $submenu = DB::table('projects')->get(); 
-
+        
         return view('auth.show-projects', ['submenu' => $submenu]);
     }
 
     public function showProjectDetail($id)
     {
-        $data = DB::table('projects')->where('project_id', $id)->get();
-        return view('auth.project-budget.project-budget', ['data' => $data, 'id' => $id]);
+        $data = DB::table('projects')->where('project_id', $id)->first();
+        $total = 0;
+        $subtotal1=0;
+        $items=DB::table('project_cost')->where('project_id', $id)->get();
+        foreach($items as $item){
+            $subtotal2=$item->project_cost_labor_qty *
+            $item->project_cost_budget_qty *
+            ($item->project_cost_labor_cost +
+                $item->project_cost_misc_cost +
+                $item->project_cost_ot_budget +
+                $item->project_cost_perdiempay);
+            $subtotal1+=$subtotal2;
+        }
+        $total+= $subtotal1;
+        return view('auth.project-budget.project-budget', ['data' => $data, 'id' => $id, 'total'=>$total]);
     }
     public function editBudget($id){
         $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
@@ -51,6 +66,7 @@ class ProjectBudgetController extends Controller
             'contingency_price' => $contingency_price 
         ]);
     }
+
     public function getBudgetData($id, $costGroupId, $costId)
     {
         // Kiểm tra tham số
@@ -167,16 +183,19 @@ public function createCostGroup(Request $request, $id)
         'newGroupName' => 'required|string|max:255',
     ]);
 
-    $newGroup = new CostGroupModel(); // Replace with your actual model
+    $newGroup = new CostGroupModel(); 
     $newGroup->project_cost_group_name = $request->input('newGroupName');
     $newGroup->save();
 
-    return redirect()->back()->with('success', 'New cost group added successfully.');
+    return response()->json([
+        'success' => true,
+        'message' => 'New cost group added successfully.'
+    ]);
 }
 
 public function getCostGroupDetails(Request $request, $id, $group_id)
 {
-    $costGroup = CostGroupModel::find($group_id); // Replace with your actual model
+    $costGroup = CostGroupModel::find($group_id); 
 
     if ($costGroup) {
         $html = '
@@ -220,12 +239,12 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
             <label for="remark">REMARK</label>
             <textarea class="form-control" id="remark" name="remark">' . htmlspecialchars($costGroup->remark) . '</textarea>
         </div>';
-
         return response()->json(['success' => true, 'html' => $html]);
     } else {
-        return response()->json(['success' => false]);
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
     }
 }
+
 public function addNewCost(Request $request, $id)
 {
     // Validation can be added here

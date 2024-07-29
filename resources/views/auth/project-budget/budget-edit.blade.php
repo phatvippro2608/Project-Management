@@ -1,4 +1,13 @@
 @extends('auth.main')
+@section('head')
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+}
+</style>
+@endsection
 @section('contents')
 <div class="container mt-5">
     <h1 class="mb-4">Edit Budget Project: {{$contingency_price->project_name}}</h1>
