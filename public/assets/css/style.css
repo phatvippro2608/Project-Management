@@ -1222,3 +1222,24 @@ h6 {
     background-color: rgba(0,0,0,0.05);
     cursor: pointer;
 }
+
+.subnav-active{
+    color: #4154f1 !important;
+}
+
+.rounded-checkbox {
+    width:24px;
+    height: 24px;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid black;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+.rounded-checkbox:checked {
+    background-image: url('../img/check.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}

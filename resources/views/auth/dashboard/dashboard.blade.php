@@ -102,17 +102,9 @@
 
             </div>
         </div>
-        </div>
-        <div class="row">
+        <div class="row gy-3">
             <div class="col-lg-8">
                 <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Recent</h4>
-            </div>
-            <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-8">
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">
@@ -141,12 +133,14 @@
                 </div>
             </div>
             <div class="col-lg-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="card bg-white shadow-none">
                             <div class="card-header">
                                 <div class="card-title">{{\App\Http\Controllers\AccountController::getNow()}}</div>
                             </div>
+
 
                         </div>
                         <div class="row">
