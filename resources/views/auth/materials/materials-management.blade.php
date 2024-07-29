@@ -107,7 +107,7 @@
 
         <div class="row mt-4">
             <div class="col-md-8">
-                <table class="table">
+                <table class="table" style="border-radius: 10px; overflow: hidden;">
                     <tbody>
                         <tr>
                             <td>Payment term</td>
@@ -126,7 +126,7 @@
                 </table>
             </div>
             <div class="col-md-4">
-                <table class="table">
+                <table class="table" style="border-radius: 10px; overflow: hidden;">
                     <tbody>
                         <tr>
                             <td><strong>Sub Total</strong></td>
