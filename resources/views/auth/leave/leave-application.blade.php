@@ -76,9 +76,9 @@
                 <tbody>
                 @foreach ($leave_applications as $item)
                     <tr>
-                        <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                        <td>{{$item->employee->first_name }} {{ $item->employee->last_name }}</td>
                         <td>{{$item->pin}}</td>
-                        <td>{{$item->leave_type}}</td>
+                        <td>{{$item->leaveType->leave_type }}</td>
                         <td>{{$item->apply_date}}</td>
                         <td>{{$item->start_date}}</td>
                         <td>{{$item->end_date}}</td>

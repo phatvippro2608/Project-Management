@@ -19,7 +19,7 @@ class LeaveApplicationController extends Controller
             'leave_types'=> LeaveApplicationModel::all(),
             'employee_name' => $employee_name,
             'leave_type' => $leave_type,
-                'leave_applications' => LeaveApplicationModel::with('employee')->get(),
+                'leave_applications' => LeaveApplicationModel::with('employee', 'leaveType')->get(),
             ]);
     }
 

@@ -43,9 +43,9 @@ class LeaveApplicationModel extends Model
         return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id_employee');
     }
 
-//    // Thiết lập mối quan hệ với bảng leave_types
-//    public function leaveType()
-//    {
-//        return $this->belongsTo(LeaveType::class, 'leave_type_id', 'id');
-//    }
+    // Thiết lập mối quan hệ với bảng leave_types
+    public function leaveType()
+    {
+        return $this->belongsTo(LeaveTypeModel::class, 'leave_type', 'id');
+    }
 }
