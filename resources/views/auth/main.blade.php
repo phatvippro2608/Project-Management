@@ -423,7 +423,7 @@ use App\StaticString; ?>
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ action([\App\Http\Controllers\HolidaysController::class, 'getView']) }}">
+                        <a href="{{route('holidays.index')}}">
                             <i class="bi bi-balloon-heart"></i><span>Holiday</span>
                         </a>
                     </li>
@@ -433,7 +433,7 @@ use App\StaticString; ?>
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="{{route('leave-application.index')}}">
                             <i class="bi bi-circle"></i><span>Leave Application</span>
                         </a>
                     </li>

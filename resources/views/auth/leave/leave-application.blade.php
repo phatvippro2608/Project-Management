@@ -32,23 +32,23 @@
                     <li class="breadcrumb-item"><a
                             href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Holidays</li>
+                    <li class="breadcrumb-item active" aria-current="page">Application</li>
                 </ol>
             </nav>
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
-                    <i class="bi bi-plus-circle"></i> Add Holiday
+                <button class="btn btn-primary" id="addApplicationBtn" data-bs-toggle="modal" data-bs-target="#addApplicationModal">
+                    <i class="bi bi-plus-circle"></i> Add Application
                 </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> Leave
-                    Application</button>
+{{--                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> Leave--}}
+{{--                    Application</button>--}}
             </div>
 
         </div>
         <div class="folded-corner bg-white p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Holidays List</h5>
+                <h5 class="mb-0">Application List</h5>
             </div>
             <hr>
             <div class="d-flex justify-content-start mb-3">
@@ -59,35 +59,40 @@
                 <button class="btn btn-primary" id="printBtn">Print</button>
             </div>
             <div class=class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <table id="holidaysTable" class="table table-bordered mt-3 mb-3">
+            <table id="applicationTable" class="table table-bordered mt-3 mb-3">
                 <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Employee Name</th>
+                    <th>PIN</th>
+                    <th>Leave Type</th>
+                    <th>Apply Type</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Days</th>
-                    <th>Year</th>
+                    <th>Duration</th>
+                    <th>Leave Status</th>
                     <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($holidays as $holiday)
+                @foreach ($leave_applications as $item)
                     <tr>
-                        <td>{{ $holiday->name }}</td>
-                        <td>{{ $holiday->start_date }}</td>
-                        <td>{{ $holiday->end_date }}</td>
-                        <td>{{ $holiday->days }}</td>
-                        <td>{{ $holiday->year }}</td>
+                        <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                        <td>{{$item->pin}}</td>
+                        <td>{{$item->leave_type}}</td>
+                        <td>{{$item->apply_date}}</td>
+                        <td>{{$item->start_date}}</td>
+                        <td>{{$item->end_date}}</td>
+                        <td>{{$item->duration}}</td>
+                        <td>{{$item->leave_status}}</td>
                         <td>
                             <button
                                 class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="{{ $holiday->id }}">
+                                data-id="{{$item->id}}">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                            |
                             <button
                                 class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                data-id="{{ $holiday->id }}">
+                                data-id="{{$item->id}}">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </td>
@@ -101,20 +106,45 @@
 
     </div>
 
-    <!-- Add Holiday Modal -->
-    <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
+    <!-- Add Application Modal -->
+    <div class="modal fade" id="addApplicationModal" tabindex="-1" aria-labelledby="addApplicationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addHolidayModalLabel">Add New Holiday</h5>
+                    <h5 class="modal-title" id="addApplicationModalLabel">Add New Application</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addHolidayForm">
+                    <form id="addApplicationForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <label for="name" class="form-label">Employee Name</label>
+{{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
+                            <select class="form-select" aria-label="Default" name="employee_name">
+                                <option value="">No select</option>
+                                @foreach($employee_name as $item)
+                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}
+                                        - {{$item->first_name}} {{$item->last_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">PIN</label>
+                            <input type="text" class="form-control" id="pin" name="pin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Leave Type</label>
+{{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required>--}}
+                            <select class="form-select" aria-label="Default" name="leave_type">
+                                <option value="">No select</option>
+                                @foreach($leave_type as $item)
+                                    <option value="{{$item->id}}">{{$item->leave_type}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Apply Date</label>
+                            <input type="date" class="form-control" id="apply_date" name="apply_date" required>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date</label>
@@ -125,14 +155,14 @@
                             <input type="date" class="form-control" id="end_date" name="end_date" required>
                         </div>
                         <div class="mb-3">
-                            <label for="days" class="form-label">Days</label>
-                            <input type="number" class="form-control" id="days" name="days" readonly>
+                            <label for="end_date" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="duration" name="duration" required>
                         </div>
                         <div class="mb-3">
-                            <label for="month_year" class="form-label">Year</label>
-                            <input type="month" class="form-control" id="month_year" name="year" required>
+                            <label for="days" class="form-label">Leaves Status</label>
+                            <input type="number" class="form-control" id="leave_status" name="leave_status" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Holiday</button>
+                        <button type="submit" class="btn btn-primary">Add Application</button>
                     </form>
                 </div>
             </div>
@@ -141,18 +171,18 @@
 
 
 
-    <div class="modal fade" id="editHolidayModal" tabindex="-1" aria-labelledby="editHolidayModal" aria-hidden="true">
+    <div class="modal fade" id="editApplicationModal" tabindex="-1" aria-labelledby="editApplicationModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editHolidayModalLabel">Edit Holiday</h5>
+                    <h5 class="modal-title" id="editApplicationModalLabel">Edit Application</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editHolidayForm">
+                    <form id="editApplicationForm">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" id="editHolidayId" name="id">
+                        <input type="hidden" id="editApplicationId" name="id">
                         <div class="mb-3">
                             <label for="edit_name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="edit_name" name="name" required>
@@ -173,7 +203,7 @@
                             <label for="edit_year" class="form-label">Year</label>
                             <input type="month" class="form-control" id="edit_year" name="year" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Edit Holiday</button>
+                        <button type="submit" class="btn btn-primary">Edit Application</button>
                     </form>
                 </div>
             </div>
@@ -184,38 +214,41 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            var table = $('#holidaysTable').DataTable();
+            var table = $('#applicationTable').DataTable();
 
-            $('#addHolidayForm').submit(function(e) {
+            $('#addApplicationForm').submit(function(e) {
                 e.preventDefault();
 
                 $.ajax({
-                    url: '{{ route('holidays.store') }}',
+                    url: '{{ route('holidays.add') }}',
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
                         if (response.success) {
-                            $('#addHolidayModal').modal('hide');
+                            $('#addApplicationModal').modal('hide');
                             toastr.success(response.message, "Successful");
 
-                            $('#holidaysTable').DataTable().row.add([
-                                response.holiday.name,
-                                response.holiday.start_date,
-                                response.holiday.end_date,
-                                response.holiday.days,
-                                response.holiday.year,
+                            $('#applicationTable').DataTable().row.add([
+                                response.leave_app.employee_id,
+                                response.leave_app.pin,
+                                response.leave_app.leave_type,
+                                response.leave_app.apply_date,
+                                response.leave_app.start_date,
+                                response.leave_app.end_date,
+                                response.leave_app.duration,
+                                response.leave_app.leave_status,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.leave_app.id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.leave_app.id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
 
-                            $('#addHolidayForm')[0].reset();
+                            $('#addApplicationForm')[0].reset();
                         }
                     },
                     error: function(xhr) {
@@ -224,179 +257,179 @@
                 });
             });
 
-            $('#holidaysTable').on('click', '.edit-btn', function() {
-                var holidaysID = $(this).data('id');
+            // $('#applicationTable').on('click', '.edit-btn', function() {
+            //     var applicationID = $(this).data('id');
+            //
+            //     if (!applicationID) {
+            //         alert('Department ID not found.');
+            //         return;
+            //     }
+            //
+            //     $.ajax({
+            //         url: '' + applicationID + '/edit',
+            //         method: 'GET',
+            //         success: function(response) {
+            //             $('#editApplicationId').val(response.Application.id);
+            //             $('#edit_name').val(response.Application.name);
+            //             $('#edit_start_date').val(response.Application.start_date);
+            //             $('#edit_end_date').val(response.Application.end_date);
+            //             $('#edit_days').val(response.Application.days);
+            //             $('#edit_year').val(response.Application.year);
+            //             $('#editApplicationModal').modal('show');
+            //         },
+            //         error: function(xhr) {}
+            //     });
+            // });
 
-                if (!holidaysID) {
-                    alert('Department ID not found.');
-                    return;
-                }
+            // $('#editApplicationForm').submit(function(e) {
+            //     e.preventDefault();
+            //     var applicationID = $('#editApplicationId').val();
+            //
+            //     $.ajax({
+            //         url: '' + applicationID,
+            //         method: 'PUT',
+            //         data: $(this).serialize(),
+            //         success: function(response) {
+            //             if (response.success) {
+            //                 $('#editApplicationModal').modal('hide');
+            //                 $('#successModal').modal('show');
+            //                 toastr.success(response.response, "Edit successful");
+            //                 var row = table.row($('button[data-id="' + applicationID + '"]')
+            //                     .parents('tr'));
+            //                 row.data([
+            //                     response.Application.name,
+            //                     response.Application.start_date,
+            //                     response.Application.end_date,
+            //                     response.Application.days,
+            //                     response.Application.year,
+            //                     '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
+            //                     response.Application.id + '">' +
+            //                     '<i class="bi bi-pencil-square"></i>' +
+            //                     '</button>' +
+            //                     ' | ' +
+            //                     '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
+            //                     response.Application.id + '">' +
+            //                     '<i class="bi bi-trash3"></i>' +
+            //                     '</button>'
+            //                 ]).draw();
+            //             }
+            //         },
+            //         error: function(xhr) {
+            //             toastr.error("Error");
+            //         }
+            //     });
+            // });
 
-                $.ajax({
-                    url: '{{ url('holidays') }}/' + holidaysID + '/edit',
-                    method: 'GET',
-                    success: function(response) {
-                        $('#editHolidayId').val(response.holiday.id);
-                        $('#edit_name').val(response.holiday.name);
-                        $('#edit_start_date').val(response.holiday.start_date);
-                        $('#edit_end_date').val(response.holiday.end_date);
-                        $('#edit_days').val(response.holiday.days);
-                        $('#edit_year').val(response.holiday.year);
-                        $('#editHolidayModal').modal('show');
-                    },
-                    error: function(xhr) {}
-                });
-            });
+            {{--$('#applicationTable').on('click', '.delete-btn', function() {--}}
+            {{--    var applicationID = $(this).data('id');--}}
+            {{--    var row = $(this).parents('tr');--}}
 
-            $('#editHolidayForm').submit(function(e) {
-                e.preventDefault();
-                var holidaysID = $('#editHolidayId').val();
-
-                $.ajax({
-                    url: '{{ url('holidays') }}/' + holidaysID,
-                    method: 'PUT',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#editHolidayModal').modal('hide');
-                            $('#successModal').modal('show');
-                            toastr.success(response.response, "Edit successful");
-                            var row = table.row($('button[data-id="' + holidaysID + '"]')
-                                .parents('tr'));
-                            row.data([
-                                response.holiday.name,
-                                response.holiday.start_date,
-                                response.holiday.end_date,
-                                response.holiday.days,
-                                response.holiday.year,
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.holiday.id + '">' +
-                                '<i class="bi bi-pencil-square"></i>' +
-                                '</button>' +
-                                ' | ' +
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.holiday.id + '">' +
-                                '<i class="bi bi-trash3"></i>' +
-                                '</button>'
-                            ]).draw();
-                        }
-                    },
-                    error: function(xhr) {
-                        toastr.error("Error");
-                    }
-                });
-            });
-
-            $('#holidaysTable').on('click', '.delete-btn', function() {
-                var holidaysID = $(this).data('id');
-                var row = $(this).parents('tr');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '{{ url('holidays') }}/' + holidaysID,
-                            method: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    toastr.success(response.message,
-                                        "Deleted successfully");
-                                    table.row(row).remove().draw();
-                                } else {
-                                    toastr.error("Failed to delete holiday.",
-                                        "Operation Failed");
-                                }
-                            },
-                            error: function(xhr) {
-                                toastr.error("An error occurred.", "Operation Failed");
-                            }
-                        });
-                    }
-                });
-            });
-
-
-            function addDateValidation(startDateInput, endDateInput, daysInput, monthYearInput) {
-                function calculateDays() {
-                    const startDate = new Date(startDateInput.value);
-                    const endDate = new Date(endDateInput.value);
-
-                    if (startDate && endDate && startDate <= endDate) {
-                        const timeDiff = endDate.getTime() - startDate.getTime();
-                        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-                        daysInput.value = daysDiff;
-
-                        endDateInput.setAttribute('min', startDateInput.value);
-                    } else {
-                        daysInput.value = '';
-                        endDateInput.removeAttribute('min');
-                    }
-
-                    const minMonthYear = startDate.toISOString().slice(0, 7);
-                    const maxMonthYear = endDate.toISOString().slice(0, 7);
-
-                    monthYearInput.setAttribute('min', minMonthYear);
-                    monthYearInput.setAttribute('max', maxMonthYear);
-
-                    if (new Date(monthYearInput.value + '-01') < startDate || new Date(monthYearInput.value +
-                        '-01') > endDate) {
-                        monthYearInput.value = '';
-                    }
-                }
-
-                function validateEndDate() {
-                    const startDate = new Date(startDateInput.value);
-                    const endDate = new Date(endDateInput.value);
-
-                    if (endDate < startDate) {
-                        endDateInput.value = startDateInput.value;
-                    }
-
-                    calculateDays();
-                }
-
-                function validateDates() {
-                    const startDate = new Date(startDateInput.value);
-                    const endDate = new Date(endDateInput.value);
-
-                    if (endDate < startDate) {
-                        endDateInput.value = startDateInput.value;
-                    }
-
-                    calculateDays();
-                }
-
-                startDateInput.addEventListener('change', validateDates);
-                endDateInput.addEventListener('change', validateDates);
-
-                startDateInput.addEventListener('input', validateDates);
-                endDateInput.addEventListener('input', validateDates);
-            }
+            {{--    Swal.fire({--}}
+            {{--        title: 'Are you sure?',--}}
+            {{--        text: "You won't be able to revert this!",--}}
+            {{--        icon: 'warning',--}}
+            {{--        showCancelButton: true,--}}
+            {{--        confirmButtonColor: '#3085d6',--}}
+            {{--        cancelButtonColor: '#d33',--}}
+            {{--        confirmButtonText: 'Yes, delete it!'--}}
+            {{--    }).then((result) => {--}}
+            {{--        if (result.isConfirmed) {--}}
+            {{--            $.ajax({--}}
+            {{--                url: '' + applicationID,--}}
+            {{--                method: 'DELETE',--}}
+            {{--                data: {--}}
+            {{--                    _token: '{{ csrf_token() }}'--}}
+            {{--                },--}}
+            {{--                success: function(response) {--}}
+            {{--                    if (response.success) {--}}
+            {{--                        toastr.success(response.message,--}}
+            {{--                            "Deleted successfully");--}}
+            {{--                        table.row(row).remove().draw();--}}
+            {{--                    } else {--}}
+            {{--                        toastr.error("Failed to delete Application.",--}}
+            {{--                            "Operation Failed");--}}
+            {{--                    }--}}
+            {{--                },--}}
+            {{--                error: function(xhr) {--}}
+            {{--                    toastr.error("An error occurred.", "Operation Failed");--}}
+            {{--                }--}}
+            {{--            });--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
 
 
-            addDateValidation(
-                document.getElementById('start_date'),
-                document.getElementById('end_date'),
-                document.getElementById('days'),
-                document.getElementById('month_year')
-            );
+            // function addDateValidation(startDateInput, endDateInput, daysInput, monthYearInput) {
+            //     function calculateDays() {
+            //         const startDate = new Date(startDateInput.value);
+            //         const endDate = new Date(endDateInput.value);
+            //
+            //         if (startDate && endDate && startDate <= endDate) {
+            //             const timeDiff = endDate.getTime() - startDate.getTime();
+            //             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+            //             daysInput.value = daysDiff;
+            //
+            //             endDateInput.setAttribute('min', startDateInput.value);
+            //         } else {
+            //             daysInput.value = '';
+            //             endDateInput.removeAttribute('min');
+            //         }
+            //
+            //         const minMonthYear = startDate.toISOString().slice(0, 7);
+            //         const maxMonthYear = endDate.toISOString().slice(0, 7);
+            //
+            //         monthYearInput.setAttribute('min', minMonthYear);
+            //         monthYearInput.setAttribute('max', maxMonthYear);
+            //
+            //         if (new Date(monthYearInput.value + '-01') < startDate || new Date(monthYearInput.value +
+            //             '-01') > endDate) {
+            //             monthYearInput.value = '';
+            //         }
+            //     }
+            //
+            //     function validateEndDate() {
+            //         const startDate = new Date(startDateInput.value);
+            //         const endDate = new Date(endDateInput.value);
+            //
+            //         if (endDate < startDate) {
+            //             endDateInput.value = startDateInput.value;
+            //         }
+            //
+            //         calculateDays();
+            //     }
+            //
+            //     function validateDates() {
+            //         const startDate = new Date(startDateInput.value);
+            //         const endDate = new Date(endDateInput.value);
+            //
+            //         if (endDate < startDate) {
+            //             endDateInput.value = startDateInput.value;
+            //         }
+            //
+            //         calculateDays();
+            //     }
+            //
+            //     startDateInput.addEventListener('change', validateDates);
+            //     endDateInput.addEventListener('change', validateDates);
+            //
+            //     startDateInput.addEventListener('input', validateDates);
+            //     endDateInput.addEventListener('input', validateDates);
+            // }
 
-            addDateValidation(
-                document.getElementById('edit_start_date'),
-                document.getElementById('edit_end_date'),
-                document.getElementById('edit_days'),
-                document.getElementById('edit_year')
-            );
+
+            // addDateValidation(
+            //     document.getElementById('start_date'),
+            //     document.getElementById('end_date'),
+            //     document.getElementById('days'),
+            //     document.getElementById('month_year')
+            // );
+            //
+            // addDateValidation(
+            //     document.getElementById('edit_start_date'),
+            //     document.getElementById('edit_end_date'),
+            //     document.getElementById('edit_days'),
+            //     document.getElementById('edit_year')
+            // );
         });
     </script>
 @endsection

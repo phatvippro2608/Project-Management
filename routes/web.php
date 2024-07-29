@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LeaveApplicationController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
 
@@ -66,7 +67,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/change-password', 'App\Http\Controllers\ProfileController@changePassword');
     });
 
-    Route::group(['prefix' => '/leave', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/leave', 'middleware' => 'isSuperAdmin'], function () {
         //Holiday
         Route::resource('/holidays', HolidaysController::class);
         Route::get('/holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
@@ -82,6 +83,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/leave-type/{leave-type}/edit', [LeaveTypeController::class, 'edit'])->name('leave-type.edit');
         Route::put('/leave-type/{leave-type}', [LeaveTypeController::class, 'update'])->name('leave-type.update');
         Route::delete('/leave-type/{leave-type}', [LeaveTypeController::class, 'destroy'])->name('leave-type.destroy');
+
+
+
+
+
+
+
+
+
+
+        //Leave Application
+        Route::get('/leave-application', [LeaveApplicationController::class, 'getView'])->name('leave-application.index');
+        Route::post('/leave-application/add', [LeaveApplicationController::class, 'add'])->name('holidays.add');
+
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
