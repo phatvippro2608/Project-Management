@@ -1,5 +1,12 @@
 :root {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
+    --clr-1: #012970;
+    --clr-2:  #4154f1;
+    --clr-3: #6776f4;
+    --clr-4: #717ff5;
+    --clr-5: #a5c5fe;
+    --clr-6: #cfe2ff;
+    --clr-7: #f6f9ff;
 }
 
 body {
@@ -659,7 +666,7 @@ h6 {
   font-size: 15px;
   font-weight: 600;
   color: #4154f1;
-  transition: 0.3;
+  transition: 0.3s;
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
@@ -710,9 +717,8 @@ h6 {
   font-size: 14px;
   font-weight: 600;
   color: #012970;
-  transition: 0.3;
-  padding: 10px 0 10px 40px;
   transition: 0.3s;
+  padding: 10px 0 10px 40px;
 }
 
 .sidebar-nav .nav-content a i {
@@ -1222,3 +1228,18 @@ h6 {
     background-color: rgba(0,0,0,0.05);
     cursor: pointer;
 }
+
+.form-control:focus{
+    box-shadow: none !important;
+    border-color: var(--bs-secondary-bg-subtle);
+}
+
+.btn{
+    border-radius: 18px;
+}
+
+.btn-primary{
+    background: var(--clr-1);
+    border-color: var(--clr-1);
+}
+
