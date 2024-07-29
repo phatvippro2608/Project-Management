@@ -14,25 +14,36 @@ class ProjectListController extends Controller
 
         // Đang triển khai
         $inprogress_projects = DB::table('projects')->where('phase_id', 1)->get();
+        $inprogress_project_count = $inprogress_projects->count();
 
         // Nghiệm thu
         $inspection_projects = DB::table('projects')->where('phase_id', 2)->get();
+        $inspection_projects_count = $inspection_projects->count();
 
-        // Khảo sát
+        // Khảo sát - thiết kế
         $survey_projects = DB::table('projects')->where('phase_id', 3)->get();
+        $survey_projects_count = $survey_projects->count();
 
         // Hỗ trợ
         $support_projects = DB::table('projects')->where('phase_id', 4)->get();
+        $support_projects_count = $support_projects->count();
 
         // Đóng
         $closed_projects = DB::table('projects')->where('phase_id', 5)->get();
+        $closed_projects_count = $closed_projects->count();
 
         return view('auth.projects.project-list',
             compact('inprogress_projects',
+                'inprogress_project_count',
                 'inspection_projects',
+                'inspection_projects_count',
                 'survey_projects',
+                'survey_projects_count',
                 'support_projects',
-                'closed_projects'));
+                'support_projects_count',
+                'closed_projects',
+                'closed_projects_count'
+            ));
     }
 
     public function InsPJ(Request $request)

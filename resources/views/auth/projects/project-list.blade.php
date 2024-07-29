@@ -21,7 +21,7 @@
         <!-- Table to display materials -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-primary">Đang triển khai</h5>
+                <h5 class="card-title text-primary">Đang triển khai ({{$inprogress_project_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -56,7 +56,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-success">Nghiệm thu - Defect</h5>
+                <h5 class="card-title text-success">Nghiệm thu - Defect ({{$inspection_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -91,7 +91,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-info">Khảo sát - Thiết kế (3)</h5>
+                <h5 class="card-title text-info">Khảo sát - Thiết kế ({{$survey_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -126,7 +126,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-warning">Support - Hổ trợ (3)</h5>
+                <h5 class="card-title text-warning">Support - Hổ trợ ({{$support_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -161,7 +161,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-danger">Close (4)</h5>
+                <h5 class="card-title text-danger">Close ({{$closed_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -193,7 +193,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
