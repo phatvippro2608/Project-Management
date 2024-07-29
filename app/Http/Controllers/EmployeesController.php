@@ -6,6 +6,7 @@ use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 use function Laravel\Prompts\table;
 
 class EmployeesController extends Controller
@@ -186,11 +187,92 @@ class EmployeesController extends Controller
     public function checkFileExists(Request $request)
     {
         $filePath = public_path($request->input('path'));
-        Log::info($filePath);
         return response()->json(['exists' => file_exists($filePath)]);
     }
 
-    public function deletefile(Request $request){
+    public function deleteFile(Request $request){
+        $id_employee = $request->id_employee;
+        $filename = $request->filename;
+        $file_of = $request->file_of;
+
+        if ($file_of == "cv") {
+            $cv_list = json_decode(DB::table('employees')->where('id_employee', $id_employee)->value('cv'));
+
+            if (in_array($filename, $cv_list)) {
+                $filePath = public_path("uploads/$id_employee/$filename");
+                if (File::exists($filePath)) {
+                    // Delete the file from the server
+                    File::delete($filePath);
+
+                    // Remove the file from the CV list
+                    $cv_list = array_diff($cv_list, [$filename]);
+
+                    // Update the database with the new CV list
+                    DB::table('employees')->where('id_employee', $id_employee)->update(['cv' => json_encode(array_values($cv_list))]);
+
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'File deleted successfully'
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'File not found on server'
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'File not found in CV list'
+                ]);
+            }
+        } else if($file_of == "medical"){
+            $id_medical_checkup = $request->id_medical_checkup;
+            $medical_checkup_file = DB::table('medical_checkup')->where('id_medical_checkup', $id_medical_checkup)->value('medical_checkup_file');
+            $filePath = public_path("uploads/$id_employee/$medical_checkup_file");
+            if (File::exists($filePath)) {
+                // Delete the file from the server
+                File::delete($filePath);
+
+                DB::table('medical_checkup')->where('id_medical_checkup', $id_medical_checkup)->delete();
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'File deleted successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'File not found on server'
+                ]);
+            }
+        } else if($file_of == "certificate"){
+            $id_certificate = $request->id_certificate;
+            $certificate_file = DB::table('certificates')->where('id_certificate', $id_certificate)->value('certificate');
+            $filePath = public_path("uploads/$id_employee/$certificate_file");
+            if (File::exists($filePath)) {
+                // Delete the file from the server
+                File::delete($filePath);
+
+                DB::table('certificates')->where('id_certificate', $id_certificate)->delete();
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'File deleted successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'File not found on server'
+                ]);
+            }
+        }
+        else {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Invalid file type'
+            ]);
+        }
 
     }
 }
