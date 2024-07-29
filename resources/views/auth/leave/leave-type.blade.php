@@ -43,7 +43,7 @@
                     data-bs-target="#addLeaveTypesModal">
                     <i class="bi bi-plus-circle"></i> Add Leave Types
                 </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> 
+                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i>
                     <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}" style="all: unset; cursor: pointer;">
                         Leave Application</a>
                     </button>

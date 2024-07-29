@@ -58,7 +58,7 @@
                 <button class="btn btn-primary me-2" id="exportPdfBtn">PDF</button>
                 <button class="btn btn-primary" id="printBtn">Print</button>
             </div>
-            <div class=class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div style="height: 100vh;">
             <table id="applicationTable" class="table table-bordered mt-3 mb-3">
                 <thead>
                 <tr>
@@ -120,7 +120,7 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Employee Name</label>
 {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
-                            <select class="form-select" aria-label="Default" name="employee_name">
+                            <select class="form-select" aria-label="Default" name="employee_id">
                                 <option value="">No select</option>
                                 @foreach($employee_name as $item)
                                     <option value="{{$item->id_employee}}">{{$item->employee_code}}
@@ -182,26 +182,50 @@
                     <form id="editApplicationForm">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" id="editApplicationId" name="id">
                         <div class="mb-3">
-                            <label for="edit_name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="edit_name" name="name" required>
+                            <label for="name" class="form-label">Employee Name</label>
+                            {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
+                            <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
+                                <option value="">No select</option>
+                                @foreach($employee_name as $item)
+                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}
+                                        - {{$item->first_name}} {{$item->last_name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_start_date" class="form-label">Start Date</label>
+                            <label for="start_date" class="form-label">PIN</label>
+                            <input type="text" class="form-control" id="edit_pin" name="pin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Leave Type</label>
+                            {{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required>--}}
+                            <select class="form-select" aria-label="Default" name="leave_type" id="edit_leave_type">
+                                <option value="">No select</option>
+                                @foreach($leave_type as $item)
+                                    <option value="{{$item->id}}">{{$item->leave_type}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Apply Date</label>
+                            <input type="date" class="form-control" id="edit_apply_date" name="apply_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
                             <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_end_date" class="form-label">End Date</label>
+                            <label for="end_date" class="form-label">End Date</label>
                             <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_days" class="form-label">Days</label>
-                            <input type="number" class="form-control" id="edit_days" name="days" readonly>
+                            <label for="end_date" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="edit_duration" name="duration" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_year" class="form-label">Year</label>
-                            <input type="month" class="form-control" id="edit_year" name="year" required>
+                            <label for="days" class="form-label">Leaves Status</label>
+                            <input type="number" class="form-control" id="edit_leave_status" name="leave_status" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit Application</button>
                     </form>
@@ -227,28 +251,9 @@
                         if (response.success) {
                             $('#addApplicationModal').modal('hide');
                             toastr.success(response.message, "Successful");
-
-                            $('#applicationTable').DataTable().row.add([
-                                response.leave_app.employee_id,
-                                response.leave_app.pin,
-                                response.leave_app.leave_type,
-                                response.leave_app.apply_date,
-                                response.leave_app.start_date,
-                                response.leave_app.end_date,
-                                response.leave_app.duration,
-                                response.leave_app.leave_status,
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.leave_app.id + '">' +
-                                '<i class="bi bi-pencil-square"></i>' +
-                                '</button>' +
-                                ' | ' +
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.leave_app.id + '">' +
-                                '<i class="bi bi-trash3"></i>' +
-                                '</button>'
-                            ]).draw();
-
-                            $('#addApplicationForm')[0].reset();
+                            setTimeout(function () {
+                                location.reload()
+                            }, 500);
                         }
                     },
                     error: function(xhr) {
@@ -257,179 +262,96 @@
                 });
             });
 
-            // $('#applicationTable').on('click', '.edit-btn', function() {
-            //     var applicationID = $(this).data('id');
-            //
-            //     if (!applicationID) {
-            //         alert('Department ID not found.');
-            //         return;
-            //     }
-            //
-            //     $.ajax({
-            //         url: '' + applicationID + '/edit',
-            //         method: 'GET',
-            //         success: function(response) {
-            //             $('#editApplicationId').val(response.Application.id);
-            //             $('#edit_name').val(response.Application.name);
-            //             $('#edit_start_date').val(response.Application.start_date);
-            //             $('#edit_end_date').val(response.Application.end_date);
-            //             $('#edit_days').val(response.Application.days);
-            //             $('#edit_year').val(response.Application.year);
-            //             $('#editApplicationModal').modal('show');
-            //         },
-            //         error: function(xhr) {}
-            //     });
-            // });
+            $('#applicationTable').on('click', '.edit-btn', function() {
+                var applicationID = $(this).data('id');
 
-            // $('#editApplicationForm').submit(function(e) {
-            //     e.preventDefault();
-            //     var applicationID = $('#editApplicationId').val();
-            //
-            //     $.ajax({
-            //         url: '' + applicationID,
-            //         method: 'PUT',
-            //         data: $(this).serialize(),
-            //         success: function(response) {
-            //             if (response.success) {
-            //                 $('#editApplicationModal').modal('hide');
-            //                 $('#successModal').modal('show');
-            //                 toastr.success(response.response, "Edit successful");
-            //                 var row = table.row($('button[data-id="' + applicationID + '"]')
-            //                     .parents('tr'));
-            //                 row.data([
-            //                     response.Application.name,
-            //                     response.Application.start_date,
-            //                     response.Application.end_date,
-            //                     response.Application.days,
-            //                     response.Application.year,
-            //                     '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-            //                     response.Application.id + '">' +
-            //                     '<i class="bi bi-pencil-square"></i>' +
-            //                     '</button>' +
-            //                     ' | ' +
-            //                     '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-            //                     response.Application.id + '">' +
-            //                     '<i class="bi bi-trash3"></i>' +
-            //                     '</button>'
-            //                 ]).draw();
-            //             }
-            //         },
-            //         error: function(xhr) {
-            //             toastr.error("Error");
-            //         }
-            //     });
-            // });
+                $('#editApplicationForm').data('id', applicationID);  // Gán ID vào form
+                var url = "{{ route('leave-application.edit', ':id') }}";
+                url = url.replace(':id', applicationID);
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        var data = response.leave_app;
+                        $('#edit_employee_id').val(data.employee_id);
+                        $('#edit_pin').val(data.pin);
+                        $('#edit_leave_type').val(data.leave_type);
+                        $('#edit_apply_date').val(data.apply_date);
+                        $('#edit_start_date').val(data.start_date);
+                        $('#edit_end_date').val(data.end_date);
+                        $('#edit_duration').val(data.duration);
+                        $('#edit_leave_status').val(data.leave_status);
+                        $('#editApplicationModal').modal('show');
+                    },
+                    error: function(xhr) {}
+                });
+            });
 
-            {{--$('#applicationTable').on('click', '.delete-btn', function() {--}}
-            {{--    var applicationID = $(this).data('id');--}}
-            {{--    var row = $(this).parents('tr');--}}
+            $('#editApplicationForm').submit(function(e) {
+                e.preventDefault();
+                var applicationID = $(this).data('id');  // Lấy ID từ form
+                var url = "{{ route('leave-application.update', ':id') }}";
+                url = url.replace(':id', applicationID);
 
-            {{--    Swal.fire({--}}
-            {{--        title: 'Are you sure?',--}}
-            {{--        text: "You won't be able to revert this!",--}}
-            {{--        icon: 'warning',--}}
-            {{--        showCancelButton: true,--}}
-            {{--        confirmButtonColor: '#3085d6',--}}
-            {{--        cancelButtonColor: '#d33',--}}
-            {{--        confirmButtonText: 'Yes, delete it!'--}}
-            {{--    }).then((result) => {--}}
-            {{--        if (result.isConfirmed) {--}}
-            {{--            $.ajax({--}}
-            {{--                url: '' + applicationID,--}}
-            {{--                method: 'DELETE',--}}
-            {{--                data: {--}}
-            {{--                    _token: '{{ csrf_token() }}'--}}
-            {{--                },--}}
-            {{--                success: function(response) {--}}
-            {{--                    if (response.success) {--}}
-            {{--                        toastr.success(response.message,--}}
-            {{--                            "Deleted successfully");--}}
-            {{--                        table.row(row).remove().draw();--}}
-            {{--                    } else {--}}
-            {{--                        toastr.error("Failed to delete Application.",--}}
-            {{--                            "Operation Failed");--}}
-            {{--                    }--}}
-            {{--                },--}}
-            {{--                error: function(xhr) {--}}
-            {{--                    toastr.error("An error occurred.", "Operation Failed");--}}
-            {{--                }--}}
-            {{--            });--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--});--}}
+                $.ajax({
+                    url: url,
+                    method: 'PUT',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#editApplicationModal').modal('hide');
+                            $('#successModal').modal('show');
+                            toastr.success(response.response, "Edit successful");
+                            setTimeout(function () {
+                                location.reload()
+                            }, 500);
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error("Error");
+                    }
+                });
+            });
 
-
-            // function addDateValidation(startDateInput, endDateInput, daysInput, monthYearInput) {
-            //     function calculateDays() {
-            //         const startDate = new Date(startDateInput.value);
-            //         const endDate = new Date(endDateInput.value);
-            //
-            //         if (startDate && endDate && startDate <= endDate) {
-            //             const timeDiff = endDate.getTime() - startDate.getTime();
-            //             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-            //             daysInput.value = daysDiff;
-            //
-            //             endDateInput.setAttribute('min', startDateInput.value);
-            //         } else {
-            //             daysInput.value = '';
-            //             endDateInput.removeAttribute('min');
-            //         }
-            //
-            //         const minMonthYear = startDate.toISOString().slice(0, 7);
-            //         const maxMonthYear = endDate.toISOString().slice(0, 7);
-            //
-            //         monthYearInput.setAttribute('min', minMonthYear);
-            //         monthYearInput.setAttribute('max', maxMonthYear);
-            //
-            //         if (new Date(monthYearInput.value + '-01') < startDate || new Date(monthYearInput.value +
-            //             '-01') > endDate) {
-            //             monthYearInput.value = '';
-            //         }
-            //     }
-            //
-            //     function validateEndDate() {
-            //         const startDate = new Date(startDateInput.value);
-            //         const endDate = new Date(endDateInput.value);
-            //
-            //         if (endDate < startDate) {
-            //             endDateInput.value = startDateInput.value;
-            //         }
-            //
-            //         calculateDays();
-            //     }
-            //
-            //     function validateDates() {
-            //         const startDate = new Date(startDateInput.value);
-            //         const endDate = new Date(endDateInput.value);
-            //
-            //         if (endDate < startDate) {
-            //             endDateInput.value = startDateInput.value;
-            //         }
-            //
-            //         calculateDays();
-            //     }
-            //
-            //     startDateInput.addEventListener('change', validateDates);
-            //     endDateInput.addEventListener('change', validateDates);
-            //
-            //     startDateInput.addEventListener('input', validateDates);
-            //     endDateInput.addEventListener('input', validateDates);
-            // }
-
-
-            // addDateValidation(
-            //     document.getElementById('start_date'),
-            //     document.getElementById('end_date'),
-            //     document.getElementById('days'),
-            //     document.getElementById('month_year')
-            // );
-            //
-            // addDateValidation(
-            //     document.getElementById('edit_start_date'),
-            //     document.getElementById('edit_end_date'),
-            //     document.getElementById('edit_days'),
-            //     document.getElementById('edit_year')
-            // );
+            $('#applicationTable').on('click', '.delete-btn', function() {
+                var applicationID = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var url = "{{ route('leave-application.destroy', ':id') }}";
+                        url = url.replace(':id', applicationID);
+                        $.ajax({
+                            url: url,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    toastr.success(response.message,
+                                        "Deleted successfully");
+                                    setTimeout(function () {
+                                        location.reload()
+                                    }, 500);
+                                } else {
+                                    toastr.error("Failed to delete holiday.",
+                                        "Operation Failed");
+                                }
+                            },
+                            error: function(xhr) {
+                                toastr.error("An error occurred.", "Operation Failed");
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endsection

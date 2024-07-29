@@ -13,6 +13,7 @@ class LeaveApplicationController extends Controller
         $model = new LeaveApplicationModel();
         $employee_name = $model->getEmployeeName();
         $leave_type = $model->getLeaveTypes();
+//        dd(LeaveApplicationModel::with('employee', 'leaveType')->get());
         return view(
             'auth.leave.leave-application',
             [
@@ -43,6 +44,48 @@ class LeaveApplicationController extends Controller
             "status" => 200,
             'leave_app' => $leave_app,
             'message' => 'Holiday added successfully',
+        ]);
+    }
+
+    function edit($id)
+    {
+        $leave_app = LeaveApplicationModel::findOrFail($id);
+
+        return response()->json([
+            'leave_app' => $leave_app,
+        ]);
+    }
+
+    function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'employee_id' => 'required|string',
+            'pin' => 'required|string',
+            'leave_type' => 'required|string',
+            'apply_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'duration' => 'required|string',
+            'leave_status' => 'required|string',
+        ]);
+
+        $leave_app = LeaveApplicationModel::findOrFail($id);
+        $leave_app->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'leave_app' => $leave_app,
+        ]);
+    }
+
+    function destroy($id)
+    {
+        $leave_app = LeaveApplicationModel::findOrFail($id);
+        $leave_app->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave application deleted successfully',
         ]);
     }
 }
