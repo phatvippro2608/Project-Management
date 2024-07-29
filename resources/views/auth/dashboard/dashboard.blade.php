@@ -2,7 +2,7 @@
 
 @section('contents')
     <section class="section dashboard">
-        <div class="row">
+        <div class="row gx-5">
             <div class="col-lg-12">
                 <div class="row">
                     <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Tổng quan</h4>
@@ -85,19 +85,25 @@
                             </div>
                         </div>
                     </div>
+                    </div>
 
                 </div>
             </div>
         </div>
-        <div class="row gx-5">
+        <div class="row">
             <div class="col-lg-8">
-                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Recent</h4>
-
-                <div class="row">
-                    <div class="col-lg-12 border-0 rounded-4 shadow bg-white" style="min-height: 300px">
-                        <div class="p-3">
-                            <div class="row">
-                                @foreach($recent_project as $item)
+                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Recent</h4>
+            </div>
+            <div class="col-lg-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
+                    <div class="p-3">
+                        <div class="row">
+                            @foreach($recent_project as $item)
                                 <div class="col-lg-12">
                                     <a href="../project/{{$item->project_id}}" class="card card-hover shadow-none">
                                         <div class="card-body p-2">
@@ -113,25 +119,19 @@
                                         </div>
                                     </a>
                                 </div>
-                                @endforeach
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Todo list</h4>
-                <div class="row">
-                    <div class="col-lg-12 border-0 rounded-4 shadow bg-white" style="min-height: 300px">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card card-hover shadow-none m-0">
-                                    <div class="card-header">
-                                        <div class="card-title">Todo list</div>
-                                        <p>July 26, 2024</p>
-                                    </div>
-                                </div>
+                <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
+                    <div class="p-3">
+                        <div class="card bg-white shadow-none">
+                            <div class="card-header">
+                                <div class="card-title">July 26, 2024</div>
                             </div>
+
                         </div>
                         <div class="row">
                             @foreach($tasks as $item)
