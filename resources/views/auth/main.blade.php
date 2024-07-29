@@ -405,7 +405,7 @@ use App\StaticString; ?>
             </a>
             <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="">
+                    <a href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
                         <i class="bi bi-circle"></i><span>Attendance List</span>
                     </a>
                 </li>

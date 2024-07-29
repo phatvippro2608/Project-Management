@@ -9,6 +9,7 @@ use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,3 +108,6 @@ Route::post('/departments', [DepartmentController::class, 'store'])->name('depar
 Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
 Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
+//Attendance
+Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
