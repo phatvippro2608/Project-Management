@@ -113,6 +113,6 @@ Route::delete('departments/{department}', [DepartmentController::class, 'destroy
 Route::resource('holidays', HolidaysController::class);
 Route::get('holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
 Route::post('/holidays', [HolidaysController::class, 'store'])->name('holidays.store');
-Route::get('holidays/{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
+Route::get('holidays{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
 Route::put('holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
 Route::delete('holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');

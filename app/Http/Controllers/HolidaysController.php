@@ -11,7 +11,7 @@ class HolidaysController extends Controller
     public function getView()
     {
         $holidays = HolidaysModel::all();
-        return view('auth.holidays.holidays', compact('holidays'));
+        return view('auth.leave.holidays', compact('holidays'));
     }
 
     public function create()
@@ -30,7 +30,7 @@ class HolidaysController extends Controller
 
         $start_date = Carbon::parse($validated['start_date']);
         $end_date = Carbon::parse($validated['end_date']);
-        $days = $start_date->diffInDays($end_date) + 1; 
+        $days = $start_date->diffInDays($end_date) + 1;
 
         $validated['days'] = $days;
 
@@ -60,28 +60,28 @@ class HolidaysController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date',
-        'year' => 'required|string',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'year' => 'required|string',
+        ]);
 
-    $start_date = \Carbon\Carbon::parse($validated['start_date']);
-    $end_date = \Carbon\Carbon::parse($validated['end_date']);
-    $days = $start_date->diffInDays($end_date) + 1;
+        $start_date = \Carbon\Carbon::parse($validated['start_date']);
+        $end_date = \Carbon\Carbon::parse($validated['end_date']);
+        $days = $start_date->diffInDays($end_date) + 1;
 
-    $validated['days'] = $days;
+        $validated['days'] = $days;
 
-    $holiday = HolidaysModel::findOrFail($id);
-    $holiday->update($validated);
+        $holiday = HolidaysModel::findOrFail($id);
+        $holiday->update($validated);
 
-    return response()->json([
-        'success' => true,
-        'holiday' => $holiday,
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'holiday' => $holiday,
+        ]);
+    }
 
 
     public function destroy($id)
@@ -90,8 +90,8 @@ class HolidaysController extends Controller
         $holiday->delete();
 
         return response()->json([
-        'success' => true,
-        'message' => 'Holiday deleted successfully',
-    ]);
+            'success' => true,
+            'message' => 'Holiday deleted successfully',
+        ]);
     }
 }
