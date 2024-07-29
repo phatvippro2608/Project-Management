@@ -56,13 +56,26 @@ class EmployeesController extends Controller
         }
     }
     function post(Request $request){
-        $dataEmployee = json_decode($request->dataEmployee, true);
-        $dataPassport = json_decode($request->dataPassport, true);
-        $dataContact = json_decode($request->dataContact, true);
-        $dataJob = json_decode($request->dataJob, true);
+        $dataEmployee = array_filter(json_decode($request->dataEmployee, true), function ($value) {
+            return $value !== "";
+        });
+
+        $dataPassport = array_filter(json_decode($request->dataPassport, true), function ($value) {
+            return $value !== "";
+        });
+
+        $dataContact = array_filter(json_decode($request->dataContact, true), function ($value) {
+            return $value !== "";
+        });
+
+        $dataJob = array_filter(json_decode($request->dataJob, true), function ($value) {
+            return $value !== "";
+        });
+
         $id_employee = $request->id_employee;
         $id_contact = $request->id_contact;
 
+        DB::beginTransaction();
         try {
             $employeeExists = DB::table('employees')->where('id_employee', $id_employee)->exists();
             if ($employeeExists) {
