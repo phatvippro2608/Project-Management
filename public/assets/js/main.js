@@ -108,14 +108,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if(nav_content){
             sublinks = nav_content.querySelectorAll('.nav-sub-link')
             sublinks.forEach(sublink => {
+                link.classList.add('collapsed');
+                sublink.classList.remove('active')
+                nav_content.classList.remove('show')
+            })
+            sublinks.forEach(sublink => {
                 if (sublink.href && sublink.href === window.location.href) {
                     link.classList.remove('collapsed');
                     sublink.classList.add('active')
                     nav_content.classList.add('show')
-                }else{
-                    link.classList.add('collapsed');
-                    sublink.classList.remove('active')
-                    nav_content.classList.remove('show')
                 }
             })
         }

@@ -356,17 +356,17 @@ use App\StaticString; ?>
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                        <a class="nav-sub-link" href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
                             <i class="bi bi-circle"></i><span>Employees</span>
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a class="nav-sub-link" href="#">
                             <i class="bi bi-circle"></i><span>Disciplinary</span>
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a class="nav-sub-link" href="#">
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
@@ -495,12 +495,12 @@ use App\StaticString; ?>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Task List</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Field Visit</span>
                     </a>
                 </li>
@@ -515,7 +515,8 @@ use App\StaticString; ?>
             </a>
             <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\InventoryManagementController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
                         <i class="bi bi-circle"></i><span>Dashboard</span>
                     </a>
                 </li>

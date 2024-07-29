@@ -29,6 +29,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         return redirect('/dashboard');
     });
     Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
+    Route::post('/dashboard/update-todo', 'App\Http\Controllers\DashboardController@UpdateTodo');
+    Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
     Route::group(['prefix' => '/account', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
