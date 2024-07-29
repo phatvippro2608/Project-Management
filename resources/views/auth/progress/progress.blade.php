@@ -1,81 +1,92 @@
 @extends('auth.main')
 
 @section('contents')
-<style type="text/css">
-    #visualization {
-        width: 100%;
-        height: 100vh;
-    }
-    .vis-subTask {
-        background-color: var(--bg-light) !important;
-        border: none;
-    }
-    .vis-subTask .vis-inner {
-        padding-left: 20px !important;
-    }
-    .vis-label.vis-nesting-group:before {
-        transition: translateX 2s;
-        transform: translateX(0);
+    <style type="text/css">
+        #visualization {
+            width: 100%;
+            height: 100vh;
+        }
 
-    }
-    .vis-label.vis-nesting-group.expanded:before {
-        transform: translateX(90deg);
-    }
-    .no-background {
-        background-color: transparent !important;
-        border: none;
-    }
-    .no-background:focus {
-        background-color: rgb(246, 249, 255) !important;
-    }
-    .no-background:hover {
-        background-color: rgb(246, 249, 255) !important;
-    }
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-    }
-    .dropdown-item {
-        padding: 12px 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-    .dropdown-item img {
-        margin-right: 10px;
-    }
-    .dropdown-item:hover {
-        background-color: #f1f1f1;
-    }
-</style>
-<div class="pagetitle">
-    <h1>Progress</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Progress</li>
-        </ol>
-    </nav>
-</div>
-<section class="section employees">
-    <div class="row justify-content-between">
-        <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
-            <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
-        </div>
-        <div class="from-group col-3 float-end d-inline-flex">
-            <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
-            <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
-            <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
-        </div>
-    </div>
+        .vis-subTask {
+            background-color: var(--bg-light) !important;
+            border: none;
+        }
 
-    <div class="from-group" style="margin-top: 2%;">
-        <div id="visualization"></div>
+        .vis-subTask .vis-inner {
+            padding-left: 20px !important;
+        }
+
+        .vis-label.vis-nesting-group:before {
+            transition: translateX 2s;
+            transform: translateX(0);
+
+        }
+
+        .vis-label.vis-nesting-group.expanded:before {
+            transform: translateX(90deg);
+        }
+
+        .no-background {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .no-background:focus {
+            background-color: rgb(246, 249, 255) !important;
+        }
+
+        .no-background:hover {
+            background-color: rgb(246, 249, 255) !important;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item img {
+            margin-right: 10px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <div class="pagetitle">
+        <h1>Progress</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Progress</li>
+            </ol>
+        </nav>
     </div>
+    <section class="section employees">
+        <div class="row justify-content-between">
+            <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
+                <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+            </div>
+            <div class="from-group col-3 float-end d-inline-flex">
+                <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
+                <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
+                <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
+            </div>
+        </div>
+
+        <div class="from-group" style="margin-top: 2%;">
+            <div id="visualization"></div>
+        </div>
 
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -83,9 +94,17 @@
                 <form id="edit-task-form">
                     @csrf
                     <div class="modal-header">
-                        <input type="text" id="task_id" name="task_id" hidden required>
+                        <input type="text" id="task_id" name="task_id" style="display:none;" required>
                         <input type="text" class="form-control modal-title fs-5 no-background" id="taskname" name="taskname" required>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="dropdown">
+                            <button class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
+                                <li><a class="dropdown-item" id="dl_task_id" href="#">Delete</a></li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
@@ -112,11 +131,13 @@
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                <input class="form-control" type="date" id="s_date" name="s_date">
+                                <input class="form-control" type="date" id="s_date" onchange="checkDate()"
+                                        name="s_date">
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" id="e_date" name="e_date">
+                                <input class="form-control" type="date" id="e_date" onchange="checkDate()"
+                                        name="e_date">
                             </div>
                         </div>
                     </div>
@@ -127,7 +148,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -135,7 +155,7 @@
                     @csrf
                     <div class="modal-header">
                         <input type="text" class="form-control modal-title fs-5 no-background" name="taskname" placeholder="[Task Name]" required>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
@@ -162,11 +182,11 @@
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="s_date"><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                <input class="form-control" type="date" name="s_date">
+                                <input class="form-control" type="date" onchange="checkDate()" name="s_date">
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" name="e_date">
+                                <input class="form-control" type="date" onchange="checkDate()" name="e_date">
                             </div>
                         </div>
                     </div>
@@ -178,11 +198,9 @@
         </div>
     </div>
     <input type="text" name="csrf-token" hidden value="{{ csrf_token() }}" id="csrf-token">
-</section>
-<script type="text/javascript">
-    //https://visjs.github.io/vis-timeline/docs/timeline/
+    </section>
+    <script type="text/javascript">
     var container = document.getElementById('visualization');
-
     var groups = new vis.DataSet([
         @foreach ($tasks as $task)
             @php
@@ -219,6 +237,7 @@
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
                     group: 'task_{{  $item->task_id  }}',
+                    title: 'Start: {{ $item->start_date }}<br>End: {{ $item->end_date }}'
                 },
             @endif
         @endforeach
@@ -228,6 +247,7 @@
                     start: new Date('{{ $item->start_date }}'),
                     end: new Date('{{ $item->end_date }}'),
                     group: 'subtask_{{  $item->sub_task_id  }}',
+                    title: 'Start: {{ $item->start_date }}<br>End: {{ $item->end_date }}'
                 },
             @endif
         @endforeach
@@ -255,8 +275,8 @@
         zoomMax: 365.25 * 24 * 60 * 60 * 1000 * 5,
         editable: {
             add: false,
-            updateTime: true,
-            // updateGroup: true,
+            updateTime: false,
+            updateGroup: false,
         },
         itemsAlwaysDraggable: {
             item: false,
@@ -285,45 +305,6 @@
             container.insertAdjacentElement("beforeEnd", button);
             return container;
         },
-        onMove: function(e) {
-            var csrfToken = document.getElementById('csrf-token')?.value;
-            if (!csrfToken) {
-                console.error('CSRF token is missing.');
-                return;
-            }
-            var itemId = e.group;
-            if (!itemId) {
-                console.error('Item ID is missing.');
-                return;
-            }
-            var startDate = e.start?.toISOString().slice(0, 10);
-            var endDate = e.end?.toISOString().slice(0, 10);
-            var data = {
-                item_id: itemId,
-                start_date: startDate,
-                end_date: endDate,
-            };
-            console.log(data);
-            fetch('/update-item', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log(data.message);
-                } else {
-                    console.log(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        },
     };
     var timeline = new vis.Timeline(container);
     timeline.setOptions(options);
@@ -334,10 +315,20 @@
         var searchQuery = e.target.value.toLowerCase();
         var group = groups.get();
         var filteredGroups = group.filter(function(group) {
-            if (group.content == "Create") {
+            if (group.id == "create") {
                 return true;
             }
             return group.content.toLowerCase().includes(searchQuery);
+        });
+        filteredGroups = filteredGroups.filter(function(group) {
+            if (group.nestedGroups) {
+                group.nestedGroups = group.nestedGroups.filter(function(nestedGroup) {
+                    return filteredGroups.some(function(filteredGroup) {
+                        return filteredGroup.id == nestedGroup;
+                    });
+                });
+            }
+            return true;
         });
         timeline.setGroups(new vis.DataSet(filteredGroups));
     });
@@ -377,101 +368,102 @@
     });
 
     function showDropdown(e) {
-        var input = e;
-        var dropdown = input.nextElementSibling;
-        var items = dropdown.getElementsByClassName('dropdown-item');
+        // var input = e;
+        // var dropdown = input.nextElementSibling;
+        // var items = dropdown.getElementsByClassName('dropdown-item');
 
-        input.addEventListener('focus', function() {
-            dropdown.style.display = 'block';
-        });
+        // input.addEventListener('focus', function() {
+        //     dropdown.style.display = 'block';
+        // });
 
-        input.addEventListener('input', function() {
-            var filter = input.value.toLowerCase();
-            for (var i = 0; i < items.length; i++) {
-                var text = items[i].textContent || items[i].innerText;
-                if (text.toLowerCase().indexOf(filter) > -1) {
-                    items[i].style.display = '';
-                } else {
-                    items[i].style.display = 'none';
-                }
-            }
-        });
+        // input.addEventListener('input', function() {
+        //     var filter = input.value.toLowerCase();
+        //     for (var i = 0; i < items.length; i++) {
+        //         var text = items[i].textContent || items[i].innerText;
+        //         if (text.toLowerCase().indexOf(filter) > -1) {
+        //             items[i].style.display = '';
+        //         } else {
+        //             items[i].style.display = 'none';
+        //         }
+        //     }
+        // });
+        // for (var i = 0; i < items.length; i++) {
+        //     items[i].addEventListener('click', function() {
+        //         input.value = this.getAttribute('data-value');
+        //         dropdown.style.display = 'none';
+        //     });
+        // }
 
-        for (var i = 0; i < items.length; i++) {
-            items[i].addEventListener('click', function() {
-                input.value = this.getAttribute('data-value');
-                dropdown.style.display = 'none';
-            });
-        }
-
-        document.addEventListener('click', function(event) {
-            if (!input.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
+        // document.addEventListener('click', function(event) {
+        //     if (!input.contains(event.target) && !dropdown.contains(event.target)) {
+        //         dropdown.style.display = 'none';
+        //     }
+        // });
     }
 
 
     var c_subtaskCount = 0;
-    function c_addSubTask(){
+
+    function c_addSubTask() {
         c_subtaskCount++;
         var subtask = document.createElement('div');
         subtask.classList.add('row');
         subtask.style.marginTop = '1%';
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
-            <div class="col-10">
-                <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-            </div>
-            <div class="col-1">
-                <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-            </div>
-        `;
+        <div class="col-10">
+            <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+        </div>
+        <div class="col-1">
+            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+        </div>
+    `;
         document.getElementById('c-subtasks-holder').appendChild(subtask);
     }
     var e_subtaskCount = 0;
-    function e_addSubTask(){
+
+    function e_addSubTask() {
         e_subtaskCount++;
         var subtask = document.createElement('div');
         subtask.classList.add('row');
         subtask.style.marginTop = '1%';
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
-            <div class="col-10">
-                <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-            </div>
-            <div class="col-1">
-                <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-            </div>
-        `;
+        <div class="col-10">
+            <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+        </div>
+        <div class="col-1">
+            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+        </div>
+    `;
         document.getElementById('e-subtasks-holder').appendChild(subtask);
     }
 
-    function removeSubTask(e){
+    function removeSubTask(e) {
         e.parentElement.parentElement.remove();
     }
 
-    $('#create-task-form').submit(function(e){
+    $('#create-task-form').submit(function(e) {
         e.preventDefault();
         var form = $(this);
         var data = form.serialize();
+        data += '&id=' + {{ $id }};
         $.ajax({
             type: 'post',
             url: '{{ route('task.create') }}',
             data: data,
-            success: function(response){
-                console.log(response);
+            success: function(response) {
                 var tasks = response.tasks;
                 var subtasks = response.subtasks;
-                var newgroups=new vis.DataSet();
-                var newitems=new vis.DataSet();
+                var newgroups = new vis.DataSet();
+                var newitems = new vis.DataSet();
                 for (var i = 0; i < tasks.length; i++) {
                     let newGroup = {
                         content: tasks[i].task_name,
                         id: 'task_' + tasks[i].task_id,
-                        nestedGroups: subtasks.filter(function(subtask){
+                        nestedGroups: subtasks.filter(function(subtask) {
                             return subtask.task_id == tasks[i].task_id;
-                        }).map(function(subtask){
+                        }).map(function(subtask) {
                             return 'subtask_' + subtask.sub_task_id;
                         }),
                     };
@@ -480,58 +472,58 @@
                         delete newGroup.nestedGroups;
                     }
                     newgroups.add(newGroup);
-
                     newitems.add({
                         start: new Date(tasks[i].start_date),
                         end: new Date(tasks[i].end_date),
                         group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
                     });
                 }
-                for (var i = 0; i < subtasks.length; i++) {
-                    newgroups.add({
-                        content: subtasks[i].sub_task_name,
-                        id: 'subtask_' + subtasks[i].sub_task_id,
-                        className: 'vis-subTask',
-                    });
-                    newitems.add({
-                        start: new Date(subtasks[i].start_date),
-                        end: new Date(subtasks[i].end_date),
-                        group: 'subtask_' + subtasks[i].sub_task_id,
-                    });
-                }
+            for (var i = 0; i < subtasks.length; i++) {
                 newgroups.add({
-                    content: 'Create',
-                    id: 'create',
+                    content: subtasks[i].sub_task_name,
+                    id: 'subtask_' + subtasks[i].sub_task_id,
+                    className: 'vis-subTask',
                 });
-                timeline.setGroups(newgroups);
-                timeline.setItems(newitems);
-                c_subtaskCount = 0;
-                $('#modalCreateTask').modal('hide');
-            },
-            error: function(response){
-                console.log(response);
+                newitems.add({
+                    start: new Date(subtasks[i].start_date),
+                    end: new Date(subtasks[i].end_date),
+                    group: 'subtask_' + subtasks[i].sub_task_id,
+                    title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
+                });
             }
+            newgroups.add({
+                content: 'Create',
+                id: 'create',
+            });
+            groups=newgroups;
+            timeline.setGroups(newgroups);
+            timeline.setItems(newitems);
+            c_subtaskCount = 0;
+            form[0].reset();
+            $('#c-subtasks-holder').html('');
+            $('#modalCreateTask').modal('hide');
+        },
+        error: function(response){
+            console.log(response);
+        }
         });
     });
 
-    function getTask(e){
+    function getTask(e) {
         var task_id = e.getAttribute('data-task-id');
         $.ajax({
             type: 'get',
-            url: '{{ url('task') }}/task/'+task_id,
+            url: '{{ url('task') }}/task/' + task_id,
             data: {
                 _token: '{{ csrf_token() }}'
             },
-            success: function(response){
+            success: function(response) {
                 var task = response.task;
                 var subtasks = response.subtasks;
-
-                var task_id = task.task_id;
-                var subtask_id = subtasks.map(function(subtask){
-                    return subtask.sub_task_id;
-                });
                 $('#subTaskHol').show();
-                $('#task_id').val("task_"+task_id);
+                $('#task_id').val("task_" + task_id);
+                $('#dl_task_id').attr('data-task-id',"task_" + task_id);
                 $('#taskname').val(task.task_name);
                 $('#request').val(task.request);
                 $('#users').val(task.engineers);
@@ -544,34 +536,34 @@
                     subtask.style.marginTop = '1%';
                     subtask.style.marginBottom = '1%';
                     subtask.innerHTML = `
-                        <div class="col-10">
-                            <input name="subtask_${subtasks[i].sub_task_id}" type="text" class="form-control" value="${subtasks[i].sub_task_name}">
-                        </div>
-                        <div class="col-1">
-                            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-                        </div>
-                    `;
+                    <div class="col-10">
+                        <input name="subtask_${subtasks[i].sub_task_id}" type="text" class="form-control" value="${subtasks[i].sub_task_name}">
+                    </div>
+                    <div class="col-1">
+                        <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+                    </div>`;
                     document.getElementById('e-subtasks-holder').appendChild(subtask);
                 }
                 $('#modalViewTask').modal('show');
             },
-            error: function(response){
+            error: function(response) {
                 console.log(response);
             }
         });
     }
 
-    function getSubTask(e){
+    function getSubTask(e) {
         var subtask_id = e.getAttribute('data-subtask-id');
         $.ajax({
             type: 'get',
-            url: '{{ url('task') }}/subtask/'+subtask_id,
+            url: '{{ url('task') }}/subtask/' + subtask_id,
             data: {
                 _token: '{{ csrf_token() }}'
             },
-            success: function(response){
+            success: function(response) {
                 var subtask = response.subtask;
-                $('#task_id').val("subtask_"+subtask.sub_task_id);
+                $('#task_id').val("subtask_" + subtask.sub_task_id);
+                $('#dl_task_id').attr('data-task-id',"subtask_" + subtask.sub_task_id);
                 $('#subTaskHol').hide();
                 $('#e-subtasks-holder').html('');
                 $('#taskname').val(subtask.sub_task_name);
@@ -581,7 +573,7 @@
                 $('#e_date').val(subtask.end_date);
                 $('#modalViewTask').modal('show');
             },
-            error: function(response){
+            error: function(response) {
                 console.log(response);
             }
         });
@@ -591,6 +583,7 @@
         e.preventDefault();
         var form = $(this);
         var data = form.serialize();
+        data += '&id=' + {{ $id }};
         $.ajax({
             type: 'post',
             url: '{{ route('task.update') }}',
@@ -611,7 +604,6 @@
                         }),
                     };
                     if (newGroup.nestedGroups.length == 0) {
-                        console.log("asd");
                         delete newGroup.nestedGroups;
                     }
                     newgroups.add(newGroup);
@@ -619,6 +611,7 @@
                         start: new Date(tasks[i].start_date),
                         end: new Date(tasks[i].end_date),
                         group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
                     });
                 }
                 for (var i = 0; i < subtasks.length; i++) {
@@ -631,12 +624,14 @@
                         start: new Date(subtasks[i].start_date),
                         end: new Date(subtasks[i].end_date),
                         group: 'subtask_' + subtasks[i].sub_task_id,
+                        title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
                     });
                 }
                 newgroups.add({
                     content: 'Create',
                     id: 'create',
                 });
+                groups=newgroups;
                 timeline.setGroups(newgroups);
                 timeline.setItems(newitems);
                 $('#modalViewTask').modal('hide');
@@ -646,5 +641,88 @@
             }
         });
     });
-</script>
+    //khi nút delete được click thì sẽ gọi hàm delete qua link task.delete
+    $('#dl_task_id').click(function(e){
+        e.preventDefault();
+        //'{{ url('task') }}/task/'+task_id,
+        var task_id = $(this).attr('data-task-id');
+        $.ajax({
+            type: 'post',
+            url: '{{ url('task') }}/delete/'+task_id,
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response){
+                var tasks = response.tasks;
+                var subtasks = response.subtasks;
+                var newgroups=new vis.DataSet();
+                var newitems=new vis.DataSet();
+                for (var i = 0; i < tasks.length; i++) {
+                    let newGroup = {
+                        content: tasks[i].task_name,
+                        id: 'task_' + tasks[i].task_id,
+                        nestedGroups: subtasks.filter(function(subtask){
+                            return subtask.task_id == tasks[i].task_id;
+                        }).map(function(subtask){
+                            return 'subtask_' + subtask.sub_task_id;
+                        }),
+                    };
+                    if (newGroup.nestedGroups.length == 0) {
+                        delete newGroup.nestedGroups;
+                    }
+                    newgroups.add(newGroup);
+                    newitems.add({
+                        start: new Date(tasks[i].start_date),
+                        end: new Date(tasks[i].end_date),
+                        group: 'task_' + tasks[i].task_id,
+                        title: 'Start: ' + tasks[i].start_date + '<br>End: ' + tasks[i].end_date
+                    });
+                }
+                for (var i = 0; i < subtasks.length; i++) {
+                    newgroups.add({
+                        content: subtasks[i].sub_task_name,
+                        id: 'subtask_' + subtasks[i].sub_task_id,
+                        className: 'vis-subTask',
+                    });
+                    newitems.add({
+                        start: new Date(subtasks[i].start_date),
+                        end: new Date(subtasks[i].end_date),
+                        group: 'subtask_' + subtasks[i].sub_task_id,
+                        title: 'Start: ' + subtasks[i].start_date + '<br>End: ' + subtasks[i].end_date
+                    });
+                }
+                newgroups.add({
+                    content: 'Create',
+                    id: 'create',
+                });
+                groups=newgroups;
+                timeline.setGroups(newgroups);
+                timeline.setItems(newitems);
+                $('#modalViewTask').modal('hide');
+            },
+            error: function(response){
+                console.log(response);
+            }
+        });
+    });
+    function checkDate() {
+        var startDateInput = document.querySelector('input[name="s_date"]');
+        var endDateInput = document.querySelector('input[name="e_date"]');
+
+        var startDate = startDateInput.value;
+        var endDate = endDateInput.value;
+
+        if (startDate) {
+            endDateInput.min = startDate;
+        } else {
+            endDateInput.min = "";
+        }
+
+        if (endDate) {
+            startDateInput.max = endDate;
+        } else {
+            startDateInput.max = "";
+        }
+    }
+    </script>
 @endsection

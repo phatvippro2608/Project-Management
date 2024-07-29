@@ -71,7 +71,7 @@ class AccountController extends Controller
 
     function add(Request $request)
     {
-        $id_employee = $request->input('id_employee');
+        $id_employee = $request->input('id_employee','');
         $username = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');
@@ -79,7 +79,7 @@ class AccountController extends Controller
         $permission = $request->input('permission');
 
         if($permission==1){
-            if(AccountModel::where('permission',1)->count()>=3){
+            if(AccountModel::where('permission',1)->where('id_employee','!=',$id_employee)->count()>=3){
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
@@ -124,6 +124,10 @@ class AccountController extends Controller
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
+
+        if(AccountModel::where('id_employee',$id_employee)->where('id_account','!=',$id_account)->count()>=1){
+            return $this->status('Tài khoản đã tồn tại', 500);
+        };
 //        $auto_pwd = $request->input('auto_pwd');
 //
 //        if($auto_pwd == 'true')
@@ -131,7 +135,7 @@ class AccountController extends Controller
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
 
         if($permission==1){
-            if(AccountModel::where('permission',1)->where('id_account','!=',$id_account)->count()+AccountModel::where('id_account',$id_account)->where('permission',1)->count()>=3){
+            if(AccountModel::where('permission',1)->where('id_employee','!=',$id_employee)->count()>=3){
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
