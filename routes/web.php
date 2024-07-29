@@ -84,15 +84,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/leave-type/{leave-type}', [LeaveTypeController::class, 'update'])->name('leave-type.update');
         Route::delete('/leave-type/{leave-type}', [LeaveTypeController::class, 'destroy'])->name('leave-type.destroy');
 
-
-
-
-
-
-
-
-
-
         //Leave Application
         Route::get('/leave-application', [LeaveApplicationController::class, 'getView'])->name('leave-application.index');
         Route::post('/leave-application/add', [LeaveApplicationController::class, 'add'])->name('holidays.add');
