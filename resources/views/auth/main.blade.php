@@ -381,12 +381,16 @@ use App\StaticString; ?>
                     </a>
                     <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
+
                             <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+
                                 <i class="bi bi-circle"></i><span>Info</span>
                             </a>
                         </li>
                         <li>
+
                             <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+
                                 <i class="bi bi-circle"></i><span>History</span>
                             </a>
                         </li>
@@ -481,6 +485,7 @@ use App\StaticString; ?>
             <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
+
                         <i class="bi bi-circle"></i><span>Projects</span>
                     </a>
                 </li>

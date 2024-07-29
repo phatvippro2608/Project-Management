@@ -31,6 +31,7 @@ class DashboardController extends Controller
         AND account.id_account=$id_account
         ORDER BY created_at DESC
         LIMIT 5 ";
+        
         $recent_project = DB::select($sql);
 
 
