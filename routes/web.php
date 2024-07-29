@@ -10,6 +10,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HolidaysController;
+use App\Http\Controllers\LeaveTypeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,7 @@ use App\Http\Controllers\HolidaysController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
@@ -73,9 +76,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
 
         //Leave Type
-
-        
-
+        Route::resource('/leave-type', LeaveTypeController::class);
+        Route::get('/leave-type', [\App\Http\Controllers\LeaveTypeController::class, 'getView'])->name('leave-type.index');
+        Route::post('/leave-type', [LeaveTypeController::class, 'store'])->name('leave-type.store');
+        Route::get('/leave-type/{leave-type}/edit', [LeaveTypeController::class, 'edit'])->name('leave-type.edit');
+        Route::put('/leave-type/{leave-type}', [LeaveTypeController::class, 'update'])->name('leave-type.update');
+        Route::delete('/leave-type/{leave-type}', [LeaveTypeController::class, 'destroy'])->name('leave-type.destroy');
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
@@ -123,5 +129,3 @@ Route::post('/departments', [DepartmentController::class, 'store'])->name('depar
 Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
 Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
-
-

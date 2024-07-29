@@ -428,8 +428,8 @@ use App\StaticString; ?>
                         </a>
                     </li>
                     <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Leave Type</span>
+                        <a href="{{route('leave-type.index')}}">
+                            <i class="bi bi-airplane"></i><span>Leave Type</span>
                         </a>
                     </li>
                     <li>

@@ -41,8 +41,8 @@
                 <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
                     <i class="bi bi-plus-circle"></i> Add Holiday
                 </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> Leave
-                    Application</button>
+                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i>  <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}" style="all: unset; cursor: pointer;">
+                        Leave Application</a></button>
             </div>
 
         </div>
