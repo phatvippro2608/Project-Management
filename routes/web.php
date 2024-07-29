@@ -72,6 +72,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
         Route::delete('/holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
 
+        //Leave Type
+
         
 
     });
@@ -122,13 +124,4 @@ Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'
 Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
-<<<<<<< Updated upstream
-//Holiday
-Route::resource('holidays', HolidaysController::class);
-Route::get('holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
-Route::post('/holidays', [HolidaysController::class, 'store'])->name('holidays.store');
-Route::get('holidays{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
-Route::put('holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
-Route::delete('holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
-=======
->>>>>>> Stashed changes
+
