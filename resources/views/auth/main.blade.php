@@ -490,6 +490,16 @@ use App\StaticString; ?>
                         <i class="bi bi-circle"></i><span>Project Manager</span>
                     </a>
                 </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Task List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Field Visit</span>
+                    </a>
+                </li>
             </ul>
         </li>
 
