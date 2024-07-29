@@ -26,6 +26,25 @@ class LeaveApplicationController extends Controller
 
     function add(Request $request)
     {
+//        $validated = $request->validate([
+//            'employee_id' => 'required|string',
+//            'pin' => 'required|string',
+//            'leave_type' => 'required|string',
+//            'apply_date' => 'required|date',
+//            'start_date' => 'required|date',
+//            'end_date' => 'required|date',
+//            'duration' => 'required|string',
+//            'leave_status' => 'required|string',
+//        ]);
+//
+//        $leave_app = LeaveApplicationModel::create($validated);
+//
+//        return response()->json([
+//            'success' => true,
+//            "status" => 200,
+//            'leave_app' => $leave_app,
+//            'message' => 'Holiday added successfully',
+//        ]);
         $validated = $request->validate([
             'employee_id' => 'required|string',
             'pin' => 'required|string',
@@ -37,13 +56,23 @@ class LeaveApplicationController extends Controller
             'leave_status' => 'required|string',
         ]);
 
+        // Kiểm tra sự tồn tại của employee_id
+        $exists = LeaveApplicationModel::where('employee_id', $request->employee_id)->exists();
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                "status" => 400,
+                'message' => 'Employee already has an application',
+            ], 400);
+        }
+
         $leave_app = LeaveApplicationModel::create($validated);
 
         return response()->json([
             'success' => true,
             "status" => 200,
             'leave_app' => $leave_app,
-            'message' => 'Holiday added successfully',
+            'message' => 'Leave application added successfully',
         ]);
     }
 

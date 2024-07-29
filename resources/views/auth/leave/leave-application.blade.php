@@ -244,7 +244,7 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: '{{ route('holidays.add') }}',
+                    url: '{{ route('leave-application.add') }}',
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
@@ -257,7 +257,11 @@
                         }
                     },
                     error: function(xhr) {
-                        toastr.error(response.message, "Error");
+                        if (xhr.status === 400) {
+                            toastr.error(xhr.responseJSON.message, "Error");
+                        } else {
+                            toastr.error("An error occurred", "Error");
+                        }
                     }
                 });
             });
