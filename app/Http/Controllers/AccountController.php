@@ -64,6 +64,12 @@ class AccountController extends Controller
         return json_encode($data);
     }
 
+    static function format($date)
+    {
+        $date_str = new \DateTime($date);
+        return $date_str->format('d-m-Y');
+    }
+
     public static function status($message, $code)
     {
         return json_encode((object)["status" => $code, "message" => $message]);

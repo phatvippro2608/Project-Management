@@ -134,36 +134,43 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card card-hover shadow-none m-0">
-                                    <div class="card-body p-3">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="todo-event d-flex align-items-center text-success text-decoration-line-through">
-                                                <i class="bi bi-check-circle text-success"></i>
-                                                <h5 class="m-0 ms-2">Update dashboard</h5>
-                                            </div>
-                                            <div class="todo-time">
-                                                <p class="m-0 text-success">09:00</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="card card-hover shadow-none m-0">
-                                    <div class="card-body p-3">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="todo-event d-flex align-items-center">
-                                                <i class="bi bi-circle"></i>
-                                                <h5 class="m-0 ms-2">Update Todo list</h5>
-                                            </div>
-                                            <div class="todo-time">
-                                                <p class="m-0 text-success">11:00</p>
+                            @foreach($tasks as $item)
+                                @if($item->state == 2)
+                                    <div class="col-lg-12">
+                                        <div class="card card-hover shadow-none m-0">
+                                            <div class="card-body p-3">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="todo-event d-flex align-items-center text-success text-decoration-line-through">
+                                                        <i class="bi bi-check-circle text-success"></i>
+                                                        <h5 class="m-0 ms-2">{{$item->task_name}}</h5>
+                                                    </div>
+                                                    <div class="todo-time">
+                                                        <p class="m-0 text-success"></p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                @elseif($item->state == 1)
+                                    <div class="col-lg-12">
+                                        <div class="card card-hover shadow-none m-0">
+                                            <div class="card-body p-3">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="todo-event d-flex align-items-center">
+                                                        <i class="bi bi-circle"></i>
+                                                        <h5 class="m-0 ms-2">{{$item->task_name}}</h5>
+                                                    </div>
+                                                    <div class="todo-time">
+                                                        <p class="m-0 text-success"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+
+
                         </div>
                     </div>
                 </div>

@@ -34,9 +34,7 @@
                         <div class="d-inline-flex align-items-center">
                             <div class="btn btn-primary mx-2 btn-add">
                                 <div class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    add
-                                </span>
+                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                                     Add Team
                                 </div>
                             </div>
@@ -69,51 +67,59 @@
 
                                 </thead>
                                 <tbody class="account-list">
-                                    <tr class="account-item">
-                                        <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input type="checkbox" name="" id="" class="custom-checkbox-lg">
-                                                    <a class=" edit">
-                                                        <i class="bi bi-pencil-square ic-update ic-btn"
-                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
-                                                    </a>
-                                                    <a class=" delete">
-                                                        <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="id"></i>
-                                                    </a>
+                                    @foreach($team as $item)
+                                        <tr class="account-item">
+                                            <td class="text-center">
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="d-flex align-items-center">
+{{--                                                        <input type="checkbox" name="" id="" class="custom-checkbox-lg">--}}
+                                                        <a class=" edit">
+                                                            <i class="bi bi-pencil-square ic-update ic-btn"
+                                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
+                                                        </a>
+                                                        <a class=" delete">
+                                                            <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
+                                                               data="id"></i>
+                                                        </a>
+                                                    </div>
+
                                                 </div>
 
-                                            </div>
+                                            </td>
+                                            <td class="text-center">
+                                                {{$item->team_name}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{$item->team_description}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{$item->first_name.' '.$item->last_name}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{\App\Http\Controllers\AccountController::format($item->created_at)}}
+                                            </td>
+                                            <td class="text-center">
+                                                {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
+                                            </td>
+                                            <td class="text-center">
+                                                @if($status[$item->status] == 'Offine')
+                                                    <i class="bi bi-circle-fill account-status offine"></i>
+                                                @elseif($status[$item->status] == 'Locked')
+                                                    <i class="bi bi-circle-fill account-status" style="color:red;"></i>
+                                                @else
+                                                    <i class="bi bi-circle-fill account-status"></i>
+                                                @endif
 
-                                        </td>
-                                        <td class="text-center">
+                                                {{$status[$item->status]}}
+                                            </td>
+                                            <td class="text-center">
 
-                                        </td>
-                                        <td class="text-center">
+                                            </td>
+                                            <td class="text-center">
 
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                        <td class="text-center">
-{{--                                            @if($status[$item->status] == 'Offine')--}}
-{{--                                                <i class="bi bi-circle-fill account-status offine"></i>--}}
-{{--                                            @elseif($status[$item->status] == 'Locked')--}}
-{{--                                                <i class="bi bi-circle-fill account-status" style="color:red;"></i>--}}
-{{--                                            @else--}}
-{{--                                                <i class="bi bi-circle-fill account-status"></i>--}}
-{{--                                            @endif--}}
-
-{{--                                            {{$status[$item->status]}}--}}
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
