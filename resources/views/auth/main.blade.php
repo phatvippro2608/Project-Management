@@ -335,12 +335,12 @@ use App\StaticString; ?>
             </a>
             <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
                         <i class="bi bi-circle"></i><span>Deparment</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Designation</span>
                     </a>
                 </li>
@@ -356,7 +356,7 @@ use App\StaticString; ?>
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                        <a class="nav-sub-link" href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
                             <i class="bi bi-circle"></i><span>Employee List</span>
                         </a>
                     </li>
@@ -371,12 +371,12 @@ use App\StaticString; ?>
                     </a>
                     <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
-                            <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
                                 <i class="bi bi-circle"></i><span>Info</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
                                 <i class="bi bi-circle"></i><span>History</span>
                             </a>
                         </li>
@@ -402,21 +402,20 @@ use App\StaticString; ?>
                href="#">
                 <i class="bi bi-calendar-check"></i><span>Attendance</span><i
                     class="bi bi-chevron-down ms-auto"></i>
-
             </a>
             <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Attendance List</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Attendance Report</span>
                     </a>
                 </li>
@@ -429,28 +428,28 @@ use App\StaticString; ?>
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Holiday</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Leave Type</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Leave Application</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Earned Leave</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
                     </a>
                 </li>
@@ -471,12 +470,12 @@ use App\StaticString; ?>
             </a>
             <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                    <a class="nav-sub-link" href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
                         <i class="bi bi-circle"></i><span>Project List</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                    <a class="nav-sub-link" href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
                         <i class="bi bi-circle"></i><span>Project Manager</span>
                     </a>
                 </li>
@@ -491,13 +490,12 @@ use App\StaticString; ?>
             </a>
             <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ action([\App\Http\Controllers\InventoryManagementController::class, 'getView']) }}">
+                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\InventoryManagementController@getView') }}">
                         <i class="bi bi-circle"></i><span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-
-                    <a class="nav-link collapsed"
+                    <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
                         <i class="bi bi-basket-fill"></i><span>Material Management</span>
                     </a>
@@ -513,7 +511,7 @@ use App\StaticString; ?>
             </a>
             <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="">
+                    <a class="nav-sub-link" href="#">
                         <i class="bi bi-circle"></i><span>Activity Log</span>
                     </a>
                 </li>
@@ -521,14 +519,14 @@ use App\StaticString; ?>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link " href="">
+            <a class="nav-link " href="#">
                 <i class="bi bi-clipboard2-fill"></i>
                 <span>Notice</span>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link " href="">
+            <a class="nav-link " href="#">
                 <i class="bi bi-gear-fill"></i>
                 <span>Settings</span>
             </a>
