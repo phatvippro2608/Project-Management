@@ -42,20 +42,20 @@ class TaskController extends Controller
         $validatedData = $request->validate([
             'taskname' => 'required|string|max:255',
             'request' => 'nullable|string',
-            'users' => 'nullable|string',
+            'c_users' => 'nullable|string',
             's_date' => 'required|date',
             'e_date' => 'required|date|after_or_equal:s_date',
             'id' => 'required|string',
+            'user_id' => 'nullable|string',
         ]);
         $task = TaskModel::create([
             'task_name' => $validatedData['taskname'],
             'phase_id'=> $validatedData['id'],
             'request' => $validatedData['request'],
-            'engineers' => $validatedData['users'],
+            'engineers' => $validatedData['user_id'],
             'start_date' => $validatedData['s_date'],
             'end_date' => $validatedData['e_date'],
         ]);
-        // Create subtasks if any
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
                 SubTaskModel::create([
@@ -94,10 +94,11 @@ class TaskController extends Controller
             'task_id' => 'required|string|max:255',
             'taskname' => 'required|string|max:255',
             'request' => 'nullable|string',
-            'users' => 'nullable|string',
+            'e_users' => 'nullable|string',
             's_date' => 'nullable|date',
             'e_date' => 'nullable|date|after_or_equal:s_date',
             'id' => 'required|string',
+            'user_id' => 'nullable|string',
         ]);
         $idtype = explode('_', $validatedData['task_id'])[0];
         $id = explode('_', $validatedData['task_id'])[1];
@@ -105,7 +106,7 @@ class TaskController extends Controller
             $task = TaskModel::find($id);
             $task->task_name = $validatedData['taskname'];
             $task->request = $validatedData['request'];
-            $task->engineers = $validatedData['users'];
+            $task->engineers = $validatedData['user_id'];
             $task->start_date = $validatedData['s_date'];
             $task->end_date = $validatedData['e_date'];
             $task->save();
@@ -133,7 +134,7 @@ class TaskController extends Controller
             $subtask = SubTaskModel::find($id);
             $subtask->sub_task_name = $validatedData['taskname'];
             $subtask->request = $validatedData['request'];
-            $subtask->engineers = $validatedData['users'];
+            $subtask->engineers = $validatedData['user_id'];
             $subtask->start_date = $validatedData['s_date'];
             $subtask->end_date = $validatedData['e_date'];
             $subtask->save();
