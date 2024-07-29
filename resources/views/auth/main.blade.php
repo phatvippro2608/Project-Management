@@ -348,7 +348,7 @@ use App\StaticString; ?>
         </li>
 
         @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
-            <li class="nav-heading">Employees</li>
+            <li class="nav-heading">HR Manager</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
                    href="#">
@@ -357,33 +357,34 @@ use App\StaticString; ?>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Info</span>
+                            <i class="bi bi-circle"></i><span>Employee List</span>
                         </a>
                     </li>
                 </ul>
             </li>
+            @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
+                       href="#">
+                        <i class="bi bi-person"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                                <i class="bi bi-circle"></i><span>Info</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                                <i class="bi bi-circle"></i><span>History</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
         @endif
-        @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
-            <li class="nav-heading">HR Manager</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-person"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Info</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-                            <i class="bi bi-circle"></i><span>History</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        @endif
+
         @php
             $data = \Illuminate\Support\Facades\DB::table('account')
                 ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
