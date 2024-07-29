@@ -32,7 +32,9 @@ class ProgressController extends Controller
             ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
             ->select('sub_tasks.*')
             ->get();
-        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id'));
+        
+        $employees = DB::table('employees')->select('id_employee', 'photo', 'last_name', 'first_name')->get();
+        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
     }
 
     public function updateItem(Request $request)

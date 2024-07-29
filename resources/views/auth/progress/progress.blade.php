@@ -4,7 +4,7 @@
     <style type="text/css">
         #visualization {
             width: 100%;
-            height: 100vh;
+            height: 80vh;
         }
 
         .vis-subTask {
@@ -40,28 +40,24 @@
         }
 
         .dropdown-content {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
             display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
         }
 
         .dropdown-item {
-            padding: 12px 16px;
-            cursor: pointer;
             display: flex;
             align-items: center;
+            padding: 5px;
+            cursor: pointer;
         }
 
         .dropdown-item img {
-            margin-right: 10px;
+            margin-right: 10px; /* Optional: Add some space between the image and the text */
         }
 
-        .dropdown-item:hover {
-            background-color: #f1f1f1;
-        }
+        
     </style>
     <div class="pagetitle">
         <h1>Progress</h1>
@@ -72,20 +68,25 @@
             </ol>
         </nav>
     </div>
-    <section class="section employees">
-        <div class="row justify-content-between">
-            <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
-                <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+    <div class="section employees">
+        <div class="card">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
+                        <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+                    </div>
+                    <div class="from-group col-2 float-end d-inline-flex">
+                        <button id="btnD" type="button" style="margin: 0 1%" class="btn btn-primary">Day</button>
+                        <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-primary">Month</button>
+                        <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-primary">Year</button>
+                    </div>
+                </div>
             </div>
-            <div class="from-group col-3 float-end d-inline-flex">
-                <button id="btnW" type="button" style="margin: 0 1%" class="btn btn-secondary">Week</button>
-                <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-secondary">Month</button>
-                <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-secondary">Year</button>
+            <div class="card-body">
+                <div class="from-group" style="margin-top: 1%;">
+                    <div id="visualization"></div>
+                </div>
             </div>
-        </div>
-
-        <div class="from-group" style="margin-top: 2%;">
-            <div id="visualization"></div>
         </div>
 
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
@@ -122,22 +123,22 @@
                         <div class="form-group col-6" style="border-left: 1px solid;">
                             <div class="form-group">
                                 <label><strong><i class="bi bi-person-circle"></i> Assigned</strong></label>
-                                <input class="form-control assign-user" type="text" id="users" name="users" autocomplete="off" placeholder="Search..." onfocus="showDropdown(this)">
+                                <input class="form-control assign-user" type="text" id="users" data-user-id="" name="e_users" autocomplete="off" placeholder="Search..." onclick="showDropdown(this)" onfocus="showDropdown(this)">
                                 <div class="dropdown-content">
-                                    <div class="dropdown-item" data-value="Edge">
-                                        <img src="path/to/edge.png" alt="Edge" width="20" height="20"> Edge
-                                    </div>
+                                    @foreach ($employees as $employee)
+                                        <div class="dropdown-item" data-value="{{ $employee->id_employee }}">
+                                            <img src="{{ asset($employee->photo) }}" width="20" height="20">{{ $employee->last_name }} {{ $employee->first_name }}
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                <input class="form-control" type="date" id="s_date" onchange="checkDate()"
-                                        name="s_date">
+                                <input class="form-control" type="date" id="s_date" onchange="checkDate()" name="s_date" required>
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" id="e_date" onchange="checkDate()"
-                                        name="e_date">
+                                <input class="form-control" type="date" id="e_date" onchange="checkDate()" name="e_date" required>
                             </div>
                         </div>
                     </div>
@@ -173,20 +174,23 @@
                         <div class="form-group col-6" style="border-left: 1px solid;">
                             <div class="form-group">
                                 <label for="users"><strong><i class="bi bi-person-circle"></i> Assigned</strong></label>
-                                <input class="form-control" type="text" name="users" autocomplete="off" placeholder="Search..." onfocus="showDropdown(this)">
+                                <input class="form-control" type="text" name="c_users" data-user-id="" autocomplete="off" placeholder="Search..." onclick="showDropdown(this)" onfocus="showDropdown(this)">
                                 <div class="dropdown-content">
-                                    <div class="dropdown-item" data-value="Edge">
-                                        <img src="path/to/edge.png" alt="Edge" width="20" height="20"> Edge
-                                    </div>
+                                    @foreach ($employees as $employee)
+                                        <div class="dropdown-item" data-value="{{ $employee->id_employee }}">
+                                            <img src="{{ asset($employee->photo) }}" width="20" height="20">{{ $employee->last_name }} {{ $employee->first_name }}
+                                        </div>
+                                    @endforeach
                                 </div>
+                                
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="s_date"><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                <input class="form-control" type="date" onchange="checkDate()" name="s_date">
+                                <input class="form-control" type="date" onchange="checkDate()" name="s_date" required>
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" onchange="checkDate()" name="e_date">
+                                <input class="form-control" type="date" onchange="checkDate()" name="e_date" required>
                             </div>
                         </div>
                     </div>
@@ -198,7 +202,7 @@
         </div>
     </div>
     <input type="text" name="csrf-token" hidden value="{{ csrf_token() }}" id="csrf-token">
-    </section>
+    </div>
     <script type="text/javascript">
     var container = document.getElementById('visualization');
     var groups = new vis.DataSet([
@@ -299,9 +303,10 @@
             if (group.id == "create") {
                 button.setAttribute("data-bs-toggle", "modal");
                 button.setAttribute("data-bs-target", "#modalCreateTask");
-                button.innerHTML = '<i class="bi bi-plus"></i> ' + group.content;
+                button.innerHTML = '<i class="bi bi-plus"></i>' + group.content;
             }
             button.classList.add("btn");
+            button.classList.add("btn-light");
             container.insertAdjacentElement("beforeEnd", button);
             return container;
         },
@@ -333,7 +338,7 @@
         timeline.setGroups(new vis.DataSet(filteredGroups));
     });
 
-    document.getElementById('btnW').addEventListener('click', function() {
+    document.getElementById('btnD').addEventListener('click', function() {
         timeline.setOptions({
             zoomMin: 7 * 24 * 60 * 60 * 1000 * 3,
             zoomMax: 7 * 24 * 60 * 60 * 1000 * 5,
@@ -368,37 +373,18 @@
     });
 
     function showDropdown(e) {
-        // var input = e;
-        // var dropdown = input.nextElementSibling;
-        // var items = dropdown.getElementsByClassName('dropdown-item');
+        var dropdown = e.nextElementSibling;
+        dropdown.style.display = 'block';
 
-        // input.addEventListener('focus', function() {
-        //     dropdown.style.display = 'block';
-        // });
-
-        // input.addEventListener('input', function() {
-        //     var filter = input.value.toLowerCase();
-        //     for (var i = 0; i < items.length; i++) {
-        //         var text = items[i].textContent || items[i].innerText;
-        //         if (text.toLowerCase().indexOf(filter) > -1) {
-        //             items[i].style.display = '';
-        //         } else {
-        //             items[i].style.display = 'none';
-        //         }
-        //     }
-        // });
-        // for (var i = 0; i < items.length; i++) {
-        //     items[i].addEventListener('click', function() {
-        //         input.value = this.getAttribute('data-value');
-        //         dropdown.style.display = 'none';
-        //     });
-        // }
-
-        // document.addEventListener('click', function(event) {
-        //     if (!input.contains(event.target) && !dropdown.contains(event.target)) {
-        //         dropdown.style.display = 'none';
-        //     }
-        // });
+        dropdown.addEventListener('click', function(e) {
+            if (e.target.classList.contains('dropdown-item')) {
+                var name=e.target.textContent;
+                name=name.trim();
+                e.target.parentElement.previousElementSibling.value = name;
+                e.target.parentElement.previousElementSibling.setAttribute('data-user-id', e.target.getAttribute('data-value'));
+                e.target.parentElement.style.display = 'none';
+            }
+        });
     }
 
 
@@ -448,6 +434,7 @@
         var form = $(this);
         var data = form.serialize();
         data += '&id=' + {{ $id }};
+        data += '&user_id=' + $('input[name="c_users"]').attr('data-user-id');
         $.ajax({
             type: 'post',
             url: '{{ route('task.create') }}',
@@ -526,7 +513,12 @@
                 $('#dl_task_id').attr('data-task-id',"task_" + task_id);
                 $('#taskname').val(task.task_name);
                 $('#request').val(task.request);
-                $('#users').val(task.engineers);
+                $('#users').attr('data-user-id', task.engineers);
+                @foreach ($employees as $employee)
+                    if ('{{ $employee->id_employee }}' == task.engineers) {
+                        $('#users').val('{{ $employee->last_name }} {{ $employee->first_name }}');
+                    }
+                @endforeach
                 $('#s_date').val(task.start_date);
                 $('#e_date').val(task.end_date);
                 $('#e-subtasks-holder').html('');
@@ -568,7 +560,12 @@
                 $('#e-subtasks-holder').html('');
                 $('#taskname').val(subtask.sub_task_name);
                 $('#request').val(subtask.request);
-                $('#users').val(subtask.engineers);
+                $('#users').attr('data-user-id', subtask.engineers);
+                @foreach ($employees as $employee)
+                    if ('{{ $employee->id_employee }}' == subtask.engineers) {
+                        $('#users').val('{{ $employee->last_name }} {{ $employee->first_name }}');
+                    }
+                @endforeach
                 $('#s_date').val(subtask.start_date);
                 $('#e_date').val(subtask.end_date);
                 $('#modalViewTask').modal('show');
@@ -584,6 +581,7 @@
         var form = $(this);
         var data = form.serialize();
         data += '&id=' + {{ $id }};
+        data += '&user_id=' + $('input[name="e_users"]').attr('data-user-id');
         $.ajax({
             type: 'post',
             url: '{{ route('task.update') }}',

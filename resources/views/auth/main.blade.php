@@ -358,6 +358,18 @@ use App\StaticString; ?>
                     <li>
                         <a class="nav-sub-link" href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
                             <i class="bi bi-circle"></i><span>Employee List</span>
+                        <a href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Employees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Disciplinary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="">
+                            <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
                 </ul>
@@ -476,7 +488,23 @@ use App\StaticString; ?>
                 </li>
                 <li>
                     <a class="nav-sub-link" href="{{ action([\App\Http\Controllers\ProjectListController::class, 'getView']) }}">
+                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
                         <i class="bi bi-circle"></i><span>Project Manager</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Task List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <i class="bi bi-circle"></i><span>Field Visit</span>
                     </a>
                 </li>
             </ul>
