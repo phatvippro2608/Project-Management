@@ -139,13 +139,13 @@
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
                                     <label><strong><i class="bi bi-calendar"></i> Start date</strong></label>
-                                    <input class="form-control" type="date" id="s_date" onchange="checkDate()"
-                                        name="s_date" required>
+                                    <input class="form-control" type="date" id="s_date"
+                                        onchange="checkDate('edit-task-form')" name="s_date" required>
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
                                     <label><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                    <input class="form-control" type="date" id="e_date" onchange="checkDate()"
-                                        name="e_date" required>
+                                    <input class="form-control" type="date" id="e_date"
+                                        onchange="checkDate('edit-task-form')" name="e_date" required>
                                 </div>
                             </div>
                         </div>
@@ -202,13 +202,13 @@
                                 <div class="form-group" style="margin: 2% 0">
                                     <label for="s_date"><strong><i class="bi bi-calendar"></i> Start
                                             date</strong></label>
-                                    <input class="form-control" type="date" onchange="checkDate()" name="s_date"
-                                        required>
+                                    <input class="form-control" type="date" onchange="checkDate('create-task-form')"
+                                        name="s_date" required>
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
                                     <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                    <input class="form-control" type="date" onchange="checkDate()" name="e_date"
-                                        required>
+                                    <input class="form-control" type="date" onchange="checkDate('create-task-form')"
+                                        name="e_date" required>
                                 </div>
                             </div>
                         </div>
@@ -762,9 +762,10 @@
             });
         });
 
-        function checkDate() {
-            var startDateInput = document.querySelector('input[name="s_date"]');
-            var endDateInput = document.querySelector('input[name="e_date"]');
+        function checkDate(formId) {
+            var form = document.querySelector(`#${formId}`);
+            var startDateInput = form.querySelector('input[name="s_date"]');
+            var endDateInput = form.querySelector('input[name="e_date"]');
 
             var startDate = startDateInput.value;
             var endDate = endDateInput.value;
@@ -781,6 +782,5 @@
                 startDateInput.max = "";
             }
         }
-        
     </script>
 @endsection
