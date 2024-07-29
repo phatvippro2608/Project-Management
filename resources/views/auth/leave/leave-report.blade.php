@@ -34,72 +34,71 @@
             background-color: #0056b3 !important;
             border-color: #004085 !important;
         }
+
+        .text-success {
+          font-weight: bold !important;
+        }
     </style>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
             <div class="d-flex align-items-center">
-                <i class="bi bi-airplane text-primary me-2"></i>
-                <h3 class="text-primary m-0">Leave Types</h3>
+                <i class="bi bi-bag-check text-primary me-2"></i>
+                <h3 class="text-primary m-0">Leave Report</h3>
             </div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a
                             href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Leave Type</li>
+                    <li class="breadcrumb-item active" aria-current="page">Leave Report</li>
                 </ol>
             </nav>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal"
-                    data-bs-target="#addLeaveTypesModal">
-                    <i class="bi bi-plus-circle"></i> Add Leave Types
-                </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i>
-                    <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-                        style="all: unset; cursor: pointer;">
-                        Leave Application</a>
-                </button>
-            </div>
 
+        <div class="container mt-3">
+            <form id="searchForm" class="d-flex justify-content-start align-items-center mb-3">
+                @csrf
+                <div class="form-group me-2">
+                    <label for="reportMonthYear" class="sr-only">Month-Year</label>
+                    <input type="month" class="form-control" id="reportMonthYear" name="report_month_year" required>
+                </div>
+                <div class="form-group me-2">
+                    <label for="employee" class="sr-only">Employee</label>
+                    <select class="form-control" id="employee" name="employee_id" required>
+                        <option value="" selected disabled>Select Employee</option>
+                        @foreach ($employees as $employee)
+                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                                {{ $employee->first_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Search</button>
+            </form>
         </div>
+
         <div class="folded-corner bg-white p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Leave List</h5>
+                <h5 class="mb-0">Report List</h5>
             </div>
             <hr>
             <div style="height: 100vh;">
-                <table id="leavetypesTable" class="table table-bordered mt-3 mb-3">
+                <table id="leavereportsTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>PIN</th>
+                            <th>Employee</th>
                             <th>Leave Type</th>
-                            <th>Number Of Days</th>
+                            <th>Apply Date</th>
+                            <th>Duration</th>
+                            <th>Start Leave</th>
+                            <th>End Leave</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($leave_types as $leave_type)
-                            <tr>
-                                <td>{{ $leave_type->id }}</td>
-                                <td>{{ $leave_type->leave_type }}</td>
-                                <td>{{ $leave_type->number_of_days }}</td>
-                                <td>
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="{{ $leave_type->id }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    |
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="{{ $leave_type->id }}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -172,7 +171,7 @@
     <script>
         $(document).ready(function() {
             // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavetypesTable').DataTable({
+            var table = $('#leavereportsTable').DataTable({
                 dom: '<"d-flex justify-content-between align-items-center"<"left-buttons"B><"right-search"f>>rtip',
                 buttons: [{
                         extend: 'copy',
@@ -202,137 +201,86 @@
                 ]
             });
 
-            table.buttons().container().appendTo('#leaveReportTable_wrapper .col-md-6:eq(0)');
+            table.buttons().container().appendTo('#leavereportsTable_wrapper .col-md-6:eq(0)');
 
-            $('#addLeaveTypeForm').submit(function(e) {
+            $('#searchForm').submit(function(e) {
                 e.preventDefault();
 
                 $.ajax({
-                    url: "{{ route('leave-type.store') }}",
+                    url: '{{ route('leave-report.search') }}',
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        if (response.success) {
-                            $('#addLeaveTypesModal').modal('hide');
-                            $('#successModal').modal('show');
-                            toastr.success(response.response, "Add successful");
+                        table.clear().draw();
+                        response.forEach(function(report) {
                             table.row.add([
-                                response.leave_type.id,
-                                response.leave_type.leave_type,
-                                response.leave_type.number_of_days,
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.leave_type.id + '">' +
-                                '<i class="bi bi-pencil-square"></i>' +
-                                '</button>' +
-                                ' | ' +
+                                report.pin,
+                                report.employee.last_name + ' ' + report
+                                .employee.first_name,
+                                report.leave_type.leave_type,
+                                report.apply_date,
+                                report.duration,
+                                report.start_date,
+                                report.end_date,
+                                '<span class="' + (report.leave_status ===
+                                    'approved' ?
+                                    'text-success' : '') +
+                                '">' +
+                                report.leave_status + '</span>',
+                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn" data-id="' +
+                                report.id +
+                                '"><i class="bi bi-check-circle"></i></button> | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.leave_type.id + '">' +
-                                '<i class="bi bi-trash3"></i>' +
-                                '</button>'
+                                report.id +
+                                '"><i class="bi bi-trash3"></i></button>'
                             ]).draw();
-
-                            $('#addLeaveTypeForm')[0].reset();
-                        }
+                        });
                     },
                     error: function(xhr) {
-                        toastr.error("Error");
+                        toastr.error("An error occurred.", "Error");
                     }
                 });
             });
 
-            $('#leavetypesTable').on('click', '.edit-btn', function() {
-                var leavetypesID = $(this).data('id');
-
-                if (!leavetypesID) {
-                    alert('Department ID not found.');
-                    return;
-                }
-
-                var url = "{{ route('leave-type.edit', ':leavetype') }}";
-                url = url.replace(':leavetype', leavetypesID);
-
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        $('#editHolidayId').val(response.leave_type.id);
-                        $('#edit_leave_type').val(response.leave_type.leave_type);
-                        $('#edit_number_of_days').val(response.leave_type.number_of_days);
-                        $('#editLeaveTypesModal').modal('show');
-                    },
-                    error: function(xhr) {}
-                });
-            });
-
-            $('#editHolidayForm').submit(function(e) {
-                e.preventDefault();
-                var leavetypesID = $('#editHolidayId').val();
-
-                var url = "{{ route('leave-type.update', ':leavetype') }}";
-                url = url.replace(':leavetype', leavetypesID);
-
-                $.ajax({
-                    url: url,
-                    method: 'PUT',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            $('#editLeaveTypesModal').modal('hide');
-                            $('#successModal').modal('show');
-                            toastr.success(response.response, "Edit successful");
-                            var row = table.row($('button[data-id="' + leavetypesID + '"]')
-                                .parents('tr'));
-                            row.data([
-                                response.leave_type.id,
-                                response.leave_type.leave_type,
-                                response.leave_type.number_of_days,
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.leave_type.id + '">' +
-                                '<i class="bi bi-pencil-square"></i>' +
-                                '</button>' +
-                                ' | ' +
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.leave_type.id + '">' +
-                                '<i class="bi bi-trash3"></i>' +
-                                '</button>'
-                            ]).draw();
-                        }
-                    },
-                    error: function(xhr) {
-                        toastr.error("Error");
-                    }
-                });
-            });
-
-            $('#leavetypesTable').on('click', '.delete-btn', function() {
-                var leavetypesID = $(this).data('id');
-                var row = $(this).parents('tr');
+            $('#leavereportsTable').on('click', '.accept-btn', function() {
+                var reportId = $(this).data('id');
+                var row = $(this).closest('tr');
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "Do you want to approve this leave request?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Yes, approve it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        var url = "{{ route('leave-type.destroy', ':leavetype') }}";
-                        url = url.replace(':leavetype', leavetypesID);
+                        var url = "{{ route('leave-applications.approve', ':id') }}";
+                        url = url.replace(':id', reportId);
                         $.ajax({
                             url: url,
-                            method: 'DELETE',
+                            method: 'PUT',
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
                             success: function(response) {
                                 if (response.success) {
+                                    var applyDate = new Date(response.leave_application
+                                        .apply_date);
+                                    var formattedDate = applyDate.getFullYear() + '-' +
+                                        ('0' + (applyDate.getMonth() + 1)).slice(-2) +
+                                        '-' +
+                                        ('0' + applyDate.getDate()).slice(-2);
+
+                                    row.find('td').eq(3).html(formattedDate);
+                                    row.find('td').eq(7).html(
+                                        '<span class="text-success"><strong>approved</strong></span>'
+                                    );
                                     toastr.success(response.message,
-                                        "Deleted successfully");
-                                    table.row(row).remove().draw();
+                                        "Approved successfully");
                                 } else {
-                                    toastr.error("Failed to delete holiday.",
+                                    toastr.error("Failed to approve the leave request.",
                                         "Operation Failed");
                                 }
                             },
@@ -343,6 +291,45 @@
                     }
                 });
             });
+
+            $('#leavereportsTable').on('click', '.delete-btn', function() {
+                var reportId = $(this).data('id');
+                var row = $(this).parents('tr');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to delete this leave request?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ url('leave-applications') }}/' + reportId,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    table.row(row).remove().draw();
+                                    toastr.success(response.message,
+                                        "Deleted successfully");
+                                } else {
+                                    toastr.error("Failed to delete the leave request.",
+                                        "Operation Failed");
+                                }
+                            },
+                            error: function(xhr) {
+                                toastr.error("An error occurred.", "Operation Failed");
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endsection

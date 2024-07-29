@@ -22,5 +22,5 @@ class LeaveTypeModel extends Model
     public function leaveApplications()
     {
         return $this->hasMany(LeaveApplicationModel::class, 'leave_type_id', 'id');
-    }
+    }   
 }

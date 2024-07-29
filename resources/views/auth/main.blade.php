@@ -42,6 +42,18 @@ use App\StaticString; ?>
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js">
+    </script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
@@ -423,17 +435,17 @@ use App\StaticString; ?>
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{route('holidays.index')}}">
+                        <a href="{{ route('holidays.index') }}">
                             <i class="bi bi-balloon-heart"></i><span>Holiday</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('leave-type.index')}}">
+                        <a href="{{ route('leave-type.index') }}">
                             <i class="bi bi-airplane"></i><span>Leave Type</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('leave-application.index')}}">
+                        <a href="{{ route('leave-application.index') }}">
                             <i class="bi bi-circle"></i><span>Leave Application</span>
                         </a>
                     </li>
@@ -444,10 +456,11 @@ use App\StaticString; ?>
                     </li>
 
                     <li>
-                        <a href="">
-                            <i class="bi bi-circle"></i><span>Leave Report</span>
+                        <a href="{{ route('leave-report.index') }}">
+                            <i class="bi bi-bag-check"></i><span>Leave Report</span>
                         </a>
                     </li>
+
                 </ul>
             </li>
 

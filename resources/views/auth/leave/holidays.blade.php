@@ -20,6 +20,18 @@
             background-color: #1472e5;
             clip-path: polygon(0 0, 100% 0, 0 100%);
         }
+
+        .btn.custom-btn {
+            background-color: #007bff !important;
+            color: #fff !important;
+            border-color: #007bff !important;
+            border-radius: 5px !important;
+        }
+
+        .btn.custom-btn:hover {
+            background-color: #0056b3 !important;
+            border-color: #004085 !important;
+        }
     </style>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
@@ -41,7 +53,9 @@
                 <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
                     <i class="bi bi-plus-circle"></i> Add Holiday
                 </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i>  <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}" style="all: unset; cursor: pointer;">
+                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> <a
+                        href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
+                        style="all: unset; cursor: pointer;">
                         Leave Application</a></button>
             </div>
 
@@ -51,14 +65,7 @@
                 <h5 class="mb-0">Holidays List</h5>
             </div>
             <hr>
-            <div class="d-flex justify-content-start mb-3">
-                <button class="btn btn-primary me-2" id="copyBtn">Copy</button>
-                <button class="btn btn-primary me-2" id="exportCsvBtn">CSV</button>
-                <button class="btn btn-primary me-2" id="exportExcelBtn">Excel</button>
-                <button class="btn btn-primary me-2" id="exportPdfBtn">PDF</button>
-                <button class="btn btn-primary" id="printBtn">Print</button>
-            </div>
-            <div class=class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div style="height: 100vh;">
                 <table id="holidaysTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                         <tr>
@@ -184,7 +191,37 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            var table = $('#holidaysTable').DataTable();
+            var table = $('#holidaysTable').DataTable({
+                dom: '<"d-flex justify-content-between align-items-center"<"left-buttons"B><"right-search"f>>rtip',
+                buttons: [{
+                        extend: 'copy',
+                        text: 'Copy',
+                        className: 'btn custom-btn me-2'
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'CSV',
+                        className: 'btn custom-btn me-2'
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn custom-btn me-2'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'PDF',
+                        className: 'btn custom-btn me-2'
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        className: 'btn custom-btn'
+                    }
+                ]
+            });
+
+            table.buttons().container().appendTo('#holidaysTable_wrapper .col-md-6:eq(0)');
 
             $('#addHolidayForm').submit(function(e) {
                 e.preventDefault();

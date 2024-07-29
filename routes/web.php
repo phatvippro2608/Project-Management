@@ -12,6 +12,8 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\LeaveReportsController;
+
 
 
 /*
@@ -91,8 +93,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/leave-application/{id}/update', [LeaveApplicationController::class, 'update'])->name('leave-application.update');
         Route::delete('/leave-application/{id}/delete', [LeaveApplicationController::class, 'destroy'])->name('leave-application.destroy');
 
-
-
+        //Leave Report
+        Route::resource('/leave-report', LeaveReportsController::class);
+        Route::get('/leave-report', [LeaveReportsController::class, 'getView'])->name('leave-report.index');
+        Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
+        Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
+        Route::delete('/leave-report/{leave-report}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
