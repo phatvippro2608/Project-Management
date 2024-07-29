@@ -70,7 +70,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
 });
 
-Route::get('/project-list', [\App\Http\Controllers\ProjectListController::class, 'getView'])->name('project.list');
+Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
+Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+
 Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
 Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
 Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
