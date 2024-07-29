@@ -71,20 +71,29 @@
         <div class="card">
             <div class="card-header">
                 <div class="row justify-content-between">
-                    <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-2">
+                    <div class="from-group col-xs-6 col-sm-6 col-md-5 col-lg-3 d-inline-flex">
                         <input type="text" id="TaskSearch" class="form-control" placeholder="Search Task">
+                        <div class="btn-group btn-type" role="group">
+                            <button id="btnTL" type="button" style="margin: 0 1% 0 5%"
+                                class="btn btn-primary active">Timeline</button>
+                            <button id="btnTB" type="button" style="margin: 0 1%"
+                                class="btn btn-primary">Table</button>
+                        </div>
                     </div>
                     <div class="from-group col-2 float-end d-inline-flex">
-                        <button id="btnD" type="button" style="margin: 0 1%" class="btn btn-primary">Day</button>
-                        <button id="btnM" type="button" style="margin: 0 1%" class="btn btn-primary">Month</button>
-                        <button id="btnY" type="button" style="margin: 0 1%" class="btn btn-primary">Year</button>
+                        <div class="btn-group btn-type" role="group">
+                            <button id="btnD" type="button" class="btn btn-primary">Day</button>
+                            <button id="btnM" type="button" class="btn btn-primary">Month</button>
+                            <button id="btnY" type="button" class="btn btn-primary active">Year</button>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="from-group" style="margin-top: 1%;">
+                <div class="from-group time-line" style="margin-top: 1%;">
                     <div id="visualization"></div>
                 </div>
+                
             </div>
         </div>
 
@@ -219,7 +228,6 @@
                 </div>
             </div>
         </div>
-        <input type="text" name="csrf-token" hidden value="{{ csrf_token() }}" id="csrf-token">
     </div>
     <script type="text/javascript">
         var container = document.getElementById('visualization');
@@ -297,7 +305,7 @@
             zoomMax: 365.25 * 24 * 60 * 60 * 1000 * 5,
             editable: {
                 add: false,
-                updateTime: true,
+                updateTime: false,
                 updateGroup: false,
             },
             itemsAlwaysDraggable: {
@@ -449,13 +457,13 @@
             subtask.style.marginTop = '1%';
             subtask.style.marginBottom = '1%';
             subtask.innerHTML = `
-        <div class="col-10">
-            <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-        </div>
-        <div class="col-1">
-            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-        </div>
-    `;
+            <div class="col-10">
+                <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+            </div>
+            <div class="col-1">
+                <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+            </div>
+            `;
             document.getElementById('c-subtasks-holder').appendChild(subtask);
         }
         var e_subtaskCount = 0;
@@ -467,13 +475,13 @@
             subtask.style.marginTop = '1%';
             subtask.style.marginBottom = '1%';
             subtask.innerHTML = `
-        <div class="col-10">
-            <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-        </div>
-        <div class="col-1">
-            <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-        </div>
-    `;
+                <div class="col-10">
+                    <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+                </div>
+                <div class="col-1">
+                    <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+                </div>
+            `;
             document.getElementById('e-subtasks-holder').appendChild(subtask);
         }
 
@@ -782,5 +790,16 @@
                 startDateInput.max = "";
             }
         }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.btn-group').on('click', '.btn', function() {
+                // Xóa lớp 'active' khỏi tất cả các nút trong nhóm nút hiện tại
+                $(this).siblings().removeClass('active');
+
+                // Thêm lớp 'active' vào nút đã nhấp
+                $(this).addClass('active');
+            });
+        });
     </script>
 @endsection
