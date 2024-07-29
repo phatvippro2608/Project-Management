@@ -85,21 +85,12 @@
                             </div>
                         </div>
                     </div>
-                    </div>
-
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row gy-3">
             <div class="col-lg-8">
                 <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Recent</h4>
-            </div>
-            <div class="col-lg-4">
-                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-8">
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">
@@ -125,6 +116,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="card bg-white shadow-none">
@@ -135,11 +127,14 @@
                                 <div class="card-body p-3">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="todo-event d-flex align-items-center text-success text-decoration-line-through">
-                                            <i class="bi bi-check-circle text-success"></i>
                                             <h5 class="m-0 ms-2">Update dashboard</h5>
                                         </div>
                                         <div class="todo-time">
-                                            <p class="m-0 text-success">09:00</p>
+                                            <input
+                                                type="checkbox"
+                                                class="rounded-checkbox"
+                                                id="checkbox"
+                                            />
                                         </div>
                                     </div>
                                 </div>
