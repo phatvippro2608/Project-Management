@@ -10,7 +10,7 @@ use Validator;
 
 class ProjectBudgetController extends Controller
 {
-    
+
 
     public function getView($id)
     {
@@ -33,13 +33,13 @@ class ProjectBudgetController extends Controller
     public function showProjects()
     {
 
-        $submenu = DB::table('projects')->get(); 
+        $submenu = DB::table('projects')->get();
         return view('auth.show-projects', ['submenu' => $submenu]);
     }
 
     public function showProjectDetail($id)
     {
- DB::table('projects')->where('project_id', $id)->first();
+        $data = DB::table('projects')->where('project_id', $id)->first();
         $total = 0;
         $subtotal1=0;
         $items=DB::table('project_cost')->where('project_id', $id)->get();
@@ -158,12 +158,12 @@ class ProjectBudgetController extends Controller
     {
         $costGroupId = $request->input('costGroupId');
         $costGroupName = $request->input('costGroupName');
-    
+
         // Update logic here
         $costGroup = CostGroupModel::find($costGroupId);
         $costGroup->project_cost_group_name = $costGroupName;
         $costGroup->save();
-    
+
         return redirect()->back()->with('success', 'Cost group name updated successfully.');
     }
 
@@ -188,7 +188,7 @@ public function createCostGroup(Request $request, $id)
         'newGroupName' => 'required|string|max:255',
     ]);
 
-    $newGroup = new CostGroupModel(); 
+    $newGroup = new CostGroupModel();
     $newGroup->project_cost_group_name = $request->input('newGroupName');
     $newGroup->save();
 
@@ -200,7 +200,7 @@ public function createCostGroup(Request $request, $id)
 
 public function getCostGroupDetails(Request $request, $id, $group_id)
 {
-    $costGroup = CostGroupModel::find($group_id); 
+    $costGroup = CostGroupModel::find($group_id);
 
     if ($costGroup) {
         $html = '
@@ -287,11 +287,11 @@ public function addNewCost(Request $request, $id)
 public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
 {
     $costGroup = CostGroupModel::find($cost_group_id);
-    
+
     if ($costGroup) {
         // Optional: Check if the cost group is used in other places and handle it accordingly
         $costGroup->delete();
-        
+
         return response()->json(['success' => true]);
     } else {
         return response()->json(['success' => false, 'message' => 'Cost group not found.']);
