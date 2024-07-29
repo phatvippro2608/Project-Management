@@ -72,7 +72,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/leave', 'middleware' => 'isSuperAdmin'], function () {
         //Holiday
         Route::resource('/holidays', HolidaysController::class);
-        Route::get('/holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
+        Route::get('/holidays', [HolidaysController::class, 'getView'])->name('holidays.index');
         Route::post('/holidays', [HolidaysController::class, 'store'])->name('holidays.store');
         Route::get('/holidays/{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
         Route::put('/holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
@@ -80,7 +80,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
         //Leave Type
         Route::resource('/leave-type', LeaveTypeController::class);
-        Route::get('/leave-type', [\App\Http\Controllers\LeaveTypeController::class, 'getView'])->name('leave-type.index');
+        Route::get('/leave-type', [LeaveTypeController::class, 'getView'])->name('leave-type.index');
         Route::post('/leave-type', [LeaveTypeController::class, 'store'])->name('leave-type.store');
         Route::get('/leave-type/{leave-type}/edit', [LeaveTypeController::class, 'edit'])->name('leave-type.edit');
         Route::put('/leave-type/{leave-type}', [LeaveTypeController::class, 'update'])->name('leave-type.update');
@@ -94,11 +94,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/leave-application/{id}/delete', [LeaveApplicationController::class, 'destroy'])->name('leave-application.destroy');
 
         //Leave Report
-        Route::resource('/leave-report', LeaveReportsController::class);
         Route::get('/leave-report', [LeaveReportsController::class, 'getView'])->name('leave-report.index');
         Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
         Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
-        Route::delete('/leave-report/{leave-report}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
+        Route::delete('/leave-report/{id}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');

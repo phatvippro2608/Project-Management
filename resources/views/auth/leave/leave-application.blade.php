@@ -90,6 +90,7 @@
                                 data-id="{{$item->id}}">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
+                            |
                             <button
                                 class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
                                 data-id="{{$item->id}}">
@@ -144,7 +145,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Apply Date</label>
-                            <input type="date" class="form-control" id="apply_date" name="apply_date" required>
+                            <input type="date" class="form-control" id="apply_date" name="apply_date" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date</label>
@@ -160,7 +161,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="days" class="form-label">Leaves Status</label>
-                            <input type="number" class="form-control" id="leave_status" name="leave_status" required>
+                            <input type="number" class="form-control" id="leave_status" name="leave_status" readonly>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Application</button>
                     </form>
@@ -209,7 +210,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Apply Date</label>
-                            <input type="date" class="form-control" id="edit_apply_date" name="apply_date" required>
+                            <input type="date" class="form-control" id="edit_apply_date" name="apply_date" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date</label>
@@ -225,7 +226,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="days" class="form-label">Leaves Status</label>
-                            <input type="number" class="form-control" id="edit_leave_status" name="leave_status" required>
+                            <input type="number" class="form-control" id="edit_leave_status" name="leave_status" readonly>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit Application</button>
                     </form>

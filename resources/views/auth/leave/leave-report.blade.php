@@ -38,6 +38,10 @@
         .text-success {
           font-weight: bold !important;
         }
+
+        table td:last-child{
+            text-align: center;
+        }
     </style>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
@@ -78,6 +82,7 @@
         </div>
 
         <div class="folded-corner bg-white p-3 mb-3">
+
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Report List</h5>
             </div>
@@ -101,67 +106,6 @@
 
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-
-    </div>
-
-    <!-- Add Leave Type Modal -->
-    <div class="modal fade" id="addLeaveTypesModal" tabindex="-1" aria-labelledby="addLeaveTypesModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addLeaveTypesModalLabel">Add New Leave Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addLeaveTypeForm">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="leave_type" class="form-label">Leave Type</label>
-                            <input type="text" class="form-control" id="leave_type" name="leave_type" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="number_of_days" class="form-label">Number Of Days</label>
-                            <input type="number" class="form-control" id="number_of_days" name="number_of_days"
-                                min="0" step="1" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Leave Type</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <div class="modal fade" id="editLeaveTypesModal" tabindex="-1" aria-labelledby="editLeaveTypesModal"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editLeaveTypesModalLabel">Edit Holiday</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editHolidayForm">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" id="editHolidayId" name="id">
-                        <div class="mb-3">
-                            <label for="edit_leave_type" class="form-label">Leave Type</label>
-                            <input type="text" class="form-control" id="edit_leave_type" name="leave_type" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_number_of_days" class="form-label">Number Of Days</label>
-                            <input type="number" class="form-control" id="edit_number_of_days" name="number_of_days"
-                                min="0" step="1" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Edit Holiday</button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>
@@ -227,13 +171,9 @@
                                     'text-success' : '') +
                                 '">' +
                                 report.leave_status + '</span>',
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn" data-id="' +
+                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn vertical-align-middle" data-id="' +
                                 report.id +
-                                '"><i class="bi bi-check-circle"></i></button> | ' +
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                report.id +
-                                '"><i class="bi bi-trash3"></i></button>'
-                            ]).draw();
+                                '"><i class="bi bi-check-circle"></i></button>']).draw();
                         });
                     },
                     error: function(xhr) {
@@ -292,43 +232,43 @@
                 });
             });
 
-            $('#leavereportsTable').on('click', '.delete-btn', function() {
-                var reportId = $(this).data('id');
-                var row = $(this).parents('tr');
+            {{--$('#leavereportsTable').on('click', '.delete-btn', function() {--}}
+            {{--    var reportId = $(this).data('id');--}}
+            {{--    var row = $(this).parents('tr');--}}
 
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to delete this leave request?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '{{ url('leave-applications') }}/' + reportId,
-                            method: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    table.row(row).remove().draw();
-                                    toastr.success(response.message,
-                                        "Deleted successfully");
-                                } else {
-                                    toastr.error("Failed to delete the leave request.",
-                                        "Operation Failed");
-                                }
-                            },
-                            error: function(xhr) {
-                                toastr.error("An error occurred.", "Operation Failed");
-                            }
-                        });
-                    }
-                });
-            });
+            {{--    Swal.fire({--}}
+            {{--        title: 'Are you sure?',--}}
+            {{--        text: "Do you want to delete this leave request?",--}}
+            {{--        icon: 'warning',--}}
+            {{--        showCancelButton: true,--}}
+            {{--        confirmButtonColor: '#3085d6',--}}
+            {{--        cancelButtonColor: '#d33',--}}
+            {{--        confirmButtonText: 'Yes, delete it!'--}}
+            {{--    }).then((result) => {--}}
+            {{--        if (result.isConfirmed) {--}}
+            {{--            $.ajax({--}}
+            {{--                url: '{{ url('leave-report.destroy') }}/' + reportId,--}}
+            {{--                method: 'DELETE',--}}
+            {{--                data: {--}}
+            {{--                    _token: '{{ csrf_token() }}'--}}
+            {{--                },--}}
+            {{--                success: function(response) {--}}
+            {{--                    if (response.success) {--}}
+            {{--                        table.row(row).remove().draw();--}}
+            {{--                        toastr.success(response.message,--}}
+            {{--                            "Deleted successfully");--}}
+            {{--                    } else {--}}
+            {{--                        toastr.error("Failed to delete the leave request.",--}}
+            {{--                            "Operation Failed");--}}
+            {{--                    }--}}
+            {{--                },--}}
+            {{--                error: function(xhr) {--}}
+            {{--                    toastr.error("An error occurred.", "Operation Failed");--}}
+            {{--                }--}}
+            {{--            });--}}
+            {{--        }--}}
+            {{--    });--}}
+            {{--});--}}
 
         });
     </script>

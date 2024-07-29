@@ -33,7 +33,7 @@ class LeaveReportsController extends Controller
     {
         $leaveApplication = LeaveApplicationModel::findOrFail($id);
         $leaveApplication->leave_status = 'approved';
-        $leaveApplication->apply_date = Carbon::now(); 
+        $leaveApplication->apply_date = Carbon::now();
         $leaveApplication->save();
 
         return response()->json([
@@ -42,4 +42,14 @@ class LeaveReportsController extends Controller
             'leave_application' => $leaveApplication
         ]);
     }
+    public function destroy($id)
+{
+    $holiday = LeaveApplicationModel::findOrFail($id);
+    $holiday->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Leave reports deleted successfully',
+    ]);
+}
 }
