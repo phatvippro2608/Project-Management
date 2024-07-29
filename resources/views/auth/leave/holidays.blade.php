@@ -233,7 +233,7 @@
                 }
 
                 $.ajax({
-                    url: '{{ url('holidays') }}/' + holidaysID + '/edit',
+                    url: '{{ url('leave/holidays') }}/' + holidaysID + '/edit',
                     method: 'GET',
                     success: function(response) {
                         $('#editHolidayId').val(response.holiday.id);
@@ -302,7 +302,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ url('holidays') }}/' + holidaysID,
+                            url: '{{ url('leave/holidays') }}/' + holidaysID,
                             method: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'

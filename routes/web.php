@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LeaveApplicationController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
 
@@ -63,7 +64,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/change-password', 'App\Http\Controllers\ProfileController@changePassword');
     });
 
-    Route::group(['prefix' => '/leave', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/leave', 'middleware' => 'isSuperAdmin'], function () {
         //Holiday
         Route::resource('/holidays', HolidaysController::class);
         Route::get('/holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
@@ -72,7 +73,19 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
         Route::delete('/holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
 
-        
+
+
+
+
+
+
+
+
+
+
+        //Leave Application
+        Route::get('/leave-application', [LeaveApplicationController::class, 'getView'])->name('leave-application.index');
+        Route::post('/leave-application/add', [LeaveApplicationController::class, 'add'])->name('holidays.add');
 
     });
 
@@ -122,13 +135,3 @@ Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'
 Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
 Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
-<<<<<<< Updated upstream
-//Holiday
-Route::resource('holidays', HolidaysController::class);
-Route::get('holidays', [\App\Http\Controllers\HolidaysController::class, 'getView'])->name('holidays.index');
-Route::post('/holidays', [HolidaysController::class, 'store'])->name('holidays.store');
-Route::get('holidays{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
-Route::put('holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
-Route::delete('holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
-=======
->>>>>>> Stashed changes

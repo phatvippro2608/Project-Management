@@ -50,5 +50,9 @@ class EmployeeModel extends Model
         return DB::table('medical_checkup')->get();
     }
 
-
+    // Thiết lập mối quan hệ với bảng leave_applications
+    public function leaveApplications()
+    {
+        return $this->hasMany(LeaveApplicationModel::class, 'employee_id', 'id_employee');
+    }
 }
