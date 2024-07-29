@@ -623,6 +623,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Filename</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="cv-list">
@@ -659,6 +660,7 @@
                                                 <th>#</th>
                                                 <th>Filename</th>
                                                 <th>Date</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody class="medical_list">
@@ -697,6 +699,7 @@
                                                 <th scope="col">File Name</th>
                                                 <th scope="col">Type</th>
                                                 <th scope="col">Expiry Date</th>
+                                                <th scope="col">Action</th>
                                             </tr>
                                             </thead>
                                             <tbody class="certificate_list">
@@ -753,6 +756,7 @@
         let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
+        let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
@@ -798,10 +802,8 @@
             $('.md2 .modal-title').text('Import Employee');
             $('.md2').modal('show');
         });
-        let nation ="";
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));
-            console.log(data);
             $('.btn_photo').click(function () {
                 event.preventDefault();
                 let filePhoto = $('.md3 .photo')[0].files[0];
@@ -981,7 +983,7 @@
             if(dataCV){
                 dataCV.forEach(function(filename, index) {
                     let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.cv-list').append(row);
                 });
             }
@@ -991,7 +993,7 @@
             if(dataMedical){
                 dataMedical.forEach(function(item, index) {
                     let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.medical_list').append(row);
                 });
             }
@@ -1000,7 +1002,7 @@
             if(dataCertificate){
                 dataCertificate.forEach(function(item, index) {
                     let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center" on class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.certificate_list').append(row);
                 });
             }
