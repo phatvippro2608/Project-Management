@@ -24,15 +24,20 @@ class ProgressController extends Controller
 
     function getViewHasID($id)
     {
-        $phases = DB::table("phases")->where('project_id', $id)->get();
+        $projectExists = DB::table('projects')->where('project_id', $id)->exists();
+        if (!$projectExists) {
+            abort(404, 'Project not found');
+        }
         
+        $phases = DB::table("phases")->where('project_id', $id)->get();
+
         $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
         $subtasks = DB::table('sub_tasks')
             ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
             ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
             ->select('sub_tasks.*')
             ->get();
-        
+
         $employees = DB::table('employees')->select('id_employee', 'photo', 'last_name', 'first_name')->get();
         return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
     }
@@ -87,7 +92,5 @@ class ProgressController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Invalid item type']);
     }
-
-
 
 }

@@ -152,7 +152,7 @@ class UploadFileController extends Controller
     public function uploadPersonalProfile(Request $request)
     {
         $request->validate([
-            'personal_profile.*' => 'nullable|file|max:1048576', // 10MB
+            'personal_profile.*' => 'nullable|file|max:1048576', // 1MB
         ]);
 
         $personalProfiles = $request->file('personal_profile');
@@ -163,23 +163,20 @@ class UploadFileController extends Controller
             mkdir($directoryPath, 0777, true);
         }
 
-        // Get old photo filenames
+        // Get old profile filenames
         $oldProfiles = DB::table('employees')->where('id_employee', $id_employee)->value('cv');
-
-        // Check if $oldProfiles is null, set it to an empty array
         $oldProfiles = $oldProfiles ? json_decode($oldProfiles, true) : [];
 
         $uploadedFiles = [];
         $failedFiles = [];
 
-        // Handle photo uploads
         if ($personalProfiles) {
             foreach ($personalProfiles as $file) {
                 try {
                     $filename = $file->getClientOriginalName();
 
                     // Check if the new photo is the same as one of the old photos
-                    if (!in_array($filename, (array)$oldProfiles)) { // Cast $oldProfiles to array to avoid null error
+                    if (!in_array($filename, $oldProfiles)) {
                         $file->move($directoryPath, $filename);
                         $uploadedFiles[] = $filename;
                     }
@@ -189,21 +186,24 @@ class UploadFileController extends Controller
             }
         }
 
-        // Remove old photos that are not in the new uploads
-        if (!empty($oldProfiles) && is_array($oldProfiles)) {
-            foreach ($oldProfiles as $oldProfile) {
-                if (!in_array($oldProfile, $uploadedFiles)) {
-                    $oldProfilePath = $directoryPath . '/' . $oldProfile;
-                    if (file_exists($oldProfilePath)) {
-                        unlink($oldProfilePath);
-                    }
+        // Combine old and new file lists, ensuring no duplicates
+        $allProfiles = array_unique(array_merge($oldProfiles, $uploadedFiles));
+
+        // Remove old files that are not in the new uploads
+        foreach ($oldProfiles as $oldProfile) {
+            if (!in_array($oldProfile, $allProfiles)) {
+                $oldProfilePath = $directoryPath . '/' . $oldProfile;
+                if (file_exists($oldProfilePath)) {
+                    unlink($oldProfilePath);
                 }
             }
         }
 
+        // Update the employee's cv in the database
         DB::table('employees')
             ->where('id_employee', $id_employee)
-            ->update(['cv' => json_encode($uploadedFiles)]);
+            ->update(['cv' => json_encode($allProfiles)]);
+
 
         if (count($failedFiles) > 0) {
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
