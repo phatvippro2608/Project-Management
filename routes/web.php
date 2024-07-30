@@ -34,7 +34,7 @@ Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/', function () {
         return redirect('/dashboard');
-    });
+    })->name('root');
     Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
     Route::post('/dashboard/update-todo', 'App\Http\Controllers\DashboardController@UpdateTodo');
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
@@ -54,6 +54,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/team', 'App\Http\Controllers\TeamController@getView');
+        Route::put('/add', 'App\Http\Controllers\TeamController@add');
+        Route::post('/update', 'App\Http\Controllers\TeamController@update');
+        Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
     });
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
