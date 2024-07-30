@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
@@ -101,6 +102,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
         Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
         Route::delete('/leave-report/{id}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
+
+        //Earn Leave
+        Route::get('/earn-leave', [EarnLeaveController::class, 'getView'])->name('earn-leave.index');
     });
 
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
