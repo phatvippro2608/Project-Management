@@ -14,8 +14,9 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
+use App\Http\Controllers\MyXteamController;
 
-
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ use App\Http\Controllers\LeaveReportsController;
 */
 
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
+Route::post('/9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE', 'App\Http\Controllers\AccountController@position');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
@@ -40,11 +42,15 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/dashboard/update-todo', 'App\Http\Controllers\DashboardController@UpdateTodo');
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
+    Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
     Route::group(['prefix' => '/account', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
+
+
+        Route::delete('/clear-history', 'App\Http\Controllers\AccountController@clearHistory');
 
         Route::get('/demo', function () {
             return view('auth.account.account_import_demo');
@@ -62,15 +68,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
+        Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{id_employee}', 'App\Http\Controllers\EmployeesController@getEmployee');
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
-        Route::delete('/delete_file', 'App\Http\Controllers\EmployeesController@deleteFile');
+        Route::post('/delete_file', 'App\Http\Controllers\EmployeesController@deleteFile');
+        Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
+
+        Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
+
     });
 
-    Route::group(['prefix' => '/profile', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/profile'], function () {
         Route::get('/', 'App\Http\Controllers\ProfileController@getViewProfile');
         Route::post('/update', 'App\Http\Controllers\ProfileController@postProfile');
         Route::post('/change-password', 'App\Http\Controllers\ProfileController@changePassword');
@@ -105,6 +116,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
         Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
         Route::delete('/leave-report/{id}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
+
         Route::get('/leave-report/data', [LeaveReportsController::class, 'getLeaveApplications'])->name('leave-report.data');
         Route::get('/leave-report/export', [LeaveReportsController::class, 'exportExcel'])->name('leave-report.export');
 
@@ -131,6 +143,7 @@ Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('
 Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
+//Progress
 Route::post('/update-item', [ProgressController::class, 'updateItem']);
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
 Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
@@ -138,6 +151,10 @@ Route::post('/progress', [TaskController::class, 'create'])->name('task.create')
 Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
 Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
 Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+
+//Settings
+Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
+Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
@@ -155,9 +172,15 @@ Route::get('/project/{id}/budget/cost-group-details/{group_id}', [\App\Http\Cont
 Route::post('/project/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
 Route::delete('/project/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
 
+// myXteam
+Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('teams', [MyXteamController::class, 'getView']);
+    Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
+    Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
+    Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
+});
 
 //Inventory Management
-
 Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
 //Department

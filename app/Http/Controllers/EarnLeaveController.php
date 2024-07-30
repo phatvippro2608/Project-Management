@@ -9,6 +9,7 @@ class EarnLeaveController extends Controller
 {
     function getView()
     {
+
         $leaveSummaries = EarnLeaveModel::getEmployeeLeaveSummary();
 //        dd($leaveSummaries);
         return view('auth.leave.earn-leave',

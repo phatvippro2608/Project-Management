@@ -2,7 +2,7 @@
     <nav style="display: flex; align-items: center; justify-content: space-between;">
         <div style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
             <div>
-                <p class="small text-muted">
+                <p class="small text-muted mb-0">
                     {!! __('Showing') !!}
                     <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
                     {!! __('to') !!}

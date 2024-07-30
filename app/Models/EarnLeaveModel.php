@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class EarnLeaveModel extends Model
 {
     use HasFactory;
+
     protected $table = 'leave_applications';
     protected $primaryKey = 'id';
 
@@ -29,4 +30,13 @@ class EarnLeaveModel extends Model
             ->groupBy('employees.employee_code', 'employees.first_name', 'employees.last_name', 'leave_applications.employee_id')
             ->get();
     }
+
+    protected $table = 'leave_earn';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'id',
+        'employee_pin',
+        'employee_name',
+        'total_hour',
+    ];
 }

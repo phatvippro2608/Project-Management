@@ -21,7 +21,6 @@
             clip-path: polygon(0 0, 100% 0, 0 100%);
         }
 
-
     </style>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
@@ -57,6 +56,7 @@
                 <table id="applicationTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                     <tr>
+
                         <th class="text-start">Employee Pin</th>
                         <th>Employee Name</th>
                         <th>Total Hour</th>
@@ -70,6 +70,7 @@
                             <td>{{$item->totalhour}} hour</td>
                         </tr>
                     @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -210,12 +211,15 @@
 @section('script')
     <script>
         $(document).ready(function() {
+
             var table = $('#applicationTable').DataTable()
+
 
 
         });
     </script>
 @endsection
+
 @section('head')
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
@@ -232,3 +236,4 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
+
