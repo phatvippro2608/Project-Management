@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="col-3">
                                     <label class="fw-bolder" for=""><i class="bi bi-person"></i> ID</label>
-                                    <input id="employee_id" class="form-control" name="employee_ID" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                    <input id="employee_id" class="form-control" name="id_employee" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                 </div>
 
                             </div>
@@ -54,15 +54,17 @@
                             </div>
                             <div class="form-group mt-3">
                                 <label class="fw-bolder" for="sign_in"><i class="bi bi-clock"></i> Sign In</label>
-                                <input type="time" class="form-control" name="sign_in" id="sign_in" required>
+                                <input type="time" class="form-control" name="sign_in" id="sign_in" onchange="timeCheck(this)" required>
                             </div>
                             <div class="form-group mt-3">
                                 <label class="fw-bolder" for="sign_out"><i class="bi bi-clock"></i> Sign Out</label>
-                                <input type="time" class="form-control" name="sign_out" id="sign_out">
+                                <input type="time" class="form-control" name="sign_out" id="sign_out" onchange="timeCheck(this)">
                             </div>
                         </div>
                     </div>
                     <div class="form-group d-flex justify-content-end mt-4">
+                        <!-- button reset from -->
+                        <button type="reset" class="btn btn-danger me-2"><i class="bi bi-arrow-clockwise"></i> Reset</button>
                         <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
                     </div>
                 </form>
@@ -74,7 +76,7 @@
                     $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                     @endphp
                     <div class="employee-item d-flex align-items-center" data-id="{{ $employee->id_employee }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
-                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" width="22" height="22" class="mr-2">
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
                         <div class="empl_val ms-1"></div>
                     </div>
                     @endforeach
@@ -85,6 +87,7 @@
 </div>
 <!-- event off dropdown employee -->
 <script>
+    $('#date').val(new Date().toISOString().slice(0, 10));
     function displayDropdown(e) {
         $('.employees-dropdown').css('display', 'block');
         var position = $(e).position();
@@ -121,7 +124,6 @@
     function searchDropdown(e) {
         var value = $(e).val().toLowerCase();
         $('.employee-item').filter(function() {
-            //check id là employee_name hay employee_id
             if ($(e).attr('id') == 'employee_name') {
                 if ($(this).attr('data-value').toLowerCase().indexOf(value) > -1) {
                     $(this).attr('style', 'display: flex !important');
@@ -145,5 +147,35 @@
         var photoPath = $(this).find('img').attr('src');
         $('#employee-img').attr('src', photoPath);
     });
+
+    function timeCheck(e) {
+        if ($(e).attr('id') == 'sign_in') {
+            $('#sign_out').attr('min', $(e).val());
+        } else {
+            $('#sign_in').attr('max', $(e).val());
+        }
+    }
+
+    //ajax when from submit
+    $('form').submit(function(e) {
+        e.preventDefault();
+        var data = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: '{{ action('App\Http\Controllers\AttendanceController@addAttendance') }}',
+            data: data,
+            success: function(response) {
+                console.log(response);
+                if (response.success) {
+                    toastr.success(response.message);
+                    $('form').trigger('reset');
+                } else {
+                    toastr.error(response.message);
+                }
+                
+            }
+        });
+    });
+
 </script>
 @endsection

@@ -34,8 +34,9 @@
             <table id="attendanceTable" class="display">
                 <thead>
                     <tr>
-                        <th scope="col">Employee Name</th>
                         <th scope="col">ID</th>
+                        <th scope="col">Employee Name</th>
+                        <th scope="col" style="width: 10%;">Employee ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Sign In</th>
                         <th scope="col">Sign Out</th>
@@ -45,7 +46,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <th>Abc</th>
+                        <td>1</td>
+                        <td>Abc</td>
                         <td>1</td>
                         <td>12-12-2020</td>
                         <td>9:00 AM</td>
@@ -53,6 +55,7 @@
                         <td>9 Hours</td>
                         <td>
                             <a href="#" class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+                            <a href="#" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
                 </tbody>
