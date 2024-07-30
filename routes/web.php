@@ -57,6 +57,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
         Route::post('/delete_file', 'App\Http\Controllers\EmployeesController@deleteFile');
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
+        Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
 
     Route::group(['prefix' => '/profile'], function () {

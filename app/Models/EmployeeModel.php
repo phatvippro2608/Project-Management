@@ -50,5 +50,32 @@ class EmployeeModel extends Model
         return DB::table('medical_checkup')->get();
     }
 
+    public function getAllEmployee()
+    {
+        $data = DB::table('employees')
+            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+            ->join('account', 'employees.id_employee', '=', 'account.id_employee')
+            ->select(
+                'employees.employee_code',
+                'employees.first_name',
+                'employees.last_name',
+                'employees.en_name',
+                'contacts.phone_number',
+                'account.email',
+                'employees.gender',
+                'employees.marital_status',
+                'employees.date_of_birth',
+                'employees.national',
+                'employees.military_service',
+                'contacts.cic_number',
+                'contacts.cic_issue_date',
+                'contacts.cic_expiry_date',
+                'contacts.cic_place_issue',
+                'contacts.current_residence',
+                'contacts.permanent_address'
+            )
+            ->get();
+        return $data;
+    }
 
 }

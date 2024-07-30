@@ -31,11 +31,11 @@
                                 Import
                             </a>
                         </div>
-                        <div class="btn btn-success mx-2">
-                            <div class="d-flex align-items-center">
+                        <div class="btn btn-success mx-2 btn-export">
+                            <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
                                 <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
                                 Export
-                            </div>
+                            </a>
                         </div>
                         <div class="card-body border-bottom py-3">
                             <div class="d-flex">
@@ -297,7 +297,7 @@
                                             <div class="row mb-3">
                                                 <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control employee_code" name="">
+                                                    <input type="text" class="form-control employee_code" name="" disabled>
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -757,6 +757,7 @@
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
+        let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
@@ -1237,6 +1238,7 @@
                 });
             }
         })
+
         function populateCountrySelect(selectElementId, countrySelete) {
             $(document).ready(function() {
                 $.ajax({
