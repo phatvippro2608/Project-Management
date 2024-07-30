@@ -111,3 +111,4 @@ Route::delete('departments/{department}', [DepartmentController::class, 'destroy
 
 //Attendance
 Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
+Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.add');

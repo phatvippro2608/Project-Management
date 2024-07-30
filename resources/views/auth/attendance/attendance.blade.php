@@ -19,7 +19,7 @@
     <h1>Attendance</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
             <li class="breadcrumb-item active">Attendance</li>
         </ol>
     </nav>
@@ -27,7 +27,8 @@
 <div class="section employees">
     <div class="card">
         <div class="card-header">
-
+            <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-plus"></i> Add Attendance</a>
+            <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-file-earmark-fill"></i> Attendance Report</a>
         </div>
         <div class="card-body">
             <table id="attendanceTable" class="display">
@@ -94,19 +95,22 @@
                 extend: 'pdf',
                 className: 'btn btn-primary',
                 exportOptions: {
-                    columns: ':not(:last-child)' // Exclude the last column (Actions)
+                    columns: ':not(:last-child)'
                 }
             },
             {
                 extend: 'print',
                 className: 'btn btn-primary',
                 exportOptions: {
-                    columns: ':not(:last-child)' // Exclude the last column (Actions)
+                    columns: ':not(:last-child)'
                 }
             }
         ],
         lengthMenu: [10, 25, 50, 100],
         pageLength: 10
     });
+    $('.dt-search').addClass('d-flex align-items-center');
+    $('.dt-search label').addClass('d-flex align-items-center');
+    $('.dt-search input').addClass('form-control ml-2');
 </script>
 @endsection

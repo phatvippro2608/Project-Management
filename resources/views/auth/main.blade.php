@@ -410,7 +410,7 @@ use App\StaticString; ?>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
