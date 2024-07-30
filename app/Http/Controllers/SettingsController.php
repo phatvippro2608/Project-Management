@@ -66,7 +66,7 @@ class SettingsController extends Controller
                 $image = $request->file('option_img');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('assets/img'), $imageName);
-                $option->option_img = $imageName;
+                $option->option_img = 'assets/img/'.$imageName;
             }
 
             // Save the updated option record
