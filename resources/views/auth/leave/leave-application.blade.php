@@ -77,12 +77,12 @@
                 @foreach ($leave_applications as $item)
                     <tr>
                         <td>{{$item->employee->first_name }} {{ $item->employee->last_name }}</td>
-                        <td>{{$item->pin}}</td>
+                        <td>{{$item->employee->employee_code}}</td>
                         <td>{{$item->leaveType->leave_type }}</td>
                         <td>{{$item->apply_date}}</td>
                         <td>{{$item->start_date}}</td>
                         <td>{{$item->end_date}}</td>
-                        <td>{{$item->duration}}</td>
+                        <td>{{$item->duration}} days</td>
                         <td>{{$item->leave_status}}</td>
                         <td>
                             <button
@@ -131,7 +131,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">PIN</label>
-                            <input type="text" class="form-control" id="pin" name="pin" required>
+                            <input type="text" class="form-control" id="pin" name="pin" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Leave Type</label>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Duration</label>
-                            <input type="text" class="form-control" id="duration" name="duration" required>
+                            <input type="text" class="form-control" id="duration" name="duration" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="days" class="form-label">Leaves Status</label>
@@ -189,14 +189,14 @@
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
                                 @foreach($employee_name as $item)
-                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}
+                                    <option value="{{$item->id_employee}} ">{{$item->employee_code}}
                                         - {{$item->first_name}} {{$item->last_name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">PIN</label>
-                            <input type="text" class="form-control" id="edit_pin" name="pin" required>
+                            <input type="text" class="form-control" id="edit_pin" name="pin" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Leave Type</label>
@@ -222,7 +222,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Duration</label>
-                            <input type="text" class="form-control" id="edit_duration" name="duration" required>
+                            <input type="text" class="form-control" id="edit_duration" name="duration" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="days" class="form-label">Leaves Status</label>
@@ -255,11 +255,14 @@
                             setTimeout(function () {
                                 location.reload()
                             }, 500);
+                        } else{
+                            toastr.error(response.message, "Error");
                         }
                     },
                     error: function(xhr) {
                         if (xhr.status === 400) {
-                            toastr.error(xhr.responseJSON.message, "Error");
+                            var response = xhr.responseJSON;
+                            toastr.error(response.message, "Error");
                         } else {
                             toastr.error("An error occurred", "Error");
                         }
@@ -279,7 +282,7 @@
                     success: function(response) {
                         var data = response.leave_app;
                         $('#edit_employee_id').val(data.employee_id);
-                        $('#edit_pin').val(data.pin);
+                        $('#edit_pin').val(data.employee.employee_code);
                         $('#edit_leave_type').val(data.leave_type);
                         $('#edit_apply_date').val(data.apply_date);
                         $('#edit_start_date').val(data.start_date);
@@ -358,31 +361,36 @@
                 });
             });
 
-            function addDateValidation(startDateInput, endDateInput) {
+            function addDateValidation(startDateInput, endDateInput, daysInput) {
                 function calculateDays() {
                     const startDate = new Date(startDateInput.value);
                     const endDate = new Date(endDateInput.value);
 
+                    if (startDate && endDate && startDate <= endDate) {
+                        const timeDiff = endDate.getTime() - startDate.getTime();
+                        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                        daysInput.value = daysDiff;
 
-                    const minMonthYear = startDate.toISOString().slice(0, 7);
-                    const maxMonthYear = endDate.toISOString().slice(0, 7);
-
-                }
-
-                function validateEndDate() {
-                    const startDate = new Date(startDateInput.value);
-                    const endDate = new Date(endDateInput.value);
-
-                    if (endDate < startDate) {
-                        endDateInput.value = startDateInput.value;
+                        endDateInput.setAttribute('min', startDateInput.value);
+                    } else {
+                        daysInput.value = '';
+                        endDateInput.removeAttribute('min');
                     }
-
-                    calculateDays();
                 }
 
                 function validateDates() {
                     const startDate = new Date(startDateInput.value);
                     const endDate = new Date(endDateInput.value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
+
+                    if (startDate < today) {
+                        toastr.error("Start date cannot be before today", "Error");
+                        startDateInput.value = '';
+                        daysInput.value = '';
+                        endDateInput.removeAttribute('min');
+                        return;
+                    }
 
                     if (endDate < startDate) {
                         endDateInput.value = startDateInput.value;
@@ -398,16 +406,19 @@
                 endDateInput.addEventListener('input', validateDates);
             }
 
-
             addDateValidation(
                 document.getElementById('start_date'),
-                document.getElementById('end_date')
+                document.getElementById('end_date'),
+                document.getElementById('duration')
             );
 
             addDateValidation(
                 document.getElementById('edit_start_date'),
-                document.getElementById('edit_end_date')
+                document.getElementById('edit_end_date'),
+                document.getElementById('edit_duration')
             );
+
+
         });
     </script>
 @endsection

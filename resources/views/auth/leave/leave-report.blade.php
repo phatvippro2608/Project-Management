@@ -164,7 +164,7 @@
                                 '<strong>approved</strong>' : '<strong>not approved</strong>';
 
                             table.row.add([
-                                report.pin,
+                                report.employee.employee_code,
                                 report.employee.last_name + ' ' + report.employee
                                 .first_name,
                                 report.leave_type.leave_type,
@@ -176,10 +176,7 @@
                                 '</span>',
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn" data-id="' +
                                 report.id +
-                                '"><i class="bi bi-check-circle"></i></button> | ' +
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                report.id +
-                                '"><i class="bi bi-trash3"></i></button>'
+                                '"><i class="bi bi-check-circle"></i></button>'
                             ]).draw(false);
                         });
                     },

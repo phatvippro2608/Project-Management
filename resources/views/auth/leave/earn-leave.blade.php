@@ -20,6 +20,8 @@
             background-color: #1472e5;
             clip-path: polygon(0 0, 100% 0, 0 100%);
         }
+
+
     </style>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
@@ -55,33 +57,19 @@
                 <table id="applicationTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                     <tr>
-                        <th>Employee Pin</th>
+                        <th class="text-start">Employee Pin</th>
                         <th>Employee Name</th>
                         <th>Total Hour</th>
-                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
-{{--                    @foreach ($leave_applications as $item)--}}
+                    @foreach ($earn_leave as $item)
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                |
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                    data-id="">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </td>
+                            <td class="text-start">{{$item->employee_code}}</td>
+                            <td>{{$item->employee_name}}</td>
+                            <td>{{$item->totalhour}} hour</td>
                         </tr>
-{{--                    @endforeach--}}
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -222,7 +210,8 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            var table = $('#applicationTable').DataTable();
+            var table = $('#applicationTable').DataTable()
+
 
         });
     </script>
