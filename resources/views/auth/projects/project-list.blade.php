@@ -21,7 +21,7 @@
         <!-- Table to display materials -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-primary">Đang triển khai</h5>
+                <h5 class="card-title text-primary">Đang triển khai ({{$inprogress_project_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -56,7 +56,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-success">Nghiệm thu - Defect</h5>
+                <h5 class="card-title text-success">Nghiệm thu - Defect ({{$inspection_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -91,7 +91,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-info">Khảo sát - Thiết kế (3)</h5>
+                <h5 class="card-title text-info">Khảo sát - Thiết kế ({{$survey_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -126,7 +126,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-warning">Support - Hổ trợ (3)</h5>
+                <h5 class="card-title text-warning">Support - Hổ trợ ({{$support_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -161,7 +161,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-danger">Close (4)</h5>
+                <h5 class="card-title text-danger">Close ({{$closed_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -194,7 +194,6 @@
             </div>
         </div>
 
-
         <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -202,36 +201,44 @@
                         <h5 class="modal-title" id="addProjectModalLabel">Add new project</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="" method="POST">
+                    <!-- Form trong view -->
                     <div class="modal-body">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="project_title" class="form-label">Project Title</label>
-                                <input type="text" class="form-control" id="project_title" name="project_title" required>
-                                <label for="project_date_start" class="form-label">Project Start Date</label>
-                                <input type="text" class="form-control" id="project_date_start" name="project_date_start" required>
-                                <label for="project_date_end" class="form-label">Project End Date</label>
-                                <input type="text" class="form-control" id="project_date_end" name="project_date_end" required>
-                                <label for="project_summanry" class="form-label">Summary</label>
-                                <textarea name="project_summanry" id="project_summanry" rows="3" class="form-control"></textarea>
+                        <form id="projectForm">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="project_name" class="form-label">Project Name</label>
+                                    <input type="text" class="form-control" id="project_name" name="project_name" required>
+                                    <label for="project_description" class="form-label">Description</label>
+                                    <textarea name="project_description" id="project_description" rows="8" class="form-control"></textarea>
+                                    <label for="project_address" class="form-label">Project Address</label>
+                                    <textarea name="project_address" id="project_address" rows="2" class="form-control"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="project_date_start" class="form-label">Project Start Date</label>
+                                    <input type="date" class="form-control" id="project_date_start" name="project_date_start" required>
+                                    <label for="project_date_end" class="form-label">Project End Date</label>
+                                    <input type="date" class="form-control" id="project_date_end" name="project_date_end" required>
+                                    <label for="project_main_contractor" class="form-label">Main Contractor</label>
+                                    <input type="text" class="form-control" id="project_main_contractor" name="project_main_contractor" required>
+                                    <label for="project_contact_name" class="form-label">Contact Name</label>
+                                    <input type="text" class="form-control" id="project_contact_name" name="project_contact_name" required>
+                                    <label for="project_contact_phone" class="form-label">Contact Phone</label>
+                                    <input type="text" class="form-control" id="project_contact_phone" name="project_contact_phone" required>
+                                    <label for="project_contact_address" class="form-label">Contact Address</label>
+                                    <input type="text" class="form-control" id="project_contact_address" name="project_contact_address" required>
+                                    <label for="project_contact_website" class="form-label">Contact Website</label>
+                                    <input type="text" class="form-control" id="project_contact_website" name="project_contact_website">
+                                    <label for="project_contract_amount" class="form-label">Contract Amount</label>
+                                    <input type="number" class="form-control" id="project_contract_amount" name="project_contract_amount">
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="project_details" class="form-label">Details</label>
-                                <textarea name="project_details" id="project_details" rows="8" class="form-control"></textarea>
-                                <label for="project_phase" class="form-label">Phase</label>
-                                <select name="project_phase" id="project_phase" class="form-control">
-                                    <option value="">Upcoming</option>
-                                </select>
-                            </div>
-                        </div>
-
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" value="Close" class="btn btn-danger">
-                        <input type="submit" value="Submit" class="btn btn-success">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" id="btnSubmitProject">Submit</button>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -240,13 +247,47 @@
 
 @section('script')
     <script>
-        // Custom JavaScript can be added here
-    </script>
+        document.getElementById('btnSubmitProject').addEventListener('click', function (event) {
+            let form = document.getElementById('projectForm');
+            let startDate = form.querySelector('#project_date_start').value;
+            let endDate = form.querySelector('#project_date_end').value;
 
-    <style>
-        .custom-td {
-            display: block;
-            margin-top: 5px;
-        }
-    </style>
+            // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
+            if (!startDate || !endDate) {
+                event.preventDefault(); // Ngăn chặn việc gửi form
+                toastr.error('Vui lòng nhập ngày bắt đầu và ngày kết thúc của dự án.', "Lỗi nhập liệu");
+                return;
+            }
+
+            let formData = new FormData(form);
+
+            fetch('{{ route('projects.insert') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        toastr.success(data.message, "Lưu thành công");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        let errorMessage = data.message;
+                        if (data.error) {
+                            errorMessage += ': ' + data.error;
+                            console.error('Error:', data.error);  // Log lỗi cụ thể ra console
+                        }
+                        toastr.error(errorMessage, "Thao tác thất bại");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                    toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+                });
+        });
+    </script>
 @endsection

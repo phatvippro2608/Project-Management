@@ -10,6 +10,8 @@ class CostModel extends Model
     use HasFactory;
     protected $table = 'project_cost';
     protected $primaryKey = 'project_cost_id';
+    public $timestamps = false; // Disable timestamps
+
     protected $fillable = [
         'project_cost_description',
         'project_cost_labor_qty',
