@@ -14,8 +14,9 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
+use App\Http\Controllers\MyXteamController;
 
-
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,6 +135,7 @@ Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('
 Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
+//Progress
 Route::post('/update-item', [ProgressController::class, 'updateItem']);
 Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
 Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
@@ -141,6 +143,10 @@ Route::post('/progress', [TaskController::class, 'create'])->name('task.create')
 Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
 Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
 Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+
+//Settings
+Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
+Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
@@ -158,9 +164,15 @@ Route::get('/project/{id}/budget/cost-group-details/{group_id}', [\App\Http\Cont
 Route::post('/project/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
 Route::delete('/project/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
 
+// myXteam
+Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('teams', [MyXteamController::class, 'getView']);
+    Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
+    Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
+    Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
+});
 
 //Inventory Management
-
 Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
 //Department
