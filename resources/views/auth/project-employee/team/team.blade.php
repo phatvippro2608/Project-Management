@@ -74,12 +74,12 @@
                                                     <div class="d-flex align-items-center">
 {{--                                                        <input type="checkbox" name="" id="" class="custom-checkbox-lg">--}}
                                                         <a class=" edit">
-                                                            <i class="bi bi-pencil-square ic-update ic-btn"
+                                                            <i class="bi bi-pencil-square ic-update ic-btn at2"
                                                                data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
                                                         </a>
                                                         <a class=" delete">
-                                                            <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                               data="id"></i>
+                                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                                               data="{{$item->id_team}}"></i>
                                                         </a>
                                                     </div>
 
@@ -149,8 +149,10 @@
                                 Status
                             </label>
                             <select type="text" class="form-select name2">
-                                <option value="">No select</option>
-                                <option value="1">Active</option>
+                                @foreach($status as $key => $value)
+                                    <option value="{{$key}}">{{$value}}</option>
+                                @endforeach
+
                             </select>
                         </div>
                     </div>
@@ -194,8 +196,6 @@
                         'team_description': $('.name3').val(),
                     },
                     success: function (result) {
-                        console.log(result);
-                        return;
                         result = JSON.parse(result);
                         if (result.status === 200) {
                             toastr.success(result.message, "Thao tác thành công");
@@ -209,5 +209,74 @@
                 });
             });
         });
+        $('.at2').click(function () {
+            $('.md1 .modal-title').text('Update Team');
+            var data = JSON.parse($(this).attr('data'));
+            $('.name1').val(data.team_name);
+            $('.name2').val(data.status);
+            $('.name3').val(data.team_description);
+            $('.md1').modal('show');
+
+            $('.at1').click(function () {
+                if ($('.name1').val().trim() === '') {
+                    alert('Please enter a team name.');
+                    return;
+                }
+
+                $.ajax({
+                    url: `{{action('App\Http\Controllers\TeamController@update')}}`,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'id_team' : data.id_team,
+                        'team_name': $('.name1').val(),
+                        'status': $('.name2').val(),
+                        'team_description': $('.name3').val(),
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 300);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    }
+                });
+            });
+        });
+
+        $('.at3').click(function () {
+            if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
+                return;
+            }
+            var id = $(this).attr('data');
+            $.ajax({
+                url: `{{action('App\Http\Controllers\TeamController@delete')}}`,
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'id_team': id,
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Thao tác thành công");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 300);
+                    } else {
+                        toastr.error(result.message, "Thao tác thất bại");
+                    }
+                }
+            });
+        })
+
     </script>
 @endsection
