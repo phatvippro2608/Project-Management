@@ -75,8 +75,5 @@ class DashboardController extends Controller
             AccountController::status('Success', 200);
         AccountController::status('Fail', 500);
     }
-    function UpdateSubTodo(Request $request)
-    {
 
-    }
 }

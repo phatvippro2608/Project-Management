@@ -42,13 +42,14 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/dashboard/update-todo', 'App\Http\Controllers\DashboardController@UpdateTodo');
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
+    Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
     Route::group(['prefix' => '/account', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
 
-        Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
+
         Route::delete('/clear-history', 'App\Http\Controllers\AccountController@clearHistory');
 
         Route::get('/demo', function () {
