@@ -27,7 +27,9 @@
                         </div>
                         <div class="btn btn-success mx-2">
                             <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
+
                                 <i class="bi bi-file-earmark-arrow-up pe-2"></i>
+
                                 Import
                             </a>
                         </div>
@@ -769,6 +771,7 @@
                 });
             });
         });
+
 
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));

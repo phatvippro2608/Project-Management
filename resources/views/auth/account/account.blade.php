@@ -243,14 +243,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            // toastr.success(result.message, "Thao tác thành công");
-                            alert(result.message);
+                            toastr.success(result.message, "Thao tác thành công");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            // toastr.error(result.message, "Thao tác thất bại");
-                            alert(result.message);
+                            toastr.error(result.message, "Thao tác thất bại");
                         }
                     }
                 });
@@ -302,14 +300,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            // toastr.success(result.message, "Thao tác thành công");
-                            alert(result.message);
+                            toastr.success(result.message, "Thao tác thành công");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            // toastr.error(result.message, "Thao tác thất bại");
-                            alert(result.message);
+                            toastr.error(result.message, "Thao tác thất bại");
                         }
                     }
                 });

@@ -51,6 +51,7 @@ class EmployeeModel extends Model
         return DB::table('medical_checkup')->get();
     }
 
+
     public function getAllEmployee()
     {
         $data = DB::table('employees')
@@ -77,6 +78,13 @@ class EmployeeModel extends Model
             )
             ->get();
         return $data;
+    }
+
+
+    // Thiết lập mối quan hệ với bảng leave_applications
+    public function leaveApplications()
+    {
+        return $this->hasMany(LeaveApplicationModel::class, 'employee_id', 'id_employee');
     }
 
 }

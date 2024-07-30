@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    private $state_todo = [1, 2];
     public function getViewDashboard()
     {
         $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
@@ -28,21 +29,26 @@ class DashboardController extends Controller
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
         FROM account, recent_project, projects
         WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id
-        AND account.id_account=$id_account LIMIT 5";
+        AND account.id_account=$id_account
+        ORDER BY created_at DESC
+        LIMIT 5 ";
+
         $recent_project = DB::select($sql);
 
 
         $task_sql = "SELECT * FROM tasks, employees, phases
          WHERE tasks.id_employee = employees.id_employee and phases.phase_id = tasks.phase_id
          AND DATE(tasks.start_date) <= CURDATE() AND DATE(tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee";
+         AND employees.id_employee=$id_employee
+         ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
 
 
         $subtask_sql = "SELECT * FROM sub_tasks, employees
          WHERE sub_tasks.id_employee = employees.id_employee
          AND DATE(sub_tasks.start_date) <= CURDATE() AND DATE(sub_tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee";
+         AND employees.id_employee=$id_employee
+         ORDER BY sub_tasks.state ASC";
         $subtasks = DB::select($subtask_sql);
 
 
@@ -58,4 +64,16 @@ class DashboardController extends Controller
             'subtasks'=>$subtasks,
         ]);
     }
+
+    function UpdateTodo(Request $request)
+    {
+        $task_id = $request->input('task_id');
+        $cur_state = DB::table('tasks')->where('task_id', $task_id)->value('state');
+        $cur_state = $cur_state == 1 ? 2 : 1;
+        $ch = DB::table('tasks')->where('task_id', $task_id)->update(['state' => $cur_state]);
+        if($ch)
+            AccountController::status('Success', 200);
+        AccountController::status('Fail', 500);
+    }
+
 }
