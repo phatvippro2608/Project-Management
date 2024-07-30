@@ -318,7 +318,7 @@
                             value.sign_out,
                             working,
                             '<button data-attendance="' + value.id_attendance + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
-                            '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white"><i class="bi bi-trash"></i></button>'
+                            '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                         ]).draw();
                     });
                 }else {
@@ -367,7 +367,7 @@
                         value.sign_out,
                         working,
                         '<button data-attendance="' + value.id_attendance + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
-                        '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white"><i class="bi bi-trash"></i></button>'
+                        '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                         ]).draw();
                     });
                     }else {

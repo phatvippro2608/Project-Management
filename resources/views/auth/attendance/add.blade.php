@@ -88,7 +88,6 @@
 <!-- event off dropdown employee -->
 <script>
     $('#date').val(new Date().toISOString().slice(0, 10));
-
     function displayDropdown(e) {
         $('.employees-dropdown').css('display', 'block');
         var position = $(e).position();
@@ -163,8 +162,7 @@
         var data = $(this).serialize();
         $.ajax({
             type: 'POST',
-            url: '{{ action('
-            App\ Http\ Controllers\ AttendanceController @addAttendance ') }}',
+            url: '{{ action('App\Http\Controllers\AttendanceController@addAttendance') }}',
             data: data,
             success: function(response) {
                 console.log(response);
@@ -174,9 +172,10 @@
                 } else {
                     toastr.error(response.message);
                 }
-
+                
             }
         });
     });
+
 </script>
 @endsection
