@@ -5,7 +5,7 @@
         <div class="row gx-5">
             <div class="col-lg-12">
                 <div class="row">
-                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Tổng quan</h4>
+                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Overview</h4>
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
