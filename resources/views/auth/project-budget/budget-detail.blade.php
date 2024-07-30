@@ -94,7 +94,7 @@
                     @endphp
                     <tr class="table-warning">
                         <th colspan="11">{{ $costGroup->project_cost_group_name }}</th>
-                        <td>
+                        <td class="text-center align-middle">
                             <button type="button" class="btn btn-info btn-sm w-auto rename-btn"
                                 data-id="{{ $costGroup->project_cost_group_id }}"
                                 data-name="{{ $costGroup->project_cost_group_name }}" data-bs-toggle="modal"
@@ -162,6 +162,7 @@
                         <td colspan="8"></td>
                         <td colspan="3"><b>{{ number_format($total, 0, ',', '.') }} VND</b></td>
                     </tr>
+                    <tr><td></td></tr>
                 @endforeach
             </tbody>
         </table>
@@ -358,7 +359,7 @@
             var costGroupName = $(this).data('name');
             var projectId = '{{ $id }}';
 
-            if (confirm('Are you sure you want to delete the cost group "' + costGroupName + '"?')) {
+            if (confirm('Are you sure you want to delete the cost group "' + costGroupName + '"? It also removes the costs within this group!!!')) {
                 var url =
                     '{{ route('budget.deleteCostGroup', ['project_id' => '__PROJECT_ID__', 'cost_group_id' => '__GROUP_ID__']) }}'
                     .replace('__PROJECT_ID__', projectId)
