@@ -117,6 +117,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
         Route::delete('/leave-report/{id}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
 
+        Route::get('/leave-report/data', [LeaveReportsController::class, 'getLeaveApplications'])->name('leave-report.data');
+        Route::get('/leave-report/export', [LeaveReportsController::class, 'exportExcel'])->name('leave-report.export');
+
+
         //Earn Leave
         Route::get('/earn-leave', [EarnLeaveController::class, 'getView'])->name('earn-leave.index');
     });

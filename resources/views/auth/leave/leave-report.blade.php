@@ -36,10 +36,10 @@
         }
 
         .text-success {
-          font-weight: bold !important;
+            font-weight: bold !important;
         }
 
-        table td:last-child{
+        table td:last-child {
             text-align: center;
         }
     </style>
@@ -80,18 +80,22 @@
                 <button type="submit" class="btn btn-success">Search</button>
             </form>
         </div>
-
         <div class="folded-corner bg-white p-3 mb-3">
-
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Report List</h5>
+                <a class="btn btn-success mx-2" href="{{route('leave-report.export')}}">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
+                        Export
+                    </div>
+                </a>
             </div>
             <hr>
             <div style="height: 100vh;">
                 <table id="leavereportsTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                         <tr>
-                            <th>PIN</th>
+                            <th>Employee_Code</th>
                             <th>Employee</th>
                             <th>Leave Type</th>
                             <th>Apply Date</th>
@@ -115,37 +119,50 @@
     <script>
         $(document).ready(function() {
             // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavereportsTable').DataTable({
-                dom: '<"d-flex justify-content-between align-items-center"<"left-buttons"B><"right-search"f>>rtip',
-                buttons: [{
-                        extend: 'copy',
-                        text: 'Copy',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'csv',
-                        text: 'CSV',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Excel',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'PDF',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print',
-                        className: 'btn custom-btn'
-                    }
-                ]
-            });
+            var table = $('#leavereportsTable').DataTable({});
 
             table.buttons().container().appendTo('#leavereportsTable_wrapper .col-md-6:eq(0)');
+
+            function loadLeaveReports() {
+                $.ajax({
+                    url: '{{ route('leave-report.data') }}',
+                    method: 'GET',
+                    success: function(response) {
+                        response.forEach(function(report) {
+                            var applyDate = new Date(report.apply_date);
+                            var formattedApplyDate = applyDate.getFullYear() + '-' +
+                                ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
+                                ('0' + applyDate.getDate()).slice(-2);
+
+                            var statusClass = report.leave_status === 'approved' ?
+                                'text-success' : 'text-danger';
+                            var statusText = report.leave_status === 'approved' ?
+                                '<strong>approved</strong>' : '<strong>not approved</strong>';
+
+                            table.row.add([
+                                report.employee.employee_code,
+                                report.employee.last_name + ' ' + report.employee
+                                .first_name,
+                                report.leave_type.leave_type,
+                                formattedApplyDate,
+                                report.duration,
+                                report.start_date,
+                                report.end_date,
+                                '<span class="' + statusClass + '">' + statusText +
+                                '</span>',
+                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn" data-id="' +
+                                report.id +
+                                '"><i class="bi bi-check-circle"></i></button>'
+                            ]).draw(false);
+                        });
+                    },
+                    error: function(xhr) {
+                        toastr.error("An error occurred while loading data.", "Operation Failed");
+                    }
+                });
+            }
+
+            loadLeaveReports();
 
             $('#searchForm').submit(function(e) {
                 e.preventDefault();
@@ -157,23 +174,32 @@
                     success: function(response) {
                         table.clear().draw();
                         response.forEach(function(report) {
+                            var applyDate = new Date(report.apply_date);
+                            var formattedApplyDate = applyDate.getFullYear() + '-' +
+                                ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
+                                ('0' + applyDate.getDate()).slice(-2);
+
+                            var statusClass = report.leave_status === 'approved' ?
+                                'text-success' : 'text-danger';
+                            var statusText = report.leave_status === 'approved' ?
+                                '<strong>approved</strong>' :
+                                '<strong>not approved</strong>';
+
                             table.row.add([
                                 report.pin,
                                 report.employee.last_name + ' ' + report
                                 .employee.first_name,
                                 report.leave_type.leave_type,
-                                report.apply_date,
+                                formattedApplyDate,
                                 report.duration,
                                 report.start_date,
                                 report.end_date,
-                                '<span class="' + (report.leave_status ===
-                                    'approved' ?
-                                    'text-success' : '') +
-                                '">' +
-                                report.leave_status + '</span>',
+                                '<span class="' + statusClass + '">' +
+                                statusText + '</span>',
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn vertical-align-middle" data-id="' +
                                 report.id +
-                                '"><i class="bi bi-check-circle"></i></button>']).draw();
+                                '"><i class="bi bi-check-circle"></i></button>'
+                            ]).draw(false);
                         });
                     },
                     error: function(xhr) {
@@ -231,53 +257,20 @@
                     }
                 });
             });
-
-            {{--$('#leavereportsTable').on('click', '.delete-btn', function() {--}}
-            {{--    var reportId = $(this).data('id');--}}
-            {{--    var row = $(this).parents('tr');--}}
-
-            {{--    Swal.fire({--}}
-            {{--        title: 'Are you sure?',--}}
-            {{--        text: "Do you want to delete this leave request?",--}}
-            {{--        icon: 'warning',--}}
-            {{--        showCancelButton: true,--}}
-            {{--        confirmButtonColor: '#3085d6',--}}
-            {{--        cancelButtonColor: '#d33',--}}
-            {{--        confirmButtonText: 'Yes, delete it!'--}}
-            {{--    }).then((result) => {--}}
-            {{--        if (result.isConfirmed) {--}}
-            {{--            $.ajax({--}}
-            {{--                url: '{{ url('leave-report.destroy') }}/' + reportId,--}}
-            {{--                method: 'DELETE',--}}
-            {{--                data: {--}}
-            {{--                    _token: '{{ csrf_token() }}'--}}
-            {{--                },--}}
-            {{--                success: function(response) {--}}
-            {{--                    if (response.success) {--}}
-            {{--                        table.row(row).remove().draw();--}}
-            {{--                        toastr.success(response.message,--}}
-            {{--                            "Deleted successfully");--}}
-            {{--                    } else {--}}
-            {{--                        toastr.error("Failed to delete the leave request.",--}}
-            {{--                            "Operation Failed");--}}
-            {{--                    }--}}
-            {{--                },--}}
-            {{--                error: function(xhr) {--}}
-            {{--                    toastr.error("An error occurred.", "Operation Failed");--}}
-            {{--                }--}}
-            {{--            });--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--});--}}
-
         });
     </script>
 @endsection
 @section('head')
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
             src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js">
