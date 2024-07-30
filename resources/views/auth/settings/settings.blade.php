@@ -47,29 +47,29 @@
                             No Image Selected
                         @endif
                     </div>
-                    <input type="file" id="imageInput" accept="image/*" class="form-control">
+                    <input type="file" id="imageInput" accept="image/*" name="option_img" class="form-control">
                 </div>
 
                 <div class="mb-3">
                     <label for="inp--title" class="form-label">Site Title</label>
-                    <input type="text" class="form-control" id="inp--title" value="{{ $options->option_title }}"
+                    <input name="option_title" type="text" class="form-control" id="inp--title" value="{{ $options->option_title }}"
                         placeholder="H R System (CI)">
                 </div>
 
                 <div class="mb-3">
                     <label for="inp--des" class="form-label">Site Description</label>
-                    <textarea class="form-control" id="inp--des" rows="3" placeholder="Just a demo description and nothing else!">{{ $options->option_description }}</textarea>
+                    <textarea name="option_description" class="form-control" id="inp--des" rows="3" placeholder="Just a demo description and nothing else!">{{ $options->option_description }}</textarea>
                 </div>
 
                 <div class="mb-3">
                     <label for="inp--copyr" class="form-label">Copyright</label>
-                    <input type="text" class="form-control" id="inp--copyr" value="{{ $options->option_copyright }}"
+                    <input name="option_copyright" type="text" class="form-control" id="inp--copyr" value="{{ $options->option_copyright }}"
                         placeholder="VENTECH">
                 </div>
 
                 <div class="mb-3">
                     <label for="inp--cont" class="form-label">Contact</label>
-                    <input type="text" class="form-control" id="inp--cont" value="{{ $options->option_contact }}"
+                    <input name="option_contact" type="text" class="form-control" id="inp--cont" value="{{ $options->option_contact }}"
                         placeholder="0001110000">
                 </div>
 
@@ -98,13 +98,13 @@
 
                 <div class="mb-3">
                     <label for="inp--semail" class="form-label">System Email</label>
-                    <input type="email" class="form-control" id="inp--semail" value="{{ $options->option_email }}"
+                    <input name="option_email" type="email" class="form-control" id="inp--semail" value="{{ $options->option_email }}"
                         placeholder="contact@hrms.abc">
                 </div>
 
                 <div class="mb-3">
                     <label for="inp--address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="inp--address" value="{{ $options->option_address }}"
+                    <input name="option_address" type="text" class="form-control" id="inp--address" value="{{ $options->option_address }}"
                         placeholder="96 Cao Thang Street, Ward 4, District 3, Ho Chi Minh City">
                 </div>
 

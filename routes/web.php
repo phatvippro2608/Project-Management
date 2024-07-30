@@ -132,7 +132,7 @@ Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.
 
 //Settings
 Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
-Route::post('/setting/updateForm', [SettingsController::class, 'updateForm'])->name('setting.update');
+Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
 Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
