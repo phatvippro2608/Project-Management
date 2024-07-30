@@ -53,11 +53,7 @@
             </div>
             <hr>
             <div class="d-flex justify-content-start mb-3">
-                <button class="btn btn-primary me-2" id="copyBtn">Copy</button>
-                <button class="btn btn-primary me-2" id="exportCsvBtn">CSV</button>
                 <button class="btn btn-primary me-2" id="exportExcelBtn">Excel</button>
-                <button class="btn btn-primary me-2" id="exportPdfBtn">PDF</button>
-                <button class="btn btn-primary" id="printBtn">Print</button>
             </div>
             <div style="height: 100vh;">
                 <table id="applicationTable" class="table table-bordered mt-3 mb-3">

@@ -80,18 +80,22 @@
                 <button type="submit" class="btn btn-success">Search</button>
             </form>
         </div>
-
         <div class="folded-corner bg-white p-3 mb-3">
-
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Report List</h5>
+                <a class="btn btn-success mx-2" href="{{route('leave-report.export')}}">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
+                        Export
+                    </div>
+                </a>
             </div>
             <hr>
             <div style="height: 100vh;">
                 <table id="leavereportsTable" class="table table-bordered mt-3 mb-3">
                     <thead>
                         <tr>
-                            <th>PIN</th>
+                            <th>Employee_Code</th>
                             <th>Employee</th>
                             <th>Leave Type</th>
                             <th>Apply Date</th>
@@ -115,35 +119,7 @@
     <script>
         $(document).ready(function() {
             // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavereportsTable').DataTable({
-                dom: '<"d-flex justify-content-between align-items-center"<"left-buttons"B><"right-search"f>>rtip',
-                buttons: [{
-                        extend: 'copy',
-                        text: 'Copy',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'csv',
-                        text: 'CSV',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Excel',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'PDF',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print',
-                        className: 'btn custom-btn'
-                    }
-                ]
-            });
+            var table = $('#leavereportsTable').DataTable({});
 
             table.buttons().container().appendTo('#leavereportsTable_wrapper .col-md-6:eq(0)');
 

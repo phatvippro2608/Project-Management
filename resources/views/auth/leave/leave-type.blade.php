@@ -172,35 +172,7 @@
     <script>
         $(document).ready(function() {
             // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavetypesTable').DataTable({
-                dom: '<"d-flex justify-content-between align-items-center"<"left-buttons"B><"right-search"f>>rtip',
-                buttons: [{
-                        extend: 'copy',
-                        text: 'Copy',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'csv',
-                        text: 'CSV',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'excel',
-                        text: 'Excel',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'pdf',
-                        text: 'PDF',
-                        className: 'btn custom-btn me-2'
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print',
-                        className: 'btn custom-btn'
-                    }
-                ]
-            });
+            var table = $('#leavetypesTable').DataTable({});
 
             table.buttons().container().appendTo('#leaveReportTable_wrapper .col-md-6:eq(0)');
 
