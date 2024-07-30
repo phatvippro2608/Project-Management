@@ -112,4 +112,7 @@ Route::delete('departments/{department}', [DepartmentController::class, 'destroy
 //Attendance
 Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
 Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
+Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
 Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
+Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
+Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
