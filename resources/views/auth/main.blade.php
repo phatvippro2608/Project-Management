@@ -51,7 +51,6 @@ use App\StaticString; ?>
           type="text/css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     @yield('head')
-
 </head>
 
 <body>
@@ -442,28 +441,28 @@ use App\StaticString; ?>
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('holidays.index')}}">
                         <i class="bi bi-circle"></i><span>Holiday</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-type.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Type</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-application.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Application</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('earn-leave.index')}}">
                         <i class="bi bi-circle"></i><span>Earned Leave</span>
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-report.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
                     </a>
                 </li>
