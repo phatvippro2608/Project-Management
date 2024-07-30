@@ -357,6 +357,73 @@
                     }
                 });
             });
+
+            function addDateValidation(startDateInput, endDateInput) {
+                function calculateDays() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
+
+
+                    const minMonthYear = startDate.toISOString().slice(0, 7);
+                    const maxMonthYear = endDate.toISOString().slice(0, 7);
+
+                }
+
+                function validateEndDate() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
+
+                    if (endDate < startDate) {
+                        endDateInput.value = startDateInput.value;
+                    }
+
+                    calculateDays();
+                }
+
+                function validateDates() {
+                    const startDate = new Date(startDateInput.value);
+                    const endDate = new Date(endDateInput.value);
+
+                    if (endDate < startDate) {
+                        endDateInput.value = startDateInput.value;
+                    }
+
+                    calculateDays();
+                }
+
+                startDateInput.addEventListener('change', validateDates);
+                endDateInput.addEventListener('change', validateDates);
+
+                startDateInput.addEventListener('input', validateDates);
+                endDateInput.addEventListener('input', validateDates);
+            }
+
+
+            addDateValidation(
+                document.getElementById('start_date'),
+                document.getElementById('end_date')
+            );
+
+            addDateValidation(
+                document.getElementById('edit_start_date'),
+                document.getElementById('edit_end_date')
+            );
         });
     </script>
+@endsection
+@section('head')
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
