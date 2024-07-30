@@ -1269,9 +1269,9 @@ h6 {
     transition: transform 0.3s linear;
 }
 
-.file-selector:hover{
+.file-selector:hover {
     transform: scale(1.1);
-
+}
 .subnav-active{
     color: #4154f1 !important;
 }
@@ -1291,5 +1291,4 @@ h6 {
     background-image: url('../img/check.png');
     background-repeat: no-repeat;
     background-position: center;
-
 }

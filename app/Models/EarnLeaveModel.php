@@ -10,9 +10,14 @@ class EarnLeaveModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'leave_applications';
+    protected $table = 'leave_earn';
     protected $primaryKey = 'id';
-
+    protected $fillable = [
+        'id',
+        'employee_pin',
+        'employee_name',
+        'total_hour',
+    ];
     public function employee()
     {
         return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id_employee');
@@ -31,12 +36,5 @@ class EarnLeaveModel extends Model
             ->get();
     }
 
-    protected $table = 'leave_earn';
-    protected $primaryKey = 'id';
-    protected $fillable = [
-        'id',
-        'employee_pin',
-        'employee_name',
-        'total_hour',
-    ];
+
 }
