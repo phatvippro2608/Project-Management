@@ -7,7 +7,7 @@
             @method('PUT')
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="material_code" class="form-label">Code</label>
+                    <label for="material_code" class="form-label">P/N</label>
                     <input type="text" class="form-control" id="material_code" name="material_code"
                         value="{{ $material->material_code }}" required>
                 </div>
