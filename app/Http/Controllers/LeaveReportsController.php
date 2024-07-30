@@ -43,13 +43,19 @@ class LeaveReportsController extends Controller
         ]);
     }
     public function destroy($id)
-{
-    $holiday = LeaveApplicationModel::findOrFail($id);
-    $holiday->delete();
+    {
+        $holiday = LeaveApplicationModel::findOrFail($id);
+        $holiday->delete();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Leave reports deleted successfully',
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave reports deleted successfully',
+        ]);
+    }
+
+    public function getLeaveApplications()
+    {
+        $leaveApplications = LeaveApplicationModel::with('employee', 'leaveType')->get();
+        return response()->json($leaveApplications);
+    }
 }

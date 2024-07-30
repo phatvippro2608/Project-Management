@@ -105,6 +105,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
         Route::put('/leave-applications/{id}/approve', [LeaveReportsController::class, 'approveLeaveApplication'])->name('leave-applications.approve');
         Route::delete('/leave-report/{id}/delete', [LeaveReportsController::class, 'destroy'])->name('leave-report.destroy');
+        Route::get('/leave-report/data', [LeaveReportsController::class, 'getLeaveApplications'])->name('leave-report.data');
 
         //Earn Leave
         Route::get('/earn-leave', [EarnLeaveController::class, 'getView'])->name('earn-leave.index');
