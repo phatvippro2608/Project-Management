@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use function Laravel\Prompts\table;
 
@@ -387,6 +388,7 @@ class EmployeesController extends Controller
         foreach ($data as $row) {
             $cell->setCellValue('A' . $num_row, $stt++);
             $cell->setCellValue('B' . $num_row, $row->employee_code);
+
             $cell->setCellValue('C' . $num_row, $row->first_name);
             $cell->setCellValue('D' . $num_row, $row->last_name);
             $cell->setCellValue('E' . $num_row, $row->en_name);
@@ -405,6 +407,7 @@ class EmployeesController extends Controller
             $cell->setCellValue('R' . $num_row, $row->permanent_address);
             $borderStyle = $cell->getStyle('A'.$num_row.':R' . $num_row)->getBorders();
             $borderStyle->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $cell->getStyle('A'.$num_row.':R' . $num_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $num_row++;
         }
         foreach (range('A', 'R') as $columnID) {
