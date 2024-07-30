@@ -9,4 +9,5 @@ class TeamModel extends Model
 {
     use HasFactory;
     protected $table = 'team';
+    protected $primaryKey = 'id_team';
 }

@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-    function getViewProfile()
+    function getViewProfile(Request $request)
     {
+        $id_employee = $request->id_employee;
         $data = new ProfileModel();
         $employee = new EmployeeModel();
-//        dd($employee->getAllJobDetails());
+        $employ_detail = EmployeeModel::where('id_employee', $id_employee)->first();
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
-                                                    'dataEmployee' => $employee->getAllJobDetails()]);
+                                                    'dataEmployee' => $employee->getAllJobDetails(),
+            'employ_detail' => $employ_detail]);
 
     }
     function postProfile(Request $request)
@@ -33,6 +35,7 @@ class ProfileController extends Controller
             $data->phone_number = $request->phone_number;
             $data->email = $request->email;
             $data->id_account = $id_account;
+            $data->id_employee =  $request->id_employee;
             $data->updateProfile();
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         } catch (\Exception $e) {

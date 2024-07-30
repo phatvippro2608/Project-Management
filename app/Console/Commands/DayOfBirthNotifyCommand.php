@@ -26,6 +26,6 @@ class DayOfBirthNotifyCommand extends Command
      */
     public function handle()
     {
-        EmployeeModel::where('date_of_birth','>',0)->get();
+        return EmployeeModel::where('date_of_birth','>',0)->get();
     }
 }

@@ -95,14 +95,32 @@
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('.nav-link');
-    links.forEach(link => {
-        if (link.href === window.location.href) {
+    const nav_items = document.querySelectorAll('.nav-item');
+
+    nav_items.forEach(item => {
+        link = item.querySelector('.nav-link');
+        if (link.href && link.href === window.location.href) {
             link.classList.remove('collapsed');
         }else{
             link.classList.add('collapsed');
         }
-    });
+        nav_content = item.querySelector('.nav-content')
+        if(nav_content){
+            sublinks = nav_content.querySelectorAll('.nav-sub-link')
+            sublinks.forEach(sublink => {
+                link.classList.add('collapsed');
+                sublink.classList.remove('active')
+                nav_content.classList.remove('show')
+            })
+            sublinks.forEach(sublink => {
+                if (sublink.href && sublink.href === window.location.href) {
+                    link.classList.remove('collapsed');
+                    sublink.classList.add('active')
+                    nav_content.classList.add('show')
+                }
+            })
+        }
+    })
 });
 
 const btnPhoto = document.querySelector('.btn_photo')
@@ -117,14 +135,3 @@ overlays.forEach(overlay => {
 });
 
 
-fileInput.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            profileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-    btnPhoto.classList.remove('d-none')
-});

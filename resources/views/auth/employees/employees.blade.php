@@ -67,9 +67,13 @@
                                         <tr>
                                             <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
                                             @php
-                                                $imagePath = public_path('uploads/' . $item->id_employee . '/' . $item->photo);
+                                                $imageUrl = asset('assets/img/avt.png'); // Default image URL
+
                                                 if($item->photo != null){
-                                                    $imageUrl = file_exists($imagePath) ? asset('uploads/' . $item->id_employee . '/' . $item->photo) : asset('assets/img/avt.png');
+                                                    $imagePath = public_path($item->photo);
+                                                    if(file_exists($imagePath)) {
+                                                        $imageUrl = asset($item->photo);
+                                                    }
                                                 }
                                             @endphp
 
@@ -396,7 +400,7 @@
                                             <div class="row mb-3">
                                                 <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
                                                 <div class="col-sm-8">
-                                                    <input type="date" class="form-control date_of_birth" name="">
+                                                    <input type="date" class="form-control date_of_birth" name="date_of_birth">
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -487,12 +491,6 @@
                                         <label for="inputText" class="col-sm-4 col-form-label">Permanent Address</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control permanent_address" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">Medical Check-up Date</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control medical_checkup_date" name="">
                                         </div>
                                     </div>
                                 </form><!-- End General Form Elements -->
@@ -625,6 +623,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Filename</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="cv-list">
@@ -661,6 +660,7 @@
                                                 <th>#</th>
                                                 <th>Filename</th>
                                                 <th>Date</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody class="medical_list">
@@ -699,6 +699,7 @@
                                                 <th scope="col">File Name</th>
                                                 <th scope="col">Type</th>
                                                 <th scope="col">Expiry Date</th>
+                                                <th scope="col">Action</th>
                                             </tr>
                                             </thead>
                                             <tbody class="certificate_list">
@@ -747,7 +748,7 @@
 @section('script')
     <script>
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
-        {{--let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";--}}
+        let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
         let _upload = "{{ action('App\Http\Controllers\UploadFileController@uploadFile')}}";
         let _upload_photo = "{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}";
@@ -755,6 +756,7 @@
         let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
+        let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
@@ -800,11 +802,10 @@
             $('.md2 .modal-title').text('Import Employee');
             $('.md2').modal('show');
         });
-        let nation ="";
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));
-            console.log(data);
             $('.btn_photo').click(function () {
+                event.preventDefault();
                 let filePhoto = $('.md3 .photo')[0].files[0];
                 let formData = new FormData();
 
@@ -964,10 +965,10 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: { path: imagePath + '/' + data.photo },
+                data: { path: data.photo },
                 success: function(response) {
                     if (response.exists) {
-                        $('.md3 .photo_show').attr('src', imagePath + '/' + data.photo);
+                        $('.md3 .photo_show').attr('src', '{{asset('')}}' + data.photo);
                     } else {
                         $('.md3 .photo_show').attr('src', defaultImage);
                     }
@@ -982,7 +983,7 @@
             if(dataCV){
                 dataCV.forEach(function(filename, index) {
                     let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.cv-list').append(row);
                 });
             }
@@ -992,7 +993,7 @@
             if(dataMedical){
                 dataMedical.forEach(function(item, index) {
                     let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.medical_list').append(row);
                 });
             }
@@ -1001,7 +1002,7 @@
             if(dataCertificate){
                 dataCertificate.forEach(function(item, index) {
                     let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center" on class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.certificate_list').append(row);
                 });
             }
@@ -1040,6 +1041,77 @@
             $('.md3 .modal-title').text('Update Employee');
             $('.md3').modal('show');
 
+
+            $('.md3 .btn-update').click(function () {
+                event.preventDefault();
+                let dataEmployee = {
+                    'employee_code': $('.md3 .employee_code').val(),
+                    'first_name': $('.md3 .first_name').val(),
+                    'last_name': $('.md3 .last_name').val(),
+                    'en_name': $('.md3 .en_name').val(),
+                    'gender': $('.md3 input[name="gender"]:checked').val(),
+                    'marital_status': $('.md3 input[name="marital_status"]:checked').val(),
+                    'military_service': $('.md3 input[name="military_service"]:checked').val(),
+                    'date_of_birth': $('.md3 .date_of_birth').val(),
+                    'national': $('.md3 .national :checked').val()
+                };
+                let dataPassport = {
+                    'passport_number': $('.md3 .passport_number').val(),
+                    'passport_place_issue': $('.md3 .passport_place_issue').val(),
+                    'passport_issue_date': $('.md3 .passport_issue_date').val(),
+                    'passport_expiry_date': $('.md3 .passport_expiry_date').val(),
+                };
+                let dataContact = {
+                    'phone_number' : $('.md3 .phone_number').val(),
+                    'cic_number' : $('.md3 .cic_number').val(),
+                    'cic_place_issue' : $('.md3 .cic_place_issue').val(),
+                    'cic_issue_date': $('.md3 .cic_issue_date').val(),
+                    'cic_expiry_date':$('.md3 .cic_expiry_date').val(),
+                    'current_residence' : $('.md3 .current_residence').val(),
+                    'permanent_address':$('.md3 .permanent_address').val(),
+                };
+                let dataJob = {
+                    'id_job_title': $('.md3 .job_title').val(),
+                    'id_job_category': $('.md3 .job_category').val(),
+                    'id_job_position': $('.md3 .job_position').val(),
+                    'id_job_team': $('.md3 .job_team').val(),
+                    'id_job_level': $('.md3 .job_level').val(),
+                    'start_date': $('.md3 .start_date').val(),
+                    'end_date': $('.md3 .end_date').val(),
+                    'id_job_type_contract': $('.md3 .job_type_contract').val(),
+                    'id_job_country': $('.md3 .job_country').val(),
+                    'id_job_location': $('.md3 .job_location').val(),
+                };
+
+                let formData = new FormData();
+                formData.append('id_employee', data.id_employee);
+                formData.append('id_contact', data.id_contact);
+                formData.append('dataEmployee', JSON.stringify(dataEmployee));
+                formData.append('dataContact', JSON.stringify(dataContact));
+                formData.append('dataJob', JSON.stringify(dataJob));
+                formData.append('dataPassport', JSON.stringify(dataPassport));
+                $.ajax({
+                    url: _post,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    }
+                });
+            })
         })
         $('.at4').click(function () {
             var id = $(this).attr('data');

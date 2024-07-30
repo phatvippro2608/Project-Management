@@ -19,25 +19,39 @@
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
                         @php
                             $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                            ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                            ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
-                            ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
-                            ->where(
-                            'account.id_account',
-                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                            )
-                            ->first();
-                            $photoPath = asset('uploads/' . $data->id_employee . '/' . $data->photo);
-                            $defaultPhoto = asset('assets/img/avt.png');
-                            $photoExists = !empty($data->photo) && file_exists(public_path('uploads/' . $data->id_employee . '/' . $data->photo));
-                        @endphp
+                                        ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                                        ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                                        ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+
+                                        ->where(
+                                        'account.id_account',
+                                        \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                                        )
+                                        ->first();
+                            $info = \Illuminate\Support\Facades\DB::table('job_detail')
+                                        ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                                        ->where(
+                                            'job_detail.id_employee', $data->id_employee
+                                        )
+                                        ->first();
+                            $country = \Illuminate\Support\Facades\DB::table('job_detail')
+                                        ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                                        ->where(
+                                            'job_detail.id_employee', $data->id_employee
+                                        )
+                                        ->first();
+
+                                    $photoPath = asset($data->photo);
+                                    $defaultPhoto = asset('assets/img/avt.png');
+                                    $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
+
+
+                            @endphp
                         <img
                             src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
                             class="rounded-circle object-fit-cover" width="100" height="100">
                         <h2>{{$data->first_name  . ' ' . $data->last_name }}</h2>
-                        <h3>{{$data->position_name}}</h3>
+                        <h3>@if($info){{$info->position_name}}@endif</h3>
                     </div>
                 </div>
 
@@ -89,12 +103,12 @@
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Job</div>
-                                    <div class="col-lg-9 col-md-8">{{$data->position_name}}</div>
+                                    <div class="col-lg-9 col-md-8">@if($info){{$info->position_name}}@endif</div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-3 col-md-4 label">Country</div>
-                                    <div class="col-lg-9 col-md-8">{{$data->country_name}}</div>
+                                    <div class="col-lg-9 col-md-8">@if($country){{$country->country_name}}@endif</div>
                                 </div>
 
                                 <div class="row">
@@ -125,7 +139,7 @@
                                             <div class="row">
                                                 <div class="col-md-2 position-relative text-center">
                                                     <img
-
+                                                        id="profileImage"
                                                         src="{{$photoExists ? $photoPath : $defaultPhoto}}"
                                                         alt="Profile" class="rounded-circle object-fit-cover" width="100"
                                                         height="100">
@@ -167,8 +181,9 @@
                                         <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="position_name" aria-label="Default select example">
-                                                @foreach($dataEmployee['jobPositions'] as $item)
-                                                    <option value="{{$item->id_position}}"  {{ $item->id_position == $data->id_job_position ? 'selected' : '' }}>{{$item->position_name}}</option>
+                                                <option value="">No Select</option>
+                                                @foreach( $dataEmployee['jobPositions'] as $item)
+                                                    <option value="{{$item->id_position}}"  @if($info){{ $item->id_position == $info->id_job_position ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -178,8 +193,9 @@
                                         <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
                                         <div class="col-md-8 col-lg-9">
                                             <select class="form-select" id="country_name" aria-label="Default select example">
+                                                <option value="">No Select</option>
                                                 @foreach($dataEmployee['jobCountry'] as $item)
-                                                    <option value="{{$item->id_country}}" {{ $item->id_country == $data->id_job_country ? 'selected' : '' }}>{{$item->country_name}}</option>
+                                                    <option value="{{$item->id_country}}" @if($country){{ $item->id_country == $country->id_job_country ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -266,6 +282,7 @@
                 url: '{{ action('App\Http\Controllers\ProfileController@postProfile')}}',
                 type: "POST",
                 data: {
+                    'id_employee': "{{$employ_detail['id_employee']}}",
                     '_token': "{{ csrf_token() }}",
                     'first_name': $('#first_name').val(),
                     'last_name': $('#last_name').val(),
@@ -355,5 +372,18 @@
                 }
             });
         });
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            btnPhoto.classList.remove('d-none')
+        });
+
     </script>
 @endsection

@@ -11,7 +11,7 @@
             </div>
         @endif
 
-        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addMaterialModal">Add</button>
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">Add</button>
         <button class="btn btn-primary mb-4">Import</button>
         <button class="btn btn-primary mb-4">Export</button>
         <button class="btn btn-primary mb-4">Filter</button>
@@ -21,7 +21,7 @@
         <!-- Table to display materials -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-primary">Đang triển khai</h5>
+                <h5 class="card-title text-primary">Đang triển khai ({{$inprogress_project_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -56,7 +56,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-success">Nghiệm thu - Defect</h5>
+                <h5 class="card-title text-success">Nghiệm thu - Defect ({{$inspection_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -91,7 +91,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-info">Khảo sát - Thiết kế (3)</h5>
+                <h5 class="card-title text-info">Khảo sát - Thiết kế ({{$survey_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -126,7 +126,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-warning">Support - Hổ trợ (3)</h5>
+                <h5 class="card-title text-warning">Support - Hổ trợ ({{$support_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -161,7 +161,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-danger">Close (4)</h5>
+                <h5 class="card-title text-danger">Close ({{$closed_projects_count}})</h5>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -194,89 +194,50 @@
             </div>
         </div>
 
-
-        <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addMaterialModalLabel">Add New Material</h5>
+                        <h5 class="modal-title" id="addProjectModalLabel">Add new project</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <!-- Form trong view -->
                     <div class="modal-body">
-                        <form action="{{ route('materials.store') }}" method="POST">
+                        <form id="projectForm">
                             @csrf
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <label for="material_code" class="form-label">Code</label>
-                                    <input type="text" class="form-control" id="material_code" name="material_code" required>
+                                    <label for="project_name" class="form-label">Project Name</label>
+                                    <input type="text" class="form-control" id="project_name" name="project_name" required>
+                                    <label for="project_description" class="form-label">Description</label>
+                                    <textarea name="project_description" id="project_description" rows="8" class="form-control"></textarea>
+                                    <label for="project_address" class="form-label">Project Address</label>
+                                    <textarea name="project_address" id="project_address" rows="2" class="form-control"></textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="material_name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="material_name" name="material_name" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="description" name="description"></textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="brand" class="form-label">Brand</label>
-                                    <input type="text" class="form-control" id="brand" name="brand">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="origin" class="form-label">Origin</label>
-                                    <input type="text" class="form-control" id="origin" name="origin">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="unit" class="form-label">Unit</label>
-                                    <input type="text" class="form-control" id="unit" name="unit">
+                                    <label for="project_date_start" class="form-label">Project Start Date</label>
+                                    <input type="date" class="form-control" id="project_date_start" name="project_date_start" required>
+                                    <label for="project_date_end" class="form-label">Project End Date</label>
+                                    <input type="date" class="form-control" id="project_date_end" name="project_date_end" required>
+                                    <label for="project_main_contractor" class="form-label">Main Contractor</label>
+                                    <input type="text" class="form-control" id="project_main_contractor" name="project_main_contractor" required>
+                                    <label for="project_contact_name" class="form-label">Contact Name</label>
+                                    <input type="text" class="form-control" id="project_contact_name" name="project_contact_name" required>
+                                    <label for="project_contact_phone" class="form-label">Contact Phone</label>
+                                    <input type="text" class="form-control" id="project_contact_phone" name="project_contact_phone" required>
+                                    <label for="project_contact_address" class="form-label">Contact Address</label>
+                                    <input type="text" class="form-control" id="project_contact_address" name="project_contact_address" required>
+                                    <label for="project_contact_website" class="form-label">Contact Website</label>
+                                    <input type="text" class="form-control" id="project_contact_website" name="project_contact_website">
+                                    <label for="project_contract_amount" class="form-label">Contract Amount</label>
+                                    <input type="number" class="form-control" id="project_contract_amount" name="project_contract_amount">
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="quantity" class="form-label">Quantity</label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="unit_price" class="form-label">Unit Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="unit_price" name="unit_price">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="labor_price" class="form-label">Labor Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="labor_price" name="labor_price">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="total_price" class="form-label">Total Price</label>
-                                    <input type="number" step="0.01" class="form-control" id="total_price" name="total_price">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="vat" class="form-label">VAT</label>
-                                    <input type="number" step="0.01" class="form-control" id="vat" name="vat">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="delivery_time" class="form-label">Delivery Time</label>
-                                    <input type="text" class="form-control" id="delivery_time" name="delivery_time">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="warranty_time" class="form-label">Warranty Time</label>
-                                    <input type="text" class="form-control" id="warranty_time" name="warranty_time">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks"></textarea>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Material</button>
                         </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" id="btnSubmitProject">Submit</button>
                     </div>
                 </div>
             </div>
@@ -286,13 +247,47 @@
 
 @section('script')
     <script>
-        // Custom JavaScript can be added here
-    </script>
+        document.getElementById('btnSubmitProject').addEventListener('click', function (event) {
+            let form = document.getElementById('projectForm');
+            let startDate = form.querySelector('#project_date_start').value;
+            let endDate = form.querySelector('#project_date_end').value;
 
-    <style>
-        .custom-td {
-            display: block;
-            margin-top: 5px;
-        }
-    </style>
+            // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
+            if (!startDate || !endDate) {
+                event.preventDefault(); // Ngăn chặn việc gửi form
+                toastr.error('Vui lòng nhập ngày bắt đầu và ngày kết thúc của dự án.', "Lỗi nhập liệu");
+                return;
+            }
+
+            let formData = new FormData(form);
+
+            fetch('{{ route('projects.insert') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        toastr.success(data.message, "Lưu thành công");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        let errorMessage = data.message;
+                        if (data.error) {
+                            errorMessage += ': ' + data.error;
+                            console.error('Error:', data.error);  // Log lỗi cụ thể ra console
+                        }
+                        toastr.error(errorMessage, "Thao tác thất bại");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                    toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+                });
+        });
+    </script>
 @endsection

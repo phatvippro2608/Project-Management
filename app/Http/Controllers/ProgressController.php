@@ -22,6 +22,21 @@ class ProgressController extends Controller
         return view('auth.progress.progress', compact('tasks', 'subtasks'));
     }
 
+    function getViewHasID($id)
+    {
+        $phases = DB::table("phases")->where('project_id', $id)->get();
+        
+        $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
+        $subtasks = DB::table('sub_tasks')
+            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
+            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
+            ->select('sub_tasks.*')
+            ->get();
+        
+        $employees = DB::table('employees')->select('id_employee', 'photo', 'last_name', 'first_name')->get();
+        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
+    }
+
     public function updateItem(Request $request)
     {
         // Xác thực dữ liệu đầu vào
