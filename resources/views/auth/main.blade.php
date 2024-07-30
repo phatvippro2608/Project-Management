@@ -568,7 +568,7 @@ use App\StaticString; ?>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link " href="#">
+            <a class="nav-link " href="{{ route('settings.view') }}">
                 <i class="bi bi-gear-fill"></i>
                 <span>Settings</span>
             </a>
