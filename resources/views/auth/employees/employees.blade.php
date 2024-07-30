@@ -658,7 +658,7 @@
                                         <div class="col-8 text-center upload-section ">
                                             <input type="date" class="form-control medical_checkupdate mb-2">
                                             <div class="border rounded-4 p-3">
-                                                <input id="medical_checkup" class="form-control visually-hidden personal" type="file" multiple="multiple">
+                                                <input id="medical_checkup" class="form-control visually-hidden medical_checkup" type="file" multiple="multiple">
                                                 <div file-input-target="medical_checkup" class="file-selector">
                                                     <i class="bi bi-file-earmark fs-1"></i>
                                                 </div>
