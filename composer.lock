@@ -5365,7 +5365,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2024-07-22T10:25:37+00:00"
+
         },
         {
             "name": "symfony/translation",
