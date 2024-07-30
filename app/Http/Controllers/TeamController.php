@@ -15,4 +15,47 @@ class TeamController extends Controller
         $team = DB::table('team')->join('employees', 'employees.id_employee', '=', 'team.created_by')->get();
         return view('auth.project-employee.team.team', ['team' => $team, 'status' => $this->status]);
     }
+
+    function add(Request $request){
+        $data = [
+            'id_team' => $request->id_team,
+            'team_name' => $request->team_name,
+            'team_description' => $request->team_description,
+            'status' => $request->status,
+            'created_by' => $request->created_by,
+            'created_at' => $request->created_at,
+            'updated_at' => $request->updated_at
+        ];
+        DB::table('team')->insert($data);
+    }
+
+    function update(Request $request)
+    {
+        $data = [
+            'team_name' => $request->team_name,
+            'team_description' => $request->team_description,
+            'status' => $request->status,
+            'created_by' => $request->created_by,
+            'created_at' => $request->created_at,
+            'updated_at' => $request->updated_at
+        ];
+        DB::table('team')->where('id_team', $request->id_team,)->insert($data);
+    }
+
+    function delete(Request $request){
+
+    }
+
+    function addEmployee()
+    {
+
+    }
+    function updateEmployee()
+    {
+
+    }
+
+    function deleteEmployee(){
+
+    }
 }
