@@ -134,8 +134,5 @@ overlays.forEach(overlay => {
     });
 });
 
-// setInterval(()=>{
-//     console.log(ip);
-// },1000)
 
 

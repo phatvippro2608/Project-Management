@@ -29,6 +29,7 @@ use App\Http\Controllers\LeaveReportsController;
 */
 
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
+Route::post('/9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE', 'App\Http\Controllers\AccountController@position');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
 
@@ -45,6 +46,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
+
+        Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
+        Route::delete('/clear-history', 'App\Http\Controllers\AccountController@clearHistory');
 
         Route::get('/demo', function () {
             return view('auth.account.account_import_demo');
