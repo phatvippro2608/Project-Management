@@ -30,6 +30,7 @@ use App\StaticString; ?>
 
 
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.esc.js') }}"></script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
@@ -51,7 +52,6 @@ use App\StaticString; ?>
           type="text/css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     @yield('head')
-
 </head>
 
 <body>
@@ -442,28 +442,28 @@ use App\StaticString; ?>
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('holidays.index')}}">
                         <i class="bi bi-circle"></i><span>Holiday</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-type.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Type</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-application.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Application</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('earn-leave.index')}}">
                         <i class="bi bi-circle"></i><span>Earned Leave</span>
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{route('leave-report.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
                     </a>
                 </li>
@@ -476,7 +476,7 @@ use App\StaticString; ?>
             </a>
         </li>
 
-        <li class="nav-heading">Project Mnagement</li>
+        <li class="nav-heading">Project Management</li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                href="#">
@@ -502,6 +502,22 @@ use App\StaticString; ?>
                 <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Field Visit</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">myXteam Manager</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+
+                        <i class="bi bi-circle"></i><span>Teams</span>
                     </a>
                 </li>
             </ul>

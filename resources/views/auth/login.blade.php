@@ -7,12 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>VenTech - Login</title>
-
-    <script src="{{asset('js/jquery.min.js')}}"></script>
     <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
-
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.esc.js') }}"></script>
     <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 </head>
 <style>
@@ -67,7 +65,6 @@
 <script>
     const pwdInput = document.getElementById('pwd-input')
     const showPwdCheckbox = document.getElementById('showPwdCheckbox')
-
     showPwdCheckbox.addEventListener('change', function () {
         if (this.checked) {
             pwdInput.type = 'text';
@@ -75,5 +72,47 @@
             pwdInput.type = 'password';
         }
     });
+
+    var check = {!! Session::get('fail') !!}
+    {{--$('.at2').click(function () {--}}
+    {{--    $('.md1 .modal-title').text('Update Team');--}}
+    {{--    var data = JSON.parse($(this).attr('data'));--}}
+    {{--    $('.name1').val(data.team_name);--}}
+    {{--    $('.name2').val(data.status);--}}
+    {{--    $('.name3').val(data.team_description);--}}
+    {{--    $('.md1').modal('show');--}}
+
+    {{--    $('.at1').click(function () {--}}
+    {{--        if ($('.name1').val().trim() === '') {--}}
+    {{--            alert('Please enter a team name.');--}}
+    {{--            return;--}}
+    {{--        }--}}
+
+    {{--        $.ajax({--}}
+    {{--            url: `{{action('App\Http\Controllers\TeamController@update')}}`,--}}
+    {{--            type: "POST",--}}
+    {{--            headers: {--}}
+    {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+    {{--            },--}}
+    {{--            data: {--}}
+    {{--                'id_team' : data.id_team,--}}
+    {{--                'team_name': $('.name1').val(),--}}
+    {{--                'status': $('.name2').val(),--}}
+    {{--                'team_description': $('.name3').val(),--}}
+    {{--            },--}}
+    {{--            success: function (result) {--}}
+    {{--                result = JSON.parse(result);--}}
+    {{--                if (result.status === 200) {--}}
+    {{--                    toastr.success(result.message, "Thao tác thành công");--}}
+    {{--                    setTimeout(function () {--}}
+    {{--                        window.location.reload();--}}
+    {{--                    }, 300);--}}
+    {{--                } else {--}}
+    {{--                    toastr.error(result.message, "Thao tác thất bại");--}}
+    {{--                }--}}
+    {{--            }--}}
+    {{--        });--}}
+    {{--    });--}}
+    {{--});--}}
 </script>
 </html>
