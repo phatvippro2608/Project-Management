@@ -26,10 +26,10 @@
                             </div>
                         </div>
                         <div class="btn btn-success mx-2">
-                            <div class="d-flex align-items-center at2">
+                            <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
                                 <i class="bi bi-file-earmark-arrow-up-fill pe-2"></i>
                                 Import
-                            </div>
+                            </a>
                         </div>
                         <div class="btn btn-success mx-2">
                             <div class="d-flex align-items-center">
@@ -798,10 +798,10 @@
                 });
             });
         });
-        $('.at2').click(function () {
-            $('.md2 .modal-title').text('Import Employee');
-            $('.md2').modal('show');
-        });
+        // $('.at2').click(function () {
+        //     $('.md2 .modal-title').text('Import Employee');
+        //     $('.md2').modal('show');
+        // });
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));
             $('.btn_photo').click(function () {

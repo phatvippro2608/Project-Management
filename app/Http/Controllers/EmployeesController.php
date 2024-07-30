@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmployeeModel;
+use App\Models\SpreadsheetModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,6 +29,11 @@ class EmployeesController extends Controller
         );
     }
 
+    function importView()
+    {
+        return view('auth.employees.import');
+    }
+
     function put(Request $request){
         $dataContact = [
             'phone_number' => $request->input('phone_number'),
@@ -48,6 +54,10 @@ class EmployeesController extends Controller
             'id_contact'=>$id_contact,
             'fired' => 'false'
         ];
+        if(DB::table('employees')->where('employee_code',$request->input('employee_code'))->exists()){
+            return json_encode((object)["status" => 500, "message" => "Employee already exists"]);
+        }
+
         $id_employee = DB::table('employees')->insertGetId($dataEmployee);
         if(DB::table('job_detail')->where('id_employee',$id_employee)->insert(['id_employee' => $id_employee])){
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
@@ -74,7 +84,9 @@ class EmployeesController extends Controller
 
         $id_employee = $request->id_employee;
         $id_contact = $request->id_contact;
-
+        if(DB::table('employees')->where('employee_code',$dataEmployee['employee_code'])->exists()){
+            return json_encode((object)["status" => 500, "message" => "Employee already exists"]);
+        }
         DB::beginTransaction();
         try {
             $employeeExists = DB::table('employees')->where('id_employee', $id_employee)->exists();
@@ -287,5 +299,68 @@ class EmployeesController extends Controller
             ]);
         }
 
+    }
+    public function import(Request $request){
+        $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
+        $tong = 0;
+        $num_row = 0;
+        $tt = 0;
+        foreach ($dataExcel['data'] as $item) {
+            $num_row++;
+            if ($num_row == 1) {
+                continue; // Skip header row
+            }
+
+            // Extract and trim data from Excel row
+            $employee_code = trim($item[0]);
+            $first_name = trim($item[1]);
+            $last_name = trim($item[2]);
+            $en_name = trim($item[3]);
+            $email = trim($item[4]);
+            $phone_number = trim($item[5]);
+            if (strlen($employee_code) === 0 || strlen($first_name) === 0 ||
+                strlen($last_name) === 0 || strlen($en_name) === 0 ||
+                strlen($email) === 0 || strlen($phone_number) === 0) {
+                continue; // Skip this row if any field is empty
+            }
+            try {
+                DB::beginTransaction();
+
+                $id_contact = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
+
+                $data_employee = [
+                    'employee_code' => $employee_code,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'en_name' => $en_name,
+                    'photo' => null,
+                    'fired' => "false",
+                    'id_contact' => $id_contact,
+                ];
+                $id_employee = DB::table('employees')->insertGetId($data_employee);
+
+                DB::table('job_detail')->insert(['id_employee' => $id_employee]);
+
+                $data_account = [
+                    'email' => $email,
+                    'password' => password_hash('123456', PASSWORD_BCRYPT),
+                    'status' => 1,
+                    'permission' => 0,
+                    'id_employee' => $id_employee,
+                ];
+                DB::table('account')->insertGetId($data_account);
+
+                DB::commit();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'File deleted successfully'
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Failed to process row ' . $num_row . ': ' . $e->getMessage());
+                continue;
+            }
+        }
     }
 }
