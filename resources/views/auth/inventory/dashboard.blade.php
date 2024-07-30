@@ -93,15 +93,3 @@
     </div>
 @endsection
 
-@section('script')
-    <script>
-        // Custom JavaScript can be added here
-    </script>
-
-    <style>
-        .custom-td {
-            display: block;
-            margin-top: 5px;
-        }
-    </style>
-@endsection
