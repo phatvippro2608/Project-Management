@@ -18,10 +18,15 @@
         max-height: 200px;
         overflow-y: auto;
         border: 1px solid #ccc;
-        background-color: #f9f9f9;
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         display: none;
         position: absolute;
         z-index: 1;
+    }
+    .employee-item:hover{
+        background-color: #3FA2F6;
+        color: white;
     }
 </style>
 <div class="pagetitle">
@@ -89,13 +94,14 @@
             <form id="edit-attendance-form">
                 @csrf
                 <div class="modal-header">
+                    <h5 class="modal-title">Attendance edit</h5>
                     <input type="text" name="id_attendance" id="id_attendance" hidden>
-                    <div class="dropdown">
+                    <div class="dropdown ms-auto">
                         <button class="btn" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" id="dl_attendance" data-attendance="" href="#">Delete</a></li>
+                            <li><a class="dropdown-item" id="dl_attendance" data-attendance="" href="#" onclick="deleteAttendanceByID(this)">Delete</a></li>
                         </ul>
                     </div>
                     <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
@@ -114,7 +120,7 @@
                                 <label class="fw-bolder" for=""><i class="bi bi-person"></i> ID</label>
                                 <input id="employee_id" class="form-control" name="id_employee" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                             </div>
-                            <div class="employees-dropdown fs-5">
+                            <div class="employees-dropdown fs-5 ps-0 pe-0">
                                 @foreach($employees as $employee)
                                 @php
                                 $photoPath = asset($employee->photo);
@@ -122,7 +128,7 @@
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
                                 <div class="employee-item d-flex align-items-center" data-id="{{ $employee->id_employee }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
-                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
+                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover ms-2" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
                                 @endforeach
@@ -197,7 +203,7 @@
         var position = $(e).position();
         $('.employees-dropdown').css('top', position.top + 40);
         $('.employees-dropdown').css('left', position.left);
-        $('.employees-dropdown').css('width', $(e).width());
+        $('.employees-dropdown').css('width', $(e).width()*1.2);
         if ($(e).attr('id') == 'employee_name') {
             $('.employee-item').each(function() {
                 $(this).find('.empl_val').html($(this).attr('data-value'));
@@ -370,6 +376,7 @@
                         '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                         ]).draw();
                     });
+                    $('#modalViewAttendance').modal('hide')
                     }else {
                     toastr.error(data.message);
                     }
