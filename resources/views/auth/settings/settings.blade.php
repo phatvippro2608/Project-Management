@@ -1,6 +1,9 @@
 @extends('auth.main')
 
 @section('head')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         #preview {
             width: 150px;
@@ -32,14 +35,14 @@
         </nav>
     </div>
 
-    <form action="" method="post">
+    <form action="{{ route('setting.update') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="container mt-5">
             <div class="content col-12 bg-light card p-4">
                 <div class="content--img text-center mb-4">
                     <div id="preview" class="rounded-circle mb-2">
                         @if (isset($options->option_img))
-                            <img src="{{ asset( $options->option_img ) }}" alt="Image Preview">
+                            <img src="{{ asset($options->option_img) }}" alt="Image Preview">
                         @else
                             No Image Selected
                         @endif
@@ -110,8 +113,8 @@
             </div>
         </div>
     </form>
-
     <script>
+
         document.getElementById('imageInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             const preview = document.getElementById('preview');
