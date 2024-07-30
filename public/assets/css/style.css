@@ -1243,3 +1243,32 @@ h6 {
     border-color: var(--clr-1);
 }
 
+.modal-header{
+    background: var(--clr-1);
+    color: var(--clr-7);
+}
+
+.modal-body{
+    scrollbar-width: thin;
+}
+
+.table-overflow{
+    height:300px;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.file-selector{
+    width: 50%;
+    border: 1px solid #9d9d9d;
+    border-style: dashed;
+    border-radius: 13px;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    margin: 1rem auto;
+    transition: transform 0.3s linear;
+}
+
+.file-selector:hover{
+    transform: scale(1.1);
+}

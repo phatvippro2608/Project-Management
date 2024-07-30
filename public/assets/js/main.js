@@ -105,15 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-const btnPhoto = document.querySelector('.btn_photo')
-const overlays = document.querySelectorAll('.overlay-upload');
-const fileInput = document.getElementById('fileInput');
-const profileImage = document.getElementById('profileImage');
 
-overlays.forEach(overlay => {
-    overlay.addEventListener('click', function() {
-        fileInput.click();
-    });
-});
 
 
