@@ -26,16 +26,16 @@
                             </div>
                         </div>
                         <div class="btn btn-success mx-2">
-                            <div class="d-flex align-items-center at2">
-                                <i class="bi bi-file-earmark-arrow-up pe-2"></i>
+                            <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
+                                <i class="bi bi-file-earmark-arrow-up-fill pe-2"></i>
                                 Import
-                            </div>
+                            </a>
                         </div>
-                        <div class="btn btn-success mx-2">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        <div class="btn btn-success mx-2 btn-export">
+                            <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
+                                <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
                                 Export
-                            </div>
+                            </a>
                         </div>
                     </div>
                     <div class="col-md-6 m-0">
@@ -295,7 +295,7 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="">
+                                                <input type="text" class="form-control employee_code" name="" disabled>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -729,6 +729,7 @@
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
+        let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
         $('.at1').click(function () {
             $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
@@ -770,9 +771,7 @@
                 });
             });
         });
-        $('.at2').click(function () {
-            $('.md2').modal('show');
-        });
+
         $(document).on('click', '.at3', function() {
             var data = JSON.parse($(this).attr('data'));
             $('.btn_photo').click(function () {
@@ -947,14 +946,14 @@
             });
 
             $('.md3 .photo_show').attr('src', '');
-            let dataCV = JSON.parse(data.cv);
             $('.cv-list').empty();
             $('.certificate_list').empty();
             $('.medical_list').empty();
+            let dataCV = JSON.parse(data.cv);
             if(dataCV){
                 dataCV.forEach(function(filename, index) {
                     let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"  data_filename="'+filename+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.cv-list').append(row);
                 });
             }
@@ -964,7 +963,7 @@
             if(dataMedical){
                 dataMedical.forEach(function(item, index) {
                     let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical" data_id_medical="'+item.id_medical_checkup+'"  data_filename="'+item.medical_checkup_file+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.medical_list').append(row);
                 });
             }
@@ -973,7 +972,7 @@
             if(dataCertificate){
                 dataCertificate.forEach(function(item, index) {
                     let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center" on class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
+                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center"> <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate" data_id_certificate="'+item.id_certificate+'" data_filename="'+item.certificate+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.certificate_list').append(row);
                 });
             }
@@ -1011,6 +1010,106 @@
             $('.md3 .job_location').val(data.id_job_location);
             $('.md3').modal('show');
 
+            $('.md3 .btn_delete_cv').click(function (event) {
+                event.preventDefault();
+                let id_employee = data.id_employee;
+                let filename = $(this).attr('data_filename');
+                let formData = new FormData();
+                formData.append('id_employee', id_employee);
+                formData.append('filename', filename);
+                formData.append('file_of', "cv");
+                if(confirm('Are you sure DELETE this file?')){
+                    $.ajax({
+                        url: _delete_file,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            if (result.status === 200) {
+                                toastr.success(result.message, "Thao tác thành công");
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
+                            } else {
+                                toastr.error(result.message, "Thao tác thất bại");
+                            }
+                        }
+                    });
+                }
+            });
+
+            $('.md3 .btn_delete_medical').click(function () {
+                event.preventDefault();
+                event.preventDefault();
+                let id_employee = data.id_employee;
+                let id_medical_checkup = $(this).attr('data_id_medical');
+                let filename = $(this).attr('data_filename');
+                let formData = new FormData();
+                formData.append('id_employee', id_employee);
+                formData.append('id_medical_checkup', id_medical_checkup);
+                formData.append('filename', filename);
+                formData.append('file_of', "medical");
+                if(confirm('Are you sure DELETE this file?')){
+                    $.ajax({
+                        url: _delete_file,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            if (result.status === 200) {
+                                toastr.success(result.message, "Thao tác thành công");
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
+                            } else {
+                                toastr.error(result.message, "Thao tác thất bại");
+                            }
+                        }
+                    });
+                }
+            })
+
+            $('.md3 .btn_delete_certificate').click(function () {
+                event.preventDefault();
+                let id_employee = data.id_employee;
+                let id_certificate = $(this).attr('data_id_certificate');
+                let filename = $(this).attr('data_filename');
+                let formData = new FormData();
+                formData.append('id_employee', id_employee);
+                formData.append('id_certificate', id_certificate);
+                formData.append('filename',filename);
+                formData.append('file_of', "certificate");
+                if(confirm('Are you sure DELETE this file ?')){
+                    $.ajax({
+                        url: _delete_file,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            if (result.status === 200) {
+                                toastr.success(result.message, "Thao tác thành công");
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
+                            } else {
+                                toastr.error(result.message, "Thao tác thất bại");
+                            }
+                        }
+                    });
+                }
+            })
 
             $('.md3 .btn-update').click(function () {
                 event.preventDefault();
@@ -1107,6 +1206,7 @@
                 });
             }
         })
+
         function populateCountrySelect(selectElementId, countrySelete) {
             $(document).ready(function() {
                 $.ajax({
