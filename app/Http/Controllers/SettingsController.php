@@ -17,15 +17,16 @@ class SettingsController extends Controller
         $currencyOptions = [];
         $symbolOptions = [];
 
-        foreach ($currencies as $currency) {
-            $currencyOptions[$currency->currency_id] = $currency->currency_currency;
-            $symbolOptions[$currency->currency_id] = $currency->currency_symbol;
-        }
+        // foreach ($currencies as $currency) {
+        //     $currencyOptions[$currency->currency_id] = $currency->currency_currency;
+        //     $symbolOptions[$currency->currency_id] = $currency->currency_symbol;
+        // }
 
         return view('auth.settings.settings', [
             'options' => $options,
-            'currencyOptions' => $currencyOptions,
-            'symbolOptions' => $symbolOptions,
+            'currencies' => $currencies,
+            // 'currencyOptions' => $currencyOptions,
+            // 'symbolOptions' => $symbolOptions,
         ]);
     }
 
@@ -38,7 +39,6 @@ class SettingsController extends Controller
             'option_copyright' => 'nullable|string|max:255',
             'option_contact' => 'nullable|string|max:255',
             'option_currency' => 'required|exists:options_currency,currency_id',
-            'option_symbol' => 'required|exists:options_currency,currency_symol',
             'option_email' => 'nullable|email|max:255',
             'option_address' => 'nullable|string|max:255',
             'option_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -53,12 +53,17 @@ class SettingsController extends Controller
         $option->option_copyright = $request->input('option_copyright');
         $option->option_contact = $request->input('option_contact');
         $option->currency_id = $request->input('option_currency');
-        $option->option_symbol = OptionCurrencyModel::find($request->input('option_currency'))->currency_symbol;
         $option->option_email = $request->input('option_email');
         $option->option_address = $request->input('option_address');
 
         // Handle the image upload
         if ($request->hasFile('option_img')) {
+            // Remove the old image if it exists
+            if ($option->option_img && file_exists(public_path('assets/img/' . $option->option_img))) {
+                unlink(public_path('assets/img/' . $option->option_img));
+            }
+    
+            // Upload the new image
             $image = $request->file('option_img');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('assets/img'), $imageName);

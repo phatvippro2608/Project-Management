@@ -76,24 +76,25 @@
                 <div class="mb-3">
                     <label for="inp--currency" class="form-label">Currency</label>
                     <select class="form-select" id="inp--currency" name="option_currency">
-                        @foreach ($currencyOptions as $id => $currency)
-                            <option value="{{ $id }}" {{ $options->currency_id == $id ? 'selected' : '' }}>
-                                {{ $currency }}
+                        @foreach ($currencies as $item)
+                            <option value="{{ $item->currency_id }}"
+                                {{ $options->currency_id == $item->currency_id ? 'selected' : '' }}>
+                                {{ $item->currency_currency . ' (' . $item->currency_symbol . ') - ' . $item->currency_country }}
                             </option>
                         @endforeach
                     </select>
                 </div>
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label for="inp--symbol" class="form-label">Symbol</label>
                     <select class="form-select" id="inp--symbol" name="option_symbol">
                         @foreach ($symbolOptions as $id => $symbol)
-                            <option value="{{ $id }}" {{ $options->currency_id == $symbol ? 'selected' : '' }}>
+                            <option value="{{ $id }}" {{ $options->currency_id == $id ? 'selected' : '' }}>
                                 {{ $symbol }}
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
 
                 <div class="mb-3">
                     <label for="inp--semail" class="form-label">System Email</label>
@@ -114,7 +115,6 @@
         </div>
     </form>
     <script>
-
         document.getElementById('imageInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             const preview = document.getElementById('preview');
