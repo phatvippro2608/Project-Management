@@ -21,7 +21,7 @@
             <div class="btn-group" role="group" aria-label="Button group">
                 <a href="{{ route('project.progress', ['id' => $id]) }}" class="btn btn-info rounded-pill me-2">Progress</a>
                 <a href="{{ route('budget', ['id' => $id]) }}" class="btn btn-info rounded-pill me-2">LIST OF EXPENSES</a>
-                <a href="#" class="btn btn-info rounded-pill">LIST OF COMMISSION</a>
+                <a href="{{route('commission', ['id' => $id])}}" class="btn btn-info rounded-pill">LIST OF COMMISSION</a>
             </div>
         </div>
                 <hr>
