@@ -343,6 +343,7 @@ class EmployeesController extends Controller
 
                 $data_account = [
                     'email' => $email,
+                    'username' => explode('@', $email)[0],
                     'password' => password_hash('123456', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
