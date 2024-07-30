@@ -28,7 +28,10 @@ class DashboardController extends Controller
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
         FROM account, recent_project, projects
         WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id
-        AND account.id_account=$id_account LIMIT 5";
+        AND account.id_account=$id_account
+        ORDER BY created_at DESC
+        LIMIT 5 ";
+        
         $recent_project = DB::select($sql);
 
 

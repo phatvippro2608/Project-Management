@@ -70,6 +70,12 @@ class AccountController extends Controller
         return $date_str->format('d-m-Y');
     }
 
+    static function getNow()
+    {
+        $date_str = new \DateTime();
+        return $date_str->format('F j, Y');
+    }
+
     public static function status($message, $code)
     {
         return json_encode((object)["status" => $code, "message" => $message]);

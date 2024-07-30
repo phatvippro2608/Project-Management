@@ -95,14 +95,31 @@
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('.nav-link');
-    links.forEach(link => {
-        if (link.href === window.location.href) {
+    const nav_items = document.querySelectorAll('.nav-item');
+
+    nav_items.forEach(item => {
+        link = item.querySelector('.nav-link');
+        if (link.href && link.href === window.location.href) {
             link.classList.remove('collapsed');
         }else{
             link.classList.add('collapsed');
         }
-    });
+        nav_content = item.querySelector('.nav-content')
+        if(nav_content){
+            sublinks = nav_content.querySelectorAll('.nav-sub-link')
+            sublinks.forEach(sublink => {
+                if (sublink.href && sublink.href === window.location.href) {
+                    link.classList.remove('collapsed');
+                    sublink.classList.add('active')
+                    nav_content.classList.add('show')
+                }else{
+                    link.classList.add('collapsed');
+                    sublink.classList.remove('active')
+                    nav_content.classList.remove('show')
+                }
+            })
+        }
+    })
 });
 
 const btnPhoto = document.querySelector('.btn_photo')

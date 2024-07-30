@@ -189,4 +189,8 @@ class EmployeesController extends Controller
         Log::info($filePath);
         return response()->json(['exists' => file_exists($filePath)]);
     }
+
+    public function deletefile(Request $request){
+
+    }
 }
