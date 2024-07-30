@@ -84,7 +84,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addApplicationModalLabel">Add New Application</h5>
+                    <h5 class="modal-title" id="addApplicationModalLabel">Assign Earned Leave</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -95,10 +95,10 @@
                             {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
                             <select class="form-select" aria-label="Default" name="employee_id">
                                 <option value="">No select</option>
-{{--                                @foreach($employee_name as $item)--}}
-{{--                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}--}}
-{{--                                        - {{$item->first_name}} {{$item->last_name}}</option>--}}
-{{--                                @endforeach--}}
+                                @foreach($employees as $item)
+                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}
+                                        - {{$item->first_name}} {{$item->last_name}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
