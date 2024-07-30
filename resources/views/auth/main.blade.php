@@ -476,7 +476,7 @@ use App\StaticString; ?>
             </a>
         </li>
 
-        <li class="nav-heading">Project Mnagement</li>
+        <li class="nav-heading">Project Management</li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                href="#">
@@ -502,6 +502,22 @@ use App\StaticString; ?>
                 <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Field Visit</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">myXteam Manager</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+
+                        <i class="bi bi-circle"></i><span>Teams</span>
                     </a>
                 </li>
             </ul>
