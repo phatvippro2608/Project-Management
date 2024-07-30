@@ -4,7 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "454366345fef9683e9df6601a57f5a25",
+
+    "content-hash": "29f59ea492b97712983bda6995d90a6d",
+
     "packages": [
         {
             "name": "brick/math",
@@ -5365,7 +5367,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2024-07-22T10:25:37+00:00"
+
         },
         {
             "name": "symfony/translation",
@@ -8487,7 +8491,9 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "ext-fileinfo": "*",
+        "ext-gd": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"

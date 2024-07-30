@@ -6,7 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+
+        "ext-fileinfo": "*",
+        "ext-gd": "*",
+
         "guzzlehttp/guzzle": "^7.9",
+
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",

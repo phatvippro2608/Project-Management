@@ -17,7 +17,7 @@ class AccountController extends Controller
 
     function getView(Request $request)
     {
-        $perPage = intval(env('ITEM_PER_PAGE'));
+        $perPage = (int)env('ITEM_PER_PAGE');
         $keyword = $request->input('keyw', '');
 
         $account = EmployeeModel::query()
@@ -30,7 +30,6 @@ class AccountController extends Controller
             })
             ->paginate($perPage);
 
-//        $account = AccountModel::getAll();
         $sql = "SELECT * from employees";
         $employees = DB::select($sql);
         $status = $this->status;
@@ -219,7 +218,7 @@ class AccountController extends Controller
         $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
-        if($permission == 1 || $permission == 2){
+        if($permission == 1){
             if ($keyword != null) {
                 $history = DB::table('login_history')->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
             } else

@@ -31,12 +31,14 @@
                                     </form>
                                 </div>
                             </div>
+                            @if(\App\Http\Controllers\AccountController::permission())
                             <div class="btn btn-danger mx-2 btn-add">
                                 <div class="d-flex align-items-center clear-btn">
                                     <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                                     Clear Log
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body m-1">
@@ -53,7 +55,7 @@
                                 @foreach($history as $item)
                                     <tr class="account-item">
                                         <td class="text-right">
-                                            @if($item->status == 0)
+                                            @if($item->status == 1)
                                                 User Successfully Logged In (IP: {{$item->ip}})
                                             @else
                                                 Failed Login Attempt (IP: {{$item->ip}})

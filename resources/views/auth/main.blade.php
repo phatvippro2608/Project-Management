@@ -556,7 +556,7 @@ use App\StaticString; ?>
             </a>
             <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\AccountController@loginHistory')}}">
                         <i class="bi bi-circle"></i><span>Activity Log</span>
                     </a>
                 </li>

@@ -141,14 +141,15 @@
                                                     <img
                                                         id="profileImage"
                                                         src="{{$photoExists ? $photoPath : $defaultPhoto}}"
-                                                        alt="Profile" class="rounded-circle object-fit-cover" width="100"
+                                                        alt="Profile"
+                                                        class="rounded-pill object-fit-cover"
+                                                        width="100"
                                                         height="100">
                                                     <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
                                                         <i class="bi bi-camera text-white fw-bold fs-2"></i>
                                                         <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
                                                     </div>
                                                 </div>
-
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 mt-2 text-center">

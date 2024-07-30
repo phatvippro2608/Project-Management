@@ -1,5 +1,12 @@
 :root {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
+    --clr-1: #012970;
+    --clr-2:  #4154f1;
+    --clr-3: #6776f4;
+    --clr-4: #717ff5;
+    --clr-5: #a5c5fe;
+    --clr-6: #cfe2ff;
+    --clr-7: #f6f9ff;
 }
 
 body {
@@ -659,7 +666,7 @@ h6 {
   font-size: 15px;
   font-weight: 600;
   color: #4154f1;
-  transition: 0.3;
+  transition: 0.3s;
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
@@ -710,9 +717,8 @@ h6 {
   font-size: 14px;
   font-weight: 600;
   color: #012970;
-  transition: 0.3;
-  padding: 10px 0 10px 40px;
   transition: 0.3s;
+  padding: 10px 0 10px 40px;
 }
 
 .sidebar-nav .nav-content a i {
@@ -1223,6 +1229,49 @@ h6 {
     cursor: pointer;
 }
 
+.form-control:focus{
+    box-shadow: none !important;
+    border-color: var(--bs-secondary-bg-subtle);
+}
+
+.btn{
+    border-radius: 18px;
+}
+
+.btn-primary{
+    background: var(--clr-1);
+    border-color: var(--clr-1);
+}
+
+.modal-header{
+    background: var(--clr-1);
+    color: var(--clr-7);
+}
+
+.modal-body{
+    scrollbar-width: thin;
+}
+
+.table-overflow{
+    height:300px;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.file-selector{
+    width: 50%;
+    border: 1px solid #9d9d9d;
+    border-style: dashed;
+    border-radius: 13px;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    margin: 1rem auto;
+    transition: transform 0.3s linear;
+}
+
+.file-selector:hover{
+    transform: scale(1.1);
+
 .subnav-active{
     color: #4154f1 !important;
 }
@@ -1242,4 +1291,5 @@ h6 {
     background-image: url('../img/check.png');
     background-repeat: no-repeat;
     background-position: center;
+
 }
