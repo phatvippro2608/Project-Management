@@ -122,7 +122,8 @@
                     success: function(response) {
                         if (response.success) {
                             $('#addDepartmentModal').modal('hide');
-                            $('#successModal').modal('show');
+                            // $('#successModal').modal('show');
+                            toastr.success(response.message, "Successful");
 
                             table.row.add([
                                 response.department.department_name,
@@ -140,7 +141,7 @@
                         }
                     },
                     error: function(xhr) {
-                        alert('An error occurred.');
+                        toastr.error(response.message, "Error");
                     }
                 });
             });
@@ -178,7 +179,7 @@
                     success: function(response) {
                         if (response.success) {
                             $('#editDepartmentModal').modal('hide');
-                            $('#successModal').modal('show');
+                            toastr.success("Edit successful");
 
                             var row = table.row($('button[data-id="' + departmentId + '"]')
                                 .parents('tr'));
@@ -197,7 +198,7 @@
                         }
                     },
                     error: function(xhr) {
-                        alert('An error occurred.');
+                        toastr.error("Error");
                     }
                 });
             });
@@ -206,23 +207,33 @@
                 var departmentId = $(this).data('id');
                 var row = $(this).parents('tr');
 
-                if (confirm('Are you sure you want to delete this department?')) {
-                    $.ajax({
-                        url: '{{ url('departments') }}/' + departmentId,
-                        method: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                table.row(row).remove().draw();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ url('departments') }}/' + departmentId,
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    table.row(row).remove().draw();
+                                }
+                            },
+                            error: function(xhr) {
+                                alert('An error occurred.');
                             }
-                        },
-                        error: function(xhr) {
-                            alert('An error occurred.');
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
 
             function reindexRows() {
