@@ -27,13 +27,13 @@
                         </div>
                         <div class="btn btn-success mx-2">
                             <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-                                <i class="bi bi-file-earmark-arrow-up-fill pe-2"></i>
+                                <i class="bi bi-file-earmark-arrow-up pe-2"></i>
                                 Import
                             </a>
                         </div>
                         <div class="btn btn-success mx-2 btn-export">
                             <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
-                                <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
+                                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
                                 Export
                             </a>
                         </div>
@@ -276,7 +276,7 @@
         </div>
     </div>
 
-    <div class="modal fade md3  ">
+    <div class="modal fade md3">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content rounded-4">
                 <div class="modal-header">
@@ -289,134 +289,132 @@
                     <div class="card mb-0 shadow-none">
                         <div class="card-header bg-light fw-semibold">Personal Details</div>
                         <div class="card-body p-3">
-                            <form>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="" disabled>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control first_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control last_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control en_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div class="col-sm-8">
-                                                <div class="row">
-                                                    <div class="col-md-2 position-relative text-center">
-                                                        <img
-                                                            id="profileImage"
-                                                            src="{{asset('/assets/img/avt.png')}}"
-                                                            alt="Profile" class="rounded-pill object-fit-cover photo_show" width="100"
-                                                            height="100">
-                                                        <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                            <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                            <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 mt-2 text-center">
-                                                        <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                            Upload
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control employee_code" name="" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Gender</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked>
-                                                        <label class="form-check-label" for="male">
-                                                            Male
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="gender" id="female" value="1">
-                                                        <label class="form-check-label" for="female">
-                                                            Female
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Marital Status</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" checked>
-                                                        <label class="form-check-label" for="single">
-                                                            Single
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
-                                                        <label class="form-check-label" for="married">
-                                                            Married
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Military Service</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" checked>
-                                                        <label class="form-check-label" for="Done">
-                                                            Done
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet">
-                                                        <label class="form-check-label" for="Noyet">
-                                                            No yet
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <div class="row mb-3">
-                                            <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
-                                            <div class="col-sm-8">
-                                                <input type="date" class="form-control date_of_birth" name="date_of_birth">
-                                            </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control first_name" name="">
                                         </div>
-                                        <div class="row mb-3">
-                                            <label class="col-sm-4 col-form-label">Nation</label>
-                                            <div class="col-sm-8">
-                                                <select class="form-select selectpicker national" aria-label="Default select example" id="national" name="">
-                                                    <!-- Danh sách các quốc gia sẽ được thêm vào đây -->
-                                                </select>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control last_name" name="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control en_name" name="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
+                                        <div class="col-sm-8">
+                                            <div class="row">
+                                                <div class="col-md-2 position-relative text-center">
+                                                    <img
+                                                        id="profileImage"
+                                                        src="{{asset('/assets/img/avt.png')}}"
+                                                        alt="Profile" class="rounded-pill object-fit-cover photo_show" width="100"
+                                                        height="100">
+                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
+                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
+                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 mt-2 text-center">
+                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
+                                                        Upload
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="col-6">
+                                    <fieldset class="row mb-3">
+                                        <legend class="col-form-label col-sm-4 pt-0">Gender</legend>
+                                        <div class="col-sm-8">
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked>
+                                                    <label class="form-check-label" for="male">
+                                                        Male
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1">
+                                                    <label class="form-check-label" for="female">
+                                                        Female
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="row mb-3">
+                                        <legend class="col-form-label col-sm-4 pt-0">Marital Status</legend>
+                                        <div class="col-sm-8">
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" checked>
+                                                    <label class="form-check-label" for="single">
+                                                        Single
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
+                                                    <label class="form-check-label" for="married">
+                                                        Married
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="row mb-3">
+                                        <legend class="col-form-label col-sm-4 pt-0">Military Service</legend>
+                                        <div class="col-sm-8">
+                                            <div class="d-flex">
+                                                <div class="form-check me-3">
+                                                    <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" checked>
+                                                    <label class="form-check-label" for="Done">
+                                                        Done
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet">
+                                                    <label class="form-check-label" for="Noyet">
+                                                        No yet
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="row mb-3">
+                                        <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
+                                        <div class="col-sm-8">
+                                            <input type="date" class="form-control date_of_birth" name="date_of_birth">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-4 col-form-label">Nation</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-select selectpicker national" aria-label="Default select example" id="national" name="">
+                                                <!-- Danh sách các quốc gia sẽ được thêm vào đây -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card mb-0 shadow-none">
@@ -672,8 +670,8 @@
                     </div>
                     <div class="card mb-0 shadow-none">
                         <div class="card-header bg-light fw-semibold">Certificate</div>
-                        <div class="card-body p-3 ">
-                            <table class="table table-hover">
+                        <div class="card-body p-3 table-overflow">
+                            <table class="table table-hover table-borderless">
                                 <thead>
                                 <tr>
                                     <th scope="col">#</th>

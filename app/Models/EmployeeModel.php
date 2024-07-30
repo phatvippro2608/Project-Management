@@ -18,6 +18,7 @@ class EmployeeModel extends Model
         return DB::table('employees')
             ->join('job_detail', 'employees.id_employee', '=', 'job_detail.id_employee')
             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+            ->where('employees.fired', 'false')
             ->paginate($perPage);
     }
     public function getAllJobDetails()
