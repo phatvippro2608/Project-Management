@@ -78,12 +78,17 @@
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success">Search</button>
+                <div class="form-group me-2" style="margin-left: 0.5rem">
+                    <button type="button" class="btn btn-secondary" id="refreshButton">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
             </form>
         </div>
         <div class="folded-corner bg-white p-3 mb-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Report List</h5>
-                <a class="btn btn-success mx-2" href="{{route('leave-report.export')}}">
+                <a class="btn btn-success mx-2" href="{{ route('leave-report.export') }}">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
                         Export
@@ -118,8 +123,10 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavereportsTable').DataTable({});
+            var table = $('#leavereportsTable').DataTable();
+            $('#refreshButton').on('click', function() {
+                location.reload();
+            });
 
             table.buttons().container().appendTo('#leavereportsTable_wrapper .col-md-6:eq(0)');
 
@@ -186,7 +193,7 @@
                                 '<strong>not approved</strong>';
 
                             table.row.add([
-                                report.pin,
+                                report.employee.employee_code,
                                 report.employee.last_name + ' ' + report
                                 .employee.first_name,
                                 report.leave_type.leave_type,
@@ -261,15 +268,16 @@
     </script>
 @endsection
 @section('head')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css" />
 
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>
