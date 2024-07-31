@@ -50,7 +50,10 @@ use App\StaticString; ?>
 
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
           type="text/css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @yield('head')
 </head>
 
@@ -419,12 +422,12 @@ use App\StaticString; ?>
             </a>
             <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
                         <i class="bi bi-circle"></i><span>Attendance List</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="#">
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
@@ -465,6 +468,19 @@ use App\StaticString; ?>
                 <li>
                     <a class="nav-sub-link" href="{{route('leave-report.index')}}">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>KPI</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="kpi-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>KPI</span>
                     </a>
                 </li>
             </ul>
@@ -545,6 +561,69 @@ use App\StaticString; ?>
             </ul>
         </li>
 
+        <li class="nav-heading">Education</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#performance-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-mortarboard"></i><span>Education</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="performance-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Workshops</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Guidelines</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Tests</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Internal Certificates</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Internal Certificates Types</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">Pages</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#proposal-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-gear-wide-connected"></i><span>Proposal</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Proposal Application</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>Proposal Types</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
                href="#">

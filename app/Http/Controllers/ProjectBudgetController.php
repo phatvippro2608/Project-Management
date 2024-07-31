@@ -297,4 +297,37 @@ public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
         return response()->json(['success' => false, 'message' => 'Cost group not found.']);
     }
 }
+    public function getViewCommission($id){
+        $dataCommission = DB::table('project_cost_commission')->where('project_id', $id)->get();
+        $dataGroupCommission = DB::table('project_group_cost_commission')->get();
+        $project = DB::table('projects')->where('project_id', $id)->first();
+        return view('auth.project-budget.budget-commission', [
+            'dataCommission' => $dataCommission,
+            'dataGroupCommission' => $dataGroupCommission,
+            'id' => $id,
+            'project'=>$project
+        ]);
+    }
+
+    public function getCommissionDetails(Request $request, $id)
+{
+    $groupId = $request->input('group_id');
+
+    // Fetch commission details based on groupId and projectId
+    $commissionDetails = DB::table('project_cost_commission')->where('project_id', $id)
+                                    ->where('groupcommission_id', $groupId)
+                                    ->get();
+
+    if ($commissionDetails) {
+        return response()->json([
+            'success' => true,
+            'data' => $commissionDetails
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'No details found.'
+        ]);
+    }
+}
 }
