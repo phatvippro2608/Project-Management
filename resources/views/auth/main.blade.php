@@ -641,6 +641,13 @@ use App\StaticString; ?>
 
         <li class="nav-item">
             <a class="nav-link " href="#">
+                <i class="bi bi-folder2-open"></i>
+                <span>Portfolio</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link " href="#">
                 <i class="bi bi-clipboard2-fill"></i>
                 <span>Notice</span>
             </a>
