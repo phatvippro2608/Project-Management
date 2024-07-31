@@ -387,4 +387,5 @@
         });
 
     </script>
+    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection
