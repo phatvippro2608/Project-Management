@@ -65,7 +65,7 @@
                         @foreach($data as $item)
                             @if($item->fired == "false")
                                 <tr>
-                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
+                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
                                     @php
                                         $imageUrl = asset('assets/img/avt.png'); // Default image URL
 
@@ -84,11 +84,11 @@
                                     <td>{{$item->phone_number}}</td>
                                     <td>
                                             <?php
-                                            $id = $item->id_employee;
+                                            $id = $item->employee_id;
                                             $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
                                             $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
                                             $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                            $item->email = \Illuminate\Support\Facades\DB::table('account')->where('id_employee', $id)->value('email');
+                                            $item->email = \Illuminate\Support\Facades\DB::table('account')->where('employee_id', $id)->value('email');
                                             ?>
                                         <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
                                             <i class="bi bi-pencil-square"></i>
@@ -795,7 +795,7 @@
                     formData.append('photo', filePhoto);
                 }
 
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
 
                 $.ajax({
                     url: _upload_photo,
@@ -831,7 +831,7 @@
                     });
                 }
 
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
 
                 $.ajax({
                     url: _upload_personal_profile, // Đảm bảo rằng _upload_personal_profile là URL hợp lệ
@@ -868,7 +868,7 @@
 
 
                 formData.append('medical_file', file);
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('medical_checkup_date', $('.medical_checkupdate').val());
                 $.ajax({
                     url: _upload_medical_checkup,
@@ -902,7 +902,7 @@
                 let file = $('.md3 .certificate_file')[0].files[0];
                 let formData = new FormData();
                 formData.append('certificate_file', file);
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('certificate_end_date', $('.certificate_end_date').val());
                 formData.append('type_certificate', $('.type_certificate').val());
                 $.ajax({
@@ -938,7 +938,7 @@
             $('.md3 .first_name').val(data.first_name);
             $('.md3 .last_name').val(data.last_name);
             $('.md3 .en_name').val(data.en_name);
-            let imagePath = "/uploads/" + data.id_employee;
+            let imagePath = "/uploads/" + data.employee_id;
             let defaultImage = "{{ asset('assets/img/avt.png') }}";
 
             $.ajax({
@@ -964,7 +964,7 @@
             let dataCV = JSON.parse(data.cv);
             if(dataCV){
                 dataCV.forEach(function(filename, index) {
-                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
+                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + filename;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"  data_filename="'+filename+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.cv-list').append(row);
                 });
@@ -974,7 +974,7 @@
             let dataMedical = JSON.parse(data.medical);
             if(dataMedical){
                 dataMedical.forEach(function(item, index) {
-                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
+                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.medical_checkup_file;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical" data_id_medical="'+item.id_medical_checkup+'"  data_filename="'+item.medical_checkup_file+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.medical_list').append(row);
                 });
@@ -983,7 +983,7 @@
             let dataCertificate = JSON.parse(data.certificates);
             if(dataCertificate){
                 dataCertificate.forEach(function(item, index) {
-                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
+                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.certificate;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center"> <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate" data_id_certificate="'+item.id_certificate+'" data_filename="'+item.certificate+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.certificate_list').append(row);
                 });
@@ -1024,10 +1024,10 @@
 
             $('.md3 .btn_delete_cv').click(function (event) {
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('filename', filename);
                 formData.append('file_of', "cv");
                 if(confirm('Are you sure DELETE this file?')){
@@ -1057,11 +1057,11 @@
             $('.md3 .btn_delete_medical').click(function () {
                 event.preventDefault();
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let id_medical_checkup = $(this).attr('data_id_medical');
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('id_medical_checkup', id_medical_checkup);
                 formData.append('filename', filename);
                 formData.append('file_of', "medical");
@@ -1091,11 +1091,11 @@
 
             $('.md3 .btn_delete_certificate').click(function () {
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let id_certificate = $(this).attr('data_id_certificate');
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('id_certificate', id_certificate);
                 formData.append('filename',filename);
                 formData.append('file_of', "certificate");
@@ -1165,7 +1165,7 @@
                 };
 
                 let formData = new FormData();
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('id_contact', data.id_contact);
                 formData.append('dataEmployee', JSON.stringify(dataEmployee));
                 formData.append('dataContact', JSON.stringify(dataContact));
