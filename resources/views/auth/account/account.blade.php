@@ -120,7 +120,7 @@
                             <select class="form-select name1" aria-label="Default">
                                 <option value="-1">No select</option>
                                 @foreach($employees as $employee)
-                                    <option value="{{$employee->id_employee}}">{{$employee->employee_code}}
+                                    <option value="{{$employee->employee_id}}">{{$employee->employee_code}}
                                         - {{$employee->first_name}} {{$employee->last_name}}</option>
                                 @endforeach
                             </select>
@@ -232,7 +232,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_employee': $('.name1').val(),
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),
@@ -259,7 +259,7 @@
             $('.md1 .modal-title').text('Update Account');
             $('.md1 .passName').text('New Password');
             var data = JSON.parse($(this).attr('data'));
-            $('.name1').val(data.id_employee);
+            $('.name1').val(data.employee_id);
             $('.name2').val(data.username);
             $('.email').val(data.email);
             $('.name3').val('');
@@ -289,7 +289,7 @@
                     },
                     data: {
                         'id_account': data.id_account,
-                        'id_employee': $('.name1').val(),
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),

@@ -14,10 +14,10 @@ class ProfileController extends Controller
 {
     function getViewProfile(Request $request)
     {
-        $id_employee = $request->id_employee;
+        $employee_id = $request->employee_id;
         $data = new ProfileModel();
         $employee = new EmployeeModel();
-        $employ_detail = EmployeeModel::where('id_employee', $id_employee)->first();
+        $employ_detail = EmployeeModel::where('employee_id', $employee_id)->first();
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
                                                     'dataEmployee' => $employee->getAllJobDetails(),
                                                     'employ_detail' => $employ_detail]);
@@ -35,7 +35,7 @@ class ProfileController extends Controller
             $data->phone_number = $request->phone_number;
             $data->email = $request->email;
             $data->id_account = $id_account;
-            $data->id_employee =  $request->id_employee;
+            $data->employee_id =  $request->employee_id;
             $data->updateProfile();
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         } catch (\Exception $e) {
