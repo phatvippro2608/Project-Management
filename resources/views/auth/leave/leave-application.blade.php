@@ -271,7 +271,7 @@
             $('#applicationTable').on('click', '.edit-btn', function() {
                 var applicationID = $(this).data('id');
 
-                $('#editApplicationForm').data('id', applicationID); // Gán ID vào form
+                $('#editApplicationForm').data('id', applicationID); 
                 var url = "{{ route('leave-application.edit', ':id') }}";
                 url = url.replace(':id', applicationID);
                 $.ajax({
