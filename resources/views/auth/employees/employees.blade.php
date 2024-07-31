@@ -39,11 +39,11 @@
                         </div>
                     </div>
                     <div class="col-md-6 m-0">
-                        <form action="" class="input-group ms-sm-auto w-50">
-                            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                        <form class="input-group ms-sm-auto w-50" action="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                            <button type="submit" class="input-group-text bg-transparent border-secondary rounded-start-4">
                                 <i class="bi bi-search"></i>
                             </button>
-                            <input type="text" class="form-control border-start-0 border-secondary-subtle rounded-end-4">
+                            <input name="keyw" type="text" class="form-control border-start-0 border-secondary rounded-end-4" value="{{ request()->input('keyw') }}" placeholder="Search Employee">
                         </form>
                     </div>
                 </div>
