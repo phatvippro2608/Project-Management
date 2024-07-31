@@ -65,7 +65,7 @@
             id: 1,
             label: 'Make some noise',
             user: '<a href="https://www.google.com/search?q=John+Doe" target="_blank" style="color:#0077c0;">John Doe</a>',
-            start: Date(2024 - 01 - 01),
+            start: Date(2024 - 05 - 27),
             duration: 15 * 24 * 60 * 60 * 1000,
             progress: 85,
             type: 'project',
