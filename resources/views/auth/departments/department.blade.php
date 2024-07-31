@@ -1,9 +1,17 @@
 @extends('auth.main');
 @section('contents')
-    <div class="container">
-        <h1 class="text-center mb-4">Departments</h1>
-
+    <div class="pagetitle">
+        <h1>Departments</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Employees List</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="">
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+            <i class="bi bi-building-add me-3"></i>
             Add Department
         </button>
 
@@ -13,7 +21,7 @@
 
                     <div class="modal-header">
                         <h4 class="modal-title">Add Department</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        @component('auth.component.btnCloseModal')@endcomponent
                     </div>
 
                     <div class="modal-body">
@@ -22,7 +30,7 @@
                             <div class="mb-3">
                                 <label for="department_name" class="form-label">Department Name</label>
                                 <input type="text" class="form-control" id="department_name" name="department_name"
-                                    required>
+                                       required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Department</button>
                         </form>
@@ -32,12 +40,12 @@
         </div>
 
         <div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel"
-            aria-hidden="true">
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        @component('auth.component.btnCloseModal')@endcomponent
                     </div>
                     <div class="modal-body">
                         <form id="editDepartmentForm">
@@ -47,7 +55,7 @@
                             <div class="mb-3">
                                 <label for="edit_department_name" class="form-label">Department Name</label>
                                 <input type="text" class="form-control" id="edit_department_name" name="department_name"
-                                    required>
+                                       required>
                             </div>
                             <button type="submit" class="btn btn-primary">Save changes</button>
                         </form>
@@ -73,34 +81,34 @@
             </div>
         </div>
 
-        <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
             <h3 class="text-left mb-4">Departments List</h3>
             <table id="departmentsTable" class="table table-bordered">
                 <thead>
-                    <tr>
-                        <th>Department Name</th>
-                        <th>Action</th>
-                    </tr>
+                <tr>
+                    <th>Department Name</th>
+                    <th>Action</th>
+                </tr>
                 </thead>
                 <tbody id="departmentsTableBody">
-                    @foreach ($departments as $department)
-                        <tr>
-                            <td>{{ $department->department_name }}</td>
-                            <td>
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="{{ $department->department_id }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                |
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                    data-id="{{ $department->department_id }}">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
+                @foreach ($departments as $department)
+                    <tr>
+                        <td>{{ $department->department_name }}</td>
+                        <td>
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="{{ $department->department_id }}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            |
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                data-id="{{ $department->department_id }}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>
@@ -109,17 +117,17 @@
 
 @section('script')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var table = $('#departmentsTable').DataTable();
 
-            $('#addDepartmentForm').submit(function(e) {
+            $('#addDepartmentForm').submit(function (e) {
                 e.preventDefault();
 
                 $.ajax({
                     url: '{{ route('departments.store') }}',
                     method: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             $('#addDepartmentModal').modal('hide');
                             // $('#successModal').modal('show');
@@ -140,13 +148,13 @@
                             $('#addDepartmentForm')[0].reset();
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         toastr.error(response.message, "Error");
                     }
                 });
             });
 
-            $('#departmentsTable').on('click', '.edit-btn', function() {
+            $('#departmentsTable').on('click', '.edit-btn', function () {
                 var departmentId = $(this).data('id');
 
                 if (!departmentId) {
@@ -157,18 +165,18 @@
                 $.ajax({
                     url: '{{ url('departments') }}/' + departmentId + '/edit',
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         $('#editDepartmentId').val(response.department.department_id);
                         $('#edit_department_name').val(response.department.department_name);
                         $('#editDepartmentModal').modal('show');
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         alert('An error occurred.');
                     }
                 });
             });
 
-            $('#editDepartmentForm').submit(function(e) {
+            $('#editDepartmentForm').submit(function (e) {
                 e.preventDefault();
                 var departmentId = $('#editDepartmentId').val();
 
@@ -176,7 +184,7 @@
                     url: '{{ url('departments') }}/' + departmentId,
                     method: 'PUT',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             $('#editDepartmentModal').modal('hide');
                             toastr.success("Edit successful");
@@ -197,13 +205,13 @@
                             ]).draw();
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         toastr.error("Error");
                     }
                 });
             });
 
-            $('#departmentsTable').on('click', '.delete-btn', function() {
+            $('#departmentsTable').on('click', '.delete-btn', function () {
                 var departmentId = $(this).data('id');
                 var row = $(this).parents('tr');
 
@@ -223,12 +231,12 @@
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.success) {
                                     table.row(row).remove().draw();
                                 }
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 alert('An error occurred.');
                             }
                         });
@@ -237,7 +245,7 @@
             });
 
             function reindexRows() {
-                $('#departmentsTable tbody tr').each(function(index) {
+                $('#departmentsTable tbody tr').each(function (index) {
                     $(this).find('td:first').text(index + 1);
                 });
             }

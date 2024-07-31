@@ -124,13 +124,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-overlays.forEach(overlay => {
-    overlay.addEventListener('click', function () {
-        fileInput.click();
-    });
-});
-
-
 
 
 

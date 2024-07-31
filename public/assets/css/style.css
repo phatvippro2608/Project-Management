@@ -58,7 +58,7 @@ h6 {
 
 
 .pagetitle {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .pagetitle h1 {
@@ -1241,10 +1241,6 @@ h6 {
 .form-control:focus{
     box-shadow: none !important;
     border-color: var(--bs-secondary-bg-subtle);
-}
-
-.btn{
-    border-radius: 18px;
 }
 
 .btn-primary{
