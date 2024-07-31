@@ -16,7 +16,7 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
-
+use App\Http\Controllers\ProposalTypesController;
 use App\Http\Controllers\SettingsController;
 
 /*
@@ -79,7 +79,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
 
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
-
     });
 
     Route::group(['prefix' => '/profile'], function () {
@@ -154,7 +153,7 @@ Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID']
 Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
 
 //Settings
-Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
+Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
 Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
 Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
@@ -182,7 +181,6 @@ Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function 
     Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
     Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
     Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
-
 });
 
 //Inventory Management
@@ -203,3 +201,12 @@ Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID
 Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
 Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
 Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+
+//Proposal
+Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
+    Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
+    Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
+    Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
+    Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
+});
