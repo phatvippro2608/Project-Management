@@ -1238,9 +1238,12 @@ h6 {
     cursor: pointer;
 }
 
+.form-control{
+    padding: 0.25rem .75rem;
+}
+
 .form-control:focus{
-    box-shadow: none !important;
-    border-color: var(--bs-secondary-bg-subtle);
+    box-shadow: 0 0 0 .15rem rgba(13, 110, 253, .25);
 }
 
 .btn-primary{
@@ -1296,4 +1299,8 @@ h6 {
     background-image: url('../img/check.png');
     background-repeat: no-repeat;
     background-position: center;
+}
+
+div.dt-container div.dt-search{
+    flex-wrap: nowrap;
 }

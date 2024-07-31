@@ -39,12 +39,12 @@
                         </div>
                     </div>
                     <div class="col-md-6 m-0">
-                        <div class="input-group ms-sm-auto w-50">
-                            <button class="input-group-text bg-transparent border-secondary rounded-start-4">
+                        <form action="" class="input-group ms-sm-auto w-50">
+                            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
                             </button>
-                            <input type="text" class="form-control border-start-0 border-secondary rounded-end-4">
-                        </div>
+                            <input type="text" class="form-control border-start-0 border-secondary-subtle rounded-end-4">
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -155,9 +155,23 @@
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div class="col-sm-8">
-                                                <input type="file" class="form-control photo" name="">
+                                            <div class="col-md-2 position-relative text-center">
+                                                <img
+                                                    id="profileImage"
+                                                    src="{{asset('assets/img/avt.png')}}"
+                                                    alt="Profile"
+                                                    class="rounded-pill object-fit-cover"
+                                                    width="100"
+                                                    height="100">
+                                                <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
+                                                    <i class="bi bi-camera text-white fw-bold fs-2"></i>
+                                                    <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
+                                                </div>
                                             </div>
+{{--                                            <div class="col-sm-8">--}}
+{{--                                                <input type="file" class="form-control photo" name="">--}}
+{{--                                            </div>--}}
+
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -729,7 +743,6 @@
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
         $('.at1').click(function () {
-            $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
 
             $('.btn-add').click(function () {
