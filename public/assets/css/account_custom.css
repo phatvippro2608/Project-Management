@@ -22,10 +22,6 @@
     transform: translateY(-50%);
     cursor: pointer;
 }
-.form-control {
-    padding-right: 40px; /* Đảm bảo đủ chỗ cho biểu tượng */
-}
-
 
 .account-list tr {
     position: relative;

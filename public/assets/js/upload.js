@@ -1,14 +1,4 @@
-//Image Upload
-// const btnPhoto = document.querySelector('.btn_photo')
-// const overlays = document.querySelectorAll('.overlay-upload');
-// const fileInput = document.getElementById('fileInput');
-// const profileImage = document.getElementById('profileImage');
 
-// overlays.forEach(overlay => {
-//     overlay.addEventListener('click', function() {
-//         fileInput.click();
-//     });
-// });
 // =======Photo upload=========
 const photoUploads = document.querySelectorAll('.photo-upload');
 if (photoUploads) {
@@ -52,23 +42,6 @@ if (photoUploads) {
         });
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //File upload
 const uploadSections = document.querySelectorAll('.upload-section');

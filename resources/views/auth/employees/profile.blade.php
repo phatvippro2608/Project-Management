@@ -216,7 +216,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-primary btnLuu">Save Changes</button>
+                                        <button type="button" class="btn btn-primary btnLuu"><i class="bi bi-floppy me-3"></i>Save Changes</button>
                                     </div>
                                 </form><!-- End Profile Edit Form -->
 
