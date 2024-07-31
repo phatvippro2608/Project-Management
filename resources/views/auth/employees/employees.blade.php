@@ -27,9 +27,7 @@
                         </div>
                         <div class="btn btn-success mx-2">
                             <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-
                                 <i class="bi bi-file-earmark-arrow-up pe-2"></i>
-
                                 Import
                             </a>
                         </div>
@@ -51,7 +49,7 @@
                 </div>
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead>
+                        <thead class="table-light">
                         <tr>
                             <th style="width: 10%">Employee Code</th>
                             <th class="text-center">Photo</th>
@@ -157,9 +155,13 @@
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div class="col-sm-8">
-                                                <input type="file" class="form-control photo" name="">
+                                            <div photo-input-target="photoAdd" class="col-md-2 photo-upload">
+                                                <img id="profileImage" src="{{asset('assets/img/avt.png')}}" alt="Profile">
                                             </div>
+{{--                                            <div class="col-sm-8">--}}
+{{--                                                <input type="file" class="form-control photo" name="">--}}
+{{--                                            </div>--}}
+
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -321,23 +323,13 @@
                                         <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
                                         <div class="col-sm-8">
                                             <div class="row">
-                                                <div class="col-md-2 position-relative text-center">
-                                                    <img
-                                                        id="profileImage"
-                                                        src="{{asset('/assets/img/avt.png')}}"
-                                                        alt="Profile" class="rounded-pill object-fit-cover photo_show" width="100"
-                                                        height="100">
-                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                    </div>
+                                                <div photo-input-target="photoUpdate" class="col-md-2 photo-upload">
+                                                    <img id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 mt-2 text-center">
-                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                        Upload
-                                                    </button>
+                                                    <button class="btn btn-primary btn_photo rounded-4">Upload</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -731,7 +723,6 @@
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
         $('.at1').click(function () {
-            $('.md1 .modal-title').text('Add Employee');
             $('.md1').modal('show');
 
             $('.btn-add').click(function () {
@@ -777,7 +768,7 @@
             var data = JSON.parse($(this).attr('data'));
             $('.btn_photo').click(function () {
                 event.preventDefault();
-                let filePhoto = $('.md3 .photo')[0].files[0];
+                let filePhoto = $('.md3 #photoUpdate')[0].files[0];
                 let formData = new FormData();
 
                 if (filePhoto) {
