@@ -263,12 +263,8 @@
                                         <button type="button" class="btn btn-primary btnChangePwd">Change Password</button>
                                     </div>
                                 </form>
-{{--                                        <button class="btnChangePwd">dfsfs</button>--}}
                             </div>
-
-
-                        </div><!-- End Bordered Tabs -->
-
+                        </div>
                     </div>
                 </div>
 
@@ -312,7 +308,9 @@
             });
         });
 
-        $('.btn_photo').click(function () {
+        $('.btn_photo').click(function (event) {
+            event.preventDefault();
+            {{--return {{$data->id_employee}};--}}
             let filePhoto = $('.photo')[0].files[0];
             let formData = new FormData();
 
@@ -373,19 +371,6 @@
                 }
             });
         });
-
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    profileImage.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-            btnPhoto.classList.remove('d-none')
-        });
-
     </script>
     <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

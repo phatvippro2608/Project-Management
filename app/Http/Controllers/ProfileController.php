@@ -8,6 +8,7 @@ use App\Models\ProfileModel;
 use App\StaticString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -19,8 +20,7 @@ class ProfileController extends Controller
         $employ_detail = EmployeeModel::where('id_employee', $id_employee)->first();
         return view('auth.employees.profile', ['profiles' => $data->getProfile(),
                                                     'dataEmployee' => $employee->getAllJobDetails(),
-            'employ_detail' => $employ_detail]);
-
+                                                    'employ_detail' => $employ_detail]);
     }
     function postProfile(Request $request)
     {
@@ -41,7 +41,6 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return json_encode((object)["status" => 400, "message" => "Action Faild"]);
         }
-
     }
 
 
