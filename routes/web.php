@@ -204,4 +204,5 @@ Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->
 Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
 Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
-Route::get('/portfolio', [PortfolioController::class, 'getview'])->name('portfolio');
+Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
+Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
