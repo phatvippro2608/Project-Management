@@ -15,23 +15,23 @@ class ProposalApplicationController extends Controller
         //permis = 4 -> Direct Manager (Quản lý)
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
 
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $account_id";
-        $employee = DB::selectOne($sql_get_id_employee);
-        $employee_id = $employee->id_employee;
+        $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $account_id";
+        $employee = DB::selectOne($sql_get_employee_id);
+        $employee_id = $employee->employee_id;
 
         $list_department = [];
         if($permission == 0){
-            $list_department = DB::table('proposal_application')->join('employees', 'employees.id_employee','=','proposal_application.id_employee')->where('employees.id_employee', $employee_id)->get();
+            $list_department = DB::table('proposal_application')->join('employees', 'employees.employee_id','=','proposal_application.employee_id')->where('employees.employee_id', $employee_id)->get();
         }else if($permission == 3){
             $department_id = DB::table('employees')
-                ->join('job_detail', 'job_detail.id_employee','=','employees.id_employee')
-                ->join('departments', 'job_detail.id_department','=','departments.department_id')->where('employees.id_employee',$employee_id)->first()->id_department;
+                ->join('job_detail', 'job_detail.employee_id','=','employees.employee_id')
+                ->join('departments', 'job_detail.id_department','=','departments.department_id')->where('employees.employee_id',$employee_id)->first()->id_department;
             $list_department = DB::table('proposal_application')
-                ->join('employees', 'employees.id_employee','=','proposal_application.id_employee')
-                ->join('job_detail', 'job_detail.id_employee','=','employees.id_employee')
+                ->join('employees', 'employees.employee_id','=','proposal_application.employee_id')
+                ->join('job_detail', 'job_detail.employee_id','=','employees.employee_id')
                 ->join('departments', 'job_detail.id_department','=','departments.department_id')->where('departments.department_id',$department_id)->get();
         }else if($permission == 4){
-            $list_department = DB::table('proposal_application')->join('employees', 'employees.id_employee','=','proposal_application.id_employee')->get();
+            $list_department = DB::table('proposal_application')->join('employees', 'employees.employee_id','=','proposal_application.employee_id')->get();
         }
 
         return view('auth.proposal.proposal-application',
