@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use GuzzleHttp\Client;
@@ -9,26 +8,26 @@ class MyXteamService
 {
     protected $client;
     protected $apiUrl;
+    protected $token;
+    protected $certPath;
 
     public function __construct()
     {
         $this->client = new Client();
-        $this->apiUrl = 'https://public.myxteam.com/'; // URL của API myXteam
+        $this->apiUrl = env('MYXTEAM_API_URL'); // URL của API myXteam
+        $this->token = env('MYXTEAM_BEARER_TOKEN');
         $this->certPath = storage_path('certs/cacert.pem'); // Đường dẫn đến file cacert.pem
     }
 
     public function makeRequest($method, $endpoint, $data = [])
     {
-        $token = env('MYXTEAM_BEARER_TOKEN');
-
         try {
             $response = $this->client->request($method, $this->apiUrl . $endpoint, [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
+                    'Authorization' => 'Bearer ' . $this->token,
                     'Accept' => 'application/json',
                 ],
                 'json' => $data,
-//                'verify' => false, // Thêm dòng này để bỏ qua kiểm tra SSL
                 'verify' => $this->certPath, // Cấu hình Guzzle để sử dụng chứng chỉ gốc
             ]);
 
