@@ -618,7 +618,7 @@ use App\StaticString; ?>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{ route('proposal-types.index') }}">
                         <i class="bi bi-circle"></i><span>Proposal Types</span>
                     </a>
                 </li>
