@@ -4,14 +4,14 @@
         <h1>Employees</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active">Employees</li>
             </ol>
         </nav>
     </div>
-    <div class="border rounded-4 p-1 bg-white">
+    <div class="">
         <div class="card mb-0 shadow-none">
-            <div class="card-header fw-semibold text-white border-3 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Personal Details</div>
+            <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Personal Details</div>
             <div class="card-body p-3">
                 <div class="row">
                     <div class="col-6">
@@ -115,7 +115,7 @@
             </div>
         </div>
         <div class="card mb-0 shadow-none">
-            <div class="card-header fw-semibold text-white border-3 border-secondary-subtle rounded-4" style="background: var(--clr-1)"> Personal Contacts</div>
+            <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)"> Personal Contacts</div>
             <div class="card-body p-3">
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
@@ -194,7 +194,7 @@
             </div>
         </div>
         <div class="card mb-0 shadow-none">
-            <div class="card-header fw-semibold text-white border-3 border-secondary-subtle rounded-4" style="background: var(--clr-1)"> Personal Job Detail</div>
+            <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)"> Personal Job Detail</div>
             <div class="card-body p-3">
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Title</label>
@@ -267,10 +267,10 @@
         <div class="row g-0">
             <div class="col-6">
                 <div class="card mb-0 shadow-none">
-                    <div class="card-header fw-semibold text-white rounded-start-4 rounded-end-0" style="background: var(--clr-1)">Personal Profile</div>
+                    <div class="card-header fw-semibold text-white border-4 rounded-start-4 rounded-end-0" style="background: var(--clr-1)">Personal Profile</div>
                     <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
-                            <thead>
+                            <thead class="table-light">
                             <tr>
                                 <th>No.</th>
                                 <th>Filename</th>
@@ -295,10 +295,10 @@
             </div>
             <div class="col-6">
                 <div class="card mb-0 shadow-none">
-                    <div class="card-header fw-semibold text-white rounded-end-4 rounded-start-0" style="background: var(--clr-1)">Medical CheckUp</div>
+                    <div class="card-header fw-semibold text-white border-4 rounded-end-4 rounded-start-0" style="background: var(--clr-1)">Medical CheckUp</div>
                     <div class="card-body p-3 table-overflow">
                         <table class="table table-hover table-borderless">
-                            <thead>
+                            <thead class="table-light">
                             <tr>
                                 <th>No.</th>
                                 <th>Filename</th>
@@ -327,10 +327,10 @@
         <div class="row">
             <div class="col">
                 <div class="card mb-0 shadow-none">
-                    <div class="card-header fw-semibold text-white border-3 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Certificates</div>
+                    <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Certificates</div>
                     <div class="card-body p-3 table-overflow">
                         <table class="table table-hover table-borderless">
-                            <thead>
+                            <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">File Name</th>

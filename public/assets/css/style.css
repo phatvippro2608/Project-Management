@@ -9,10 +9,19 @@
     --clr-7: #f6f9ff;
 }
 
+@font-face {
+    font-family: GoogleSans;
+    src: url('../fonts/GoogleSans-Regular.ttf');
+}
+
 body {
-  font-family: "Open Sans", sans-serif;
+  /*font-family: "Open Sans", sans-serif;*/
   background: #f6f9ff;
   color: #444444;
+}
+
+main{
+    font-family: 'GoogleSans';
 }
 
 a {
@@ -31,7 +40,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Nunito", sans-serif;
+  /*font-family: "Nunito", sans-serif;*/
 }
 
 
@@ -49,7 +58,7 @@ h6 {
 
 
 .pagetitle {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .pagetitle h1 {
@@ -1232,10 +1241,6 @@ h6 {
 .form-control:focus{
     box-shadow: none !important;
     border-color: var(--bs-secondary-bg-subtle);
-}
-
-.btn{
-    border-radius: 18px;
 }
 
 .btn-primary{
