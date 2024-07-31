@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeaveApplicationModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LeaveApplicationController extends Controller
 {
@@ -28,21 +29,31 @@ class LeaveApplicationController extends Controller
     {
         $validated = $request->validate([
             'employee_id' => 'required|string',
-            'pin' => 'required|string',
             'leave_type' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'duration' => 'required|string',
         ]);
 
-        // Kiểm tra sự tồn tại của employee_id
-        $exists = LeaveApplicationModel::where('employee_id', $request->employee_id)->exists();
-        if ($exists) {
+        // Kiểm tra xung đột
+        $conflicts = DB::table('leave_applications')
+            ->where('employee_id', $request->employee_id)
+            ->where(function($query) use ($request) {
+                $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                    ->orWhereBetween('end_date', [$request->start_date, $request->end_date])
+                    ->orWhere(function($query) use ($request) {
+                        $query->where('start_date', '<=', $request->start_date)
+                            ->where('end_date', '>=', $request->end_date);
+                    });
+            })
+            ->exists();
+
+        if ($conflicts) {
             return response()->json([
                 'success' => false,
-                "status" => 400,
-                'message' => 'Employee already has an application',
-            ], 400);
+                'status' => 400,
+                'message' => 'The employee already has a leave application within the selected dates.',
+            ]);
         }
 
         $validated['leave_status'] = "Not Approved";
@@ -55,11 +66,10 @@ class LeaveApplicationController extends Controller
             'message' => 'Leave application added successfully',
         ]);
     }
-
     function edit($id)
     {
-        $leave_app = LeaveApplicationModel::findOrFail($id);
-
+        $leave_app = LeaveApplicationModel::with('employee', 'leaveType')->findOrFail($id);
+//        dd($leave_app);
         return response()->json([
             'leave_app' => $leave_app,
         ]);
