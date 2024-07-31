@@ -27,9 +27,7 @@
                         </div>
                         <div class="btn btn-success mx-2">
                             <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-
                                 <i class="bi bi-file-earmark-arrow-up pe-2"></i>
-
                                 Import
                             </a>
                         </div>
@@ -51,7 +49,7 @@
                 </div>
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead>
+                        <thead class="table-light">
                         <tr>
                             <th style="width: 10%">Employee Code</th>
                             <th class="text-center">Photo</th>
