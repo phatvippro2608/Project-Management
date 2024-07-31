@@ -41,16 +41,12 @@
                         </div>
                     </div>
                     <div class="col-md-6 m-0">
-                        <div class="input-group ms-sm-auto w-50">
-                            <form method="GET"
-                                  action="{{ action('App\Http\Controllers\EmployeesController@getView') }}"
-                                  class="d-flex w-100">
-                                <button type="submit" class="input-group-text bg-transparent border-secondary rounded-start-4">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                                <input name="keyw" type="text" class="form-control border-start-0 border-secondary rounded-end-4" value="{{ request()->input('keyw') }}" placeholder="Search Employee">
-                            </form>
-                        </div>
+                        <form class="input-group ms-sm-auto w-50" action="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                            <button type="submit" class="input-group-text bg-transparent border-secondary rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <input name="keyw" type="text" class="form-control border-start-0 border-secondary rounded-end-4" value="{{ request()->input('keyw') }}" placeholder="Search Employee">
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
