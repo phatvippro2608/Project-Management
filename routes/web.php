@@ -16,7 +16,7 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
-
+use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\SettingsController;
 
 /*
@@ -131,6 +131,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
     Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
+
+    //Proposal
+    Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
 });
 
 Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');

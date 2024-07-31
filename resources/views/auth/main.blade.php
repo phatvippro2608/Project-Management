@@ -613,7 +613,7 @@ use App\StaticString; ?>
             </a>
             <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{route('proposal-application.index')}}">
                         <i class="bi bi-circle"></i><span>Proposal Application</span>
                     </a>
                 </li>
