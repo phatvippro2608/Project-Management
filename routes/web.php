@@ -209,4 +209,5 @@ Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function
     Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
     Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
     Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
+    Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
 });
