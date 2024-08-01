@@ -16,8 +16,8 @@ class DashboardController extends Controller
     public function getViewDashboard()
     {
         $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
-        $id_employee = DB::selectOne($sql_get_id_employee)->id_employee;
+        $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $id_account";
+        $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
         $em_c = count(EmployeeModel::all());
         $team_c = count(TeamModel::all());
@@ -35,23 +35,19 @@ class DashboardController extends Controller
 
         $recent_project = DB::select($sql);
 
-
         $task_sql = "SELECT * FROM tasks, employees, phases
-         WHERE tasks.id_employee = employees.id_employee and phases.phase_id = tasks.phase_id
+         WHERE tasks.employee_id = employees.employee_id and phases.phase_id = tasks.phase_id
          AND DATE(tasks.start_date) <= CURDATE() AND DATE(tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee
+         AND employees.employee_id=$employee_id
          ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
 
-
         $subtask_sql = "SELECT * FROM sub_tasks, employees
-         WHERE sub_tasks.id_employee = employees.id_employee
+         WHERE sub_tasks.employee_id = employees.employee_id
          AND DATE(sub_tasks.start_date) <= CURDATE() AND DATE(sub_tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee
+         AND employees.employee_id=$employee_id
          ORDER BY sub_tasks.state ASC";
         $subtasks = DB::select($subtask_sql);
-
-
 
         return view('auth.dashboard.dashboard',[
             'em_c'=>$em_c,

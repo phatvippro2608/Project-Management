@@ -22,7 +22,7 @@ class AccountController extends Controller
         $keyword = trim($keyword);
         $keyword = $this->removeVietnameseAccents($keyword);
         $account = EmployeeModel::query()
-            ->join('account', 'account.id_employee', '=', 'employees.id_employee')
+            ->join('account', 'account.employee_id', '=', 'employees.employee_id')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -96,7 +96,7 @@ class AccountController extends Controller
 
     function add(Request $request)
     {
-        $id_employee = $request->input('id_employee', '');
+        $employee_id = $request->input('employee_id', '');
         $username = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');
@@ -104,16 +104,16 @@ class AccountController extends Controller
         $permission = $request->input('permission');
 
         if ($permission == 1) {
-            if (AccountModel::where('permission', 1)->where('id_employee', '!=', $id_employee)->count() >= 3) {
+            if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
 
-        if (AccountModel::where('id_employee', $id_employee)->count() >= 1) {
+        if (AccountModel::where('employee_id', $employee_id)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
         };
 
-        if ($id_employee == -1) {
+        if ($employee_id == -1) {
             return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
         }
 
@@ -127,7 +127,7 @@ class AccountController extends Controller
 
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
         $i = [
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'username' => $username,
             'email' => $email,
             'password' => $hashPass,
@@ -143,14 +143,14 @@ class AccountController extends Controller
     function update(Request $request)
     {
         $id_account = $request->input('id_account');
-        $id_employee = $request->input('id_employee');
+        $employee_id = $request->input('employee_id');
         $username = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
 
-        if (AccountModel::where('id_employee', $id_employee)->where('id_account', '!=', $id_account)->count() >= 1) {
+        if (AccountModel::where('employee_id', $employee_id)->where('id_account', '!=', $id_account)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
         };
 //        $auto_pwd = $request->input('auto_pwd');
@@ -160,13 +160,13 @@ class AccountController extends Controller
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
 
         if ($permission == 1) {
-            if (AccountModel::where('permission', 1)->where('id_employee', '!=', $id_employee)->count() >= 3) {
+            if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
 
         $i = [
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'username' => $username,
             'email' => $email,
             'permission' => $permission,
@@ -250,8 +250,8 @@ class AccountController extends Controller
             } else
                 $history = DB::table('login_history')->orderBy('created_at', 'desc')->get();
         }else{
-            $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
-            $employee = DB::selectOne($sql_get_id_employee);
+            $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $id_account";
+            $employee = DB::selectOne($sql_get_employee_id);
             if ($keyword != null) {
                 $history = DB::table('login_history')->where(['username' => $employee->username])->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
             } else
