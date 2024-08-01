@@ -22,6 +22,10 @@
                 <li class="breadcrumb-item active"><a href="#">{{ $id }}</a></li>
             </ol>
         </nav>
+        <div class="main--Info card">
+            <div class="card-body">
 
+            </div>
+        </div>
     </div>
 @endsection
