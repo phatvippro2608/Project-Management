@@ -30,7 +30,7 @@ class AccountController extends Controller
         $keyword = trim($keyword);
         $keyword = $this->removeVietnameseAccents($keyword);
         $account = EmployeeModel::query()
-            ->join('account', 'account.employee_id', '=', 'employees.employee_id')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -149,7 +149,7 @@ class AccountController extends Controller
 
     function update(Request $request)
     {
-        $id_account = $request->input('id_account');
+        $account_id = $request->input('account_id');
         $employee_id = $request->input('employee_id');
         $username = $request->input('username');
         $email = $request->input('email');
@@ -157,7 +157,7 @@ class AccountController extends Controller
         $status = $request->input('status');
         $permission = $request->input('permission');
 
-        if (AccountModel::where('employee_id', $employee_id)->where('id_account', '!=', $id_account)->count() >= 1) {
+        if (AccountModel::where('employee_id', $employee_id)->where('account_id', '!=', $account_id)->count() >= 1) {
             return self::status('Tài khoản đã tồn tại', 500);
         };
 //        $auto_pwd = $request->input('auto_pwd');
@@ -181,7 +181,7 @@ class AccountController extends Controller
         ];
         if (!empty($password))
             $i['password'] = $hashPass;
-        if (AccountModel::where('id_account', $id_account)->update($i)) {
+        if (AccountModel::where('account_id', $account_id)->update($i)) {
             return self::status('Cập nhật thành công', 200);
         };
         return self::status('Cập nhật thất bại', 500);
@@ -189,8 +189,8 @@ class AccountController extends Controller
 
     function delete(Request $request)
     {
-        $id_account = $request->input('id_account');
-        if (AccountModel::where('id_account', $id_account)->delete()) {
+        $account_id = $request->input('account_id');
+        if (AccountModel::where('account_id', $account_id)->delete()) {
             return self::status('Xóa tài khoản thành công', 200);
         };
         return self::status('Xóa thất bại', 500);
@@ -199,11 +199,11 @@ class AccountController extends Controller
 
     function setLastActive(Request $request)
     {
-        $id_account = $request->input('id_account');
+        $account_id = $request->input('account_id');
         $i = [
             'last_active' => Carbon::now()
         ];
-        if(AccountModel::where('id_account',$id_account)->update($i)){
+        if(AccountModel::where('account_id',$account_id)->update($i)){
             return self::status('Cập nhật thành công', 200);
         };
         return self::status('Cập nhật thất bại', 500);
@@ -237,7 +237,7 @@ class AccountController extends Controller
     }
     function demoView()
     {
-        return view('auth.account.account_import_demo');
+        return view('auth.accounts.account_import_demo');
     }
 
     function removeVietnameseAccents($str) {
@@ -287,7 +287,7 @@ class AccountController extends Controller
     function loginHistory(Request $request)
     {
         $keyword = $request->input('keyw', '');
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
         if($permission == 1){
@@ -296,7 +296,7 @@ class AccountController extends Controller
             } else
                 $history = DB::table('login_history')->orderBy('created_at', 'desc')->get();
         }else{
-            $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $id_account";
+            $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
             $employee = DB::selectOne($sql_get_employee_id);
             if ($keyword != null) {
                 $history = DB::table('login_history')->where(['username' => $employee->username])->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
@@ -304,7 +304,7 @@ class AccountController extends Controller
                 $history = DB::table('login_history')->where(['username' => $employee->username])->orderBy('created_at', 'desc')->get();
         }
 
-        return view('auth.account.account-history', ['history' => $history]);
+        return view('auth.accounts.account-history', ['history' => $history]);
     }
 
     function clearHistory()

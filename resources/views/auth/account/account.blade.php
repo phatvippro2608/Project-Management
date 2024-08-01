@@ -65,15 +65,10 @@
                                                     </a>
                                                     <a class="delete me-2">
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="{{ $item->id_account }}"></i>
+                                                           data="{{ $item->account_id }}"></i>
                                                     </a>
                                                 </div>
-                                                <img src="{{ $item->photo ? asset($item->photo) : asset('assets/img/not-found.svg') }}" alt=""
-                                                     class="account-photo rounded-circle p-0 m-0"
-                                                     onerror="this.onerror=null; this.src='{{ asset('img/default.jpg') }}'">
-
                                                 <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
-
                                             </div>
 
                                         </td>
@@ -98,11 +93,7 @@
                                             {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-
-                                            {{\App\Http\Controllers\AccountController::timeAgo($item->last_active)}}
-                                        </td>
-                                        <td class="text-center">
-                                            16 years ago
+                                            {{$item->updated_at}}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -277,7 +268,6 @@
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
             $('.md1').modal('show');
-            $('.at2').text('Update');
 
             $('.at2').click(function () {
 
@@ -298,7 +288,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_account': data.id_account,
+                        'account_id': data.account_id,
                         'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
@@ -335,7 +325,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'id_account': id,
+                    'account_id': id,
                 },
                 success: function (result) {
                     result = JSON.parse(result);
@@ -353,4 +343,3 @@
 
     </script>
 @endsection
-
