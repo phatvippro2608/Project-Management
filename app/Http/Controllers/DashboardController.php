@@ -15,8 +15,8 @@ class DashboardController extends Controller
     private $state_todo = [1, 2];
     public function getViewDashboard()
     {
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $id_account";
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
         $em_c = count(EmployeeModel::all());
@@ -27,9 +27,9 @@ class DashboardController extends Controller
         $sub_c = DB::table('sub_tasks')->count();
 
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
-        FROM account, recent_project, projects
-        WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id
-        AND account.id_account=$id_account
+        FROM accounts, recent_project, projects
+        WHERE accounts.account_id = recent_project.account_id AND recent_project.project_id = projects.project_id
+        AND accounts.account_id=$account_id
         ORDER BY created_at DESC
         LIMIT 5 ";
 
