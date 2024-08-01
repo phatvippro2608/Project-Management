@@ -712,7 +712,7 @@ use App\StaticString; ?>
 
         <li class="nav-item">
             <a class="nav-link " href="{{ route('portfolio') }}">
-                <i class="bi bi-folder2-open"></i>
+                <i class="bi bi-folder-fill"></i>
                 <span>Portfolio</span>
             </a>
         </li>
