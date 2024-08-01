@@ -26,7 +26,7 @@ class LeaveReportsModel extends Model
     // Thiết lập mối quan hệ với bảng employees
     public function employee()
     {
-        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id_employee');
+        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'employee_id');
     }
 
     // Thiết lập mối quan hệ với bảng leave_types

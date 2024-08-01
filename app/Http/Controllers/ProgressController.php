@@ -28,7 +28,7 @@ class ProgressController extends Controller
         if (!$projectExists) {
             abort(404, 'Project not found');
         }
-        
+
         $phases = DB::table("phases")->where('project_id', $id)->get();
 
         $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
@@ -38,7 +38,7 @@ class ProgressController extends Controller
             ->select('sub_tasks.*')
             ->get();
 
-        $employees = DB::table('employees')->select('id_employee', 'photo', 'last_name', 'first_name')->get();
+        $employees = DB::table('employees')->select('employee_id', 'photo', 'last_name', 'first_name')->get();
         return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
     }
 

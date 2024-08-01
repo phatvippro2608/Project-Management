@@ -150,7 +150,7 @@
                                 '<strong>not approved</strong>';
 
                             table.row.add([
-                                report.pin,
+                                report.employee.employee_code,
                                 report.employee.last_name + ' ' + report
                                 .employee.first_name,
                                 report.leave_type.leave_type,
@@ -225,15 +225,16 @@
     </script>
 @endsection
 @section('head')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css" />
 
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>
