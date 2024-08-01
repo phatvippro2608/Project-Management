@@ -123,7 +123,7 @@
                         <td>{{ $stt++ }}</td>
                         <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->description }}</td>
+                        <td>{{ $item->proposal_description }}</td>
                         <td>
                             <div class="progress">
                                 @if ($item->progress == 0)
