@@ -10,12 +10,12 @@ use \Illuminate\Support\Facades\Request;
 class ProposalApplicationModel extends Model
 {
     use HasFactory;
-    protected $table = 'proposal_applicationss';
-    protected $primaryKey = 'proposal_applications_id';
+    protected $table = 'proposal_applications';
+    protected $primaryKey = 'proposal_application_id';
     protected $fillable = [
         'employee_id',
         'proposal_id',
-        'description',
+        'proposal_description',
         'progress'
     ];
     public $timestamps = false;

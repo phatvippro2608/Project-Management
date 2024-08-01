@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="addProposalApplicationForm">
+                    <form id="addProposalApplicationForm" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
@@ -57,15 +57,13 @@
                                     </option>
                                 @elseif($data['permission'] == 3)
                                     @foreach ($data['employee_of_depart'] as $item)
-                                        <option value="{{ $item->employee_id }}">
-                                            {{ $item->first_name }} {{ $item->last_name }}
-                                        </option>
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
                                     @endforeach
                                 @elseif($data['permission'] == 4)
                                     @foreach ($employee_name as $item)
-                                        <option value="{{ $item->employee_id }}">
-                                            {{ $item->first_name }} {{ $item->last_name }}
-                                        </option>
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -74,9 +72,7 @@
                             <label for="department_name" class="form-label">Proposal Type</label>
                             <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
                                 @foreach ($proposal_types as $item)
-                                    <option value="{{ $item->proposal_type_id }}">
-                                        {{ $item->name }}
-                                    </option>
+                                    <option value="{{ $item->proposal_type_id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -128,16 +124,16 @@
                             <div class="progress">
                                 @if ($item->progress == 0)
                                     <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
-                                    aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                                    Chưa xét
-                            </div>
-                            @elseif($item->progress == 1)
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
-                                     aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                                    Đã duyệt cấp 1
-                                </div>
-                            @elseif($item->progress == 2)
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                        Chưa xét
+                                    </div>
+                                @elseif($item->progress == 1)
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                        Đã duyệt cấp 1
+                                    </div>
+                                @elseif($item->progress == 2)
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
                                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
                                         Đã duyệt xong
                                     </div>
@@ -210,9 +206,15 @@
                 const li = document.createElement('li');
                 li.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
                 let displayName = file.name;
-                if (displayName.length > 30) {
-                    displayName = displayName.substring(0, 25) + '...';
+                const extension = displayName.split('.').pop();
+                const baseName = displayName.substring(0, displayName.lastIndexOf('.'));
+
+                if (baseName.length > 30) {
+                    displayName = baseName.substring(0, 25) + '...' + '.' + extension;
+                } else {
+                    displayName = baseName + '.' + extension;
                 }
+
                 li.textContent = displayName + ' ';
 
                 const removeBtn = document.createElement('button');
@@ -231,16 +233,24 @@
         $('#addProposalApplicationForm').submit(function(e) {
             e.preventDefault();
 
+            var formData = new FormData(this);
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
             $.ajax({
                 url: '{{ route('proposal-application.add') }}',
                 method: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function(response) {
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
                         setTimeout(function() {
-                            location.reload()
+                            location.reload();
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
