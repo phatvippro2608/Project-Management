@@ -214,9 +214,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
         Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
         Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
-
-        Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
     });
+    Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
 });
 
 

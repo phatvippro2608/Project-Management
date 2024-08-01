@@ -40,12 +40,10 @@
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
                             <select class="form-select" aria-label="Default" name="employee_id">
-                                @if($list_department)
-                                    @foreach ($list_department as $item)
+                                    @foreach ($list_proposal as $item)
                                         <option value="{{ $item->employee_id }}">
                                             {{ $item->first_name }} {{ $item->last_name }}</option>
                                     @endforeach
-                                @endif
                             </select>
                         </div>
                         <div class="mb-3">
@@ -84,7 +82,7 @@
             </thead>
             <tbody id="departmentsTableBody">
             @php($stt=0)
-            @foreach ($list_department as $item)
+            @foreach ($list_proposal as $item)
                 <tr>
                     <td>{{$stt++}}</td>
                     <td>{{$item->last_name . ' ' . $item->first_name}}</td>
