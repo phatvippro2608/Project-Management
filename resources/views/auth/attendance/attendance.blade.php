@@ -88,6 +88,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalViewAttendance" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -157,6 +158,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     var table = $('#attendanceTable').DataTable({
         responsive: true,

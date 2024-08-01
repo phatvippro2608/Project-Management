@@ -226,17 +226,17 @@ $token = 'position';
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
                             ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                             ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-                            ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
                             ->where(
                             'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
-                $info = \Illuminate\Support\Facades\DB::table('job_detail')
-                            ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                $info = \Illuminate\Support\Facades\DB::table('job_details')
+                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
                             ->where(
-                                'job_detail.employee_id', $data->employee_id
+                                'job_details.employee_id', $data->employee_id
                             )
                             ->first();
             @endphp
@@ -407,7 +407,7 @@ $token = 'position';
         @php
             $data = \Illuminate\Support\Facades\DB::table('accounts')
                 ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
                 ->where(
                     'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
@@ -495,6 +495,23 @@ $token = 'position';
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognitions</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         <li class="nav-heading">Customer Manager</li>
         <li class="nav-item">
@@ -520,6 +537,7 @@ $token = 'position';
                 </li>
             </ul>
         </li>
+
         <li class="nav-heading">Project Management</li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"

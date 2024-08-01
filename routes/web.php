@@ -15,8 +15,9 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
-
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RecognitionController;
+use App\Http\Controllers\DisciplinaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -173,7 +174,8 @@ Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('t
 
 Route::group(['prefix' => '/project'], function () {
     Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
-    Route::get('/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
+    Route::put('/{id}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'update'])->name('project.update');
+    Route::get('/{id}/budget', '\App\Http\Controllers\ProjectBudgetController@getView')->name('budget');
     Route::get('/{id}/budget/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editBudget'])->name('budget.edit');
     Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
     Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
@@ -185,6 +187,8 @@ Route::group(['prefix' => '/project'], function () {
     Route::delete('/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
     Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
     Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
+    Route::get('/{id}/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
+    Route::delete('/{project_id}/commission/{cost_commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
 });
 
 Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
@@ -213,3 +217,13 @@ Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID
 Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
 Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
 Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+
+// recognition
+Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
+    Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
+});
+
+// disciplinary
+Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
+
