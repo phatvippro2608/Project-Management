@@ -67,7 +67,7 @@ class AccountController extends Controller
         $pass = array();
         $alphaLength = strlen($alphabet) - 1;
         for ($i = 0; $i < $max; $i++) {
-            $n = rand(0, $alphaLength);
+            $n = random_int(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }
         return implode($pass);
@@ -88,14 +88,12 @@ class AccountController extends Controller
 
     static function format($date)
     {
-        $date_str = new \DateTime($date);
-        return $date_str->format('d-m-Y');
+        return (new \DateTime($date))->format('d-m-Y');
     }
 
     static function getNow()
     {
-        $date_str = new \DateTime();
-        return $date_str->format('F j, Y');
+        return (new \DateTime())->format('F j, Y');
     }
 
     public static function status($message, $code)
@@ -115,25 +113,23 @@ class AccountController extends Controller
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
-            }
-            ;
+            };
         }
 
         if (AccountModel::where('employee_id', $employee_id)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
-        }
-        ;
+        };
 
         if ($employee_id == -1) {
-            return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
+            return self::status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
         }
 
         if (AccountModel::where('email', $email)->count() >= 1) {
-            return $this->status('Email đã tồn tại', 500);
+            return self::status('Email đã tồn tại', 500);
         }
 
         if (AccountModel::where('username', $username)->count() >= 1) {
-            return $this->status('Username đã tồn tại', 500);
+            return self::status('Username đã tồn tại', 500);
         }
 
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
@@ -147,8 +143,7 @@ class AccountController extends Controller
         ];
         if (AccountModel::insert($i)) {
             return $this->status('Thêm thành công', 200);
-        }
-        ;
+        };
         return $this->status('Thêm thất bại', 500);
     }
 
@@ -164,9 +159,8 @@ class AccountController extends Controller
 
         if (AccountModel::where('employee_id', $employee_id)->where('id_account', '!=', $id_account)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
-        }
-        ;
-        //        $auto_pwd = $request->input('auto_pwd');
+        };
+//        $auto_pwd = $request->input('auto_pwd');
 //
 //        if($auto_pwd == 'true')
 //            $password = $this->randomUserPwd(20);
@@ -175,8 +169,7 @@ class AccountController extends Controller
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
-            }
-            ;
+            };
         }
 
         $i = [
@@ -190,8 +183,7 @@ class AccountController extends Controller
             $i['password'] = $hashPass;
         if (AccountModel::where('id_account', $id_account)->update($i)) {
             return $this->status('Cập nhật thành công', 200);
-        }
-        ;
+        };
         return $this->status('Cập nhật thất bại', 500);
     }
 
@@ -200,8 +192,7 @@ class AccountController extends Controller
         $id_account = $request->input('id_account');
         if (AccountModel::where('id_account', $id_account)->delete()) {
             return $this->status('Xóa tài khoản thành công', 200);
-        }
-        ;
+        };
         return $this->status('Xóa thất bại', 500);
     }
 
@@ -212,10 +203,9 @@ class AccountController extends Controller
         $i = [
             'last_active' => Carbon::now()
         ];
-        if (AccountModel::where('id_account', $id_account)->update($i)) {
+        if(AccountModel::where('id_account',$id_account)->update($i)){
             return $this->status('Cập nhật thành công', 200);
-        }
-        ;
+        };
         return $this->status('Cập nhật thất bại', 500);
     }
 
@@ -284,15 +274,14 @@ class AccountController extends Controller
             if ($c) {
                 $c = false;
                 continue;
-            }
-            ;
+            };
             $data = [
                 'email' => trim($item[0]),
                 'ho_ten' => trim($item[1]),
             ];
             DB::table('account_import')->insert($data);
         }
-        return $this->status('Import thành công', 200);
+        return self::status('Import thành công', 200);
     }
 
 

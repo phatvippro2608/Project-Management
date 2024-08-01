@@ -238,13 +238,13 @@ use App\StaticString; ?>
             </li>
             @php
 
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
                             ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
-                            'account.id_account',
+                            'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
@@ -447,11 +447,11 @@ use App\StaticString; ?>
         @endif
 
         @php
-            $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                 ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
                 ->where(
-                    'id_account',
+                    'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                 )
                 ->first();
