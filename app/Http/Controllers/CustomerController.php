@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContractModel;
+use App\Models\CustomerModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use function Laravel\Prompts\table;
@@ -19,8 +21,10 @@ class CustomerController extends Controller
 
     function getUpdateView(Request $request)
     {
-        $customer = DB::table('customers')->join('contracts', 'customers.customer_id', 'contracts.customer_id')->get();
-        return view('auth.customer.customer', ['customer' => $customer, 'status' => $this->status]);
+        $id_customer = $request->customer_id;
+        $customer = CustomerModel::where('customer_id', $id_customer)->first();
+        $contracts = ContractModel::where('customer_id', $id_customer)->get();
+        return view('auth.customer.customer-update', ['customer' => $customer, 'contracts' => $contracts,'status' => $this->status]);
     }
 
     function add(Request $request)

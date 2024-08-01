@@ -17,13 +17,13 @@
 }
 .search-button {
     position: absolute;
-    right: 10px; /* Điều chỉnh khoảng cách bên phải */
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
 }
 .form-control {
-    padding-right: 40px; /* Đảm bảo đủ chỗ cho biểu tượng */
+    padding-right: 40px;
 }
 
 
