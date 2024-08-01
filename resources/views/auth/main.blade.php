@@ -24,6 +24,7 @@ use App\StaticString; ?>
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -41,8 +42,7 @@ use App\StaticString; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css"/>
-    <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+    <script src="{{asset('assets/js/datatables.js')}}"></script>
 
     <script type="text/javascript"
             src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
@@ -224,9 +224,9 @@ use App\StaticString; ?>
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                            ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
                             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                            ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                            ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
                             'account.id_account',
@@ -236,7 +236,7 @@ use App\StaticString; ?>
                 $info = \Illuminate\Support\Facades\DB::table('job_detail')
                             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
                             ->where(
-                                'job_detail.id_employee', $data->id_employee
+                                'job_detail.employee_id', $data->employee_id
                             )
                             ->first();
             @endphp
@@ -270,10 +270,8 @@ use App\StaticString; ?>
                     </li>
 
                     <li>
-
                         <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['id_employee'=>$data->id_employee]) }}">
-
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -404,8 +402,8 @@ use App\StaticString; ?>
 
         @php
             $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
                 ->where(
                     'id_account',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
