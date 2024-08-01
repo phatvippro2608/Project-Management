@@ -21,7 +21,7 @@ class AccountController extends Controller
 
     function getView(Request $request)
     {
-        $perPage = (int)env('ITEM_PER_PAGE');
+        $perPage = (int) env('ITEM_PER_PAGE');
         $keyword = $request->input('keyw', '');
 
         $account = AccountModel::getAll($keyword);
@@ -77,7 +77,7 @@ class AccountController extends Controller
     {
         if (count($list)) {
             $tmp = array();
-            $data = (array)$data;
+            $data = (array) $data;
             foreach ($list as $key) {
                 $tmp[$key] = $data[$key];
             }
@@ -100,7 +100,7 @@ class AccountController extends Controller
 
     public static function status($message, $code)
     {
-        return json_encode((object)["status" => $code, "message" => $message]);
+        return json_encode((object) ["status" => $code, "message" => $message]);
     }
 
     function add(Request $request)
@@ -115,12 +115,14 @@ class AccountController extends Controller
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
-            };
+            }
+            ;
         }
 
         if (AccountModel::where('employee_id', $employee_id)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
-        };
+        }
+        ;
 
         if ($employee_id == -1) {
             return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
@@ -145,7 +147,8 @@ class AccountController extends Controller
         ];
         if (AccountModel::insert($i)) {
             return $this->status('Thêm thành công', 200);
-        };
+        }
+        ;
         return $this->status('Thêm thất bại', 500);
     }
 
@@ -161,8 +164,9 @@ class AccountController extends Controller
 
         if (AccountModel::where('employee_id', $employee_id)->where('id_account', '!=', $id_account)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
-        };
-//        $auto_pwd = $request->input('auto_pwd');
+        }
+        ;
+        //        $auto_pwd = $request->input('auto_pwd');
 //
 //        if($auto_pwd == 'true')
 //            $password = $this->randomUserPwd(20);
@@ -171,7 +175,8 @@ class AccountController extends Controller
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
-            };
+            }
+            ;
         }
 
         $i = [
@@ -185,7 +190,8 @@ class AccountController extends Controller
             $i['password'] = $hashPass;
         if (AccountModel::where('id_account', $id_account)->update($i)) {
             return $this->status('Cập nhật thành công', 200);
-        };
+        }
+        ;
         return $this->status('Cập nhật thất bại', 500);
     }
 
@@ -194,7 +200,8 @@ class AccountController extends Controller
         $id_account = $request->input('id_account');
         if (AccountModel::where('id_account', $id_account)->delete()) {
             return $this->status('Xóa tài khoản thành công', 200);
-        };
+        }
+        ;
         return $this->status('Xóa thất bại', 500);
     }
 
@@ -205,13 +212,15 @@ class AccountController extends Controller
         $i = [
             'last_active' => Carbon::now()
         ];
-        if(AccountModel::where('id_account',$id_account)->update($i)){
+        if (AccountModel::where('id_account', $id_account)->update($i)) {
             return $this->status('Cập nhật thành công', 200);
-        };
+        }
+        ;
         return $this->status('Cập nhật thất bại', 500);
     }
 
-    static function timeAgo($timestamp) {
+    static function timeAgo($timestamp)
+    {
         $timeDifference = time() - strtotime($timestamp);
 
         if ($timeDifference < 1) {
@@ -235,13 +244,14 @@ class AccountController extends Controller
                 return 'Active ' . $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ago';
             }
         }
-
+    }
     function demoView()
     {
         return view('auth.account.account_import_demo');
     }
 
-    function removeVietnameseAccents($str) {
+    function removeVietnameseAccents($str)
+    {
         $accents_arr = [
             'a' => ['à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ'],
             'e' => ['è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ'],
@@ -274,7 +284,8 @@ class AccountController extends Controller
             if ($c) {
                 $c = false;
                 continue;
-            };
+            }
+            ;
             $data = [
                 'email' => trim($item[0]),
                 'ho_ten' => trim($item[1]),
@@ -291,12 +302,12 @@ class AccountController extends Controller
         $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
-        if($permission == 1){
+        if ($permission == 1) {
             if ($keyword != null) {
                 $history = DB::table('login_history')->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
             } else
                 $history = DB::table('login_history')->orderBy('created_at', 'desc')->get();
-        }else{
+        } else {
             $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $id_account";
             $employee = DB::selectOne($sql_get_employee_id);
             if ($keyword != null) {
