@@ -12,88 +12,81 @@
 </div>
 <div class="d-flex justify-content-between align-items-center">
     <h3>List Of Commission Project: <b>{{ $project->project_name }}</b></h3>
+    <a href="{{ route('budget.export.csv', $project->project_id) }}" class="btn btn-success"><i class="bi bi-file-earmark-arrow-down pe-2"></i>Export CSV</a>
 </div>
 <table id="projectsTable" class="table table-bordered">
     <thead>
         <tr class="table-dark text-center align-middle">
             <th>ID</th>
             <th>Name</th>
+            <th>Amount</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
+        @php
+            $i=1;
+        @endphp
         @foreach ($dataGroupCommission as $commissionGroup)
             <tr class="table-warning">
-                <td>{{ $commissionGroup->group_id }}</td>
-                <td>{{ $commissionGroup->groupcommission_name }}</td>
-                <td class="text-center align-middle">
-                    <button type="button" class="btn btn-primary btn-sm view-details"
-                        data-group-id="{{ $commissionGroup->group_id }}">Details</button>
-                    <button type="button" class="btn btn-primary btn-sm"
-                        data-group-id="{{ $commissionGroup->group_id }}">Rename</button>
-                    <button type="button" class="btn btn-danger btn-sm"
-                        data-group-id="{{ $commissionGroup->group_id }}">X</button>
-                </td>
+                <th colspan="4">{{ $commissionGroup->groupcommission_name }}</th>
             </tr>
+            @foreach ($dataCommission as $data)
+                @if ($data->project_id == $id && $data->groupcommission_id == $commissionGroup->group_id)
+                    <tr>
+                        <td class="text-center align-middle" id="{{ $data->commission_id }}">{{$i++}}</td>
+                        <td>{{ $data->description }}</td>
+                        <td>{{ number_format($data->amount, 0, ',', '.') }} VND</td>
+                        <td class="text-center align-middle">
+                            <button type="button" class="btn btn-info btn-sm w-auto rename-btn"
+                                    data-id="{{ $data->commission_id }}"
+                                    data-name="{{ $data->commission_id }}" data-bs-toggle="modal"><i class="bi bi-pencil-square"></i></button>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm delete-btn"
+                                    data-id="{{ $data->commission_id }}"><i class="bi bi-trash3"></i></button>
+                        </td>
+                    </tr>
+                    <tr><td colspan="4"></td></tr>
+                @endif
+            @endforeach
         @endforeach
     </tbody>
 </table>
 
 <script>
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('.view-details').click(function() {
-            var $this = $(this);
-            var groupId = $this.data('group-id');
-            var projectId = "{{ $id }}"; // Ensure the project ID is available
-            var url = '{{ route('commission.details', ['id' => '__PROJECT_ID__']) }}'
-                .replace('__PROJECT_ID__', projectId);
-
-            // Check if the details row already exists
-            var nextRow = $this.closest('tr').next('tr.details-row[data-group-id="' + groupId + '"]');
-            if (nextRow.length) {
-                // Toggle the visibility of the existing details row
-                nextRow.toggle();
-            } else {
-                // Perform AJAX request
+    document.addEventListener('DOMContentLoaded', function () {
+        $('.delete-btn').on('click', function() {
+            var costCommissionId = $(this).data('id');
+            var projectId = '{{ $id }}';
+            var url = '{{ route('budget.deleteCommission', ['project_id' => '__PROJECT_ID__', 'cost_commission_id' => '__COST_COMMISSION_ID']) }}'
+                .replace('__PROJECT_ID__', projectId)
+                .replace('__COST_COMMISSION_ID', costCommissionId);
+                
+        console.log(url);
+    
+            if (confirm('Are you sure you want to delete this cost commission item?')) {
                 $.ajax({
-                    url: url, // URL should match the route
-                    type: 'POST',
-                    data: { group_id: groupId },
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                     success: function(response) {
                         if (response.success) {
-                            var detailsTable = '<tr class="details-row" data-group-id="' + groupId + '"><td colspan="3">';
-                            detailsTable += '<table class="table">';
-                            detailsTable += '<thead><tr><th>ID</th><th>Description</th><th>Amount</th></tr></thead>';
-                            detailsTable += '<tbody>';
-                            $.each(response.data, function(index, detail) {
-                                detailsTable += '<tr>';
-                                detailsTable += '<td>' + detail.commission_id + '</td>';
-                                detailsTable += '<td>' + detail.description + '</td>';
-                                detailsTable += '<td>' + detail.amount + '</td>';
-                                detailsTable += '</tr>';
-                            });
-                            detailsTable += '</tbody></table>';
-                            detailsTable += '</td></tr>';
-
-                            // Append the details row after the clicked row
-                            $this.closest('tr').after(detailsTable);
+                            toastr.success('Delete successfully!');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 500);
                         } else {
-                            alert('No details found.');
+                            toastr.error('Delete Failed: ' + response.message);
                         }
                     },
-                    error: function() {
-                        alert('Error fetching details.');
+                    error: function(xhr) {
+                        toastr.error('Delete Failed: ' + xhr.status + ' ' + xhr.statusText);
                     }
                 });
             }
         });
     });
 </script>
-
 @endsection
