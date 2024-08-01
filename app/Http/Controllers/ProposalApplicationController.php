@@ -20,7 +20,7 @@ class ProposalApplicationController extends Controller
         $employee_name = $model_leaveapp->getEmployeeName();
         //permis = 0 -> employee (uesr)
         //permis = 3 -> Direct department (trưởng phòng ban)
-        //permis = 4 -> Direct Manager (Quản lý)
+        //permis = 4 -> Direct Manager (Quản lý phòng ban)
 
 //        dd($data);
         return view('auth.proposal.proposal-application',

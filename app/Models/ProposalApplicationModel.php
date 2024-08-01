@@ -46,15 +46,15 @@ class ProposalApplicationModel extends Model
                 ->get();
         }else if($permission == 3){
             $department_id = DB::table('employees')
-                ->join('job_detail', 'job_detail.employee_id','=','employees.employee_id')
-                ->join('departments', 'job_detail.id_department','=','departments.department_id')
+                ->join('job_details', 'job_details.employee_id','=','employees.employee_id')
+                ->join('departments', 'job_details.id_department','=','departments.department_id')
                 ->where('employees.employee_id',$employee_id)
                 ->first()->id_department;
             $list_proposal = DB::table('proposal_application')
                 ->join('employees', 'employees.employee_id','=','proposal_application.employee_id')
-                ->join('job_detail', 'job_detail.employee_id','=','employees.employee_id')
+                ->join('job_details', 'job_details.employee_id','=','employees.employee_id')
                 ->join('proposal_types', 'proposal_application.proposal_id','=','proposal_types.proposal_type_id')
-                ->join('departments', 'job_detail.id_department','=','departments.department_id')
+                ->join('departments', 'job_details.id_department','=','departments.department_id')
                 ->where('departments.department_id',$department_id)
                 ->get();
         }else if($permission == 4){
