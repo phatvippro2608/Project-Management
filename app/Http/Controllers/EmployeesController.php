@@ -26,7 +26,7 @@ class EmployeesController extends Controller
         $keyword = $this->removeVietnameseAccents($keyword);
 
         $data = EmployeeModel::query()
-            ->join('contacts', 'contacts.id_contact', '=', 'employees.id_contact')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.id_contact')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -218,6 +218,23 @@ class EmployeesController extends Controller
         return json_encode($data_certificates);
     }
 
+    static function generateEmployeeCode()
+    {
+        $year = date('y');
+
+        $lastCode = DB::table('employees')
+            ->where('employee_code', 'like', $year . '%')
+            ->orderBy('employee_code', 'desc')
+            ->value('employee_code');
+
+        $nextId = $lastCode ? intval(substr($lastCode, 2)) + 1 : 1;
+
+        $employee_id = str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+        $employee_code = $year . $employee_id;
+
+        return $employee_code;
+    }
     static function getPassportInfo($employee_id)
     {
         $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();

@@ -40,6 +40,7 @@ if (photoUploads) {
                 reader.readAsDataURL(file);
             }
         });
+
     });
 }
 

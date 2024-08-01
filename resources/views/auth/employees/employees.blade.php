@@ -60,21 +60,13 @@
                     </tr>
                     </thead>
                     <tbody id="employeesTableBody">
-                    @foreach($data as $item)
-                        @if($item->fired == "false")
-                            <tr>
-                                <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
-                                @php
-                                    $imageUrl = asset('assets/img/avt.png'); // Default image URL
-
-                        </thead>
                         <tbody>
                         @foreach($data as $item)
                             @if($item->fired == "false")
                                 <tr>
                                     <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
                                     @php
-                                        $imageUrl = asset('assets/img/avt.png'); // Default image URL
+                                        $imageUrl = asset('assets/img/avt.png');
 
                                         if($item->photo != null){
                                             $imagePath = public_path($item->photo);
@@ -83,7 +75,6 @@
                                             }
                                         }
                                     @endphp
-
                                     <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
                                     <td>{{$item->last_name . ' ' . $item->first_name}}</td>
                                     <td>{{$item->en_name}}</td>
@@ -95,7 +86,7 @@
                                             $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
                                             $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
                                             $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                            $item->email = \Illuminate\Support\Facades\DB::table('account')->where('employee_id', $id)->value('email');
+                                            $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
                                             ?>
                                         <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
                                             <i class="bi bi-pencil-square"></i>
@@ -139,7 +130,7 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="">
+                                                <input type="text" class="form-control employee_code" name="" disabled value="{{\App\Http\Controllers\EmployeesController::generateEmployeeCode()}}">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -161,14 +152,10 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div photo-input-target="photoAdd" class="col-md-2 photo-upload">
-                                                <img id="profileImage" src="{{asset('assets/img/avt.png')}}" alt="Profile">
+                                            <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control phone_number" name="">
                                             </div>
-{{--                                            <div class="col-sm-8">--}}
-{{--                                                <input type="file" class="form-control photo" name="">--}}
-{{--                                            </div>--}}
-
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -243,12 +230,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control phone_number" name="">
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </form><!-- End General Form Elements -->
@@ -305,7 +287,7 @@
                                     <div class="row mb-3">
                                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control employee_code" name="" disabled>
+                                            <input type="text" class="form-control employee_code" name="" @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -740,6 +722,7 @@
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
+
         $('.at1').click(function () {
             $('.md1').modal('show');
 
@@ -859,6 +842,15 @@
                 });
             });
 
+            //clear image when modal close
+            {{--$('.md3').on('hidden.bs.modal', function () {--}}
+            {{--    if ($('.md3').css('display') === 'none') {--}}
+            {{--        $('.md3 #profileImage').attr('src','{{asset('assets/img/avt.png')}}');--}}
+            {{--        $('.md3 .photo-upload').val('');--}}
+            {{--        console.log($('#photoUpdate').val());--}}
+            {{--    }--}}
+            {{--});--}}
+
             $('.md3 .btn_upload_medical').click(function () {
                 event.preventDefault();
                 let file = $('.md3 .medical_checkup')[0].files[0];
@@ -938,7 +930,7 @@
             $('.md3 .en_name').val(data.en_name);
             let imagePath = "/uploads/" + data.employee_id;
             let defaultImage = "{{ asset('assets/img/avt.png') }}";
-
+            console.log(data.photo)
             $.ajax({
                 url: _check_file_exists, // Create a route to check if the file exists
                 method: 'POST',
@@ -948,6 +940,7 @@
                 data: { path: data.photo },
                 success: function(response) {
                     if (response.exists) {
+                        console.log('{{asset('')}}' + data.photo);
                         $('.md3 .photo_show').attr('src', '{{asset('')}}' + data.photo);
                     } else {
                         $('.md3 .photo_show').attr('src', defaultImage);

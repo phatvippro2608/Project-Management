@@ -91,9 +91,17 @@ class UploadFileController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        $request->validate([
-            'photo' => 'nullable|file|max:1048576', // 10MB
-        ]);
+        try {
+            $request->validate([
+                'photo' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:1048576', // 1MB
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation failure
+            return response()->json([
+                'status' => 422,
+                'message' => 'File is not Image File please choose again!',
+            ], 422);
+        }
         $photo = $request->file('photo');
         $employee_id = $request->input('employee_id');
         $directoryPath = public_path('uploads/' . $employee_id);
