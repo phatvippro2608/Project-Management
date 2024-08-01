@@ -23,7 +23,9 @@ class PortfolioController extends Controller
         if (!$existsCode) {
             return abort(404); // Trả về trang 404 nếu không tìm thấy mã nhân viên
         }
-        return view('auth.portfolio.portfolioHasId', ['id' => $id]);
+        $employee = DB::table('employees')->where('employee_code', $id)->first();
+        $dateOfJoin = DB::table('job_certificates')->where('employee_id', $employee->employee_id)->latest('job_certificate_id')->first();
+        return view('auth.portfolio.portfolioHasId', ['employee' => $employee, 'dateOfJoin' => $dateOfJoin]);
     }
 
 
