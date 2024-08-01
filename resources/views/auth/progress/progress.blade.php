@@ -75,7 +75,7 @@
             id: 2,
             label: 'With great power comes great responsibility',
             user: '<a href="https://www.google.com/search?q=Peter+Parker" target="_blank" style="color:#0077c0;">Peter Parker</a>',
-            parentId: 1,
+            parentId: 51,
             start: getDate(-24 * 4),
             duration: 4 * 24 * 60 * 60 * 1000,
             progress: 50,
@@ -89,7 +89,7 @@
             },
         },
         {
-            id: 3,
+            id: 5_1,
             label: 'Courage is being scared to death, but saddling up anyway.',
             user: '<a href="https://www.google.com/search?q=John+Wayne" target="_blank" style="color:#0077c0;">John Wayne</a>',
             start: getDate(-24 * 3),
