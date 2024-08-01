@@ -112,7 +112,6 @@
                         <th class="text-center">Direct Department</th>
                     @endif
                     @if ($data['permission'] == 4)
-                        <th class="text-center">Direct Department</th>
                         <th class="text-center">Direct Manager</th>
                     @endif
                 </tr>
@@ -129,16 +128,16 @@
                             <div class="progress">
                                 @if ($item->progress == 0)
                                     <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
-                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                                        Chưa xét 
-                                    </div>
-                                @elseif($item->progress == 1)
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
-                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt cấp 1
-                                    </div>
-                                @elseif($item->progress == 2)
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                    aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                    Chưa xét
+                            </div>
+                            @elseif($item->progress == 1)
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                     aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                    Đã duyệt cấp 1
+                                </div>
+                            @elseif($item->progress == 2)
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
                                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
                                         Đã duyệt xong
                                     </div>
@@ -156,14 +155,6 @@
                             </td>
                         @endif
                         @if ($data['permission'] == 4)
-                            <td class="text-center">
-                                <button
-                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="">
-                                    <i class="bi bi-check-circle"></i>
-                                    Chưa duyệt
-                                </button>
-                            </td>
                             <td class="text-center">
                                 <button
                                     class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
