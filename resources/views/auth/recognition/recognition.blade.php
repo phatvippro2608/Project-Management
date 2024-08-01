@@ -153,6 +153,8 @@
         let form = document.getElementById('recognitionForm');
         let formData = new FormData(form);
 
+        console.log(formData);
+
         fetch('{{ route('recognition.add') }}', {
             method: 'POST',
             headers: {

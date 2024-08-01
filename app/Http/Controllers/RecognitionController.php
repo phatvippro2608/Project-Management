@@ -28,9 +28,9 @@ class RecognitionController extends Controller
     public function add(Request $request)
     {
         $validated = $request->validate([
-            'employee_id' => 'required',
-            'recognition_type_id' => 'required',
-            'description' => 'required',
+            'employee_id' => 'required|string',
+            'recognition_type_id' => 'required|string',
+            'description' => 'required|string',
         ]);
 
         try {
