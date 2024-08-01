@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class AccountModel extends Model
 {
     use HasFactory;
-    protected $table = 'account';
+    protected $table = 'accounts';
     protected $primaryKey = 'account_id';
 
 

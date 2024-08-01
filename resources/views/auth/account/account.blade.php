@@ -243,12 +243,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed");
                         }
                     }
                 });
@@ -267,6 +267,7 @@
             $('.auto_pwd').prop('checked',false);
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
+            $('.at2').text('Update')
             $('.md1').modal('show');
 
             $('.at2').click(function () {
@@ -300,12 +301,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed");
                         }
                     }
                 });
@@ -330,12 +331,12 @@
                 success: function (result) {
                     result = JSON.parse(result);
                     if (result.status === 200) {
-                        alert(result.message);
+                        toastr.success(result.message, "Successfully");
                         setTimeout(function () {
                             window.location.reload();
                         }, 500);
                     } else {
-                        alert(result.message);
+                        toastr.success(result.message, "Failed");
                     }
                 }
             });

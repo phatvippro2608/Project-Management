@@ -29,15 +29,7 @@ class AccountController extends Controller
 
         $keyword = trim($keyword);
         $keyword = $this->removeVietnameseAccents($keyword);
-        $account = EmployeeModel::query()
-            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->where('last_name', 'like', "%{$keyword}%")
-                    ->orWhere('first_name', 'like', "%{$keyword}%")
-                    ->orWhere('username', 'like', "%{$keyword}%")
-                    ->orWhere('employee_code', 'like', "%{$keyword}%");
-            })
-            ->paginate($perPage);
+        $account = AccountModel::getAll($keyword);
 
         $sql = "SELECT * from employees";
         $employees = DB::select($sql);
@@ -112,16 +104,16 @@ class AccountController extends Controller
 
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
-                return self::status('Đã quá số lượng Super Admin', 500);
+                return self::status('Exceeded the number of super admins', 500);
             };
         }
 
         if (AccountModel::where('employee_id', $employee_id)->count() >= 1) {
-            return self::status('Tài khoản đã tồn tại', 500);
+            return self::status('Existed account', 500);
         };
 
         if ($employee_id == -1) {
-            return self::status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
+            return self::status('Please select a employee', 500);
         }
 
         if (AccountModel::where('email', $email)->count() >= 1) {
@@ -129,7 +121,7 @@ class AccountController extends Controller
         }
 
         if (AccountModel::where('username', $username)->count() >= 1) {
-            return self::status('Username đã tồn tại', 500);
+            return self::status('Existed Username', 500);
         }
 
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
@@ -142,9 +134,9 @@ class AccountController extends Controller
             'permission' => $permission,
         ];
         if (AccountModel::insert($i)) {
-            return self::status('Thêm thành công', 200);
+            return self::status('Added account', 200);
         };
-        return self::status('Thêm thất bại', 500);
+        return self::status('Failed to add account', 500);
     }
 
     function update(Request $request)
@@ -158,7 +150,7 @@ class AccountController extends Controller
         $permission = $request->input('permission');
 
         if (AccountModel::where('employee_id', $employee_id)->where('account_id', '!=', $account_id)->count() >= 1) {
-            return self::status('Tài khoản đã tồn tại', 500);
+            return self::status('Existed Account', 500);
         };
 //        $auto_pwd = $request->input('auto_pwd');
 //
@@ -168,7 +160,7 @@ class AccountController extends Controller
 
         if ($permission == 1) {
             if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
-                return self::status('Đã quá số lượng Super Admin', 500);
+                return self::status('Exceeded the number of super admins', 500);
             };
         }
 
@@ -182,58 +174,18 @@ class AccountController extends Controller
         if (!empty($password))
             $i['password'] = $hashPass;
         if (AccountModel::where('account_id', $account_id)->update($i)) {
-            return self::status('Cập nhật thành công', 200);
+            return self::status('Updated account', 200);
         };
-        return self::status('Cập nhật thất bại', 500);
+        return self::status('Failed to update', 500);
     }
 
     function delete(Request $request)
     {
         $account_id = $request->input('account_id');
         if (AccountModel::where('account_id', $account_id)->delete()) {
-            return self::status('Xóa tài khoản thành công', 200);
+            return self::status('Deleted account', 200);
         };
-        return self::status('Xóa thất bại', 500);
-    }
-
-
-    function setLastActive(Request $request)
-    {
-        $account_id = $request->input('account_id');
-        $i = [
-            'last_active' => Carbon::now()
-        ];
-        if(AccountModel::where('account_id',$account_id)->update($i)){
-            return self::status('Cập nhật thành công', 200);
-        };
-        return self::status('Cập nhật thất bại', 500);
-    }
-
-    static function timeAgo($timestamp)
-    {
-        $timeDifference = time() - strtotime($timestamp);
-
-        if ($timeDifference < 1) {
-            return 'Just now';
-        }
-
-        $condition = array(
-            12 * 30 * 24 * 60 * 60 => 'year',
-            30 * 24 * 60 * 60 => 'month',
-            24 * 60 * 60 => 'day',
-            60 * 60 => 'hour',
-            60 => 'minute',
-            1 => 'second'
-        );
-
-        foreach ($condition as $secs => $str) {
-            $d = $timeDifference / $secs;
-
-            if ($d >= 1) {
-                $t = round($d);
-                return 'Active ' . $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ago';
-            }
-        }
+        return self::status('Failed to delete account', 500);
     }
     function demoView()
     {
@@ -304,7 +256,7 @@ class AccountController extends Controller
                 $history = DB::table('login_history')->where(['username' => $employee->username])->orderBy('created_at', 'desc')->get();
         }
 
-        return view('auth.accounts.account-history', ['history' => $history]);
+        return view('auth.account.account-history', ['history' => $history]);
     }
 
     function clearHistory()
