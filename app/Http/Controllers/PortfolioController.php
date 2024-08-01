@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Composer\XdebugHandler\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,8 +17,14 @@ class PortfolioController extends Controller
         });
         return view('auth.portfolio.portfolio', ['sql' => $sql]);
     }
-    public function getViewHasId($id) {
-        return view('auth.portfolio.portfolioHasId', ['id'=>$id]);
+    public function getViewHasId($id)
+    {
+        $existsCode = DB::table('employees')->where('employee_code', $id)->exists();
+        if (!$existsCode) {
+            return abort(404); // Trả về trang 404 nếu không tìm thấy mã nhân viên
+        }
+        return view('auth.portfolio.portfolioHasId', ['id' => $id]);
     }
+
 
 }
