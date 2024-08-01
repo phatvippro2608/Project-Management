@@ -240,18 +240,18 @@ use App\StaticString; ?>
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
                             ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                            ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
                             ->where(
                             'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
-                $info = \Illuminate\Support\Facades\DB::table('job_detail')
-                            ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                $info = \Illuminate\Support\Facades\DB::table('job_details')
+                            ->join('job_positions', 'job_details.id_job_positions', '=', 'job_positions.id_position')
                             ->where(
-                                'job_detail.employee_id', $data->employee_id
+                                'job_details.employee_id', $data->employee_id
                             )
                             ->first();
             @endphp
@@ -449,7 +449,7 @@ use App\StaticString; ?>
         @php
             $data = \Illuminate\Support\Facades\DB::table('accounts')
                 ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
                 ->where(
                     'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
