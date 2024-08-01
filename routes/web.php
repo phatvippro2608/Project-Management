@@ -221,7 +221,7 @@ Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttenda
 
 // recognition
 Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
-    Route::get('', [RecognitionController::class, 'getView'])->name('recognition');
+    Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
 });
 

@@ -29,6 +29,7 @@ class RecognitionModel extends Model
     protected $fillable = [
         'employee_id',
         'recognition_type_id',
-        'description'
+        'description',
+        'recognition_date'
     ];
 }
