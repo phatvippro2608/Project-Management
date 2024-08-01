@@ -26,7 +26,7 @@ class EmployeesController extends Controller
         $keyword = $this->removeVietnameseAccents($keyword);
 
         $data = EmployeeModel::query()
-            ->join('contacts', 'contacts.contact_id', '=', 'employees.id_contact')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -54,7 +54,7 @@ class EmployeesController extends Controller
         $dataContact = [
             'phone_number' => $request->input('phone_number'),
         ];
-        $id_contact = DB::table('contacts')->insertGetId($dataContact);
+        $contact_id = DB::table('contacts')->insertGetId($dataContact);
 
         $dataEmployee = [
             'employee_code'=>$request->input('employee_code'),
@@ -67,7 +67,7 @@ class EmployeesController extends Controller
             'military_service' =>$request->input('military_service'),
             'date_of_birth'=> $request->date_of_birth,
             'national'=>$request->input('national'),
-            'id_contact'=>$id_contact,
+            'contact_id'=>$contact_id,
             'fired' => 'false'
         ];
         if(DB::table('employees')->where('employee_code',$request->input('employee_code'))->exists()){
@@ -99,7 +99,7 @@ class EmployeesController extends Controller
         });
 
         $employee_id = $request->employee_id;
-        $id_contact = $request->id_contact;
+        $contact_id = $request->contact_id;
 
         DB::beginTransaction();
         try {
@@ -123,13 +123,13 @@ class EmployeesController extends Controller
                 DB::table('passport')->insert($dataPassport);
             }
 
-            $contactExists = DB::table('contacts')->where('id_contact', $id_contact)->exists();
+            $contactExists = DB::table('contacts')->where('contact_id', $contact_id)->exists();
             if ($contactExists) {
                 DB::table('contacts')
-                    ->where('id_contact', $id_contact)
+                    ->where('contact_id', $contact_id)
                     ->update($dataContact);
             } else {
-                $dataContact['id_contact'] = $id_contact;
+                $dataContact['contact_id'] = $contact_id;
                 DB::table('contacts')->insert($dataContact);
             }
 
@@ -177,9 +177,9 @@ class EmployeesController extends Controller
         $data_medical_checkup = DB::table('medical_checkup')
             ->where('employee_id',$employee_id)->first();
 
-        $id_contact = DB::table('employees')->where('employee_id',$employee_id)->value('id_contact');
+        $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
         $data_contact = DB::table('contacts')
-            ->where('id_contact',$id_contact)->first();
+            ->where('contact_id',$contact_id)->first();
         $data_job_detail = DB::table('job_detail')
             ->where('employee_id',$employee_id)
             ->first();
@@ -357,7 +357,7 @@ class EmployeesController extends Controller
             try {
                 DB::beginTransaction();
 
-                $id_contact = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
+                $contact_id = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
 
                 $data_employee = [
                     'employee_code' => $employee_code,
@@ -366,7 +366,7 @@ class EmployeesController extends Controller
                     'en_name' => $en_name,
                     'photo' => null,
                     'fired' => "false",
-                    'id_contact' => $id_contact,
+                    'contact_id' => $contact_id,
                 ];
                 $employee_id = DB::table('employees')->insertGetId($data_employee);
 

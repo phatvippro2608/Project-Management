@@ -38,29 +38,20 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-6 m-0">
-                        <form class="input-group ms-sm-auto w-50" action="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
-                            <button type="submit" class="input-group-text bg-transparent border-secondary rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>
-                            <input name="keyw" type="text" class="form-control border-start-0 border-secondary rounded-end-4" value="{{ request()->input('keyw') }}" placeholder="Search Employee">
-                        </form>
-                    </div>
                 </div>
                 <table id="employeesTable" class="table table-hover table-borderless">
                     <thead class="table-light">
-                    <tr>
-                        <th>Employee Code</th>
-                        <th class="text-center">Photo</th>
-                        <th>Full Name</th>
-                        <th>English Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th class="text-center">Photo</th>
+                            <th>Full Name</th>
+                            <th>English Name</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody id="employeesTableBody">
-                        <tbody>
                         @foreach($data as $item)
                             @if($item->fired == "false")
                                 <tr>
@@ -99,16 +90,7 @@
                                 </tr>
                             @endif
                         @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer">
-                @if ($data->hasPages())
-                    <div class="">
-                        {{$data->links('auth.component.pagination')}}
-                    </div>
-                @endif
+                </table>
             </div>
         </div>
     </section>
