@@ -123,7 +123,8 @@
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
                             </button>`)
-                }
+                },
+                responsive: true
             });
 
             $('#addDepartmentForm').submit(function (e) {

@@ -19,7 +19,7 @@
             <div class="card-body">
                 <div class="row gx-3 my-3">
                     <div class="col-md-6 m-0">
-                        <div class="btn btn-primary mx-2">
+                        <div class="btn btn-primary me-2">
                             <div class="d-flex align-items-center at1">
                                 <i class="bi bi-file-earmark-plus pe-2"></i>
                                 Add
@@ -38,72 +38,61 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-6 m-0">
-                        <form action="" class="input-group ms-sm-auto w-50">
-                            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>
-                            <input type="text" class="form-control border-start-0 border-secondary-subtle rounded-end-4">
-                        </form>
-                    </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead class="table-light">
-                        <tr>
-                            <th style="width: 10%">Employee Code</th>
-                            <th class="text-center">Photo</th>
-                            <th>Full Name</th>
-                            <th>English Name</th>
-                            <th>Gender</th>
-                            <th>Phone</th>
-                            <th>Action</th>
-                        </tr>
+                <table id="employeesTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Employee Code</th>
+                        <th class="text-center">Photo</th>
+                        <th>Full Name</th>
+                        <th>English Name</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="employeesTableBody">
+                    @foreach($data as $item)
+                        @if($item->fired == "false")
+                            <tr>
+                                <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
+                                @php
+                                    $imageUrl = asset('assets/img/avt.png'); // Default image URL
 
-                        </thead>
-                        <tbody>
-                        @foreach($data as $item)
-                            @if($item->fired == "false")
-                                <tr>
-                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
-                                    @php
-                                        $imageUrl = asset('assets/img/avt.png'); // Default image URL
-
-                                        if($item->photo != null){
-                                            $imagePath = public_path($item->photo);
-                                            if(file_exists($imagePath)) {
-                                                $imageUrl = asset($item->photo);
-                                            }
+                                    if($item->photo != null){
+                                        $imagePath = public_path($item->photo);
+                                        if(file_exists($imagePath)) {
+                                            $imageUrl = asset($item->photo);
                                         }
-                                    @endphp
+                                    }
+                                @endphp
 
-                                    <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
-                                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                    <td>{{$item->en_name}}</td>
-                                    <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
-                                    <td>{{$item->phone_number}}</td>
-                                    <td>
-                                            <?php
-                                            $id = $item->id_employee;
-                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                            $item->email = \Illuminate\Support\Facades\DB::table('account')->where('id_employee', $id)->value('email');
-                                            ?>
-                                        <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        |
-                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
+                                <td>{{$item->last_name . ' ' . $item->first_name}}</td>
+                                <td>{{$item->en_name}}</td>
+                                <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
+                                <td>{{$item->phone_number}}</td>
+                                <td>
+                                        <?php
+                                        $id = $item->id_employee;
+                                        $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                        $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                        $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                        $item->email = \Illuminate\Support\Facades\DB::table('account')->where('id_employee', $id)->value('email');
+                                        ?>
+                                    <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    |
+                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
             <div class="card-footer">
                 @if ($data->hasPages())
@@ -711,6 +700,17 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#employeesTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
+
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
         let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
