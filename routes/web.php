@@ -15,6 +15,11 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
+
+use App\Http\Controllers\ProposalApplicationController;
+
+use App\Http\Controllers\ProposalTypesController;
+
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\DisciplinaryController;
@@ -91,7 +96,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
 
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
-
     });
 
     Route::group(['prefix' => '/profile'], function () {
@@ -143,88 +147,89 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
     Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
-});
 
-Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
-Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
 
-Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
-Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
-Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
-Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
-Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
-Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
+    Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
+    Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+
+    Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
+    Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
+    Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
+    Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
+    Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
+    Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
 //Progress
-Route::post('/update-item', [ProgressController::class, 'updateItem']);
-Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
-Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
-Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
-Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
-Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
-Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+    Route::post('/update-item', [ProgressController::class, 'updateItem']);
+    Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
+    Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
+    Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+    Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
+    Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+    Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
 
 //Settings
-Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
-Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
+    Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
+    Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
-Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
-Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
-Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
+    Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
+    Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
+    Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
-Route::group(['prefix' => '/project'], function () {
-    Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
-    Route::put('/{id}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'update'])->name('project.update');
-    Route::get('/{id}/budget', '\App\Http\Controllers\ProjectBudgetController@getView')->name('budget');
-    Route::get('/{id}/budget/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editBudget'])->name('budget.edit');
-    Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
-    Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
-    Route::delete('/{project_id}/budget/{cost_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteBudget'])->name('budget.delete');
-    Route::post('/budget/rename-cost-group', [\App\Http\Controllers\ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
-    Route::post('/{id}/budget/create-group', [\App\Http\Controllers\ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
-    Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
-    Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
-    Route::delete('/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
-    Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-    Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-    Route::get('/{id}/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-    Route::delete('/{project_id}/commission/{cost_commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-});
+    Route::group(['prefix' => '/project'], function () {
+        Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+        Route::get('/{id}/budget', [\App\Http\Controllers\ProjectBudgetController::class, 'getView'])->name('budget');
+        Route::get('/{id}/budget/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editBudget'])->name('budget.edit');
+        Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
+        Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
+        Route::delete('/{project_id}/budget/{cost_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteBudget'])->name('budget.delete');
+        Route::post('/budget/rename-cost-group', [\App\Http\Controllers\ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
+        Route::post('/{id}/budget/create-group', [\App\Http\Controllers\ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
+        Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
+        Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
+        Route::delete('/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
+        Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
+        Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
+    });
 
-Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
-    Route::get('teams', [MyXteamController::class, 'getView']);
-    Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
-    Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
-    Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
-
-});
+    Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('teams', [MyXteamController::class, 'getView']);
+        Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
+        Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
+        Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
+    });
 
 //Inventory Management
-Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
+    Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
 //Department
-Route::resource('departments', DepartmentController::class);
-Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
-Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
-Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+    Route::resource('departments', DepartmentController::class);
+    Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
+    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+    Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
 //Attendance
-Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
-Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
-Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
-Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
-Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
-Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+    Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
+    Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
+    Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
+    Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
+    Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
+    Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
-// recognition
-Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
-    Route::get('', [RecognitionController::class, 'getView'])->name('recognition');
-    Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
+//Proposal
+    Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
+        Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
+        Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
+        Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
+        Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
+        Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
+    });
+    Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
+    Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
 });
 
-// disciplinary
-Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
 

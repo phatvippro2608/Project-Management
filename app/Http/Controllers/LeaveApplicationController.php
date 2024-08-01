@@ -62,7 +62,6 @@ class LeaveApplicationController extends Controller
         return response()->json([
             'success' => true,
             "status" => 200,
-            'leave_app' => $leave_app,
             'message' => 'Leave application added successfully',
         ]);
     }

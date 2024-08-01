@@ -20,11 +20,11 @@
                         @php
                             $data = \Illuminate\Support\Facades\DB::table('account')
                                         ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
-                                        ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+                                        ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
                                         ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                                         ->where(
-                                        'account.id_account',
+                                        'account.account_id',
                                         \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                                         )
                                         ->first();
@@ -299,7 +299,6 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-
             let filePhoto = $('.photo')[0].files[0];
             let formData = new FormData();
 

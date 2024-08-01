@@ -19,8 +19,8 @@ class ProfileModel extends Model
             ->join('job_detail', 'employees.employee_id', '=', 'job_detail.employee_id')
             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
             ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
-            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-            ->where('account.id_account', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+            ->where('account.account_id', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
             ->first();
         return ['profiles' => $profiles];
     }
@@ -31,7 +31,7 @@ class ProfileModel extends Model
             "
                 UPDATE employees
                 INNER JOIN job_detail ON employees.employee_id = job_detail.employee_id
-                INNER JOIN contacts ON employees.id_contact = contacts.id_contact
+                INNER JOIN contacts ON employees.contact_id = contacts.contact_id
                 INNER JOIN account ON employees.employee_id = account.employee_id
                 SET
                     employees.first_name = :first_name,
