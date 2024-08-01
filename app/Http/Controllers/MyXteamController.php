@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Services\MyXteamService;
 use Illuminate\Http\Request;
+use App\Mail\ProjectUpdateNotification;
+use Illuminate\Support\Facades\Mail;
 
 class MyXteamController extends Controller
 {
@@ -12,27 +13,6 @@ class MyXteamController extends Controller
     public function __construct(MyXteamService $myXteamService)
     {
         $this->myXteamService = $myXteamService;
-    }
-
-    public function makeRequest($method, $endpoint, $data = [])
-    {
-        try {
-            $response = $this->client->request($method, $this->apiUrl . $endpoint, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                    'Accept' => 'application/json',
-                ],
-                'json' => $data,
-            ]);
-
-            return json_decode($response->getBody(), true);
-        } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                return json_decode($e->getResponse()->getBody(), true);
-            }
-
-            return ['error' => 'Request failed'];
-        }
     }
 
     public function getProjects()
@@ -99,10 +79,22 @@ class MyXteamController extends Controller
             ], 500);
         }
 
+        $taskDetails = $response['Data'];
+
+        $bccEmails = [];
+        foreach ($taskDetails['Followers'] as $user) {
+            $bccEmails[] = $user['Email'];
+        }
+
+        $details = [
+            'message' => '<b>Công việc</b> ' . $taskDetails['TaskName'] . ' đã được cập nhật. <b>Chi tiết: </b>' . $taskDetails['TaskName']
+        ];
+
+        Mail::to('huutho.cse@gmail.com')->bcc($bccEmails)->send(new ProjectUpdateNotification($details));
+
         return response()->json([
             'status' => 'success',
             'message' => 'Task updated successfully!'
         ]);
     }
-
 }
