@@ -19,7 +19,7 @@
             <div class="card-body">
                 <div class="row gx-3 my-3">
                     <div class="col-md-6 m-0">
-                        <div class="btn btn-primary mx-2">
+                        <div class="btn btn-primary me-2">
                             <div class="d-flex align-items-center at1">
                                 <i class="bi bi-file-earmark-plus pe-2"></i>
                                 Add
@@ -47,20 +47,19 @@
                         </form>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead class="table-light">
-                        <tr>
-                            <th style="width: 10%">Employee Code</th>
-                            <th class="text-center">Photo</th>
-                            <th>Full Name</th>
-                            <th>English Name</th>
-                            <th>Gender</th>
-                            <th>Phone</th>
-                            <th>Action</th>
-                        </tr>
-
-                        </thead>
+                <table id="employeesTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Employee Code</th>
+                        <th class="text-center">Photo</th>
+                        <th>Full Name</th>
+                        <th>English Name</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="employeesTableBody">
                         <tbody>
                         @foreach($data as $item)
                             @if($item->fired == "false")
@@ -76,7 +75,6 @@
                                             }
                                         }
                                     @endphp
-
                                     <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
                                     <td>{{$item->last_name . ' ' . $item->first_name}}</td>
                                     <td>{{$item->en_name}}</td>
@@ -702,6 +700,17 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#employeesTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
+
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
         let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
