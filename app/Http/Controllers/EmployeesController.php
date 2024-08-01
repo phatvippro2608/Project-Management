@@ -26,7 +26,7 @@ class EmployeesController extends Controller
         $keyword = $this->removeVietnameseAccents($keyword);
 
         $data = EmployeeModel::query()
-            ->join('contacts', 'contacts.contact_id', '=', 'employees.id_contact')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")

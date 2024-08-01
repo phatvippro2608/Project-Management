@@ -225,7 +225,7 @@ use App\StaticString; ?>
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
                             ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                            ->join('contacts', 'employees.id_contact', '=', 'contacts.contact_id')
+                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
                             ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
