@@ -27,7 +27,6 @@
     <div class="card">
         <div class="card-header">
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
-            <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-file-earmark-fill"></i> Recognition Report</a>
         </div>
         <div class="card-body">
             <table id="recognitionTable" class="display">
@@ -43,15 +42,17 @@
                 </thead>
                 <tbody>
                 @foreach($recognitions as $recognition)
-                    <th scope="col">{{ $recognition->recognition_id }}</th>
-                    <th scope="col">{{ $recognition->employee_code }}</th>
-                    <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
-                    <th scope="col">{{ $recognition->recognition_type_name }}</th>
-                    <th scope="col">{{ $recognition->recognition_date }}</th>
-                    <td>
-                        <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
-                        <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
-                    </td>
+                    <tr>
+                        <th scope="col">{{ $recognition->recognition_id }}</th>
+                        <th scope="col">{{ $recognition->employee_code }}</th>
+                        <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
+                        <th scope="col">{{ $recognition->recognition_type_name }}</th>
+                        <th scope="col">{{ $recognition->recognition_date }}</th>
+                        <td>
+                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
+                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
                 @endforeach
                 </tbody>
             </table>
@@ -90,8 +91,12 @@
                             </select>
                         </div>
                         <div class="col-md-12" style="margin-top: 1rem">
+                            <label>Recognition Date</label>
+                            <input type="date" name="recognition_date" id="recognition_date" class="form-control">
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
                             <label for="recognition_description" class="form-label">Description</label>
-                            <textarea name="recognition_description" id="recognition_description" rows="2" class="form-control"></textarea>
+                            <textarea name="description" id="description" rows="2" class="form-control"></textarea>
                         </div>
                     </div>
                 </form>
@@ -153,6 +158,8 @@
         let form = document.getElementById('recognitionForm');
         let formData = new FormData(form);
 
+        console.log(formData);
+
         fetch('{{ route('recognition.add') }}', {
             method: 'POST',
             headers: {
@@ -160,26 +167,27 @@
             },
             body: formData
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 200) {
-                    toastr.success(data.message, "Lưu thành công");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 500);
-                } else {
-                    let errorMessage = data.message;
-                    if (data.error) {
-                        errorMessage += ': ' + data.error;
-                        console.error('Error:', data.error);  // Log lỗi cụ thể ra console
-                    }
-                    toastr.error(errorMessage, "Thao tác thất bại");
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                toastr.success(data.message, "Lưu thành công");
+                setTimeout(function () {
+                    location.reload();
+                }, 500);
+            } else {
+                // console.log(data);
+                let errorMessage = data.message;
+                if (data.error) {
+                    errorMessage += ': ' + data.error;
+                    console.error('Error:', data.error);  // Log lỗi cụ thể ra console
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
-                toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
-            });
+                toastr.error(errorMessage, "Thao tác thất bại");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+            toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+        });
     });
 </script>
 @endsection
