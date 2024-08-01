@@ -41,53 +41,55 @@ class ProjectBudgetController extends Controller
 
     public function update(Request $request, $id)
 {
-    // Retrieve the project
-    $project = ProjectModel::findOrFail($id);
-
     // Validate the request
-    $validatedData = Validator::make($request->all(), [
-        'project_name' => 'required|string|max:255',
+    $request->validate([
+        'project_name' => 'nullable|string',
         'project_description' => 'nullable|string',
-        'project_address' => 'nullable|string|max:255',
-        'project_contract_id' => 'nullable|integer|exists:contracts,contract_id',
-        'project_contact_name' => 'nullable|string|max:255',
-        'project_contact_website' => 'nullable|string|max:255',
-        'project_contact_phone' => 'nullable|string|max:255',
-        'project_contact_address' => 'nullable|string|max:255',
-        'project_date_start' => 'required|date',
-        'project_date_end' => 'required|date|after_or_equal:project_date_start',
+        'project_address' => 'nullable|string',
+        'project_contact_name' => 'nullable|string',
+        'project_contact_website' => 'nullable|string',
+        'project_contact_phone' => 'nullable|string',
+        'project_contact_address' => 'nullable|string',
+        'project_date_start' => 'nullable|date',
+        'project_date_end' => 'nullable|date',
+        'project_contract_id' => 'nullable|exists:contracts,contract_id',
+        'project_contract_amount' => 'nullable|numeric',
+        'project_price_contingency' => 'nullable|numeric',
+        'contract_id' => 'nullable|integer',
+        'project_main_contractor' => 'nullable|string',
     ]);
 
-    if ($validatedData->fails()) {
-        // Return validation errors
-        return response()->json([
-            'errors' => $validatedData->errors()
-        ], 422);
-    }
-
-    // Prepare data to be updated
-    $data = [
-        'project_name' => $validatedData->validated()['project_name'],
-        'project_description' => $validatedData->validated()['project_description'],
-        'project_address' => $validatedData->validated()['project_address'],
-        'project_contract_id' => $validatedData->validated()['project_contract_id'] ?? null,
-        'project_contact_name' => $validatedData->validated()['project_contact_name'],
-        'project_contact_website' => $validatedData->validated()['project_contact_website'],
-        'project_contact_phone' => $validatedData->validated()['project_contact_phone'],
-        'project_contact_address' => $validatedData->validated()['project_contact_address'],
-        'project_date_start' => $validatedData->validated()['project_date_start'],
-        'project_date_end' => $validatedData->validated()['project_date_end'],
-    ];
-
     try {
-        // Update the project
-        $project->update($data);
+        // Update the project using raw SQL
+        DB::table('projects')->where('project_id', $id)->update([
+            'project_name' => $request->input('project_name'),
+            'project_description' => $request->input('project_description'),
+            'project_address' => $request->input('project_address'),
+            'project_contact_name' => $request->input('project_contact_name'),
+            'project_contact_website' => $request->input('project_contact_website'),
+            'project_contact_phone' => $request->input('project_contact_phone'),
+            'project_contact_address' => $request->input('project_contact_address'),
+            'project_date_start' => $request->input('project_date_start'),
+            'project_date_end' => $request->input('project_date_end'),
+            'project_contract_id' => $request->input('project_contract_id'),
+            'project_contract_amount' => $request->input('project_contract_amount'),
+            'project_price_contingency' => $request->input('project_price_contingency'),
+            'contract_id' => $request->input('contract_id'),
+            'project_main_contractor' => $request->input('project_main_contractor'),
+        ]);
 
-        return response()->json(['success' => 'Project updated successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Project updated successfully!',
+        ]);
     } catch (\Exception $e) {
-        // Log the error and return a generic error message
-        \Log::error('Project update error: ' . $e->getMessage());
-        return response()->json(['error' => 'An error occurred while updating the project'], 500);
+        // Log the error and return an error response
+        \Log::error('Error updating project: ' . $e->getMessage());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error updating project.',
+        ]);
     }
 }
 
@@ -114,9 +116,11 @@ public function showProjectDetail($id)
         'data' => $data,
         'id' => $id,
         'total' => $total,
-        'contracts' => $contracts
+        'contracts' => $contracts,
+        'contractsJson' => $contracts->toJson()
     ]);
 }
+
 
     public function editBudget($id)
     {

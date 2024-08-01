@@ -77,7 +77,7 @@
                                 </tr>
                                 <tr>
                                     <th>Main Contractor</th>
-                                    <td>
+                                    <td id="project_contractor">
                                         @php
                                             $contract = $contracts->firstWhere('contract_id', $data->project_contract_id);
                                         @endphp
@@ -148,7 +148,7 @@
                                         {{ $contract->contract_name }}
                                     </option>
                                 @endforeach
-                        </select>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="edit_project_contact_name" class="form-label">Contact Name</label>
@@ -182,59 +182,63 @@
     </div>
 
     <script>
-        document.getElementById('editProjectForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    const id = "{{ $id }}";
-    const url = "{{ route('project.update', ['id' => $id]) }}";
+    // Assuming contracts data is passed as JSON
+    const contractors = {!! $contractsJson !!};
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'X-HTTP-Method-Override': 'PUT',
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update the UI with the new values
-            document.getElementById('project_name').textContent = formData.get('project_name');
-            document.getElementById('project_description').textContent = formData.get('project_description');
-            document.getElementById('project_address').textContent = formData.get('project_address');
-            
-            // Update the Main Contractor field
-            const contractorId = formData.get('project_contract_id');
-            const contractorName = [...document.getElementById('edit_project_main_contractor').options].find(option => option.value === contractorId)?.text;
-            document.querySelector('#project-info td:nth-child(2)').textContent = contractorName || 'Not Available';
+    document.getElementById('editProjectForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            document.getElementById('project_contact_name').textContent = formData.get('project_contact_name');
-            document.getElementById('project_contact_website').textContent = formData.get('project_contact_website');
-            document.getElementById('project_contact_phone').textContent = formData.get('project_contact_phone');
-            document.getElementById('project_contact_address').textContent = formData.get('project_contact_address');
-            document.getElementById('project_date_start').textContent = formData.get('project_date_start');
-            document.getElementById('project_date_end').textContent = formData.get('project_date_end');
-            
-            // Close the modal
-            const modal = document.getElementById('editProjectModal');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-            toastr.success('Update Successful!');
-        } else if (data.errors) {
-            // Handle validation errors
-            console.log(data.errors);
-            alert('Validation errors occurred. Please check the form fields.');
-        } else {
-            alert('Error updating project');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while updating the project.');
+        const form = event.target;
+        const formData = new FormData(form);
+        const id = "{{ $id }}";
+        const url = "{{ route('project.update', ['id' => $id]) }}";
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-HTTP-Method-Override': 'PUT',
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the UI with the new values
+                document.getElementById('project_name').textContent = formData.get('project_name');
+                document.getElementById('project_description').textContent = formData.get('project_description');
+                document.getElementById('project_address').textContent = formData.get('project_address');
+
+                // Update the Main Contractor field
+                const contractorId = formData.get('project_contract_id');
+                const contractor = contractors.find(c => c.contract_id == contractorId);
+                document.getElementById('project_contractor').textContent = contractor ? contractor.contract_name : 'Not Available';
+
+                document.getElementById('project_contact_name').textContent = formData.get('project_contact_name');
+                document.getElementById('project_contact_website').textContent = formData.get('project_contact_website');
+                document.getElementById('project_contact_phone').textContent = formData.get('project_contact_phone');
+                document.getElementById('project_contact_address').textContent = formData.get('project_contact_address');
+                document.getElementById('project_date_start').textContent = formData.get('project_date_start');
+                document.getElementById('project_date_end').textContent = formData.get('project_date_end');
+                
+                // Close the modal
+                const modal = document.getElementById('editProjectModal');
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                modalInstance.hide();
+                toastr.success('Update Successful!');
+            } else if (data.errors) {
+                // Handle validation errors
+                console.log(data.errors);
+                alert('Validation errors occurred. Please check the form fields.');
+            } else {
+                alert('Error updating project');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the project.');
+        });
     });
-});
-    </script>
+</script>
+
 @endsection
