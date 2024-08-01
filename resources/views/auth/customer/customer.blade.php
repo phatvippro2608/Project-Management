@@ -262,7 +262,7 @@
 @section('script')
     <script>
         $('.btn-add').click(function () {
-            $('.md1 .modal-title').text('Add New Team');
+            $('.md1 .modal-title').text('Add New Customer');
             $('.md1').modal('show');
 
             $('.at1').click(function () {

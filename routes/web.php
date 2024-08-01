@@ -63,6 +63,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
         Route::put('/add', 'App\Http\Controllers\CustomerController@add');
+
+        Route::get('/update', 'App\Http\Controllers\CustomerController@getUpdateView');
         Route::post('/update', 'App\Http\Controllers\CustomerController@update');
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
     });
