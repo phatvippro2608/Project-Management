@@ -67,13 +67,10 @@
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
                                                            data="{{ $item->id_account }}"></i>
                                                     </a>
-                                                    <a class=" key">
-                                                        <i class="bi bi-key ic-key ic-btn"
-                                                           data="{{ $item->id_account }}"></i>
-                                                    </a>
                                                 </div>
-                                                <img src="http://ventech.local/assets/img/profile-img.jpg" alt=""
-                                                     class="account-photo rounded-circle p-0 m-0">
+                                                <img src="{{ $item->photo ? asset($item->photo) : asset('assets/img/not-found.svg') }}" alt=""
+                                                     class="account-photo rounded-circle p-0 m-0"
+                                                     onerror="this.onerror=null; this.src='{{ asset('img/default.jpg') }}'">
                                             </div>
 
                                         </td>
@@ -98,7 +95,7 @@
                                             {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-                                            Active 16 hours ago
+                                            {{\App\Http\Controllers\AccountController::timeAgo($item->last_active)}}
                                         </td>
                                         <td class="text-center">
                                             16 years ago

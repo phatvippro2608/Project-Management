@@ -1,6 +1,7 @@
+var crsf = '';
+var account_id = '';
 (function() {
   "use strict";
-
   /**
    * Easy selector helper function
    */
@@ -93,3 +94,5 @@
     onscroll(document, toggleBacktotop)
   }
 })();
+
+

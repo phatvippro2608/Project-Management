@@ -30,6 +30,7 @@ Route::group(['prefix'=>'/', 'middleware' => 'isLogin'], function() {
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
+        Route::post('/last-active', 'App\Http\Controllers\AccountController@setLastActive');
     });
 
 

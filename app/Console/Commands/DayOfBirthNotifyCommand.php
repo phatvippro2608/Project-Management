@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Models\EmployeeModel;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class DayOfBirthNotifyCommand extends Command
 {
@@ -26,6 +28,13 @@ class DayOfBirthNotifyCommand extends Command
      */
     public function handle()
     {
-        EmployeeModel::where('date_of_birth','>',0)->get();
+        $currentMonth = Carbon::now()->month;
+        $currentDay = Carbon::now()->day;
+
+        $employees = EmployeeModel::whereRaw('MONTH(date_of_birth) = ?', [$currentMonth])
+            ->whereRaw('DAY(date_of_birth) = ?', [$currentDay])
+            ->get();
+
+        Log::info($employees);
     }
 }
