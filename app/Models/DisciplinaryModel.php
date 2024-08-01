@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TeamModel extends Model
+class DisciplinaryModel extends Model
 {
     use HasFactory;
-    protected $table = 'teams';
-    protected $primaryKey = 'id_team';
+    protected $table = 'disciplinaries';
 }

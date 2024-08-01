@@ -4322,37 +4322,6 @@
     delay: 5000
   };
 
-  /**
-   * Class definition
-   */
-
-  function set_last_active() {
-      const host = window.location.host;
-      const domain = window.location.hostname;
-      $.ajax({
-          url: `http://${host}/account/last-active`, // Adjust this URL to match your route
-          type: "POST",
-          headers: {
-              'X-CSRF-TOKEN': crsf
-          },
-          data: {
-              'id_account': account_id
-          },
-          success: function (result) {
-              console.log('Last active time updated');
-          }
-      });
-  }
-
-    function initializeSetLastActive(csrfToken, accountId) {
-        set_last_active(csrfToken, accountId);
-        setInterval(() => {
-            set_last_active(csrfToken, accountId);
-        }, 300000);
-    }
-    setTimeout(()=>{
-        initializeSetLastActive();
-    },2000)
   class Toast extends BaseComponent {
     constructor(element, config) {
       super(element, config);
