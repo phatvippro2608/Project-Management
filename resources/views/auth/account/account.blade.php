@@ -68,7 +68,12 @@
                                                            data="{{ $item->id_account }}"></i>
                                                     </a>
                                                 </div>
+                                                <img src="{{ $item->photo ? asset($item->photo) : asset('assets/img/not-found.svg') }}" alt=""
+                                                     class="account-photo rounded-circle p-0 m-0"
+                                                     onerror="this.onerror=null; this.src='{{ asset('img/default.jpg') }}'">
+
                                                 <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
+
                                             </div>
 
                                         </td>
@@ -93,7 +98,11 @@
                                             {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-                                            {{$item->updated_at}}
+
+                                            {{\App\Http\Controllers\AccountController::timeAgo($item->last_active)}}
+                                        </td>
+                                        <td class="text-center">
+                                            16 years ago
                                         </td>
                                     </tr>
                                 @endforeach

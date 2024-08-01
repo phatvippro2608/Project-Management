@@ -50,6 +50,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
 
+        Route::post('/last-active', 'App\Http\Controllers\AccountController@setLastActive');
+
+
 
         Route::delete('/clear-history', 'App\Http\Controllers\AccountController@clearHistory');
 
