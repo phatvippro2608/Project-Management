@@ -45,7 +45,7 @@ class AccountController extends Controller
 
     function position(Request $request)
     {
-        $request->session()->put(StaticString::POSITION, $request->input('9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE'));
+        $request->session()->put(StaticString::POSITION, $request->input('position'));
     }
 
     function getPosition(Request $request)
