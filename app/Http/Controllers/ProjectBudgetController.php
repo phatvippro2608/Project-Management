@@ -433,4 +433,49 @@ public function exportCsv($id)
             return response()->json(['success' => false, 'message' => 'Failed to delete cost commission item.']);
         }
     }
+    public function updateCommission(Request $request, $project_id, $commission_id)
+{
+    dd($request);
+    // Validate the incoming request data
+    $validated = $request->validate([
+        'description' => 'required|string|max:255',
+        'amount' => 'required|numeric',
+    ]);
+
+    try {
+        // Find the commission by ID
+        $commission = DB::table('project_cost_commissions')->where('commission_id', $commission_id)->first();
+
+        // Check if the commission exists
+        if (!$commission) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Commission not found'
+            ], 404);
+        }
+
+        // Update the commission
+        DB::table('project_cost_commissions')->where('commission_id', $commission_id)->update([
+            'description' => $validated['description'],
+            'amount' => $validated['amount']
+        ]);
+
+        // Return success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Commission updated successfully!'
+        ]);
+    } catch (\Exception $e) {
+        // Log the error for debugging
+        \Log::error('Error updating commission: ' . $e->getMessage());
+
+        // Return a generic error response
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred while updating the commission.'
+        ], 500);
+    }
+}
+
+
 }
