@@ -10,62 +10,60 @@
             </ol>
         </nav>
     </div>
-    <div class="rounded-4">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Employees List</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 m-0">
-                        <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
-                            <i class="bi bi-plus-lg me-2"></i> Add Holiday
-                        </button>
-                        <a id="leaveApplicationBtn"
-                           class="btn btn-secondary"
-                           href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-                        >
-                            <i class="bi bi-list me-2"></i>Leave Application
-                        </a>
-                    </div>
-                </div>
-                <table id="holidaysTable" class="table table-hover table-borderless">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Days</th>
-                            <th>Year</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($holidays as $holiday)
-                        <tr>
-                            <td>{{ $holiday->name }}</td>
-                            <td>{{ $holiday->start_date }}</td>
-                            <td>{{ $holiday->end_date }}</td>
-                            <td>{{ $holiday->days }}</td>
-                            <td>{{ $holiday->year }}</td>
-                            <td>
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="{{ $holiday->id }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                |
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                    data-id="{{ $holiday->id }}">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
+                <i class="bi bi-plus-lg me-2"></i> Add Holiday
+            </button>
+            <a id="leaveApplicationBtn"
+               class="btn btn-secondary"
+               href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
+            >
+                <i class="bi bi-list me-2"></i>Leave Application
+            </a>
+        </div>
+    </div>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Employees List</div>
+        </div>
+        <div class="card-body">
+            <table id="holidaysTable" class="table table-hover table-borderless">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Days</th>
+                        <th>Year</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach ($holidays as $holiday)
+                    <tr>
+                        <td>{{ $holiday->name }}</td>
+                        <td>{{ $holiday->start_date }}</td>
+                        <td>{{ $holiday->end_date }}</td>
+                        <td>{{ $holiday->days }}</td>
+                        <td>{{ $holiday->year }}</td>
+                        <td>
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="{{ $holiday->id }}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            |
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                data-id="{{ $holiday->id }}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 

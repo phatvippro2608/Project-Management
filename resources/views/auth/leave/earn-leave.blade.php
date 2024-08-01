@@ -10,38 +10,36 @@
             </ol>
         </nav>
     </div>
-    <div class="rounded-4">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Earn Balance</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 m-0">
-                        <button class="btn btn-primary" id="addApplicationBtn" data-bs-toggle="modal" data-bs-target="#addApplicationModal">
-                            <i class="bi bi-plus-lg me-2"></i> Assign Earned Leave
-                        </button>
-                    </div>
-                </div>
-                <table id="applicationTable" class="table table-borderless table-hover">
-                    <thead class="table-light">
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <button class="btn btn-primary" id="addApplicationBtn" data-bs-toggle="modal" data-bs-target="#addApplicationModal">
+                <i class="bi bi-plus-lg me-2"></i> Assign Earned Leave
+            </button>
+        </div>
+    </div>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Earn Balance</div>
+        </div>
+        <div class="card-body">
+            <table id="applicationTable" class="table table-borderless table-hover">
+                <thead class="table-light">
+                <tr>
+                    <th class="text-start">Employee Pin</th>
+                    <th>Employee Name</th>
+                    <th>Total Hour</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach ($earn_leave as $item)
                     <tr>
-                        <th class="text-start">Employee Pin</th>
-                        <th>Employee Name</th>
-                        <th>Total Hour</th>
+                        <td class="text-start">{{$item->employee_code}}</td>
+                        <td>{{$item->employee_name}}</td>
+                        <td>{{$item->totalhour}} hour</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($earn_leave as $item)
-                        <tr>
-                            <td class="text-start">{{$item->employee_code}}</td>
-                            <td>{{$item->employee_name}}</td>
-                            <td>{{$item->totalhour}} hour</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+                @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 

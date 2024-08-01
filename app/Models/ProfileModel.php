@@ -14,13 +14,13 @@ class ProfileModel extends Model
 
     function getProfile()
     {
-        $profiles = DB::table('account')
-            ->join('employees', 'employees.employee_id', '=', 'account.employee_id')
+        $profiles = DB::table('accounts')
+            ->join('employees', 'employees.employee_id', '=', 'accounts.employee_id')
             ->join('job_detail', 'employees.employee_id', '=', 'job_detail.employee_id')
             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
             ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
             ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-            ->where('account.account_id', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+            ->where('accounts.account_id', \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
             ->first();
         return ['profiles' => $profiles];
     }
@@ -32,7 +32,7 @@ class ProfileModel extends Model
                 UPDATE employees
                 INNER JOIN job_detail ON employees.employee_id = job_detail.employee_id
                 INNER JOIN contacts ON employees.contact_id = contacts.contact_id
-                INNER JOIN account ON employees.employee_id = account.employee_id
+                INNER JOIN account ON employees.employee_id = accounts.employee_id
                 SET
                     employees.first_name = :first_name,
                     employees.last_name = :last_name,
@@ -40,8 +40,8 @@ class ProfileModel extends Model
                         job_detail.id_job_country = :country_name,
                     contacts.permanent_address = :permanent_address,
                     contacts.phone_number = :phone_number,
-                    account.email = :email
-                WHERE account.employee_id = :employee_id
+                    accounts.email = :email
+                WHERE accounts.employee_id = :employee_id
            ";
 
         $par = [

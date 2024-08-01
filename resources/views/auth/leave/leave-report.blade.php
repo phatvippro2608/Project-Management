@@ -2,7 +2,7 @@
 
 @section('contents')
     <style>
-        #leavereportsTable tbody tr:last-child{
+        tr td:last-child{
             text-align: center;
         }
     </style>
@@ -15,57 +15,53 @@
             </ol>
         </nav>
     </div>
-    <div class="rounded-4">
-        <div class="card p-2">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Leave Report</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 d-flex m-0">
-                        <form id="searchForm" class="d-flex align-items-center">
-                            @csrf
-                            <div class="form-group me-2">
-                                <label for="reportMonthYear" class="sr-only">Month-Year</label>
-                                <input type="month" class="form-control" id="reportMonthYear" name="report_month_year" required>
-                            </div>
-                            <div class="form-group me-2">
-                                <label for="employee" class="sr-only">Employee</label>
-                                <select class="form-control" id="employee" name="employee_id" required>
-                                    <option value="" selected disabled>Select Employee</option>
-                                    @foreach ($employees as $employee)
-                                        <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
-                                            {{ $employee->first_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
-                        </form>
-                        <a class="btn btn-success mx-2" href="{{route('leave-report.export')}}">
-                            <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export
-                        </a>
-                    </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 d-flex m-0">
+            <form id="searchForm" class="d-flex align-items-center">
+                @csrf
+                <div class="form-group me-2">
+                    <label for="reportMonthYear" class="sr-only">Month-Year</label>
+                    <input type="month" class="form-control" id="reportMonthYear" name="report_month_year" required>
                 </div>
-                <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
-                    <thead>
-                    <tr>
-                        <th>Employee_Code</th>
-                        <th>Employee</th>
-                        <th>Leave Type</th>
-                        <th>Apply Date</th>
-                        <th>Duration</th>
-                        <th>Start Leave</th>
-                        <th>End Leave</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div class="form-group me-2">
+                    <label for="employee" class="sr-only">Employee</label>
+                    <select class="form-control" id="employee" name="employee_id" required>
+                        <option value="" selected disabled>Select Employee</option>
+                        @foreach ($employees as $employee)
+                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                                {{ $employee->first_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
+            </form>
 
-                    </tbody>
-                </table>
-            </div>
+        </div>
+    </div>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Leave Report</div>
+        </div>
+        <div class="card-body">
+            <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Employee_Code</th>
+                    <th>Employee</th>
+                    <th>Leave Type</th>
+                    <th>Apply Date</th>
+                    <th>Duration</th>
+                    <th>Start Leave</th>
+                    <th>End Leave</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
     </div>
 @endsection
@@ -73,7 +69,6 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            // var table = $('#leavetypesTable').DataTable();
             var table = $('#leavereportsTable').DataTable({
                 language: { search: "" },
                 initComplete: function (settings, json) {

@@ -18,13 +18,13 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
                         @php
-                            $data = \Illuminate\Support\Facades\DB::table('account')
-                                        ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                                        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                                         ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
                                         ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                                         ->where(
-                                        'account.account_id',
+                                        'accounts.account_id',
                                         \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                                         )
                                         ->first();
@@ -44,8 +44,6 @@
                                     $photoPath = asset($data->photo);
                                     $defaultPhoto = asset('assets/img/avt.png');
                                     $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
-
-
                             @endphp
                         <img
                             src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
@@ -299,7 +297,7 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-            let filePhoto = $('.photo')[0].files[0];
+            let filePhoto = $('#photo')[0].files[0];
             let formData = new FormData();
 
             if (filePhoto) {
