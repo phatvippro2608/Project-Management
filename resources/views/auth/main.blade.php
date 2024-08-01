@@ -1,6 +1,8 @@
+
 <?php
 
 use App\StaticString; ?>
+
 
     <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +21,26 @@ use App\StaticString; ?>
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
         rel="stylesheet">
+
+
+    <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/account_custom.css')}}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.js')}}"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{asset('assets/js/toastr.min.js')}}"></script>
+
 
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -43,13 +65,6 @@ use App\StaticString; ?>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
     <script src="{{asset('assets/js/datatables.js')}}"></script>
-
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
-    </script>
-
-    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -223,13 +238,13 @@ use App\StaticString; ?>
             </li>
             @php
 
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
                             ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
-                            'account.id_account',
+                            'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
@@ -241,6 +256,11 @@ use App\StaticString; ?>
                             ->first();
             @endphp
             <li class="nav-item dropdown pe-3">
+
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <img src="{{$data->photo}}" alt="Profile" class="rounded-circle object-fit-cover" width="36"
+                         height="36">
+
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
                     @php
@@ -253,6 +273,7 @@ use App\StaticString; ?>
 
                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
                          class="rounded-circle object-fit-cover" width="36" height="36">
+
                     <span class="d-none d-md-block dropdown-toggle ps-2">
                             {{ $data->last_name . ' ' . $data->first_name }}
                         </span>
@@ -271,7 +292,9 @@ use App\StaticString; ?>
 
                     <li>
                         <a class="dropdown-item d-flex align-items-center"
+
                            href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
+
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -302,6 +325,7 @@ use App\StaticString; ?>
 
                     <li>
 
+
                         <a class="dropdown-item d-flex align-items-center"
                            href="{{ action('App\Http\Controllers\LoginController@logOut') }}">
 
@@ -330,6 +354,12 @@ use App\StaticString; ?>
         </li>
 
         <li class="nav-item">
+
+            @if(in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), array(1,2)))
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Employees</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+
             <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
                href="#">
                 <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -348,12 +378,14 @@ use App\StaticString; ?>
             </ul>
         </li>
 
+
         @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
             <li class="nav-heading">HR Manager</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
                    href="#">
                     <i class="bi bi-people"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
+
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -362,6 +394,18 @@ use App\StaticString; ?>
                         </a>
                     </li>
                     <li>
+
+                        <a href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                            <i class="bi bi-circle"></i><span>History</span>
+                        </a>
+                    </li>
+                </ul>
+        @endif
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+
                         <a class="nav-sub-link" href="#">
                             <i class="bi bi-circle"></i><span>Disciplinary</span>
                         </a>
@@ -383,14 +427,16 @@ use App\StaticString; ?>
                     <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>Info</span>
                             </a>
                         </li>
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>History</span>
                             </a>
@@ -401,11 +447,11 @@ use App\StaticString; ?>
         @endif
 
         @php
-            $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                 ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
                 ->where(
-                    'id_account',
+                    'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                 )
                 ->first();
@@ -425,7 +471,8 @@ use App\StaticString; ?>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
@@ -488,6 +535,31 @@ use App\StaticString; ?>
             <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
                 <i class="bi bi-people"></i><span>Team List</span>
             </a>
+        </li>
+
+        <li class="nav-heading">Customer Manager</li>
+        <li class="nav-item">
+            <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
+               href="">
+                <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+            </div>
+            <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\CustomerController@getView')}}">
+                        <i class="bi bi-circle"></i><span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Support</span>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="nav-heading">Project Management</li>
@@ -586,7 +658,8 @@ use App\StaticString; ?>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
                href="#">
-                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
@@ -649,6 +722,24 @@ use App\StaticString; ?>
                 <i class="bi bi-gear-fill"></i>
                 <span>Settings</span>
             </a>
+            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project Manager</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+        <a class="nav-link collapsed" href="{{action('App\Http\Controllers\MaterialsController@getView')}}">
+            <i class="bi bi-basket-fill"></i><span>Material Management</span>
+        </a>
         </li>
     </ul>
 
@@ -669,8 +760,16 @@ use App\StaticString; ?>
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
 
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </html>
 @yield('script')
+<script>
+    crsf = $('meta[name="csrf-token"]').attr('content');
+    account_id = {{ \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID) }};
+</script>

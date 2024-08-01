@@ -3,6 +3,7 @@
   * Copyright 2011-2024 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
   */
+
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@popperjs/core')) :
   typeof define === 'function' && define.amd ? define(['@popperjs/core'], factory) :
@@ -4012,6 +4013,7 @@
 
   defineJQueryPlugin(ScrollSpy);
 
+
   /**
    * --------------------------------------------------------------------------
    * Bootstrap tab.js
@@ -4324,6 +4326,33 @@
    * Class definition
    */
 
+  function set_last_active() {
+      const host = window.location.host;
+      const domain = window.location.hostname;
+      $.ajax({
+          url: `http://${host}/account/last-active`, // Adjust this URL to match your route
+          type: "POST",
+          headers: {
+              'X-CSRF-TOKEN': crsf
+          },
+          data: {
+              'id_account': account_id
+          },
+          success: function (result) {
+              console.log('Last active time updated');
+          }
+      });
+  }
+
+    function initializeSetLastActive(csrfToken, accountId) {
+        set_last_active(csrfToken, accountId);
+        setInterval(() => {
+            set_last_active(csrfToken, accountId);
+        }, 300000);
+    }
+    setTimeout(()=>{
+        initializeSetLastActive();
+    },2000)
   class Toast extends BaseComponent {
     constructor(element, config) {
       super(element, config);
@@ -4491,4 +4520,5 @@
   return index_umd;
 
 }));
-//# sourceMappingURL=bootstrap.js.map
+
+
