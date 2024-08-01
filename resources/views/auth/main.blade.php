@@ -66,13 +66,6 @@ use App\StaticString; ?>
 
     <script src="{{asset('assets/js/datatables.js')}}"></script>
 
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
-    </script>
-
-    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -300,7 +293,6 @@ use App\StaticString; ?>
                     <li>
                         <a class="dropdown-item d-flex align-items-center"
 
-              
                            href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
 
                             <i class="bi bi-person"></i>
@@ -386,6 +378,7 @@ use App\StaticString; ?>
             </ul>
         </li>
 
+
         @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
             <li class="nav-heading">HR Manager</li>
             <li class="nav-item">
@@ -434,14 +427,16 @@ use App\StaticString; ?>
                     <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>Info</span>
                             </a>
                         </li>
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>History</span>
                             </a>
@@ -476,7 +471,8 @@ use App\StaticString; ?>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
@@ -539,6 +535,31 @@ use App\StaticString; ?>
             <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
                 <i class="bi bi-people"></i><span>Team List</span>
             </a>
+        </li>
+
+        <li class="nav-heading">Customer Manager</li>
+        <li class="nav-item">
+            <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
+               href="">
+                <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+            </div>
+            <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\CustomerController@getView')}}">
+                        <i class="bi bi-circle"></i><span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Support</span>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="nav-heading">Project Management</li>
@@ -637,7 +658,8 @@ use App\StaticString; ?>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
                href="#">
-                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>

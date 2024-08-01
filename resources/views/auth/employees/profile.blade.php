@@ -308,9 +308,10 @@
             });
         });
 
+
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-            {{--return {{$data->employee_id}};--}}
+
             let filePhoto = $('.photo')[0].files[0];
             let formData = new FormData();
 
