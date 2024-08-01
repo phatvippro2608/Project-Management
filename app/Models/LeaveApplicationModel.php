@@ -12,7 +12,7 @@ class LeaveApplicationModel extends Model
     //Get Data
     function getEmployeeName()
     {
-        $sql = "SELECT * from employees WHERE employee_id NOT IN(SELECT employee_id from account)";
+        $sql = "SELECT * from employees WHERE employee_id NOT IN(SELECT employee_id from accounts)";
         return DB::select($sql);
     }
 

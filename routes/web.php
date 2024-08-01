@@ -216,6 +216,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
     });
     Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
+    Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
 });
 
 

@@ -39,31 +39,44 @@
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
-                            <select class="form-select" aria-label="Default" name="employee_id">
-                                    @foreach ($list_proposal as $item)
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id"
+                                    @if ($data['permission'] == 0) disabled @endif>
+                                @if ($data['permission'] == 0)
+                                    <option value="{{ $data['list_proposal'][0]->employee_id }}">
+                                        {{ $data['list_proposal'][0]->first_name }} {{ $data['list_proposal'][0]->last_name }}
+                                    </option>
+                                @else
+                                    @foreach ($employee_name as $item)
                                         <option value="{{ $item->employee_id }}">
-                                            {{ $item->first_name }} {{ $item->last_name }}</option>
+                                            {{ $item->first_name }} {{ $item->last_name }}
+                                        </option>
                                     @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Proposal Type</label>
-                            <select class="form-select" aria-label="Default" name="id_proposal">
-                                <option value="">No select</option>
-                                {{--                                @foreach ($employee_name as $item)--}}
-                                {{--                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }}--}}
-                                {{--                                {{ $item->first_name }} {{ $item->last_name }}</option>--}}
-                                {{--                                @endforeach--}}
+                            <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
+                                @foreach ($proposal_types as $item)
+                                    <option value="{{ $item->proposal_type_id }}">
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="floatingTextarea2">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="floatingTextarea2"
+                            <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
                                       style="height: 100px"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="floatingTextarea2">Upload your file</label>
+
                         </div>
                         <button type="submit" class="btn btn-primary">Add Proposal Application</button>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -78,17 +91,61 @@
                 <th>Proposal Name Type</th>
                 <th>Description</th>
                 <th>Progress</th>
+                @if ($data['permission'] == 3)
+                    <th class="text-center">Direct Department</th>
+                @endif
+                @if ($data['permission'] == 4)
+                    <th class="text-center">Direct Department</th>
+                    <th class="text-center">Direct Manager</th>
+                @endif
             </tr>
             </thead>
             <tbody id="departmentsTableBody">
             @php($stt=0)
-            @foreach ($list_proposal as $item)
+            @foreach ($data['list_proposal'] as $item)
                 <tr>
                     <td>{{$stt++}}</td>
                     <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                    <td>{{$item->id_proposal}}</td>
+                    <td>{{$item->name}}</td>
                     <td>{{$item->description}}</td>
-                    <td>{{$item->progress}}</td>
+                    <td>
+                        @if($item->progress==0)
+                            <div class="" >Chưa xét duyệt</div>
+                        @elseif($item->progress==1)
+                            <div class="" >Đã duyệt cấp 1</div>
+                        @elseif($item->progress==1)
+                            <div class="" >Đã duyệt xong</div>
+                        @endif
+                    </td>
+                    @if ($data['permission'] == 3)
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle"></i>
+                                Chưa duyệt
+                            </button>
+                        </td>
+                    @endif
+                    @if ($data['permission'] == 4)
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle"></i>
+                                Chưa duyệt
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle "></i>
+                                Chưa duyệt
+
+                            </button>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
             </tbody>
@@ -108,146 +165,33 @@
             }
         });
 
-        {{--$(document).ready(function () {--}}
-        {{--    var table = $('#departmentsTable').DataTable({--}}
-        {{--        language: { search: "" },--}}
-        {{--        initComplete: function (settings, json) {--}}
-        {{--            $('.dt-search').addClass('input-group');--}}
-        {{--            $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">--}}
-        {{--                        <i class="bi bi-search"></i>--}}
-        {{--                    </button>`)--}}
-        {{--        }--}}
-        {{--    });--}}
+        $('#addProposalApplicationForm').submit(function (e) {
+            e.preventDefault();
 
-        {{--    $('#addProposalApplicationForm').submit(function (e) {--}}
-        {{--        e.preventDefault();--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: '{{ route('departments.store') }}',--}}
-        {{--            method: 'POST',--}}
-        {{--            data: $(this).serialize(),--}}
-        {{--            success: function (response) {--}}
-        {{--                if (response.success) {--}}
-        {{--                    $('#addProposalApplicationModal').modal('hide');--}}
-        {{--                    // $('#successModal').modal('show');--}}
-        {{--                    toastr.success(response.message, "Successful");--}}
-
-        {{--                    table.row.add([--}}
-        {{--                        response.department.department_name,--}}
-        {{--                        '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +--}}
-        {{--                        response.department.department_id + '">' +--}}
-        {{--                        '<i class="bi bi-pencil-square"></i>' +--}}
-        {{--                        '</button>' +--}}
-        {{--                        ' | ' +--}}
-        {{--                        '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +--}}
-        {{--                        response.department.department_id + '">' +--}}
-        {{--                        '<i class="bi bi-trash3"></i>' +--}}
-        {{--                        '</button>'--}}
-        {{--                    ]).draw();--}}
-        {{--                    $('#addProposalApplicationForm')[0].reset();--}}
-        {{--                }--}}
-        {{--            },--}}
-        {{--            error: function (xhr) {--}}
-        {{--                toastr.error(response.message, "Error");--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-
-        {{--    $('#departmentsTable').on('click', '.edit-btn', function () {--}}
-        {{--        var departmentId = $(this).data('id');--}}
-
-        {{--        if (!departmentId) {--}}
-        {{--            alert('Department ID not found.');--}}
-        {{--            return;--}}
-        {{--        }--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: '{{ url('departments') }}/' + departmentId + '/edit',--}}
-        {{--            method: 'GET',--}}
-        {{--            success: function (response) {--}}
-        {{--                $('#editDepartmentId').val(response.department.department_id);--}}
-        {{--                $('#edit_department_name').val(response.department.department_name);--}}
-        {{--                $('#editDepartmentModal').modal('show');--}}
-        {{--            },--}}
-        {{--            error: function (xhr) {--}}
-        {{--                alert('An error occurred.');--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-
-        {{--    $('#editDepartmentForm').submit(function (e) {--}}
-        {{--        e.preventDefault();--}}
-        {{--        var departmentId = $('#editDepartmentId').val();--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: '{{ url('departments') }}/' + departmentId,--}}
-        {{--            method: 'PUT',--}}
-        {{--            data: $(this).serialize(),--}}
-        {{--            success: function (response) {--}}
-        {{--                if (response.success) {--}}
-        {{--                    $('#editDepartmentModal').modal('hide');--}}
-        {{--                    toastr.success("Edit successful");--}}
-
-        {{--                    var row = table.row($('button[data-id="' + departmentId + '"]')--}}
-        {{--                        .parents('tr'));--}}
-        {{--                    row.data([--}}
-        {{--                        response.department.department_name,--}}
-        {{--                        '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +--}}
-        {{--                        response.department.department_id + '">' +--}}
-        {{--                        '<i class="bi bi-pencil-square"></i>' +--}}
-        {{--                        '</button>' +--}}
-        {{--                        ' | ' +--}}
-        {{--                        '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +--}}
-        {{--                        response.department.department_id + '">' +--}}
-        {{--                        '<i class="bi bi-trash3"></i>' +--}}
-        {{--                        '</button>'--}}
-        {{--                    ]).draw();--}}
-        {{--                }--}}
-        {{--            },--}}
-        {{--            error: function (xhr) {--}}
-        {{--                toastr.error("Error");--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-
-        {{--    $('#departmentsTable').on('click', '.delete-btn', function () {--}}
-        {{--        var departmentId = $(this).data('id');--}}
-        {{--        var row = $(this).parents('tr');--}}
-
-        {{--        Swal.fire({--}}
-        {{--            title: 'Are you sure?',--}}
-        {{--            text: "You won't be able to revert this!",--}}
-        {{--            icon: 'warning',--}}
-        {{--            showCancelButton: true,--}}
-        {{--            confirmButtonColor: '#3085d6',--}}
-        {{--            cancelButtonColor: '#d33',--}}
-        {{--            confirmButtonText: 'Yes, delete it!'--}}
-        {{--        }).then((result) => {--}}
-        {{--            if (result.isConfirmed) {--}}
-        {{--                $.ajax({--}}
-        {{--                    url: '{{ url('departments') }}/' + departmentId,--}}
-        {{--                    method: 'DELETE',--}}
-        {{--                    data: {--}}
-        {{--                        _token: '{{ csrf_token() }}'--}}
-        {{--                    },--}}
-        {{--                    success: function (response) {--}}
-        {{--                        if (response.success) {--}}
-        {{--                            table.row(row).remove().draw();--}}
-        {{--                        }--}}
-        {{--                    },--}}
-        {{--                    error: function (xhr) {--}}
-        {{--                        alert('An error occurred.');--}}
-        {{--                    }--}}
-        {{--                });--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-
-        {{--    function reindexRows() {--}}
-        {{--        $('#departmentsTable tbody tr').each(function (index) {--}}
-        {{--            $(this).find('td:first').text(index + 1);--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
+            $.ajax({
+                url: '{{ route('proposal-application.add') }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#addProposalApplicationModal').modal('hide');
+                        toastr.success(response.message, "Successful");
+                        setTimeout(function() {
+                            location.reload()
+                        }, 500);
+                    } else {
+                        toastr.error(response.message, "Error");
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 400) {
+                        var response = xhr.responseJSON;
+                        toastr.error(response.message, "Error");
+                    } else {
+                        toastr.error("An error occurred", "Error");
+                    }
+                }
+            });
+        });
     </script>
 @endsection
