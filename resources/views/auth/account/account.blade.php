@@ -68,7 +68,12 @@
                                                            data="{{ $item->id_account }}"></i>
                                                     </a>
                                                 </div>
+                                                <img src="{{ $item->photo ? asset($item->photo) : asset('assets/img/not-found.svg') }}" alt=""
+                                                     class="account-photo rounded-circle p-0 m-0"
+                                                     onerror="this.onerror=null; this.src='{{ asset('img/default.jpg') }}'">
+
                                                 <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
+
                                             </div>
 
                                         </td>
@@ -93,7 +98,11 @@
                                             {{$status[$item->status]}}
                                         </td>
                                         <td class="text-center">
-                                            {{$item->updated_at}}
+
+                                            {{\App\Http\Controllers\AccountController::timeAgo($item->last_active)}}
+                                        </td>
+                                        <td class="text-center">
+                                            16 years ago
                                         </td>
                                     </tr>
                                 @endforeach
@@ -120,7 +129,7 @@
                             <select class="form-select name1" aria-label="Default">
                                 <option value="-1">No select</option>
                                 @foreach($employees as $employee)
-                                    <option value="{{$employee->id_employee}}">{{$employee->employee_code}}
+                                    <option value="{{$employee->employee_id}}">{{$employee->employee_code}}
                                         - {{$employee->first_name}} {{$employee->last_name}}</option>
                                 @endforeach
                             </select>
@@ -232,7 +241,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_employee': $('.name1').val(),
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),
@@ -259,7 +268,7 @@
             $('.md1 .modal-title').text('Update Account');
             $('.md1 .passName').text('New Password');
             var data = JSON.parse($(this).attr('data'));
-            $('.name1').val(data.id_employee);
+            $('.name1').val(data.employee_id);
             $('.name2').val(data.username);
             $('.email').val(data.email);
             $('.name3').val('');
@@ -290,7 +299,7 @@
                     },
                     data: {
                         'id_account': data.id_account,
-                        'id_employee': $('.name1').val(),
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),

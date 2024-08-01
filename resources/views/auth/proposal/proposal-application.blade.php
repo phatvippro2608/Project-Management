@@ -2,11 +2,11 @@
 
 @section('contents')
     <div class="pagetitle">
-        <h1>Employees</h1>
+        <h1>Proposal</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Employees List</li>
+                <li class="breadcrumb-item active">Proposal Application</li>
             </ol>
         </nav>
     </div>
@@ -14,7 +14,7 @@
     <section class="section employees">
         <div class="card">
             <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Employees List</div>
+                <div class="card-title my-3 p-0">Proposal Application</div>
             </div>
             <div class="card-body">
                 <div class="row gx-3 my-3">
@@ -25,82 +25,44 @@
                                 Add
                             </div>
                         </div>
-                        <div class="btn btn-success mx-2">
-                            <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-                                <i class="bi bi-file-earmark-arrow-up pe-2"></i>
-                                Import
-                            </a>
-                        </div>
                         <div class="btn btn-success mx-2 btn-export">
-                            <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
+                            <a href="" class="d-flex align-items-center text-white">
                                 <i class="bi bi-file-earmark-arrow-down pe-2"></i>
                                 Export
                             </a>
                         </div>
                     </div>
                     <div class="col-md-6 m-0">
-                        <form action="" class="input-group ms-sm-auto w-50">
-                            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                        <div class="input-group ms-sm-auto w-50">
+                            <button class="input-group-text bg-transparent border-secondary rounded-start-4">
                                 <i class="bi bi-search"></i>
                             </button>
-                            <input type="text" class="form-control border-start-0 border-secondary-subtle rounded-end-4">
-                        </form>
+                            <input type="text" class="form-control border-start-0 border-secondary rounded-end-4">
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead class="table-light">
+                        <thead>
                         <tr>
-                            <th style="width: 10%">Employee Code</th>
-                            <th class="text-center">Photo</th>
-                            <th>Full Name</th>
-                            <th>English Name</th>
-                            <th>Gender</th>
-                            <th>Phone</th>
-                            <th>Action</th>
+                            <th style="width: 10%">No</th>
+                            <th class="text-center">Employee Name</th>
+                            <th>Proposal Name Type</th>
+                            <th>Description</th>
+                            <th>Progress</th>
                         </tr>
 
                         </thead>
                         <tbody>
-                        @foreach($data as $item)
-                            @if($item->fired == "false")
+{{--                        @foreach($data as $item)--}}
                                 <tr>
-                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
-                                    @php
-                                        $imageUrl = asset('assets/img/avt.png'); // Default image URL
-
-                                        if($item->photo != null){
-                                            $imagePath = public_path($item->photo);
-                                            if(file_exists($imagePath)) {
-                                                $imageUrl = asset($item->photo);
-                                            }
-                                        }
-                                    @endphp
-
-                                    <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
-                                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                    <td>{{$item->en_name}}</td>
-                                    <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
-                                    <td>{{$item->phone_number}}</td>
-                                    <td>
-                                            <?php
-                                            $id = $item->employee_id;
-                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                            $item->email = \Illuminate\Support\Facades\DB::table('account')->where('employee_id', $id)->value('email');
-                                            ?>
-                                        <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        |
-                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
-                            @endif
-                        @endforeach
+{{--                        @endforeach--}}
                         </tbody>
                     </table>
                 </div>
@@ -155,23 +117,9 @@
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div class="col-md-2 position-relative text-center">
-                                                <img
-                                                    id="profileImage"
-                                                    src="{{asset('assets/img/avt.png')}}"
-                                                    alt="Profile"
-                                                    class="rounded-pill object-fit-cover"
-                                                    width="100"
-                                                    height="100">
-                                                <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                    <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                    <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                </div>
+                                            <div class="col-sm-8">
+                                                <input type="file" class="form-control photo" name="">
                                             </div>
-{{--                                            <div class="col-sm-8">--}}
-{{--                                                <input type="file" class="form-control photo" name="">--}}
-{{--                                            </div>--}}
-
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -621,11 +569,11 @@
                                 <div class="card-body p-3 pb-0 table-overflow">
                                     <table class="table table-hover mb-0 table-borderless">
                                         <thead>
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>Filename</th>
-                                                <th>Action</th>
-                                            </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Filename</th>
+                                            <th>Action</th>
+                                        </tr>
                                         </thead>
                                         <tbody class="cv-list"></tbody>
                                     </table>
@@ -731,518 +679,6 @@
 @endsection
 @section('script')
     <script>
-        let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
-        let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
-        let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
-        let _upload = "{{ action('App\Http\Controllers\UploadFileController@uploadFile')}}";
-        let _upload_photo = "{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}";
-        let _upload_personal_profile = "{{action('App\Http\Controllers\UploadFileController@uploadPersonalProfile')}}";
-        let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
-        let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
-        let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
-        let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
-        let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
-        $('.at1').click(function () {
-            $('.md1').modal('show');
 
-            $('.btn-add').click(function () {
-                // Collect form data
-                let data = {
-                    'employee_code': $('.md1 .employee_code').val(),
-                    'first_name': $('.md1 .first_name').val(),
-                    'last_name': $('.md1 .last_name').val(),
-                    'en_name': $('.md1 .en_name').val(),
-                    'gender': $('.md1 input[name="gender"]:checked').val(),
-                    'marital_status': $('.md1 input[name="marital_status"]:checked').val(),
-                    'military_service': $('.md1 input[name="military_service"]:checked').val(),
-                    'date_of_birth': $('.md1 .date_of_birth').val(),
-                    'national': $('.md1 .national :checked').val(),
-                    'phone_number': $('.md1 .phone_number').val(),
-                };
-
-                $.ajax({
-                    url: _put,
-                    type: 'PUT',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: data,
-
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    }
-                });
-            });
-        });
-
-
-        $(document).on('click', '.at3', function() {
-            var data = JSON.parse($(this).attr('data'));
-            $('.btn_photo').click(function () {
-                event.preventDefault();
-                let filePhoto = $('.md3 .photo')[0].files[0];
-                let formData = new FormData();
-
-                if (filePhoto) {
-                    formData.append('photo', filePhoto);
-                }
-
-                formData.append('employee_id', data.employee_id);
-
-                $.ajax({
-                    url: _upload_photo,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    }
-                });
-            })
-
-            $('.btn_upload_personal_profile').click(function () {
-                event.preventDefault();
-                let files = $('.md3 .personal')[0].files;
-                let formData = new FormData();
-
-                if (files.length > 0) {
-                    $.each(files, function(i, file) {
-                        formData.append('personal_profile[]', file);
-                    });
-                }
-
-                formData.append('employee_id', data.employee_id);
-
-                $.ajax({
-                    url: _upload_personal_profile, // Đảm bảo rằng _upload_personal_profile là URL hợp lệ
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {
-                        if (typeof result === 'string') {
-                            result = JSON.parse(result); // Nếu result là chuỗi JSON, chuyển nó thành object
-                        }
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        toastr.error("An error occurred during the upload process", "Thao tác thất bại");
-                    }
-                });
-            });
-
-            $('.md3 .btn_upload_medical').click(function () {
-                event.preventDefault();
-                let file = $('.md3 .medical_checkup')[0].files[0];
-                let formData = new FormData();
-
-
-                formData.append('medical_file', file);
-                formData.append('employee_id', data.employee_id);
-                formData.append('medical_checkup_date', $('.medical_checkupdate').val());
-                $.ajax({
-                    url: _upload_medical_checkup,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {
-                        if (typeof result === 'string') {
-                            result = JSON.parse(result); // Nếu result là chuỗi JSON, chuyển nó thành object
-                        }
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        toastr.error("An error occurred during the upload process", "Thao tác thất bại");
-                    }
-                });
-            })
-            $('.md3 .btn_upload_certificate').click(function () {
-                event.preventDefault();
-                let file = $('.md3 .certificate_file')[0].files[0];
-                let formData = new FormData();
-                formData.append('certificate_file', file);
-                formData.append('employee_id', data.employee_id);
-                formData.append('certificate_end_date', $('.certificate_end_date').val());
-                formData.append('type_certificate', $('.type_certificate').val());
-                $.ajax({
-                    url: _upload_certificate,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {
-                        if (typeof result === 'string') {
-                            result = JSON.parse(result);
-                        }
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        toastr.error("An error occurred during the upload process", "Thao tác thất bại");
-                    }
-                });
-            })
-
-            populateCountrySelect('national',data.national);
-            $('.md3 .employee_code').val(data.employee_code);
-            $('.md3 .first_name').val(data.first_name);
-            $('.md3 .last_name').val(data.last_name);
-            $('.md3 .en_name').val(data.en_name);
-            let imagePath = "/uploads/" + data.employee_id;
-            let defaultImage = "{{ asset('assets/img/avt.png') }}";
-
-            $.ajax({
-                url: _check_file_exists, // Create a route to check if the file exists
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: { path: data.photo },
-                success: function(response) {
-                    if (response.exists) {
-                        $('.md3 .photo_show').attr('src', '{{asset('')}}' + data.photo);
-                    } else {
-                        $('.md3 .photo_show').attr('src', defaultImage);
-                    }
-                }
-            });
-
-            $('.md3 .photo_show').attr('src', '');
-            $('.cv-list').empty();
-            $('.certificate_list').empty();
-            $('.medical_list').empty();
-            let dataCV = JSON.parse(data.cv);
-            if(dataCV){
-                dataCV.forEach(function(filename, index) {
-                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + filename;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"  data_filename="'+filename+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
-                    $('.cv-list').append(row);
-                });
-            }
-
-
-            let dataMedical = JSON.parse(data.medical);
-            if(dataMedical){
-                dataMedical.forEach(function(item, index) {
-                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.medical_checkup_file;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical" data_id_medical="'+item.id_medical_checkup+'"  data_filename="'+item.medical_checkup_file+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
-                    $('.medical_list').append(row);
-                });
-            }
-
-            let dataCertificate = JSON.parse(data.certificates);
-            if(dataCertificate){
-                dataCertificate.forEach(function(item, index) {
-                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.certificate;
-                    let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center"> <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate" data_id_certificate="'+item.id_certificate+'" data_filename="'+item.certificate+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
-                    $('.certificate_list').append(row);
-                });
-            }
-
-
-            $('.md3 input[name="gender"][value="' + data.gender + '"]').prop('checked', true);
-            $('.md3 input[name="marital_status"][value="' + data.marital_status + '"]').prop('checked', true);
-            $('.md3 input[name="military_service"][value="' + data.military_service + '"]').prop('checked', true);
-            $('.md3 .date_of_birth').val(data.date_of_birth);
-            $('.md3 .phone_number').val(data.phone_number);
-            let dataPassport = JSON.parse(data.passport);
-            if(dataPassport[0]){
-                $('.md3 .passport_number').val(dataPassport[0].passport_number);
-                $('.md3 .passport_place_issue').val(dataPassport[0].passport_place_issue);
-                $('.md3 .passport_issue_date').val(dataPassport[0].passport_issue_date);
-                $('.md3 .passport_expiry_date').val(dataPassport[0].passport_expiry_date);
-            }
-            $('.md3 .cic_number').val(data.cic_number);
-            $('.md3 .cic_place_issue').val(data.cic_place_issue);
-            $('.md3 .cic_issue_date').val(data.cic_issue_date);
-            $('.md3 .cic_expiry_date').val(data.cic_expiry_date);
-            $('.md3 .current_residence').val(data.current_residence);
-            $('.md3 .permanent_address').val(data.permanent_address);
-            $('.md3 .medical_checkup_date').val(data.medical_checkup_date);
-            $('.md3 .job_title').val(data.id_job_title);
-            $('.md3 .job_category').val(data.id_job_category);
-            $('.md3 .job_position').val(data.id_job_position);
-            $('.md3 .job_team').val(data.id_job_team);
-            $('.md3 .job_level').val(data.id_job_level);
-            $('.md3 .email').val(data.email);
-            $('.md3 .start_date').val(data.start_date);
-            $('.md3 .end_date').val(data.end_date);
-            $('.md3 .job_type_contract').val(data.id_job_type_contract);
-            $('.md3 .job_country').val(data.id_job_country);
-            $('.md3 .job_location').val(data.id_job_location);
-            $('.md3').modal('show');
-
-            $('.md3 .btn_delete_cv').click(function (event) {
-                event.preventDefault();
-                let employee_id = data.employee_id;
-                let filename = $(this).attr('data_filename');
-                let formData = new FormData();
-                formData.append('employee_id', employee_id);
-                formData.append('filename', filename);
-                formData.append('file_of', "cv");
-                if(confirm('Are you sure DELETE this file?')){
-                    $.ajax({
-                        url: _delete_file,
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (result) {
-                            if (result.status === 200) {
-                                toastr.success(result.message, "Thao tác thành công");
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 500);
-                            } else {
-                                toastr.error(result.message, "Thao tác thất bại");
-                            }
-                        }
-                    });
-                }
-            });
-
-            $('.md3 .btn_delete_medical').click(function () {
-                event.preventDefault();
-                event.preventDefault();
-                let employee_id = data.employee_id;
-                let id_medical_checkup = $(this).attr('data_id_medical');
-                let filename = $(this).attr('data_filename');
-                let formData = new FormData();
-                formData.append('employee_id', employee_id);
-                formData.append('id_medical_checkup', id_medical_checkup);
-                formData.append('filename', filename);
-                formData.append('file_of', "medical");
-                if(confirm('Are you sure DELETE this file?')){
-                    $.ajax({
-                        url: _delete_file,
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (result) {
-                            if (result.status === 200) {
-                                toastr.success(result.message, "Thao tác thành công");
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 500);
-                            } else {
-                                toastr.error(result.message, "Thao tác thất bại");
-                            }
-                        }
-                    });
-                }
-            })
-
-            $('.md3 .btn_delete_certificate').click(function () {
-                event.preventDefault();
-                let employee_id = data.employee_id;
-                let id_certificate = $(this).attr('data_id_certificate');
-                let filename = $(this).attr('data_filename');
-                let formData = new FormData();
-                formData.append('employee_id', employee_id);
-                formData.append('id_certificate', id_certificate);
-                formData.append('filename',filename);
-                formData.append('file_of', "certificate");
-                if(confirm('Are you sure DELETE this file ?')){
-                    $.ajax({
-                        url: _delete_file,
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (result) {
-                            if (result.status === 200) {
-                                toastr.success(result.message, "Thao tác thành công");
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 500);
-                            } else {
-                                toastr.error(result.message, "Thao tác thất bại");
-                            }
-                        }
-                    });
-                }
-            })
-
-            $('.md3 .btn-update').click(function () {
-                event.preventDefault();
-                let dataEmployee = {
-                    'employee_code': $('.md3 .employee_code').val(),
-                    'first_name': $('.md3 .first_name').val(),
-                    'last_name': $('.md3 .last_name').val(),
-                    'en_name': $('.md3 .en_name').val(),
-                    'gender': $('.md3 input[name="gender"]:checked').val(),
-                    'marital_status': $('.md3 input[name="marital_status"]:checked').val(),
-                    'military_service': $('.md3 input[name="military_service"]:checked').val(),
-                    'date_of_birth': $('.md3 .date_of_birth').val(),
-                    'national': $('.md3 .national :checked').val()
-                };
-                let dataPassport = {
-                    'passport_number': $('.md3 .passport_number').val(),
-                    'passport_place_issue': $('.md3 .passport_place_issue').val(),
-                    'passport_issue_date': $('.md3 .passport_issue_date').val(),
-                    'passport_expiry_date': $('.md3 .passport_expiry_date').val(),
-                };
-                let dataContact = {
-                    'phone_number' : $('.md3 .phone_number').val(),
-                    'cic_number' : $('.md3 .cic_number').val(),
-                    'cic_place_issue' : $('.md3 .cic_place_issue').val(),
-                    'cic_issue_date': $('.md3 .cic_issue_date').val(),
-                    'cic_expiry_date':$('.md3 .cic_expiry_date').val(),
-                    'current_residence' : $('.md3 .current_residence').val(),
-                    'permanent_address':$('.md3 .permanent_address').val(),
-                };
-                let dataJob = {
-                    'id_job_title': $('.md3 .job_title').val(),
-                    'id_job_category': $('.md3 .job_category').val(),
-                    'id_job_position': $('.md3 .job_position').val(),
-                    'id_job_team': $('.md3 .job_team').val(),
-                    'id_job_level': $('.md3 .job_level').val(),
-                    'start_date': $('.md3 .start_date').val(),
-                    'end_date': $('.md3 .end_date').val(),
-                    'id_job_type_contract': $('.md3 .job_type_contract').val(),
-                    'id_job_country': $('.md3 .job_country').val(),
-                    'id_job_location': $('.md3 .job_location').val(),
-                };
-
-                let formData = new FormData();
-                formData.append('employee_id', data.employee_id);
-                formData.append('id_contact', data.id_contact);
-                formData.append('dataEmployee', JSON.stringify(dataEmployee));
-                formData.append('dataContact', JSON.stringify(dataContact));
-                formData.append('dataJob', JSON.stringify(dataJob));
-                formData.append('dataPassport', JSON.stringify(dataPassport));
-                $.ajax({
-                    url: _post,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    }
-                });
-            })
-        })
-        $('.at4').click(function () {
-            var id = $(this).attr('data');
-            if (confirm("Do you want to remove this employee?")){
-                $.ajax({
-                    url: _delete,
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {'id':id},
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
-                    }
-                });
-            }
-        })
-
-        function populateCountrySelect(selectElementId, countrySelete) {
-            $(document).ready(function() {
-                $.ajax({
-                    url: 'https://restcountries.com/v3.1/all',
-                    method: 'GET',
-                    success: function(data) {
-                        $.each(data, function(index, country) {
-                            const $option = $('<option></option>')
-                                .val(country.name.common)
-                                .text(country.name.common);
-                            if (country.name.common === countrySelete) {
-                                $option.prop('selected', true);
-                            }
-
-                            $(`#${selectElementId}`).append($option);
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('Error fetching countries:', textStatus, errorThrown);
-                    }
-                });
-            });
-        }
-        populateCountrySelect('countrySelect','Vietnam');
     </script>
-    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

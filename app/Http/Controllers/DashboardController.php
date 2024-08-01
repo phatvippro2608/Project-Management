@@ -35,7 +35,6 @@ class DashboardController extends Controller
 
         $recent_project = DB::select($sql);
 
-
         $task_sql = "SELECT * FROM tasks, employees, phases
          WHERE tasks.employee_id = employees.employee_id and phases.phase_id = tasks.phase_id
          AND DATE(tasks.start_date) <= CURDATE() AND DATE(tasks.end_date) >= CURDATE()
@@ -43,15 +42,12 @@ class DashboardController extends Controller
          ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
 
-
         $subtask_sql = "SELECT * FROM sub_tasks, employees
          WHERE sub_tasks.employee_id = employees.employee_id
          AND DATE(sub_tasks.start_date) <= CURDATE() AND DATE(sub_tasks.end_date) >= CURDATE()
          AND employees.employee_id=$employee_id
          ORDER BY sub_tasks.state ASC";
         $subtasks = DB::select($subtask_sql);
-
-
 
         return view('auth.dashboard.dashboard',[
             'em_c'=>$em_c,

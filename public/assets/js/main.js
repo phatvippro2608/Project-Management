@@ -1,3 +1,18 @@
+
+var crsf = '';
+var account_id = '';
+(function() {
+  "use strict";
+  /**
+   * Easy selector helper function
+   */
+  const select = (el, all = false) => {
+    el = el.trim()
+    if (all) {
+      return [...document.querySelectorAll(el)]
+    } else {
+      return document.querySelector(el)
+
 (function () {
     "use strict";
 
@@ -11,6 +26,7 @@
         } else {
             return document.querySelector(el)
         }
+
     }
 
     /**
@@ -94,6 +110,7 @@
     }
 })();
 
+
 document.addEventListener('DOMContentLoaded', function () {
     const nav_items = document.querySelectorAll('.nav-item');
 
@@ -122,14 +139,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
 });
-
-
-overlays.forEach(overlay => {
-    overlay.addEventListener('click', function () {
-        fileInput.click();
-    });
-});
-
-
-
-
