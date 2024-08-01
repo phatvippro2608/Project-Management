@@ -26,7 +26,6 @@
 <div class="section recognition">
     <div class="card">
         <div class="card-header">
-            <a class="btn btn-info text-white"><i class="bi bi-plus"></i> Add Recognition</a>
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
             <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-file-earmark-fill"></i> Recognition Report</a>
         </div>
@@ -60,35 +59,46 @@
     </div>
 </div>
 
-<div class="modal fade" id="addRecognitionModal" tabindex="-1" aria-labelledby="addRecognitionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+<div class="modal fade md1" id="addRecognitionModal" tabindex="-1" aria-labelledby="addRecognitionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addProjectModalLabel">Add new project</h5>
+                <h5 class="modal-title" id="addProjectModalLabel">Add new recognition</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- Form trong view -->
             <div class="modal-body">
-                <form id="projectForm">
+                <form id="recognitionForm">
                     @csrf
                     <div class="row">
-                        <label for="employee_name" class="form-label">Employee Name</label>
-                        <input type="text" class="form-control" id="employee_name" name="employee_name" required>
-                        <label for="recognition_types">Recognition Types</label>
-                        <select class="form-select" name="recognition_types" id="recognition_types" required>
-                        @foreach($recognition_types as $type)
-                            <option value='{{$type->recognition_type_id}}'>"{{$type->recognition_type_name}}"</option>
-                        @endforeach
-                        </select>
-
-                        <label for="project_address" class="form-label">Project Address</label>
-                        <textarea name="project_address" id="project_address" rows="2" class="form-control"></textarea>
+                        <div class="col-md-12">
+                            <label for="employee_id" class="form-label">Employee Name</label>
+                            <select class="form-select name1" name="employee_id" id="employee_id" required>
+                                <option value="-1">No select</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{$employee->employee_id}}">{{$employee->employee_code}}
+                                        - {{$employee->first_name}} {{$employee->last_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="recognition_types">Recognition Types</label>
+                            <select class="form-select name1" name="recognition_type_id" id="recognition_type_id" required>
+                            @foreach($recognition_types as $type)
+                                <option value='{{$type->recognition_type_id}}'>{{$type->recognition_type_name}}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="recognition_description" class="form-label">Description</label>
+                            <textarea name="recognition_description" id="recognition_description" rows="2" class="form-control"></textarea>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="btnSubmitProject">Submit</button>
+                <button type="button" class="btn btn-success" id="btnRecognitionSubmit">Submit</button>
             </div>
         </div>
     </div>
@@ -139,6 +149,37 @@
     $('.dt-search label').addClass('d-flex align-items-center');
     $('.dt-search input').addClass('form-control ml-2');
 
+    document.getElementById('btnRecognitionSubmit').addEventListener('click', function (event) {
+        let form = document.getElementById('recognitionForm');
+        let formData = new FormData(form);
 
+        fetch('{{ route('recognition.add') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    toastr.success(data.message, "Lưu thành công");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else {
+                    let errorMessage = data.message;
+                    if (data.error) {
+                        errorMessage += ': ' + data.error;
+                        console.error('Error:', data.error);  // Log lỗi cụ thể ra console
+                    }
+                    toastr.error(errorMessage, "Thao tác thất bại");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+            });
+    });
 </script>
 @endsection

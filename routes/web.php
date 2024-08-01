@@ -215,7 +215,10 @@ Route::post('/attendance/update', [AttendanceController::class, 'updateAttendanc
 Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
 // recognition
-Route::get('/recognition', [RecognitionController::class, 'getView'])->name('recognition');
+Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [RecognitionController::class, 'getView'])->name('recognition');
+    Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
+});
 
 // disciplinary
 Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
