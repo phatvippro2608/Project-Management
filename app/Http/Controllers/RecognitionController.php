@@ -65,7 +65,7 @@ class RecognitionController extends Controller
     {
         // Kiểm tra nếu không có tệp Excel nào được tải lên
         if (!$request->hasFile('file-excel')) {
-            return self::status('Không có tệp Excel nào được tải lên', 400);
+            return response()->json(['status' => 500, 'message' => 'Không có tệp Excel nào được tải lên']);
         }
 
         // Đọc dữ liệu từ tệp Excel
@@ -94,9 +94,9 @@ class RecognitionController extends Controller
             } else {
                 // Xử lý trường hợp không tìm thấy employee với employee_code tương ứng
                 // Bạn có thể ghi log, bỏ qua, hoặc trả về lỗi tùy thuộc vào yêu cầu của bạn
-                return self::status("Không tìm thấy employee với employee_code: $employee_code", 404);
+                return response()->json(['status' => 404, 'message' => "Không tìm thấy employee với employee_code: $employee_code"]);
             }
         }
-        return self::status('Import thành công', 200);
+        return response()->json(['status' => 200, 'message' => 'Import thành công']);
     }
 }
