@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostComissionModel;
 use App\Models\CostModel;
 use App\Models\CostGroupModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Models\ProjectModel;
-
 
 class ProjectBudgetController extends Controller
 {
@@ -435,47 +435,25 @@ public function exportCsv($id)
     }
     public function updateCommission(Request $request, $project_id, $commission_id)
 {
-    dd($request);
-    // Validate the incoming request data
-    $validated = $request->validate([
-        'description' => 'required|string|max:255',
-        'amount' => 'required|numeric',
-    ]);
+    $costCommission = CostComissionModel::find($commission_id);
 
-    try {
-        // Find the commission by ID
-        $commission = DB::table('project_cost_commissions')->where('commission_id', $commission_id)->first();
-
-        // Check if the commission exists
-        if (!$commission) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Commission not found'
-            ], 404);
-        }
-
-        // Update the commission
-        DB::table('project_cost_commissions')->where('commission_id', $commission_id)->update([
-            'description' => $validated['description'],
-            'amount' => $validated['amount']
-        ]);
-
-        // Return success response
-        return response()->json([
-            'success' => true,
-            'message' => 'Commission updated successfully!'
-        ]);
-    } catch (\Exception $e) {
-        // Log the error for debugging
-        \Log::error('Error updating commission: ' . $e->getMessage());
-
-        // Return a generic error response
+    if (!$costCommission) {
         return response()->json([
             'success' => false,
-            'message' => 'An error occurred while updating the commission.'
-        ], 500);
+            'message' => 'Commission not found.'
+        ], 404);
     }
+
+    $costCommission->description = $request->input('description');
+    $costCommission->amount = $request->input('amount');
+    $costCommission->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Cost commission updated successfully.'
+    ]);
 }
+
 
 
 }
