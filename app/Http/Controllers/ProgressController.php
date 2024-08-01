@@ -28,7 +28,7 @@ class ProgressController extends Controller
         if (!$projectExists) {
             abort(404, 'Project not found');
         }
-        
+
         $phases = DB::table("phases")->where('project_id', $id)->get();
 
         $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
