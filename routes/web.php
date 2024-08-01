@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\StaticString;
@@ -29,11 +28,12 @@ use App\Http\Controllers\SettingsController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
 Route::post('/9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE', 'App\Http\Controllers\AccountController@position');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
 Route::get('/logout', 'App\Http\Controllers\LoginController@logOut');
+Route::post('/position', 'App\Http\Controllers\AccountController@position');
+
 
 Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/', function () {
@@ -63,6 +63,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
         Route::put('/add', 'App\Http\Controllers\CustomerController@add');
+
+        Route::get('/update', 'App\Http\Controllers\CustomerController@getUpdateView');
         Route::post('/update', 'App\Http\Controllers\CustomerController@update');
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
     });
