@@ -19,25 +19,25 @@
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
                         @php
                             $data = \Illuminate\Support\Facades\DB::table('account')
-                                        ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                                        ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
                                         ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                                        ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                                        ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                                         ->where(
-                                        'account.id_account',
+                                        'account.account_id',
                                         \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                                         )
                                         ->first();
                             $info = \Illuminate\Support\Facades\DB::table('job_detail')
                                         ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
                                         ->where(
-                                            'job_detail.id_employee', $data->id_employee
+                                            'job_detail.employee_id', $data->employee_id
                                         )
                                         ->first();
                             $country = \Illuminate\Support\Facades\DB::table('job_detail')
                                         ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
                                         ->where(
-                                            'job_detail.id_employee', $data->id_employee
+                                            'job_detail.employee_id', $data->employee_id
                                         )
                                         ->first();
 
@@ -279,7 +279,7 @@
                 url: '{{ action('App\Http\Controllers\ProfileController@postProfile')}}',
                 type: "POST",
                 data: {
-                    'id_employee': "{{$employ_detail['id_employee']}}",
+                    'employee_id': "{{$employ_detail['employee_id']}}",
                     '_token': "{{ csrf_token() }}",
                     'first_name': $('#first_name').val(),
                     'last_name': $('#last_name').val(),
@@ -310,7 +310,7 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-            {{--return {{$data->id_employee}};--}}
+            {{--return {{$data->employee_id}};--}}
             let filePhoto = $('.photo')[0].files[0];
             let formData = new FormData();
 
@@ -318,7 +318,7 @@
                 formData.append('photo', filePhoto);
             }
 
-            formData.append('id_employee', {{$data->id_employee}} );
+            formData.append('employee_id', {{$data->employee_id}} );
 
             $.ajax({
                 url: '{{action('App\Http\Controllers\UploadFileController@uploadPhoto')}}',

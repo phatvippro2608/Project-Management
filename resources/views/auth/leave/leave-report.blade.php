@@ -71,7 +71,7 @@
                     <select class="form-control" id="employee" name="employee_id" required>
                         <option value="" selected disabled>Select Employee</option>
                         @foreach ($employees as $employee)
-                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                            <option value="{{ $employee->employee_id }}">{{ $employee->last_name }}
                                 {{ $employee->first_name }}
                             </option>
                         @endforeach

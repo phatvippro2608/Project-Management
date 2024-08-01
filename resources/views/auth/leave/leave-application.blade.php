@@ -122,7 +122,7 @@
                             <select class="form-select" aria-label="Default" name="employee_id">
                                 <option value="">No select</option>
                                 @foreach ($employee_name as $item)
-                                    <option value="{{ $item->id_employee }}">{{ $item->employee_code }}
+                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
                                         - {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
                             </select>
@@ -187,7 +187,7 @@
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
                                 @foreach ($employee_name as $item)
-                                    <option value="{{ $item->id_employee }}">{{ $item->employee_code }} -
+                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }} -
                                         {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
                             </select>

@@ -15,9 +15,9 @@ class DashboardController extends Controller
     private $state_todo = [1, 2];
     public function getViewDashboard()
     {
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
-        $id_employee = DB::selectOne($sql_get_id_employee)->id_employee;
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_id_employee = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
 
         $em_c = count(EmployeeModel::all());
         $team_c = count(TeamModel::all());
@@ -27,9 +27,9 @@ class DashboardController extends Controller
         $sub_c = DB::table('sub_tasks')->count();
 
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
-        FROM account, recent_project, projects
-        WHERE account.id_account = recent_project.id_account AND recent_project.project_id = projects.project_id
-        AND account.id_account=$id_account
+        FROM accounts, recent_project, projects
+        WHERE accounts.account_id = recent_project.account_id AND recent_project.project_id = projects.project_id
+        AND accounts.account_id=$account_id
         ORDER BY created_at DESC
         LIMIT 5 ";
 
@@ -37,17 +37,17 @@ class DashboardController extends Controller
 
 
         $task_sql = "SELECT * FROM tasks, employees, phases
-         WHERE tasks.id_employee = employees.id_employee and phases.phase_id = tasks.phase_id
+         WHERE tasks.employee_id = employees.employee_id and phases.phase_id = tasks.phase_id
          AND DATE(tasks.start_date) <= CURDATE() AND DATE(tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee
+         AND employees.employee_id=$employee_id
          ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
 
 
         $subtask_sql = "SELECT * FROM sub_tasks, employees
-         WHERE sub_tasks.id_employee = employees.id_employee
+         WHERE sub_tasks.employee_id = employees.employee_id
          AND DATE(sub_tasks.start_date) <= CURDATE() AND DATE(sub_tasks.end_date) >= CURDATE()
-         AND employees.id_employee=$id_employee
+         AND employees.employee_id=$employee_id
          ORDER BY sub_tasks.state ASC";
         $subtasks = DB::select($subtask_sql);
 

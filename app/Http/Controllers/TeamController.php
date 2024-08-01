@@ -12,19 +12,19 @@ class TeamController extends Controller
 
     function getView()
     {
-        $team = DB::table('team')->join('employees', 'employees.id_employee', '=', 'team.created_by')->get();
+        $team = DB::table('team')->join('employees', 'employees.employee_id', '=', 'team.created_by')->get();
         return view('auth.project-employee.team.team', ['team' => $team, 'status' => $this->status]);
     }
 
     function add(Request $request){
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
-        $id_employee = DB::selectOne($sql_get_id_employee)->id_employee;
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
         $data = [
             'team_name' => $request->team_name,
             'team_description' => $request->team_description,
             'status' => $request->status,
-            'created_by' => $id_employee,
+            'created_by' => $employee_id,
         ];
         if(DB::table('team')->insert($data)){
             return AccountController::status('Thêm thành công', 200);
@@ -35,14 +35,14 @@ class TeamController extends Controller
 
     function update(Request $request)
     {
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
-        $id_employee = DB::selectOne($sql_get_id_employee)->id_employee;
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
         $data = [
             'team_name' => $request->team_name,
             'team_description' => $request->team_description,
             'status' => $request->status,
-            'created_by' => $id_employee,
+            'created_by' => $employee_id,
         ];
         if(DB::table('team')->where('id_team', $request->id_team)->update($data)){
             return AccountController::status('Cập nhật thành công', 200);

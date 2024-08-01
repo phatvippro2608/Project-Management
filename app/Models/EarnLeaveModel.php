@@ -20,13 +20,13 @@ class EarnLeaveModel extends Model
     ];
     public function employee()
     {
-        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'id_employee');
+        return $this->belongsTo(EmployeeModel::class, 'employee_id', 'employee_id');
     }
 
     public static function getEmployeeLeaveSummary()
     {
         return DB::table('leave_applications')
-            ->join('employees', 'leave_applications.employee_id', '=', 'employees.id_employee')
+            ->join('employees', 'leave_applications.employee_id', '=', 'employees.employee_id')
             ->select(
                 'employees.employee_code',
                 DB::raw('CONCAT(employees.first_name, " ", employees.last_name) as employee_name'),

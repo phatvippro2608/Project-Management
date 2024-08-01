@@ -38,7 +38,7 @@ class ProgressController extends Controller
             ->select('sub_tasks.*')
             ->get();
 
-        $employees = DB::table('employees')->select('id_employee', 'photo', 'last_name', 'first_name')->get();
+        $employees = DB::table('employees')->select('employee_id', 'photo', 'last_name', 'first_name')->get();
         return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
     }
 

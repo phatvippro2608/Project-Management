@@ -15,7 +15,7 @@ class ProposalApplicationController extends Controller
         //permis = 4 -> Direct Manager (Quản lý)
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
 
-        $sql_get_employee_id = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND id_account = $account_id";
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee = DB::selectOne($sql_get_employee_id);
         $employee_id = $employee->employee_id;
 

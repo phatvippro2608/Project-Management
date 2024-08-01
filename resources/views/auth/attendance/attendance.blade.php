@@ -66,13 +66,13 @@
                     $working = strtotime($data->sign_out) - strtotime($data->sign_in);
                     $working = date('H:i', $working);
                     }
-                    $name=DB::table('employees')->where('id_employee', $data->id_employee)->first()->first_name;
-                    $name .= ' ' . DB::table('employees')->where('id_employee', $data->id_employee)->first()->last_name;
+                    $name=DB::table('employees')->where('employee_id', $data->employee_id)->first()->first_name;
+                    $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
                     @endphp
                     <tr>
                         <td>{{ $data->id_attendance }}</td>
                         <td>{{ $name }}</td>
-                        <td>{{ $data->id_employee }}</td>
+                        <td>{{ $data->employee_id }}</td>
                         <td>{{ $data->date }}</td>
                         <td>{{ $data->sign_in }}</td>
                         <td>{{ $data->sign_out }}</td>
@@ -118,7 +118,7 @@
                             </div>
                             <div class="col-3">
                                 <label class="fw-bolder" for=""><i class="bi bi-person"></i> ID</label>
-                                <input id="employee_id" class="form-control" name="id_employee" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                <input id="employee_id" class="form-control" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                             </div>
                             <div class="employees-dropdown fs-5 ps-0 pe-0">
                                 @foreach($employees as $employee)
@@ -127,7 +127,7 @@
                                 $defaultPhoto = asset('assets/img/avt.png');
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
-                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->id_employee }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover ms-2" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
@@ -280,7 +280,7 @@
                 var attendance = data.attendance[0];
                 $('#id_attendance').val(attendance.id_attendance);
                 $('#employee_name').val(employee.first_name + ' ' + employee.last_name);
-                $('#employee_id').val(attendance.id_employee);
+                $('#employee_id').val(attendance.employee_id);
                 $('#date').val(attendance.date);
                 $('#sign_in').val(attendance.sign_in);
                 $('#sign_in').attr('max', attendance.sign_out);
@@ -318,7 +318,7 @@
                         table.row.add([
                             value.id_attendance,
                             name,
-                            value.id_employee,
+                            value.employee_id,
                             value.date,
                             value.sign_in,
                             value.sign_out,
@@ -367,7 +367,7 @@
                         table.row.add([
                         value.id_attendance,
                         name,
-                        value.id_employee,
+                        value.employee_id,
                         value.date,
                         value.sign_in,
                         value.sign_out,

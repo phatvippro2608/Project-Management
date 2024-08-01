@@ -39,10 +39,10 @@
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
-                            <select class="form-select" aria-label="Default" name="id_employee">
+                            <select class="form-select" aria-label="Default" name="employee_id">
                                 @if($list_department)
                                     @foreach ($list_department as $item)
-                                        <option value="{{ $item->id_employee }}">
+                                        <option value="{{ $item->employee_id }}">
                                             {{ $item->first_name }} {{ $item->last_name }}</option>
                                     @endforeach
                                 @endif
@@ -53,7 +53,7 @@
                             <select class="form-select" aria-label="Default" name="id_proposal">
                                 <option value="">No select</option>
                                 {{--                                @foreach ($employee_name as $item)--}}
-                                {{--                                    <option value="{{ $item->id_employee }}">{{ $item->employee_code }}--}}
+                                {{--                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }}--}}
                                 {{--                                {{ $item->first_name }} {{ $item->last_name }}</option>--}}
                                 {{--                                @endforeach--}}
                             </select>

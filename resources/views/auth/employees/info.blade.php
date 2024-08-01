@@ -284,7 +284,7 @@
                                 @foreach ($dataCV as $index => $item)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td><a target="_blank" href="{{ asset('/uploads/' . $data_employee->id_employee . '/' . $item) }}">{{ $item }}</a></td>
+                                        <td><a target="_blank" href="{{ asset('/uploads/' . $data_employee->employee_id . '/' . $item) }}">{{ $item }}</a></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -313,7 +313,7 @@
                                     @foreach ($dataMedical as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->medical_checkup_file) }}">{{ $item->medical_checkup_file }}</a></td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->employee_id . '/' . $item->medical_checkup_file) }}">{{ $item->medical_checkup_file }}</a></td>
                                             <td>{{ $item->medical_checkup_issue_date }}</td>
                                         </tr>
                                     @endforeach
@@ -346,7 +346,7 @@
                                     @foreach($dataCertificate as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->id_employee . '/' . $item->certificate) }}">{{ $item->certificate }}</a></td>
+                                            <td><a target="_blank" href="{{ asset('/uploads/' . $item->employee_id . '/' . $item->certificate) }}">{{ $item->certificate }}</a></td>
                                             <td>{{ $item->certificate_type_name}}</td>
                                             <td>{{ $item->end_date_certificate }}</td>
                                         </tr>

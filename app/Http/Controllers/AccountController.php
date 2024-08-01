@@ -22,7 +22,7 @@ class AccountController extends Controller
         $keyword = trim($keyword);
         $keyword = $this->removeVietnameseAccents($keyword);
         $account = EmployeeModel::query()
-            ->join('account', 'account.id_employee', '=', 'employees.id_employee')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -96,7 +96,7 @@ class AccountController extends Controller
 
     function add(Request $request)
     {
-        $id_employee = $request->input('id_employee', '');
+        $employee_id = $request->input('employee_id', '');
         $username = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');
@@ -104,16 +104,16 @@ class AccountController extends Controller
         $permission = $request->input('permission');
 
         if ($permission == 1) {
-            if (AccountModel::where('permission', 1)->where('id_employee', '!=', $id_employee)->count() >= 3) {
+            if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
 
-        if (AccountModel::where('id_employee', $id_employee)->count() >= 1) {
+        if (AccountModel::where('employee_id', $employee_id)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
         };
 
-        if ($id_employee == -1) {
+        if ($employee_id == -1) {
             return $this->status('Vui lòng chọn nhân viên cần tạo tài khoản', 500);
         }
 
@@ -127,7 +127,7 @@ class AccountController extends Controller
 
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
         $i = [
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'username' => $username,
             'email' => $email,
             'password' => $hashPass,
@@ -142,15 +142,15 @@ class AccountController extends Controller
 
     function update(Request $request)
     {
-        $id_account = $request->input('id_account');
-        $id_employee = $request->input('id_employee');
+        $account_id = $request->input('account_id');
+        $employee_id = $request->input('employee_id');
         $username = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');
         $status = $request->input('status');
         $permission = $request->input('permission');
 
-        if (AccountModel::where('id_employee', $id_employee)->where('id_account', '!=', $id_account)->count() >= 1) {
+        if (AccountModel::where('employee_id', $employee_id)->where('account_id', '!=', $account_id)->count() >= 1) {
             return $this->status('Tài khoản đã tồn tại', 500);
         };
 //        $auto_pwd = $request->input('auto_pwd');
@@ -160,13 +160,13 @@ class AccountController extends Controller
         $hashPass = password_hash($password, PASSWORD_BCRYPT);
 
         if ($permission == 1) {
-            if (AccountModel::where('permission', 1)->where('id_employee', '!=', $id_employee)->count() >= 3) {
+            if (AccountModel::where('permission', 1)->where('employee_id', '!=', $employee_id)->count() >= 3) {
                 return $this->status('Đã quá số lượng Super Admin', 500);
             };
         }
 
         $i = [
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'username' => $username,
             'email' => $email,
             'permission' => $permission,
@@ -174,7 +174,7 @@ class AccountController extends Controller
         ];
         if (!empty($password))
             $i['password'] = $hashPass;
-        if (AccountModel::where('id_account', $id_account)->update($i)) {
+        if (AccountModel::where('account_id', $account_id)->update($i)) {
             return $this->status('Cập nhật thành công', 200);
         };
         return $this->status('Cập nhật thất bại', 500);
@@ -182,8 +182,8 @@ class AccountController extends Controller
 
     function delete(Request $request)
     {
-        $id_account = $request->input('id_account');
-        if (AccountModel::where('id_account', $id_account)->delete()) {
+        $account_id = $request->input('account_id');
+        if (AccountModel::where('account_id', $account_id)->delete()) {
             return $this->status('Xóa tài khoản thành công', 200);
         };
         return $this->status('Xóa thất bại', 500);
@@ -241,7 +241,7 @@ class AccountController extends Controller
     function loginHistory(Request $request)
     {
         $keyword = $request->input('keyw', '');
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
         if($permission == 1){
@@ -250,7 +250,7 @@ class AccountController extends Controller
             } else
                 $history = DB::table('login_history')->orderBy('created_at', 'desc')->get();
         }else{
-            $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.id_employee = account.id_employee AND id_account = $id_account";
+            $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND account_id = $account_id";
             $employee = DB::selectOne($sql_get_id_employee);
             if ($keyword != null) {
                 $history = DB::table('login_history')->where(['username' => $employee->username])->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
