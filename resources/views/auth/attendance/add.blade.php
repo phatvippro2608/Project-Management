@@ -44,7 +44,6 @@
                                     <label class="fw-bolder" for=""><i class="bi bi-person"></i> ID</label>
                                     <input id="employee_id" class="form-control" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-6 mt-3" style="border-left: 1px solid black;">
