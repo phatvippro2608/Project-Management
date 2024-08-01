@@ -24,6 +24,7 @@ use App\StaticString; ?>
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -41,8 +42,7 @@ use App\StaticString; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css"/>
-    <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+    <script src="{{asset('assets/js/datatables.js')}}"></script>
 
     <script type="text/javascript"
             src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
@@ -223,20 +223,20 @@ use App\StaticString; ?>
             </li>
             @php
 
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
+                $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                            ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                            ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
-                            'account.id_account',
+                            'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
                 $info = \Illuminate\Support\Facades\DB::table('job_detail')
                             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
                             ->where(
-                                'job_detail.id_employee', $data->id_employee
+                                'job_detail.employee_id', $data->employee_id
                             )
                             ->first();
             @endphp
@@ -272,7 +272,7 @@ use App\StaticString; ?>
                     <li>
 
                         <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['id_employee'=>$data->id_employee]) }}">
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
 
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -403,11 +403,11 @@ use App\StaticString; ?>
         @endif
 
         @php
-            $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
                 ->where(
-                    'id_account',
+                    'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                 )
                 ->first();
@@ -505,6 +505,31 @@ use App\StaticString; ?>
                 <li>
                     <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
                         <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">Customer Manager</li>
+        <li class="nav-item">
+            <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
+                 href="">
+                <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+            </div>
+            <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\CustomerController@getView')}}">
+                        <i class="bi bi-circle"></i><span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Support</span>
                     </a>
                 </li>
             </ul>

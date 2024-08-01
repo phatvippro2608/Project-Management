@@ -215,6 +215,7 @@
             $('.name1').val(data.team_name);
             $('.name2').val(data.status);
             $('.name3').val(data.team_description);
+            $('.at1').text('Update');
             $('.md1').modal('show');
 
             $('.at1').click(function () {
