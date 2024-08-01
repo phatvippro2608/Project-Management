@@ -106,7 +106,7 @@
         </div>
     </section>
     <div class="modal fade md1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog g-cemodal-dialontered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title text-bold"></h4>
@@ -124,7 +124,6 @@
                                         - {{$employee->first_name}} {{$employee->last_name}}</option>
                                 @endforeach
                             </select>
-
                         </div>
                     </div>
                     <div class="row">

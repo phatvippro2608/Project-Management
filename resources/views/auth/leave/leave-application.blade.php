@@ -122,7 +122,7 @@
                             <select class="form-select" aria-label="Default" name="employee_id">
                                 <option value="">No select</option>
                                 @foreach ($employee_name as $item)
-                                    <option value="{{ $item->id_employee }}">{{ $item->employee_code }}
+                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
                                         - {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
                             </select>
@@ -137,7 +137,7 @@
                             <select class="form-select" aria-label="Default" name="leave_type">
                                 <option value="">No select</option>
                                 @foreach ($leave_type as $item)
-                                    <option value="{{ $item->id }}">{{ $item->leave_type }}</option>
+                                    <option value="{{ $item->leave_type_id }}">{{ $item->leave_type }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -187,7 +187,7 @@
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
                                 @foreach ($employee_name as $item)
-                                    <option value="{{ $item->id_employee }}">{{ $item->employee_code }} -
+                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }} -
                                         {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
                             </select>
@@ -201,7 +201,7 @@
                             <select class="form-select" aria-label="Default" name="leave_type" id="edit_leave_type">
                                 <option value="">No select</option>
                                 @foreach ($leave_type as $item)
-                                    <option value="{{ $item->id }}">{{ $item->leave_type }}</option>
+                                    <option value="{{ $item->leave_type_id }}">{{ $item->leave_type }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -271,7 +271,7 @@
             $('#applicationTable').on('click', '.edit-btn', function() {
                 var applicationID = $(this).data('id');
 
-                $('#editApplicationForm').data('id', applicationID); 
+                $('#editApplicationForm').data('id', applicationID);
                 var url = "{{ route('leave-application.edit', ':id') }}";
                 url = url.replace(':id', applicationID);
                 $.ajax({

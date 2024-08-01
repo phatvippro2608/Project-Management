@@ -15,8 +15,9 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
-
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RecognitionController;
+use App\Http\Controllers\DisciplinaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -217,3 +218,13 @@ Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID
 Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
 Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
 Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+
+// recognition
+Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [RecognitionController::class, 'getView'])->name('recognition');
+    Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
+});
+
+// disciplinary
+Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
+
