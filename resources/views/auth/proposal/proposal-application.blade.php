@@ -1,5 +1,13 @@
 @extends('auth.main');
 @section('contents')
+    <style>
+        .custom-img {
+            width: 100%;
+            /* Điều chỉnh kích thước chiều rộng */
+            height: auto;
+            /* Giữ tỷ lệ khung hình */
+        }
+    </style>
     <div class="pagetitle">
         <h1>Proposal Applicaiton</h1>
         <nav>
@@ -31,7 +39,8 @@
 
                 <div class="modal-header">
                     <h4 class="modal-title">Add Proposal Application</h4>
-                    @component('auth.component.btnCloseModal')@endcomponent
+                    @component('auth.component.btnCloseModal')
+                    @endcomponent
                 </div>
 
                 <div class="modal-body">
@@ -39,10 +48,12 @@
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
-                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id" @if ($data['permission'] == 0) disabled @endif>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id"
+                                @if ($data['permission'] == 0) disabled @endif>
                                 @if ($data['permission'] == 0)
                                     <option value="{{ $data['list_proposal'][0]->employee_id }}">
-                                        {{ $data['list_proposal'][0]->first_name }} {{ $data['list_proposal'][0]->last_name }}
+                                        {{ $data['list_proposal'][0]->first_name }}
+                                        {{ $data['list_proposal'][0]->last_name }}
                                     </option>
                                 @elseif($data['permission'] == 3)
                                     @foreach ($data['employee_of_depart'] as $item)
@@ -71,13 +82,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="floatingTextarea2">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="description"
-                                      name="description"
-                                      style="height: 100px"></textarea>
+                            <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
+                                style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="floatingTextarea2">Upload your file</label>
-
+                            <label for="file" class="form-label">Upload your files</label>
+                            <input class="form-control" type="file" id="file" name="files[]" multiple>
+                            <ul id="fileList" class="list-unstyled mt-2"></ul>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Proposal Application</button>
                     </form>
@@ -91,69 +102,80 @@
         <h3 class="text-left mb-4">Proposal Application</h3>
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
-            <tr>
-                <th>No</th>
-                <th>Employee Name</th>
-                <th>Proposal Name Type</th>
-                <th>Description</th>
-                <th>Progress</th>
-                @if ($data['permission'] == 3)
-                    <th class="text-center">Direct Department</th>
-                @endif
-                @if ($data['permission'] == 4)
-                    <th class="text-center">Direct Department</th>
-                    <th class="text-center">Direct Manager</th>
-                @endif
-            </tr>
-            </thead>
-            <tbody id="departmentsTableBody">
-            @php($stt=0)
-            @foreach ($data['list_proposal'] as $item)
                 <tr>
-                    <td>{{$stt++}}</td>
-                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                    <td>{{$item->name}}</td>
-                    <td>{{$item->description}}</td>
-                    <td>
-                        @if($item->progress==0)
-                            <div class="">Chưa xét duyệt</div>
-                        @elseif($item->progress==1)
-                            <div class="">Đã duyệt cấp 1</div>
-                        @elseif($item->progress==1)
-                            <div class="">Đã duyệt xong</div>
-                        @endif
-                    </td>
+                    <th>No</th>
+                    <th>Employee Name</th>
+                    <th>Proposal Name Type</th>
+                    <th>Description</th>
+                    <th>Progress</th>
                     @if ($data['permission'] == 3)
-                        <td class="text-center">
-                            <button
-                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="">
-                                <i class="bi bi-check-circle"></i>
-                                Chưa duyệt
-                            </button>
-                        </td>
+                        <th class="text-center">Direct Department</th>
                     @endif
                     @if ($data['permission'] == 4)
-                        <td class="text-center">
-                            <button
-                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="">
-                                <i class="bi bi-check-circle"></i>
-                                Chưa duyệt
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button
-                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="">
-                                <i class="bi bi-check-circle "></i>
-                                Chưa duyệt
-
-                            </button>
-                        </td>
+                        <th class="text-center">Direct Department</th>
+                        <th class="text-center">Direct Manager</th>
                     @endif
                 </tr>
-            @endforeach
+            </thead>
+            <tbody id="departmentsTableBody">
+                @php($stt = 0)
+                @foreach ($data['list_proposal'] as $item)
+                    <tr>
+                        <td>{{ $stt++ }}</td>
+                        <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->description }}</td>
+                        <td>
+                            <div class="progress">
+                                @if ($item->progress == 0)
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
+                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                        Chưa xét 
+                                    </div>
+                                @elseif($item->progress == 1)
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                        Đã duyệt cấp 1
+                                    </div>
+                                @elseif($item->progress == 2)
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                        Đã duyệt xong
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                        @if ($data['permission'] == 3)
+                            <td class="text-center">
+                                <button
+                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="">
+                                    <i class="bi bi-check-circle"></i>
+                                    Chưa duyệt
+                                </button>
+                            </td>
+                        @endif
+                        @if ($data['permission'] == 4)
+                            <td class="text-center">
+                                <button
+                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="">
+                                    <i class="bi bi-check-circle"></i>
+                                    Chưa duyệt
+                                </button>
+                            </td>
+                            <td class="text-center">
+                                <button
+                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="">
+                                    <i class="bi bi-check-circle "></i>
+                                    Chưa duyệt
+
+                                </button>
+                            </td>
+                        @endif
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -162,8 +184,10 @@
 @section('script')
     <script>
         var table = $('#departmentsTable').DataTable({
-            language: {search: ""},
-            initComplete: function (settings, json) {
+            language: {
+                search: ""
+            },
+            initComplete: function(settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
@@ -171,25 +195,67 @@
             }
         });
 
-        $('#addProposalApplicationForm').submit(function (e) {
+        const fileArray = [];
+        const input = document.getElementById('file');
+
+        input.addEventListener('change', function(event) {
+            const fileList = document.getElementById('fileList');
+
+            for (let i = 0; i < input.files.length; i++) {
+                fileArray.push(input.files[i]);
+            }
+
+            updateFileList();
+        });
+
+        function updateFileList() {
+            const dataTransfer = new DataTransfer();
+            fileArray.forEach(file => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
+
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            fileArray.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
+                let displayName = file.name;
+                if (displayName.length > 30) {
+                    displayName = displayName.substring(0, 25) + '...';
+                }
+                li.textContent = displayName + ' ';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.className = 'text-right btn btn-danger btn-sm ms-2';
+                removeBtn.onclick = function() {
+                    fileArray.splice(index, 1);
+                    updateFileList();
+                };
+
+                li.appendChild(removeBtn);
+                fileList.appendChild(li);
+            });
+        }
+
+        $('#addProposalApplicationForm').submit(function(e) {
             e.preventDefault();
 
             $.ajax({
                 url: '{{ route('proposal-application.add') }}',
                 method: 'POST',
                 data: $(this).serialize(),
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function () {
+                        setTimeout(function() {
                             location.reload()
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     if (xhr.status === 400) {
                         var response = xhr.responseJSON;
                         toastr.error(response.message, "Error");
