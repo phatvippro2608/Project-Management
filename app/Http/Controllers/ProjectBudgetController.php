@@ -17,7 +17,7 @@ class ProjectBudgetController extends Controller
     public function getView($id)
     {
 
-        $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
+        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
         $dataCostGroupData = DB::table('project_cost_datagroup')->get();
@@ -98,7 +98,7 @@ public function showProjectDetail($id)
     $data = DB::table('projects')->where('project_id', $id)->first();
     $total = 0;
     $subtotal1 = 0;
-    $items = DB::table('project_cost')->where('project_id', $id)->get();
+    $items = DB::table('project_costs')->where('project_id', $id)->get();
     $contracts = DB::table('contracts')->get();
 
     foreach ($items as $item) {
