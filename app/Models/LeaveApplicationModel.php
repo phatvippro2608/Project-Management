@@ -12,7 +12,7 @@ class LeaveApplicationModel extends Model
     //Get Data
     function getEmployeeName()
     {
-        $sql = "SELECT * from employees WHERE employee_id NOT IN(SELECT employee_id from account)";
+        $sql = "SELECT * from employees WHERE employee_id NOT IN(SELECT employee_id from accounts)";
         return DB::select($sql);
     }
 
@@ -46,6 +46,6 @@ class LeaveApplicationModel extends Model
     // Thiết lập mối quan hệ với bảng leave_types
     public function leaveType()
     {
-        return $this->belongsTo(LeaveTypeModel::class, 'leave_type', 'id');
+        return $this->belongsTo(LeaveTypeModel::class, 'leave_type', 'leave_type_id');
     }
 }
