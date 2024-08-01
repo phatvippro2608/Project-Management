@@ -13,8 +13,11 @@ class AccountModel extends Model
     protected $primaryKey = 'id_account';
 
 
-    static function getAll(){
-        $sql = "SELECT * FROM account, employees WHERE account.employee_id = employees.employee_id ORDER BY id_account DESC";
+
+    static function getAll($keyword){
+        $sql = "SELECT * FROM ACCOUNT, EMPLOYEES WHERE ACCOUNT.ID_EMPLOYEE = EMPLOYEES.ID_EMPLOYEE
+                AND(LAST_NAME LIKE '%$keyword%' OR FIRST_NAME LIKE '%$keyword%' OR LAST_NAME+' '+FIRST_NAME LIKE '%$keyword%'
+                OR EMPLOYEE_CODE LIKE '%$keyword%' OR USERNAME LIKE '%$keyword%')";
         return DB::select($sql);
     }
 }

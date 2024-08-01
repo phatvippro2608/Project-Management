@@ -60,6 +60,15 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/demo', 'App\Http\Controllers\AccountController@import');
     });
 
+    Route::group(['prefix' => '/customer'], function () {
+        Route::get('/', 'App\Http\Controllers\CustomerController@getView');
+        Route::put('/add', 'App\Http\Controllers\CustomerController@add');
+        Route::post('/update', 'App\Http\Controllers\CustomerController@update');
+        Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
+    });
+
+
+
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/team', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');

@@ -6,7 +6,11 @@ use App\Models\AccountModel;
 use App\Models\EmployeeModel;
 use App\Models\SpreadsheetModel;
 use App\StaticString;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Date;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -19,6 +23,10 @@ class AccountController extends Controller
     {
         $perPage = (int)env('ITEM_PER_PAGE');
         $keyword = $request->input('keyw', '');
+
+        $account = AccountModel::getAll($keyword);
+        $employees = EmployeeModel::all();
+
         $keyword = trim($keyword);
         $keyword = $this->removeVietnameseAccents($keyword);
         $account = EmployeeModel::query()
@@ -33,6 +41,7 @@ class AccountController extends Controller
 
         $sql = "SELECT * from employees";
         $employees = DB::select($sql);
+
         $status = $this->status;
         return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => $this->permission]);
     }
@@ -189,6 +198,44 @@ class AccountController extends Controller
         return $this->status('Xóa thất bại', 500);
     }
 
+
+    function setLastActive(Request $request)
+    {
+        $id_account = $request->input('id_account');
+        $i = [
+            'last_active' => Carbon::now()
+        ];
+        if(AccountModel::where('id_account',$id_account)->update($i)){
+            return $this->status('Cập nhật thành công', 200);
+        };
+        return $this->status('Cập nhật thất bại', 500);
+    }
+
+    static function timeAgo($timestamp) {
+        $timeDifference = time() - strtotime($timestamp);
+
+        if ($timeDifference < 1) {
+            return 'Just now';
+        }
+
+        $condition = array(
+            12 * 30 * 24 * 60 * 60 => 'year',
+            30 * 24 * 60 * 60 => 'month',
+            24 * 60 * 60 => 'day',
+            60 * 60 => 'hour',
+            60 => 'minute',
+            1 => 'second'
+        );
+
+        foreach ($condition as $secs => $str) {
+            $d = $timeDifference / $secs;
+
+            if ($d >= 1) {
+                $t = round($d);
+                return 'Active ' . $t . ' ' . $str . ($t > 1 ? 's' : '') . ' ago';
+            }
+        }
+
     function demoView()
     {
         return view('auth.account.account_import_demo');
@@ -269,6 +316,5 @@ class AccountController extends Controller
         } catch (\Exception $exception) {
             return self::status('Failed to delete history', 500);
         }
-
     }
 }

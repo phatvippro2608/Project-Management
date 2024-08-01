@@ -139,7 +139,7 @@
                                         onclick="showDropdown(this)" onfocus="showDropdown(this)">
                                     <div class="dropdown-content">
                                         @foreach ($employees as $employee)
-                                            <div class="dropdown-item" data-value="{{ $employee->id_employee }}">
+                                            <div class="dropdown-item" data-value="{{ $employee->employee_id }}">
                                                 <img src="{{ asset($employee->photo) }}" width="20"
                                                     height="20">{{ $employee->last_name }} {{ $employee->first_name }}
                                             </div>
@@ -200,7 +200,7 @@
                                         onfocus="showDropdown(this)">
                                     <div class="dropdown-content">
                                         @foreach ($employees as $employee)
-                                            <div class="dropdown-item" data-value="{{ $employee->id_employee }}">
+                                            <div class="dropdown-item" data-value="{{ $employee->employee_id }}">
                                                 <img src="{{ asset($employee->photo) }}" width="20"
                                                     height="20">{{ $employee->last_name }} {{ $employee->first_name }}
                                             </div>
@@ -577,7 +577,7 @@
                     $('#request').val(task.request);
                     $('#users').attr('data-user-id', task.engineers);
                     @foreach ($employees as $employee)
-                        if ('{{ $employee->id_employee }}' == task.engineers) {
+                        if ('{{ $employee->employee_id }}' == task.engineers) {
                             $('#users').val('{{ $employee->last_name }} {{ $employee->first_name }}');
                         }
                     @endforeach
@@ -624,7 +624,7 @@
                     $('#request').val(subtask.request);
                     $('#users').attr('data-user-id', subtask.engineers);
                     @foreach ($employees as $employee)
-                        if ('{{ $employee->id_employee }}' == subtask.engineers) {
+                        if ('{{ $employee->employee_id }}' == subtask.engineers) {
                             $('#users').val('{{ $employee->last_name }} {{ $employee->first_name }}');
                         }
                     @endforeach
