@@ -14,7 +14,7 @@ class AccountModel extends Model
 
 
     static function getAll(){
-        $sql = "SELECT * FROM account, employees WHERE account.id_employee = employees.id_employee ORDER BY id_account DESC";
+        $sql = "SELECT * FROM account, employees WHERE account.employee_id = employees.employee_id ORDER BY id_account DESC";
         return DB::select($sql);
     }
 }
