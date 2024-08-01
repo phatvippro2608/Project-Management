@@ -15,10 +15,10 @@ class ProposalApplicationController extends Controller
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
 
         $model_proposal = new ProposalApplicationModel();
-        $model_leaveapp = new LeaveApplicationModel();
         $data = $model_proposal->getListProposal();
         $proposal_types = $model_proposal->getProposalTypes();
-        $employee_name = $model_leaveapp->getEmployeeName();
+        $employee_name = $model_proposal->getEmployeeName();
+//        dd($employee_name);
         return view(
             'auth.proposal.proposal-application',
             compact('data', 'employee_name', 'proposal_types')

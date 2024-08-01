@@ -19,6 +19,10 @@ class ProposalApplicationModel extends Model
         'progress'
     ];
     public $timestamps = false;
+    public function getEmployeeName()
+    {
+        return DB::table('employees')->get();
+    }
     public function getProposalTypes()
     {
         return DB::table('proposal_types')->get();
