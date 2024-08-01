@@ -83,7 +83,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
 
     Route::group(['prefix' => '/profile'], function () {
-        Route::get('/{id_employee}', 'App\Http\Controllers\ProfileController@getViewProfile');
+        Route::get('/{employee_id}', 'App\Http\Controllers\ProfileController@getViewProfile');
         Route::post('/update', 'App\Http\Controllers\ProfileController@postProfile');
         Route::post('/change-password', 'App\Http\Controllers\ProfileController@changePassword');
     });

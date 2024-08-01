@@ -223,20 +223,20 @@ use App\StaticString; ?>
             </li>
             @php
 
-                $data = \Illuminate\Support\Facades\DB::table('account')
-                            ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                            ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+                $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                            ->join('contacts', 'employees.id_contact', '=', 'contacts.contact_id')
+                            ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
 
                             ->where(
-                            'account.id_account',
+                            'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                             )
                             ->first();
                 $info = \Illuminate\Support\Facades\DB::table('job_detail')
                             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
                             ->where(
-                                'job_detail.id_employee', $data->id_employee
+                                'job_detail.employee_id', $data->employee_id
                             )
                             ->first();
             @endphp
@@ -272,7 +272,7 @@ use App\StaticString; ?>
                     <li>
 
                         <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['id_employee'=>$data->id_employee]) }}">
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
 
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -403,11 +403,11 @@ use App\StaticString; ?>
         @endif
 
         @php
-            $data = \Illuminate\Support\Facades\DB::table('account')
-                ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
                 ->where(
-                    'id_account',
+                    'account_id',
                     \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                 )
                 ->first();

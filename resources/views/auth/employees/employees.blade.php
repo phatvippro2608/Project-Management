@@ -60,47 +60,48 @@
                     </tr>
                     </thead>
                     <tbody id="employeesTableBody">
-                    @foreach($data as $item)
-                        @if($item->fired == "false")
-                            <tr>
-                                <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->id_employee)}}">{{$item->employee_code}}</a></td>
-                                @php
-                                    $imageUrl = asset('assets/img/avt.png'); // Default image URL
+                        <tbody>
+                        @foreach($data as $item)
+                            @if($item->fired == "false")
+                                <tr>
+                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
+                                    @php
+                                        $imageUrl = asset('assets/img/avt.png');
 
-                                    if($item->photo != null){
-                                        $imagePath = public_path($item->photo);
-                                        if(file_exists($imagePath)) {
-                                            $imageUrl = asset($item->photo);
+                                        if($item->photo != null){
+                                            $imagePath = public_path($item->photo);
+                                            if(file_exists($imagePath)) {
+                                                $imageUrl = asset($item->photo);
+                                            }
                                         }
-                                    }
-                                @endphp
-
-                                <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
-                                <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                <td>{{$item->en_name}}</td>
-                                <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
-                                <td>{{$item->phone_number}}</td>
-                                <td>
-                                        <?php
-                                        $id = $item->id_employee;
-                                        $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                        $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                        $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                        $item->email = \Illuminate\Support\Facades\DB::table('account')->where('id_employee', $id)->value('email');
-                                        ?>
-                                    <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    |
-                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @endif
-                    @endforeach
-                    </tbody>
-                </table>
+                                    @endphp
+                                    <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
+                                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
+                                    <td>{{$item->en_name}}</td>
+                                    <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
+                                    <td>{{$item->phone_number}}</td>
+                                    <td>
+                                            <?php
+                                            $id = $item->employee_id;
+                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                            $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
+                                            ?>
+                                        <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        |
+                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="card-footer">
                 @if ($data->hasPages())
@@ -129,7 +130,7 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="">
+                                                <input type="text" class="form-control employee_code" name="" disabled value="{{\App\Http\Controllers\EmployeesController::generateEmployeeCode()}}">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -151,14 +152,10 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div photo-input-target="photoAdd" class="col-md-2 photo-upload">
-                                                <img id="profileImage" src="{{asset('assets/img/avt.png')}}" alt="Profile">
+                                            <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control phone_number" name="">
                                             </div>
-{{--                                            <div class="col-sm-8">--}}
-{{--                                                <input type="file" class="form-control photo" name="">--}}
-{{--                                            </div>--}}
-
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -233,12 +230,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control phone_number" name="">
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </form><!-- End General Form Elements -->
@@ -295,7 +287,7 @@
                                     <div class="row mb-3">
                                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control employee_code" name="" disabled>
+                                            <input type="text" class="form-control employee_code" name="" @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -730,6 +722,7 @@
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
+
         $('.at1').click(function () {
             $('.md1').modal('show');
 
@@ -783,7 +776,7 @@
                     formData.append('photo', filePhoto);
                 }
 
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
 
                 $.ajax({
                     url: _upload_photo,
@@ -819,7 +812,7 @@
                     });
                 }
 
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
 
                 $.ajax({
                     url: _upload_personal_profile, // Đảm bảo rằng _upload_personal_profile là URL hợp lệ
@@ -849,6 +842,15 @@
                 });
             });
 
+            //clear image when modal close
+            {{--$('.md3').on('hidden.bs.modal', function () {--}}
+            {{--    if ($('.md3').css('display') === 'none') {--}}
+            {{--        $('.md3 #profileImage').attr('src','{{asset('assets/img/avt.png')}}');--}}
+            {{--        $('.md3 .photo-upload').val('');--}}
+            {{--        console.log($('#photoUpdate').val());--}}
+            {{--    }--}}
+            {{--});--}}
+
             $('.md3 .btn_upload_medical').click(function () {
                 event.preventDefault();
                 let file = $('.md3 .medical_checkup')[0].files[0];
@@ -856,7 +858,7 @@
 
 
                 formData.append('medical_file', file);
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('medical_checkup_date', $('.medical_checkupdate').val());
                 $.ajax({
                     url: _upload_medical_checkup,
@@ -890,7 +892,7 @@
                 let file = $('.md3 .certificate_file')[0].files[0];
                 let formData = new FormData();
                 formData.append('certificate_file', file);
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('certificate_end_date', $('.certificate_end_date').val());
                 formData.append('type_certificate', $('.type_certificate').val());
                 $.ajax({
@@ -926,9 +928,9 @@
             $('.md3 .first_name').val(data.first_name);
             $('.md3 .last_name').val(data.last_name);
             $('.md3 .en_name').val(data.en_name);
-            let imagePath = "/uploads/" + data.id_employee;
+            let imagePath = "/uploads/" + data.employee_id;
             let defaultImage = "{{ asset('assets/img/avt.png') }}";
-
+            console.log(data.photo)
             $.ajax({
                 url: _check_file_exists, // Create a route to check if the file exists
                 method: 'POST',
@@ -938,6 +940,7 @@
                 data: { path: data.photo },
                 success: function(response) {
                     if (response.exists) {
+                        console.log('{{asset('')}}' + data.photo);
                         $('.md3 .photo_show').attr('src', '{{asset('')}}' + data.photo);
                     } else {
                         $('.md3 .photo_show').attr('src', defaultImage);
@@ -952,7 +955,7 @@
             let dataCV = JSON.parse(data.cv);
             if(dataCV){
                 dataCV.forEach(function(filename, index) {
-                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + filename;
+                    let cvLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + filename;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + cvLink + '" target="_blank">' + filename + '</a></td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv"  data_filename="'+filename+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.cv-list').append(row);
                 });
@@ -962,7 +965,7 @@
             let dataMedical = JSON.parse(data.medical);
             if(dataMedical){
                 dataMedical.forEach(function(item, index) {
-                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.medical_checkup_file;
+                    let medicalLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.medical_checkup_file;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + medicalLink + '" target="_blank">' + item.medical_checkup_file + '</a></td><td >'+ item.medical_checkup_issue_date+'</td><td class="text-center"><button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical" data_id_medical="'+item.id_medical_checkup+'"  data_filename="'+item.medical_checkup_file+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.medical_list').append(row);
                 });
@@ -971,7 +974,7 @@
             let dataCertificate = JSON.parse(data.certificates);
             if(dataCertificate){
                 dataCertificate.forEach(function(item, index) {
-                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.id_employee + '/' + item.certificate;
+                    let certificateLink = '{{ asset('/uploads/') }}' + '/' + data.employee_id + '/' + item.certificate;
                     let row = '<tr><td >' + (index + 1) + '</td><td ><a href="' + certificateLink + '" target="_blank">' + item.certificate + '</a></td><td >'+item.certificate_type_name+'</td><td >'+ item.end_date_certificate+'</td><td class="text-center"> <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate" data_id_certificate="'+item.id_certificate+'" data_filename="'+item.certificate+'"><i class="bi bi-trash3 text-danger"></i></button></td></tr>';
                     $('.certificate_list').append(row);
                 });
@@ -1012,10 +1015,10 @@
 
             $('.md3 .btn_delete_cv').click(function (event) {
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('filename', filename);
                 formData.append('file_of', "cv");
                 if(confirm('Are you sure DELETE this file?')){
@@ -1045,11 +1048,11 @@
             $('.md3 .btn_delete_medical').click(function () {
                 event.preventDefault();
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let id_medical_checkup = $(this).attr('data_id_medical');
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('id_medical_checkup', id_medical_checkup);
                 formData.append('filename', filename);
                 formData.append('file_of', "medical");
@@ -1079,11 +1082,11 @@
 
             $('.md3 .btn_delete_certificate').click(function () {
                 event.preventDefault();
-                let id_employee = data.id_employee;
+                let employee_id = data.employee_id;
                 let id_certificate = $(this).attr('data_id_certificate');
                 let filename = $(this).attr('data_filename');
                 let formData = new FormData();
-                formData.append('id_employee', id_employee);
+                formData.append('employee_id', employee_id);
                 formData.append('id_certificate', id_certificate);
                 formData.append('filename',filename);
                 formData.append('file_of', "certificate");
@@ -1153,7 +1156,7 @@
                 };
 
                 let formData = new FormData();
-                formData.append('id_employee', data.id_employee);
+                formData.append('employee_id', data.employee_id);
                 formData.append('id_contact', data.id_contact);
                 formData.append('dataEmployee', JSON.stringify(dataEmployee));
                 formData.append('dataContact', JSON.stringify(dataContact));
