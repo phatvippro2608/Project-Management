@@ -25,7 +25,7 @@
     <section class="section employees">
         <div class="row">
             <div class="col">
-                <div class="card">
+                <div class="card p-2 border rounded-4">
                     <div class="card-header py-0">
                         <div class="card-title my-3 p-0">Account List</div>
                     </div>
