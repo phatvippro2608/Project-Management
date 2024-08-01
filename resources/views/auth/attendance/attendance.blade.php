@@ -70,7 +70,7 @@
                     $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
                     @endphp
                     <tr>
-                        <td>{{ $data->id_attendance }}</td>
+                        <td>{{ $data->attendance_id }}</td>
                         <td>{{ $name }}</td>
                         <td>{{ $data->employee_id }}</td>
                         <td>{{ $data->date }}</td>
@@ -78,8 +78,8 @@
                         <td>{{ $data->sign_out }}</td>
                         <td>{{ $working }}</td>
                         <td>
-                            <button data-attendance="{{ $data->id_attendance }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
-                            <button data-attendance="{{ $data->id_attendance }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                            <button data-attendance="{{ $data->attendance_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
+                            <button data-attendance="{{ $data->attendance_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
                     @endforeach
@@ -95,7 +95,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Attendance edit</h5>
-                    <input type="text" name="id_attendance" id="id_attendance" hidden>
+                    <input type="text" name="attendance_id" id="attendance_id" hidden>
                     <div class="dropdown ms-auto">
                         <button class="btn" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
@@ -278,7 +278,7 @@
             success: function(data) {
                 var employee = data.employees[0];
                 var attendance = data.attendance[0];
-                $('#id_attendance').val(attendance.id_attendance);
+                $('#attendance_id').val(attendance.attendance_id);
                 $('#employee_name').val(employee.first_name + ' ' + employee.last_name);
                 $('#employee_id').val(attendance.employee_id);
                 $('#date').val(attendance.date);
@@ -288,7 +288,7 @@
                 $('#sign_out').attr('min', attendance.sign_in);
                 var photoPath = employee.photo;
                 $('#employee-img').attr('src', photoPath);
-                $('#dl_attendance').attr('data-attendance', attendance.id_attendance);
+                $('#dl_attendance').attr('data-attendance', attendance.attendance_id);
                 $('#modalViewAttendance').modal('show');
             }
         });
@@ -316,15 +316,15 @@
                         }
                         var name = value.first_name + ' ' + value.last_name;
                         table.row.add([
-                            value.id_attendance,
+                            value.attendance_id,
                             name,
                             value.employee_id,
                             value.date,
                             value.sign_in,
                             value.sign_out,
                             working,
-                            '<button data-attendance="' + value.id_attendance + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
-                            '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
+                            '<button data-attendance="' + value.attendance_id + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
+                            '<button data-attendance="' + value.attendance_id + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                         ]).draw();
                     });
                 }else {
@@ -350,7 +350,7 @@
                 url: '{{ route('attendance.delete') }}',
                 type: 'delete',
                 data: {
-                    id_attendance: id,
+                    attendance_id: id,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(data) {
@@ -365,15 +365,15 @@
                         }
                         var name = value.first_name + ' ' + value.last_name;
                         table.row.add([
-                        value.id_attendance,
+                        value.attendance_id,
                         name,
                         value.employee_id,
                         value.date,
                         value.sign_in,
                         value.sign_out,
                         working,
-                        '<button data-attendance="' + value.id_attendance + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
-                        '<button data-attendance="' + value.id_attendance + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
+                        '<button data-attendance="' + value.attendance_id + '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
+                        '<button data-attendance="' + value.attendance_id + '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                         ]).draw();
                     });
                     $('#modalViewAttendance').modal('hide')
