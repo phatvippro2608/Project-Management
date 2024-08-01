@@ -39,13 +39,18 @@
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
-                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id"
-                                    @if ($data['permission'] == 0) disabled @endif>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id" @if ($data['permission'] == 0) disabled @endif>
                                 @if ($data['permission'] == 0)
                                     <option value="{{ $data['list_proposal'][0]->employee_id }}">
                                         {{ $data['list_proposal'][0]->first_name }} {{ $data['list_proposal'][0]->last_name }}
                                     </option>
-                                @else
+                                @elseif($data['permission'] == 3)
+                                    @foreach ($data['employee_of_depart'] as $item)
+                                        <option value="{{ $item->employee_id }}">
+                                            {{ $item->first_name }} {{ $item->last_name }}
+                                        </option>
+                                    @endforeach
+                                @elseif($data['permission'] == 4)
                                     @foreach ($employee_name as $item)
                                         <option value="{{ $item->employee_id }}">
                                             {{ $item->first_name }} {{ $item->last_name }}
@@ -66,7 +71,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="floatingTextarea2">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
+                            <textarea class="form-control" placeholder="Leave a Description here" id="description"
+                                      name="description"
                                       style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
@@ -110,11 +116,11 @@
                     <td>{{$item->description}}</td>
                     <td>
                         @if($item->progress==0)
-                            <div class="" >Chưa xét duyệt</div>
+                            <div class="">Chưa xét duyệt</div>
                         @elseif($item->progress==1)
-                            <div class="" >Đã duyệt cấp 1</div>
+                            <div class="">Đã duyệt cấp 1</div>
                         @elseif($item->progress==1)
-                            <div class="" >Đã duyệt xong</div>
+                            <div class="">Đã duyệt xong</div>
                         @endif
                     </td>
                     @if ($data['permission'] == 3)
@@ -176,14 +182,14 @@
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload()
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 400) {
                         var response = xhr.responseJSON;
                         toastr.error(response.message, "Error");

@@ -10,8 +10,8 @@ use \Illuminate\Support\Facades\Request;
 class ProposalApplicationModel extends Model
 {
     use HasFactory;
-    protected $table = 'proposal_application';
-    protected $primaryKey = 'proposal_application_id';
+    protected $table = 'proposal_applicationss';
+    protected $primaryKey = 'proposal_applications_id';
     protected $fillable = [
         'employee_id',
         'proposal_id',
@@ -37,36 +37,47 @@ class ProposalApplicationModel extends Model
             ->pluck('employees.employee_id')
             ->first(); // Lấy giá trị đầu tiên (giả sử luôn có một hàng được trả về)
 
+        $department_id = DB::table('job_details')
+            ->where('employee_id', $employee_id)
+            ->pluck('department_id')
+            ->first();
+
+        $employee_of_depart = DB::table('employees')
+            ->join('job_details', 'employees.employee_id','=','job_details.employee_id')
+            ->where('job_details.department_id', $department_id)
+            ->get();
+
         $list_proposal = [];
         if($permission == 0){
-            $list_proposal = DB::table('proposal_application')
-                ->join('employees', 'employees.employee_id','=','proposal_application.employee_id')
-                ->join('proposal_types', 'proposal_application.proposal_id','=','proposal_types.proposal_type_id')
+            $list_proposal = DB::table('proposal_applications')
+                ->join('employees', 'employees.employee_id','=','proposal_applications.employee_id')
+                ->join('proposal_types', 'proposal_applications.proposal_id','=','proposal_types.proposal_type_id')
                 ->where('employees.employee_id', $employee_id)
                 ->get();
         }else if($permission == 3){
             $department_id = DB::table('employees')
                 ->join('job_details', 'job_details.employee_id','=','employees.employee_id')
-                ->join('departments', 'job_details.id_department','=','departments.department_id')
+                ->join('departments', 'job_details.department_id','=','departments.department_id')
                 ->where('employees.employee_id',$employee_id)
-                ->first()->id_department;
-            $list_proposal = DB::table('proposal_application')
-                ->join('employees', 'employees.employee_id','=','proposal_application.employee_id')
+                ->first()->department_id;
+            $list_proposal = DB::table('proposal_applications')
+                ->join('employees', 'employees.employee_id','=','proposal_applications.employee_id')
                 ->join('job_details', 'job_details.employee_id','=','employees.employee_id')
-                ->join('proposal_types', 'proposal_application.proposal_id','=','proposal_types.proposal_type_id')
-                ->join('departments', 'job_details.id_department','=','departments.department_id')
+                ->join('proposal_types', 'proposal_applications.proposal_id','=','proposal_types.proposal_type_id')
+                ->join('departments', 'job_details.department_id','=','departments.department_id')
                 ->where('departments.department_id',$department_id)
                 ->get();
         }else if($permission == 4){
-            $list_proposal = DB::table('proposal_application')
-                ->join('employees', 'employees.employee_id','=','proposal_application.employee_id')
-                ->join('proposal_types', 'proposal_application.proposal_id','=','proposal_types.proposal_type_id')
+            $list_proposal = DB::table('proposal_applications')
+                ->join('employees', 'employees.employee_id','=','proposal_applications.employee_id')
+                ->join('proposal_types', 'proposal_applications.proposal_id','=','proposal_types.proposal_type_id')
                 ->get();
         }
 
         return [
             'list_proposal' => $list_proposal,
             'permission' => $permission,
+            'employee_of_depart' =>$employee_of_depart
         ];
     }
 }

@@ -234,7 +234,7 @@ use App\StaticString; ?>
                             )
                             ->first();
                 $info = \Illuminate\Support\Facades\DB::table('job_details')
-                            ->join('job_positions', 'job_details.id_job_position', '=', 'job_positions.id_position')
+                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
                             ->where(
                                 'job_details.employee_id', $data->employee_id
                             )

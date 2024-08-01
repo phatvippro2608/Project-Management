@@ -24,8 +24,7 @@ class ProposalApplicationController extends Controller
 
 //        dd($data);
         return view('auth.proposal.proposal-application',
-            compact('data',
-                'employee_name', 'proposal_types'));
+            compact('data', 'employee_name', 'proposal_types'));
     }
 
     public function add(Request $request)
