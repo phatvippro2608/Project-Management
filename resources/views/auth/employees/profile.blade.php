@@ -313,6 +313,7 @@
         });
 
         $('.btn_photo').click(function () {
+            event.preventDefault();
             let filePhoto = $('.photo')[0].files[0];
             let formData = new FormData();
 

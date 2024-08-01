@@ -268,6 +268,7 @@
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
             $('.md1').modal('show');
+            $('.at2').text('Update');
 
             $('.at2').click(function () {
 

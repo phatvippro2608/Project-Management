@@ -50,7 +50,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
         Route::delete('/delete', 'App\Http\Controllers\AccountController@delete');
 
-
         Route::delete('/clear-history', 'App\Http\Controllers\AccountController@clearHistory');
 
         Route::get('/demo', function () {
@@ -59,6 +58,15 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/demo', 'App\Http\Controllers\AccountController@demoView');
         Route::post('/demo', 'App\Http\Controllers\AccountController@import');
     });
+
+    Route::group(['prefix' => '/customer'], function () {
+        Route::get('/', 'App\Http\Controllers\CustomerController@getView');
+        Route::put('/add', 'App\Http\Controllers\CustomerController@add');
+        Route::post('/update', 'App\Http\Controllers\CustomerController@update');
+        Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
+    });
+
+
 
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/team', 'App\Http\Controllers\TeamController@getView');
