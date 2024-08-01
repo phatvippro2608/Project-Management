@@ -36,5 +36,6 @@ class DayOfBirthNotifyCommand extends Command
             ->get();
 
         Log::info($employees);
+        return EmployeeModel::where('date_of_birth','>',0)->get();
     }
 }
