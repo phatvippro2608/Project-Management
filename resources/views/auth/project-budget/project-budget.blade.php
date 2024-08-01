@@ -19,7 +19,7 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
             <div class="btn-group" role="group" aria-label="Button group">
-                <a href="{{ route('progress.index', ['id' => $id]) }}" class="btn btn-info rounded-pill me-2">Progress</a>
+                <a href="{{ route('project.progress', ['id' => $id]) }}" class="btn btn-info rounded-pill me-2">Progress</a>
                 <a href="{{ route('budget', ['id' => $id]) }}" class="btn btn-info rounded-pill me-2">LIST OF EXPENSES</a>
                 <a href="{{route('commission', ['id' => $id])}}" class="btn btn-info rounded-pill">LIST OF COMMISSION</a>
             </div>

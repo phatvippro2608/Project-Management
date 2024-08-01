@@ -5,27 +5,11 @@
 
 <script src="https://unpkg.com/gantt-elastic/dist/GanttElastic.umd.js"></script>
 <script src="https://unpkg.com/gantt-elastic-header/dist/Header.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gantt-schedule-timeline-calendar"></script>
 @endsection
 @section('contents')
 <style>
-    .gantt-elastic__task-list-header {
-        margin-bottom: 10px !important;
-        height: 60px !important;
-    }
-
-    .gantt-elastic__chart-calendar-container {
-        margin-bottom: 10px !important;
-        height: 60px !important;
-    }
-    .gantt-elastic__main-container-wrapper{
-        height: 200% !important;
-    }
-    .gantt-elastic__main-container{
-        height: 200% !important;
-    }
-    .gantt-elastic__calendar-row-rect-child{
-        height: 100% !important;
-    }
+    
 </style>
 <div class="pagetitle">
     <h1>Progress</h1>
@@ -39,48 +23,47 @@
 <div class="section employees">
     <div class="card">
         <div class="card-header">
-            <button class="btn btn-primary" id="test">test</button>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="btnD">Day</button>
+                    <button class="btn btn-primary" id="btnM">Month</button>
+                    <button class="btn btn-primary" id="btnY">Year</button>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div style="width:100%;height:100%;">
                 <div id="timeline" v-if="!destroy">
-                    <gantt-elastic :tasks="tasks" :options="options" :dynamic-style="dynamicStyle">
-                    </gantt-elastic>
+                    <gantt-elastic :tasks="tasks" :options="options" :dynamic-style="dynamicStyle"></gantt-elastic>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-    function getDate(hours) {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
-        const currentDay = currentDate.getDate();
-        const timeStamp = new Date(currentYear, currentMonth, currentDay, 0, 0, 0).getTime();
-        return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
-    }
-
-    let tasks = [{
-            id: 1,
-            label: 'Make some noise',
-            user: '<a href="https://www.google.com/search?q=John+Doe" target="_blank" style="color:#0077c0;">John Doe</a>',
-            start: Date(2024 - 01 - 01),
-            duration: 15 * 24 * 60 * 60 * 1000,
-            progress: 85,
-            type: 'project',
-            collapsed: false,
-        },
+    console.log('progress');
+    let tasks = [
+        @foreach($tasks as $data)
+        @php
+        $duration = strtotime($data->end_date) - strtotime($data->start_date) + 24 * 60 * 60;
+        $duration = $duration * 1000;
+        $photoPath = asset($data->photo);
+        $defaultPhoto = asset('assets/img/avt.png');
+        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
+        @endphp
         {
-            id: 2,
-            label: 'With great power comes great responsibility',
-            user: '<a href="https://www.google.com/search?q=Peter+Parker" target="_blank" style="color:#0077c0;">Peter Parker</a>',
-            parentId: 51,
-            start: getDate(-24 * 4),
-            duration: 4 * 24 * 60 * 60 * 1000,
-            progress: 50,
-            type: 'milestone',
-            collapsed: true,
+            id: {{ $data->task_id }},
+            label: '{{ $data->task_name }}',
+            user: '<img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="20" height="20" alt="{{ $data->first_name }} {{ $data->last_name }}">',
+            start: '{{ $data->start_date }}',
+            duration: {{ $duration }},
+            @if($data->parent_id !== null)
+                parentId: {{ $data->parent_id }},
+            @endif
+            durationDay: '{{ $duration / 1000 / 60 / 60 / 24 }} days',
+            progress: {{ $data->progress ?? 0 }},
+            type: 'task',
+            collapsed: false,
             style: {
                 base: {
                     fill: '#0b5ed7',
@@ -88,21 +71,11 @@
                 },
             },
         },
-        {
-            id: 5_1,
-            label: 'Courage is being scared to death, but saddling up anyway.',
-            user: '<a href="https://www.google.com/search?q=John+Wayne" target="_blank" style="color:#0077c0;">John Wayne</a>',
-            start: getDate(-24 * 3),
-            duration: 2 * 24 * 60 * 60 * 1000,
-            progress: 100,
-            type: 'task',
-            dependentOn: [1]
-        },
+        @endforeach
     ];
 
     let options = {
         maxRows: 100,
-        maxHeight: 500,
         row: {
             height: 30,
         },
@@ -115,69 +88,59 @@
             progress: {
                 bar: false,
             },
-            expander: {
-                display: false,
-            },
             text: {
                 display: false,
             },
         },
+        times:{
+            stepDuration: 'day',
+            timeZoom: 19,
+        },
         taskList: {
-            expander: {
-                straight: true,
-            },
-            columns: [{
-                    id: 1,
-                    label: 'ID',
-                    value: 'id',
-                    width: 40,
-                },
+            columns: [
                 {
-                    id: 2,
-                    label: 'Description',
+                    id: 1,
+                    label: 'Task name',
                     value: 'label',
                     width: 200,
                     expander: true,
-                    html: true,
                     events: {
                         click({
                             data,
                             column
                         }) {
-                            alert('description clicked!\n' + data.task_id);
+                            alert('description clicked!\n' + data.id);
                         },
                     },
                 },
                 {
-                    id: 3,
-                    label: 'Assigned to',
+                    id: 2,
+                    label: '',
                     value: 'user',
-                    width: 130,
+                    width: 35,
                     html: true,
                 },
                 {
                     id: 3,
                     label: 'Start',
                     value: (task) => dayjs(task.start).format('YYYY-MM-DD'),
-                    width: 78,
+                    width: 120,
                 },
                 {
                     id: 4,
-                    label: 'Type',
-                    value: 'type',
-                    width: 68,
+                    label: 'Duration',
+                    value: 'durationDay',
+                    width: 100,
                 },
                 {
                     id: 5,
                     label: '%',
                     value: 'progress',
-                    width: 35,
+                    width: 45,
                 },
             ],
         },
     };
-
-    // create instance
     const app = new Vue({
         components: {
             'gantt-header': Header,
@@ -212,64 +175,29 @@
         },
     });
 
-    // gantt state which will be updated in realtime
+
     let ganttState, ganttInstance;
-
     $(document).ready(function() {
-        $('#test').click(function() {
+        $('#btnD').click(function() {
+            options.times.stepDuration = 'day';
+            options.times.timeZoom = 19;
+            app.options = options;
+        });
+        $('#btnM').click(function() {
             console.log(app.options);
+
+            options.times.stepDuration = 'month';
+            options.times.timeZoom = 23;
             console.log(options);
-            options.width = 100;
+            app.options = options;
+        });
+        $('#btnY').click(function() {
+            options.times.stepDuration = 'month';
+            options.times.timeZoom = 25;
             app.options = options;
         });
     });
 
-    // listen to 'gantt-elastic.ready' or 'gantt-elastic.mounted' event
-    // to get the gantt state for real time modification
-    app.$on('gantt-elastic-ready', (ganttElasticInstance) => {
-        ganttInstance = ganttElasticInstance;
-
-        ganttInstance.$on('tasks-changed', (tasks) => {
-            app.tasks = tasks;
-        });
-        ganttInstance.$on('options-changed', (options) => {
-            app.options = options;
-        });
-        ganttInstance.$on('dynamic-style-changed', (style) => {
-            app.dynamicStyle = style;
-        });
-
-        ganttInstance.$on('chart-task-mouseenter', ({
-            data,
-            event
-        }) => {
-            console.log('task mouse enter', {
-                data,
-                event
-            });
-        });
-        ganttInstance.$on('updated', () => {
-            //console.log('gantt view was updated');
-        });
-        ganttInstance.$on('destroyed', () => {
-            //console.log('gantt was destroyed');
-        });
-        ganttInstance.$on('times-timeZoom-updated', () => {
-            console.log('time zoom changed');
-        });
-        ganttInstance.$on('taskList-task-click', ({
-            event,
-            data,
-            column
-        }) => {
-            console.log('task list clicked! (task)', {
-                data,
-                column
-            });
-        });
-    });
-
-    // mount gantt to DOM
     app.$mount('#timeline');
 </script>
 @endsection

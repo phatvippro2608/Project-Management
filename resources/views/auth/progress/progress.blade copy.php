@@ -5,6 +5,7 @@
 
 <script src="https://unpkg.com/gantt-elastic/dist/GanttElastic.umd.js"></script>
 <script src="https://unpkg.com/gantt-elastic-header/dist/Header.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gantt-schedule-timeline-calendar"></script>
 @endsection
 @section('contents')
 <style>
@@ -39,12 +40,15 @@
 <div class="section employees">
     <div class="card">
         <div class="card-header">
-            <button class="btn btn-primary" id="test">test</button>
+            <button class="btn btn-primary" id="btnD">Day</button>
+            <button class="btn btn-primary" id="btnM">Month</button>
+            <button class="btn btn-primary" id="btnY">Year</button>
         </div>
         <div class="card-body">
             <div style="width:100%;height:100%;">
                 <div id="timeline" v-if="!destroy">
                     <gantt-elastic :tasks="tasks" :options="options" :dynamic-style="dynamicStyle">
+                    <gantt-header slot="header"></gantt-header>
                     </gantt-elastic>
                 </div>
             </div>
@@ -52,35 +56,26 @@
     </div>
 </div>
 <script>
-    function getDate(hours) {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth();
-        const currentDay = currentDate.getDate();
-        const timeStamp = new Date(currentYear, currentMonth, currentDay, 0, 0, 0).getTime();
-        return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
-    }
-
-    let tasks = [{
-            id: 1,
-            label: 'Make some noise',
-            user: '<a href="https://www.google.com/search?q=John+Doe" target="_blank" style="color:#0077c0;">John Doe</a>',
-            start: Date(2024 - 05 - 27),
-            duration: 15 * 24 * 60 * 60 * 1000,
-            progress: 85,
-            type: 'project',
-            collapsed: false,
-        },
+    console.log('progress');
+    let tasks = [
+        @foreach($tasks as $data)
+        @php
+        $duration = strtotime($data->end_date) - strtotime($data->start_date) + 24 * 60 * 60;
+        $duration = $duration * 1000;
+        $photoPath = asset($data->photo);
+        $defaultPhoto = asset('assets/img/avt.png');
+        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
+        @endphp
         {
-            id: 2,
-            label: 'With great power comes great responsibility',
-            user: '<a href="https://www.google.com/search?q=Peter+Parker" target="_blank" style="color:#0077c0;">Peter Parker</a>',
-            parentId: 1,
-            start: getDate(-24 * 4),
-            duration: 4 * 24 * 60 * 60 * 1000,
-            progress: 50,
-            type: 'milestone',
-            collapsed: true,
+            id: {{ $data->task_id }},
+            label: '{{ $data->task_name }}',
+            user: '<img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="20" height="20" alt="{{ $data->first_name }} {{ $data->last_name }}">',
+            start: '{{ $data->start_date }}',
+            duration: {{ $duration }},
+            durationDay: '{{ $duration / 1000 / 60 / 60 / 24 }} days',
+            progress: {{ $data->progress ?? 0 }},
+            type: 'task',
+            collapsed: false,
             style: {
                 base: {
                     fill: '#0b5ed7',
@@ -88,21 +83,16 @@
                 },
             },
         },
-        {
-            id: 3,
-            label: 'Courage is being scared to death, but saddling up anyway.',
-            user: '<a href="https://www.google.com/search?q=John+Wayne" target="_blank" style="color:#0077c0;">John Wayne</a>',
-            start: getDate(-24 * 3),
-            duration: 2 * 24 * 60 * 60 * 1000,
-            progress: 100,
-            type: 'task',
-            dependentOn: [1]
-        },
+        @endforeach
     ];
 
     let options = {
         maxRows: 100,
         maxHeight: 500,
+        title: {
+          label: 'Your project title as asdasdasd (link or whatever...)',
+          html: true,
+        },
         row: {
             height: 30,
         },
@@ -116,7 +106,8 @@
                 bar: false,
             },
             expander: {
-                display: false,
+                display: true,
+                size: 1,
             },
             text: {
                 display: false,
@@ -126,15 +117,10 @@
             expander: {
                 straight: true,
             },
-            columns: [{
-                    id: 1,
-                    label: 'ID',
-                    value: 'id',
-                    width: 40,
-                },
+            columns: [
                 {
-                    id: 2,
-                    label: 'Description',
+                    id: 1,
+                    label: 'Task name',
                     value: 'label',
                     width: 200,
                     expander: true,
@@ -144,34 +130,34 @@
                             data,
                             column
                         }) {
-                            alert('description clicked!\n' + data.task_id);
+                            alert('description clicked!\n' + data.id);
                         },
                     },
                 },
                 {
-                    id: 3,
-                    label: 'Assigned to',
+                    id: 2,
+                    label: '',
                     value: 'user',
-                    width: 130,
+                    width: 35,
                     html: true,
                 },
                 {
                     id: 3,
                     label: 'Start',
                     value: (task) => dayjs(task.start).format('YYYY-MM-DD'),
-                    width: 78,
+                    width: 120,
                 },
                 {
                     id: 4,
-                    label: 'Type',
-                    value: 'type',
-                    width: 68,
+                    label: 'Duration',
+                    value: 'durationDay',
+                    width: 100,
                 },
                 {
                     id: 5,
                     label: '%',
                     value: 'progress',
-                    width: 35,
+                    width: 45,
                 },
             ],
         },
@@ -216,11 +202,14 @@
     let ganttState, ganttInstance;
 
     $(document).ready(function() {
-        $('#test').click(function() {
-            console.log(app.options);
-            console.log(options);
-            options.width = 100;
+        $('#btnD').click(function() {
+            options.width = 10000;
             app.options = options;
+            app.options.width = 10000;    
+        });
+        $('#btnM').click(function() {
+        });
+        $('#btnY').click(function() {
         });
     });
 
@@ -249,10 +238,10 @@
             });
         });
         ganttInstance.$on('updated', () => {
-            //console.log('gantt view was updated');
+            console.log(app.options)
         });
         ganttInstance.$on('destroyed', () => {
-            //console.log('gantt was destroyed');
+            // console.log('gantt was destroyed');
         });
         ganttInstance.$on('times-timeZoom-updated', () => {
             console.log('time zoom changed');

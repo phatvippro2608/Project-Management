@@ -1166,7 +1166,7 @@
 
                 let formData = new FormData();
                 formData.append('employee_id', data.employee_id);
-                formData.append('id_contact', data.id_contact);
+                formData.append('contact_id', data.contact_id);
                 formData.append('dataEmployee', JSON.stringify(dataEmployee));
                 formData.append('dataContact', JSON.stringify(dataContact));
                 formData.append('dataJob', JSON.stringify(dataJob));
