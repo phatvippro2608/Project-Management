@@ -26,7 +26,7 @@ class EmployeesController extends Controller
         $keyword = $this->removeVietnameseAccents($keyword);
 
         $data = EmployeeModel::query()
-            ->join('contacts', 'contacts.id_contact', '=', 'employees.id_contact')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.id_contact')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('last_name', 'like', "%{$keyword}%")
                     ->orWhere('first_name', 'like', "%{$keyword}%")
@@ -218,21 +218,22 @@ class EmployeesController extends Controller
         return json_encode($data_certificates);
     }
 
-    static function randomUserPwd($max = 5)
+    static function generateEmployeeCode()
     {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $alphaLength = strlen($alphabet) - 1;
+        $year = date('y');
 
-        do {
-            $pass = array();
-            for ($i = 0; $i < $max; $i++) {
-                $n = rand(0, $alphaLength);
-                $pass[] = $alphabet[$n];
-            }
-            $generatedPass = implode($pass);
-        } while (DB::table('employees')->where('employee_code', $generatedPass)->exists());
+        $lastCode = DB::table('employees')
+            ->where('employee_code', 'like', $year . '%')
+            ->orderBy('employee_code', 'desc')
+            ->value('employee_code');
 
-        return $generatedPass;
+        $nextId = $lastCode ? intval(substr($lastCode, 2)) + 1 : 1;
+
+        $employee_id = str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+        $employee_code = $year . $employee_id;
+
+        return $employee_code;
     }
     static function getPassportInfo($employee_id)
     {

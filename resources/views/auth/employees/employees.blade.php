@@ -67,7 +67,7 @@
                                 <tr>
                                     <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
                                     @php
-                                        $imageUrl = asset('assets/img/avt.png'); // Default image URL
+                                        $imageUrl = asset('assets/img/avt.png');
 
                                         if($item->photo != null){
                                             $imagePath = public_path($item->photo);
@@ -132,7 +132,7 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="" disabled value="{{\App\Http\Controllers\EmployeesController::randomUserPwd(5)}}">
+                                                <input type="text" class="form-control employee_code" name="" disabled value="{{\App\Http\Controllers\EmployeesController::generateEmployeeCode()}}">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -289,7 +289,7 @@
                                     <div class="row mb-3">
                                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control employee_code" name="" disabled>
+                                            <input type="text" class="form-control employee_code" name="" @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
