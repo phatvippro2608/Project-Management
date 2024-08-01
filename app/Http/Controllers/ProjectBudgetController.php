@@ -7,6 +7,8 @@ use App\Models\CostGroupModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
+use App\Models\ProjectModel;
+
 
 class ProjectBudgetController extends Controller
 {
@@ -37,24 +39,84 @@ class ProjectBudgetController extends Controller
         return view('auth.show-projects', ['submenu' => $submenu]);
     }
 
-    public function showProjectDetail($id)
-    {
-        $data = DB::table('projects')->where('project_id', $id)->first();
-        $total = 0;
-        $subtotal1=0;
-        $items=DB::table('project_cost')->where('project_id', $id)->get();
-        foreach($items as $item){
-            $subtotal2=$item->project_cost_labor_qty *
-            $item->project_cost_budget_qty *
-            ($item->project_cost_labor_cost +
-                $item->project_cost_misc_cost +
-                $item->project_cost_ot_budget +
-                $item->project_cost_perdiempay);
-            $subtotal1+=$subtotal2;
-        }
-        $total+= $subtotal1;
-        return view('auth.project-budget.project-budget', ['data' => $data, 'id' => $id, 'total'=>$total]);
+    public function update(Request $request, $id)
+{
+    // Retrieve the project
+    $project = ProjectModel::findOrFail($id);
+
+    // Validate the request
+    $validatedData = Validator::make($request->all(), [
+        'project_name' => 'required|string|max:255',
+        'project_description' => 'nullable|string',
+        'project_address' => 'nullable|string|max:255',
+        'project_contract_id' => 'nullable|integer|exists:contracts,contract_id',
+        'project_contact_name' => 'nullable|string|max:255',
+        'project_contact_website' => 'nullable|string|max:255',
+        'project_contact_phone' => 'nullable|string|max:255',
+        'project_contact_address' => 'nullable|string|max:255',
+        'project_date_start' => 'required|date',
+        'project_date_end' => 'required|date|after_or_equal:project_date_start',
+    ]);
+
+    if ($validatedData->fails()) {
+        // Return validation errors
+        return response()->json([
+            'errors' => $validatedData->errors()
+        ], 422);
     }
+
+    // Prepare data to be updated
+    $data = [
+        'project_name' => $validatedData->validated()['project_name'],
+        'project_description' => $validatedData->validated()['project_description'],
+        'project_address' => $validatedData->validated()['project_address'],
+        'project_contract_id' => $validatedData->validated()['project_contract_id'] ?? null,
+        'project_contact_name' => $validatedData->validated()['project_contact_name'],
+        'project_contact_website' => $validatedData->validated()['project_contact_website'],
+        'project_contact_phone' => $validatedData->validated()['project_contact_phone'],
+        'project_contact_address' => $validatedData->validated()['project_contact_address'],
+        'project_date_start' => $validatedData->validated()['project_date_start'],
+        'project_date_end' => $validatedData->validated()['project_date_end'],
+    ];
+
+    try {
+        // Update the project
+        $project->update($data);
+
+        return response()->json(['success' => 'Project updated successfully']);
+    } catch (\Exception $e) {
+        // Log the error and return a generic error message
+        \Log::error('Project update error: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while updating the project'], 500);
+    }
+}
+
+public function showProjectDetail($id)
+{
+    $data = DB::table('projects')->where('project_id', $id)->first();
+    $total = 0;
+    $subtotal1 = 0;
+    $items = DB::table('project_cost')->where('project_id', $id)->get();
+    $contracts = DB::table('contracts')->get();
+
+    foreach ($items as $item) {
+        $subtotal2 = $item->project_cost_labor_qty *
+                    $item->project_cost_budget_qty *
+                    ($item->project_cost_labor_cost +
+                        $item->project_cost_misc_cost +
+                        $item->project_cost_ot_budget +
+                        $item->project_cost_perdiempay);
+        $subtotal1 += $subtotal2;
+    }
+    $total += $subtotal1;
+
+    return view('auth.project-budget.project-budget', [
+        'data' => $data,
+        'id' => $id,
+        'total' => $total,
+        'contracts' => $contracts
+    ]);
+}
 
     public function editBudget($id)
     {
@@ -330,4 +392,41 @@ public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
         ]);
     }
 }
+public function exportCsv($id)
+    {
+        $project = DB::table('projects')->where('project_id', $id)->first();
+        $dataGroupCommission = DB::table('project_group_cost_commission')->get();
+        $dataCommission = DB::table('project_cost_commission')->where('project_id', $id)->get();
+
+        $filename = "project_budget_{$id}.csv";
+        $handle = fopen($filename, 'w+');
+        fputcsv($handle, ['ID', 'Group Name', 'Description', 'Amount']);
+
+        foreach ($dataGroupCommission as $commissionGroup) {
+            foreach ($dataCommission as $data) {
+                if ($data->groupcommission_id == $commissionGroup->group_id) {
+                    fputcsv($handle, [
+                        $commissionGroup->group_id,
+                        $commissionGroup->groupcommission_name,
+                        $data->description,
+                        $data->amount
+                    ]);
+                }
+            }
+        }
+
+        fclose($handle);
+
+        return response()->download($filename)->deleteFileAfterSend(true);
+    }
+
+    public function deleteCostCommission($project_id, $cost_commission_id)
+    {
+        try {
+            DB::table('project_cost_commission')->where('commission_id', $cost_commission_id)->delete();
+            return response()->json(['success' => true, 'message' => 'Cost commission item deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete cost commission item.']);
+        }
+    }
 }
