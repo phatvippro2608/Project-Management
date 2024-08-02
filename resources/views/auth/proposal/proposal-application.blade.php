@@ -42,14 +42,12 @@
                     @component('auth.component.btnCloseModal')
                     @endcomponent
                 </div>
-
                 <div class="modal-body">
                     <form id="addProposalApplicationForm">
                         @csrf
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
-                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id"
-                                @if ($data['permission'] == 0) disabled @endif>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id">
                                 @if ($data['permission'] == 0)
                                     <option value="{{ $data['list_proposal'][0]->employee_id }}">
                                         {{ $data['list_proposal'][0]->first_name }}
@@ -70,6 +68,7 @@
                                 @endif
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Proposal Type</label>
                             <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
@@ -82,8 +81,9 @@
                         </div>
                         <div class="mb-3">
                             <label for="floatingTextarea2">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
-                                style="height: 100px"></textarea>
+                            <textarea class="form-control" placeholder="Leave a Description here" id="description"
+                                      name="description"
+                                      style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="file" class="form-label">Upload your files</label>
@@ -93,7 +93,6 @@
                         <button type="submit" class="btn btn-primary">Add Proposal Application</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -102,35 +101,36 @@
         <h3 class="text-left mb-4">Proposal Application</h3>
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
-                <tr>
-                    <th>No</th>
-                    <th>Employee Name</th>
-                    <th>Proposal Name Type</th>
-                    <th>Description</th>
-                    <th>Progress</th>
-                    @if ($data['permission'] == 3)
-                        <th class="text-center">Direct Department</th>
-                    @endif
-                    @if ($data['permission'] == 4)
-                        <th class="text-center">Direct Manager</th>
-                    @endif
-                </tr>
+            <tr>
+                <th>No</th>
+                <th>Employee Name</th>
+                <th>Proposal Name Type</th>
+                <th>Description</th>
+                <th>Progress</th>
+                @if ($data['permission'] == 3)
+                    <th class="text-center">Direct Department</th>
+                @endif
+                @if ($data['permission'] == 4)
+                    <th class="text-center">Direct Manager</th>
+                @endif
+                <th>Action</th>
+            </tr>
             </thead>
             <tbody id="departmentsTableBody">
-                @php($stt = 0)
-                @foreach ($data['list_proposal'] as $item)
-                    <tr>
-                        <td>{{ $stt++ }}</td>
-                        <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->proposal_description }}</td>
-                        <td>
-                            <div class="progress">
-                                @if ($item->progress == 0)
-                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
-                                    aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+            @php($stt = 0)
+            @foreach ($data['list_proposal'] as $item)
+                <tr>
+                    <td>{{ $stt++ }}</td>
+                    <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->proposal_description }}</td>
+                    <td>
+                        <div class="progress">
+                            @if ($item->progress == 0)
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
+                                     aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
                                     Chưa xét
-                            </div>
+                                </div>
                             @elseif($item->progress == 1)
                                 <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
                                      aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
@@ -138,35 +138,48 @@
                                 </div>
                             @elseif($item->progress == 2)
                                 <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
-                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt xong
-                                    </div>
-                                @endif
-                            </div>
+                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                    Đã duyệt xong
+                                </div>
+                            @endif
+                        </div>
+                    </td>
+                    @if ($data['permission'] == 3)
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle"></i>
+                                Chưa duyệt
+                            </button>
                         </td>
-                        @if ($data['permission'] == 3)
-                            <td class="text-center">
-                                <button
-                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="">
-                                    <i class="bi bi-check-circle"></i>
-                                    Chưa duyệt
-                                </button>
-                            </td>
-                        @endif
-                        @if ($data['permission'] == 4)
-                            <td class="text-center">
-                                <button
-                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="">
-                                    <i class="bi bi-check-circle "></i>
-                                    Chưa duyệt
+                    @endif
+                    @if ($data['permission'] == 4)
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle "></i>
+                                Chưa duyệt
 
-                                </button>
-                            </td>
-                        @endif
-                    </tr>
-                @endforeach
+                            </button>
+                        </td>
+                    @endif
+                    <td>
+                        <button
+                            class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                            data-id="{{ $item->proposal_application_id }}">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        |
+                        <button
+                            class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                            data-id="{{ $item->proposal_application_id }}">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>
@@ -178,7 +191,7 @@
             language: {
                 search: ""
             },
-            initComplete: function(settings, json) {
+            initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
@@ -189,7 +202,7 @@
         const fileArray = [];
         const input = document.getElementById('file');
 
-        input.addEventListener('change', function(event) {
+        input.addEventListener('change', function (event) {
             const fileList = document.getElementById('fileList');
 
             for (let i = 0; i < input.files.length; i++) {
@@ -218,7 +231,7 @@
                 const removeBtn = document.createElement('button');
                 removeBtn.textContent = 'Remove';
                 removeBtn.className = 'text-right btn btn-danger btn-sm ms-2';
-                removeBtn.onclick = function() {
+                removeBtn.onclick = function () {
                     fileArray.splice(index, 1);
                     updateFileList();
                 };
@@ -228,25 +241,25 @@
             });
         }
 
-        $('#addProposalApplicationForm').submit(function(e) {
+        $('#addProposalApplicationForm').submit(function (e) {
             e.preventDefault();
 
             $.ajax({
                 url: '{{ route('proposal-application.add') }}',
                 method: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload()
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 400) {
                         var response = xhr.responseJSON;
                         toastr.error(response.message, "Error");

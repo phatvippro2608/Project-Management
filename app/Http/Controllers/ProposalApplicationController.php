@@ -30,7 +30,7 @@ class ProposalApplicationController extends Controller
     public function add(Request $request)
     {
         $validated = $request->validate([
-            'employee_id' => 'required|int',
+            'employee_id' => 'required|string',
             'proposal_id' => 'required|string',
             'description' => 'required|string',
         ]);
