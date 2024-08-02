@@ -137,7 +137,7 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="overflow-y-scroll">
                                 </tbody>
                             </table>
                         </div>
@@ -206,7 +206,7 @@
                         @if ($data['permission'] == 3 || $data['permission'] == 4)
                             <td class="text-center">
                                 <button
-                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
                                     data-id="{{ $item->proposal_application_id }}">
                                     <i class="bi bi-check-circle"></i>
                                     Chưa duyệt
@@ -385,7 +385,8 @@
                     let fileListHtml = '';
                     if (data.files) {
                         data.files.forEach(function(file, index) {
-                            fileListHtml += `<tr>
+                            fileListHtml +=
+                                `<tr>
                                     <td>${index + 1}</td>
                                     <td><a href="{{ asset('proposal_files') }}/${data.employee.employee_id}/${file.proposal_file_name}" download>${file.proposal_file_name}</a></td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-file" data-id="${file.proposal_file_id}">Remove</button></td>
@@ -472,6 +473,44 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('proposal-application.destroy', ':id') }}'.replace(':id',
+                            proposalAppId),
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                table.row(row).remove().draw();
+                                toastr.success(response.message, "Deleted successfully");
+                            } else {
+                                toastr.error("Failed to delete the proposal application.",
+                                    "Operation Failed");
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error("An error occurred.", "Operation Failed");
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#proposalApplicationsTable').on('click', '.btn_approved', function() {
+            var proposalAppId = $(this).data('id');
+            var row = $(this).closest('tr');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to approve this proposal application?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, approve'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
