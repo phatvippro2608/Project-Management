@@ -79,7 +79,7 @@
                                                         </a>
                                                         <a class=" delete">
                                                             <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                               data="{{$item->id_team}}"></i>
+                                                               data="{{$item->team_id}}"></i>
                                                         </a>
                                                     </div>
 
@@ -231,7 +231,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_team' : data.id_team,
+                        'team_id' : data.team_id,
                         'team_name': $('.name1').val(),
                         'status': $('.name2').val(),
                         'team_description': $('.name3').val(),
@@ -263,7 +263,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'id_team': id,
+                    'team_id': id,
                 },
                 success: function (result) {
                     result = JSON.parse(result);
