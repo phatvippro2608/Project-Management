@@ -239,15 +239,19 @@ Route::group(['prefix' => '/project'], function () {
     });
     Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
     Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
+});
+
 // recognition
 Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
     Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
     Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
     Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
+    Route::post('/update', [RecognitionController::class, 'update'])->name('recognition.update');
+    Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
 
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
-});
+
