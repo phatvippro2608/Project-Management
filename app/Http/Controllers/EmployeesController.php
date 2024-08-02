@@ -171,18 +171,27 @@ class EmployeesController extends Controller
         $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
         $data_contact = DB::table('contacts')
             ->where('contact_id',$contact_id)->first();
-        $data_job_detail = DB::table('job_detail')
+        $data_job_detail = DB::table('job_details')
             ->where('employee_id',$employee_id)
             ->first();
         $email = DB::table('accounts')->where('employee_id',$employee_id)->value('email');
         $data_cv = DB::table('employees')->where('employee_id',$employee_id)->value('cv');
         $data_medical_checkup = DB::table('medical_checkup')->where('employee_id',$employee_id)->get();
         $data_certificate = DB::table('certificates')
-            ->join('certificate_type', 'certificate_type.id_certificate_type', '=', 'certificates.id_type_certificate')
+            ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->where('certificates.employee_id',$employee_id)->get();
         Log::info(json_encode($data_job_detail));
         $data = new EmployeeModel();
-        $jobdetails = $data->getAllJobDetails();
+        $jobdetails = DB::table('job_details')
+            ->join('job_titles', 'job_titles.job_title_id', '=', 'job_details.job_title_id')
+            ->join('job_categories', 'job_categories.job_category_id', '=', 'job_details.job_category_id')
+            ->join('job_type_contracts', 'job_type_contracts.type_contract_id', '=', 'job_details.job_type_contract_id')
+            ->join('job_teams', 'job_teams.team_id', '=', 'job_details.job_team_id')
+            ->join('job_countries', 'job_countries.country_id', '=', 'job_details.job_country_id')
+            ->join('job_levels', 'job_levels.id_level', '=', 'job_details.job_level_id')
+            ->join('job_locations', 'job_locations.location_id', '=', 'job_details.job_location_id')
+            ->join('job_positions', 'job_positions.position_id', '=', 'job_details.job_position_id')
+            ->where('employee_id',$employee_id)->get();
         return view('auth.employees.info',[
             'data_employee' => $data_employee,
             'data_contact' => $data_contact,
