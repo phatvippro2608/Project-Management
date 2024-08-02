@@ -45,6 +45,7 @@
                                 <thead>
                                 <tr>
                                     <th style="width: 112px"></th>
+                                    <th class="text-center">Employee Code</th>
                                     <th class="text-center">Full Name</th>
                                     <th class="text-center">Email</th>
                                     <th class="text-center">Username</th>
@@ -73,9 +74,12 @@
 
                                         </td>
                                         <td class="text-center">
-                                            {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
+                                            {{$item->employee_code}}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-left">
+                                            {{$item->first_name}} {{$item->last_name}}
+                                        </td>
+                                        <td class="text-left">
                                             {{$item->email}}
                                         </td>
                                         <td class="text-center">

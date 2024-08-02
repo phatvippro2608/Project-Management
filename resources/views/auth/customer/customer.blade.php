@@ -107,7 +107,7 @@
                                         <td class="text-center">
                                             {{$item->first_name}} {{$item->last_name}}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-left">
                                             {{$item->email}}
                                         </td>
                                         <td class="text-center">
@@ -117,7 +117,7 @@
                                             {{$item->address}}
                                         </td>
                                         <td class="text-center">
-                                            <a href="#" class="contract">
+                                            <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}" class="contract">
                                                 Contract Detail
                                             </a>
                                         </td>
