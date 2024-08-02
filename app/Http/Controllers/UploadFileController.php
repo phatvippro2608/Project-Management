@@ -91,11 +91,19 @@ class UploadFileController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        $request->validate([
-            'photo' => 'nullable|file|max:1048576', // 10MB
-        ]);
+        try {
+            $request->validate([
+                'photo' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:1048576', // 1MB
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation failure
+            return response()->json([
+                'status' => 422,
+                'message' => 'File is not Image File please choose again!',
+            ], 422);
+        }
         $photo = $request->file('photo');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
@@ -156,7 +164,7 @@ class UploadFileController extends Controller
         ]);
 
         $personalProfiles = $request->file('personal_profile');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
@@ -219,7 +227,7 @@ class UploadFileController extends Controller
         ]);
 
         $medicalFile = $request->file('medical_file');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $medical_checkup_date = $request->input('medical_checkup_date');
         $directoryPath = public_path('uploads/' . $employee_id);
 
@@ -260,7 +268,7 @@ class UploadFileController extends Controller
             'certificate_file' => 'nullable|file|max:1048576', // 10MB
         ]);
         $certificate_file = $request->file('certificate_file');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $certificate_end_date = $request->input('certificate_end_date');
         $type_certificate = $request->input('type_certificate');
         $directoryPath = public_path('uploads/' . $employee_id);
@@ -286,7 +294,7 @@ class UploadFileController extends Controller
         DB::table('certificates')->insert([
             'employee_id' => $employee_id,
             'certificate' => $uploadedFile,
-            'id_type_certificate' => $type_certificate,
+            'type_certificate_id' => $type_certificate,
             'end_date_certificate' => $certificate_end_date
         ]);
 

@@ -61,9 +61,136 @@
                                 <td>{{ $item->totalhour }} hour</td>
                             </tr>
                         @endforeach
-
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Application Modal -->
+    <div class="modal fade" id="addApplicationModal" tabindex="-1" aria-labelledby="addApplicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addApplicationModalLabel">Add New Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addApplicationForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Employee Name</label>
+                            {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
+                            <select class="form-select" aria-label="Default" name="employee_id">
+                                <option value="">No select</option>
+{{--                                @foreach($employee_name as $item)--}}
+{{--                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}--}}
+{{--                                        - {{$item->first_name}} {{$item->last_name}}</option>--}}
+{{--                                @endforeach--}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">PIN</label>
+                            <input type="text" class="form-control" id="pin" name="pin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Leave Type</label>
+                            {{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required>--}}
+                            <select class="form-select" aria-label="Default" name="leave_type">
+                                <option value="">No select</option>
+{{--                                @foreach($leave_type as $item)--}}
+{{--                                    <option value="{{$item->id}}">{{$item->leave_type}}</option>--}}
+{{--                                @endforeach--}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Apply Date</label>
+                            <input type="date" class="form-control" id="apply_date" name="apply_date" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="duration" name="duration" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="days" class="form-label">Leaves Status</label>
+                            <input type="number" class="form-control" id="leave_status" name="leave_status" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="editApplicationModal" tabindex="-1" aria-labelledby="editApplicationModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editApplicationModalLabel">Edit Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editApplicationForm">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Employee Name</label>
+                            {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>--}}
+                            <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
+                                <option value="">No select</option>
+{{--                                @foreach($employee_name as $item)--}}
+{{--                                    <option value="{{$item->id_employee}}">{{$item->employee_code}}--}}
+{{--                                        - {{$item->first_name}} {{$item->last_name}}</option>--}}
+{{--                                @endforeach--}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">PIN</label>
+                            <input type="text" class="form-control" id="edit_pin" name="pin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Leave Type</label>
+                            {{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required>--}}
+                            <select class="form-select" aria-label="Default" name="leave_type" id="edit_leave_type">
+                                <option value="">No select</option>
+{{--                                @foreach($leave_type as $item)--}}
+{{--                                    <option value="{{$item->id}}">{{$item->leave_type}}</option>--}}
+{{--                                @endforeach--}}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Apply Date</label>
+                            <input type="date" class="form-control" id="edit_apply_date" name="apply_date" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="edit_duration" name="duration" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="days" class="form-label">Leaves Status</label>
+                            <input type="number" class="form-control" id="edit_leave_status" name="leave_status" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Edit Application</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -72,9 +199,16 @@
 @section('script')
     <script>
         $(document).ready(function() {
-
-            var table = $('#applicationTable').DataTable()
-
+            var table = $('#applicationTable').DataTable({
+                language: { search: "" },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
+            })
         });
     </script>
 @endsection

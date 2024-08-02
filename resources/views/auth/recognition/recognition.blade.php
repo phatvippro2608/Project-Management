@@ -13,6 +13,17 @@
 @endsection
 
 @section('contents')
+<style>
+    #recognitionTable th {
+        text-align: center !important;
+    }
+
+    #recognitionTable td:nth-child(3),
+    #recognitionTable td:nth-child(4) {
+        text-align: left !important;
+    }
+</style>
+
 <div class="pagetitle">
     <h1>Recognitions</h1>
     <nav>
@@ -47,8 +58,8 @@
                     <tr>
                         <th scope="col">{{ $recognition->recognition_id }}</th>
                         <th scope="col">{{ $recognition->employee_code }}</th>
-                        <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
-                        <th scope="col">{{ $recognition->recognition_type_name }}</th>
+                        <th scope="col" style="text-align: left !important;">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
+                        <th scope="col" style="text-align: left !important;">{{ $recognition->recognition_type_name }}</th>
                         <th scope="col">{{ $recognition->recognition_date }}</th>
                         <td>
                             <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
@@ -165,7 +176,7 @@
                         <div class="col-md-12" style="margin-top: 1rem">
                             <label for="recognition_types">Recognition Types</label>
                             <label for="recognition_types">Upload file excel</label>
-                            <input accept=".xlsx" name="file-excel" type="file" class="form-control">
+                            <input accept=".xlsx" name="file-excel" id="file-excel" type="file" class="form-control">
                         </div>
                     </div>
                 </form>
@@ -294,6 +305,23 @@
 
     document.getElementById('btnimportRecognitionSubmit').addEventListener('click', function (event) {
         let form = document.getElementById('importRecognitionForm');
+        let recognition_date = form.querySelector('#recognition_date').value;
+        const fileInput = form.querySelector('#file-excel');
+
+        // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
+        if (!recognition_date) {
+            event.preventDefault(); // Ngăn chặn việc gửi form
+            toastr.error('Vui lòng vui lòng chọn ngày.', "Lỗi nhập liệu");
+            return;
+        }
+
+        // Kiểm tra nếu file input không tồn tại hoặc không có file nào được chọn
+        if (!fileInput || !fileInput.files.length) {
+            event.preventDefault(); // Ngăn chặn việc gửi form
+            toastr.error('Vui lòng chọn tệp.', "Lỗi nhập liệu");
+            return;
+        }
+
         let formData = new FormData(form);
 
         fetch('{{ route('recognition.import') }}', {
