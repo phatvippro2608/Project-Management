@@ -65,7 +65,7 @@
                         <li class="list-group-item">
                             <strong>Phone:</strong>
                             @if (!empty($contact->phone_number))
-                                $contact->phone_number
+                                {{ $contact->phone_number }}
                             @else
                                 No information
                             @endif
@@ -73,7 +73,7 @@
                         <li class="list-group-item">
                             <strong>Email:</strong>
                             @if (!empty($account->email))
-                                $account->email
+                                {{ $account->email }}
                             @else
                                 No information
                             @endif
@@ -82,7 +82,7 @@
                             <strong>Birthday:</strong>
                             {{-- 24th July --}}
                             @if (!empty($employee->date_of_birth))
-                                {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('jS F') }}
+                                {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('jS F Y') }}
                             @else
                                 No information
                             @endif
@@ -123,7 +123,20 @@
     </div>
 
     <div class="row">
+
         <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Bank Information</h5>
+                </div>
+                <div class="card-body p-3">
+                    <p>Bank name: ICICI Bank</p>
+                    <p>Bank account No: 159843014641</p>
+                    <p>IFSC Code: ICI24504</p>
+                    <p>PAN No: TC000Y56</p>
+                </div>
+            </div>
+
             <div class="card mb-4">
                 <div class="card-header">
                     <h5>Personal Informations</h5>
@@ -138,19 +151,6 @@
                     {{-- <p>No. of children: 2</p> --}}
                 </div>
             </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Bank Information</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p>Bank name: ICICI Bank</p>
-                    <p>Bank account No: 159843014641</p>
-                    <p>IFSC Code: ICI24504</p>
-                    <p>PAN No: TC000Y56</p>
-                </div>
-            </div>
-
 
         </div>
 
@@ -188,9 +188,9 @@
                     <h5>Experience</h5>
                 </div>
                 <div class="card-body p-3">
-                    <p><strong>Web Designer at Zen Corporation</strong><br>Jan 2013 - Present (6 years 2 months)</p>
-                    <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
-                    <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
+                    <p><strong>Web Designer at Zen Corporation</strong><br>...</p>
+                    <p><strong>Web Designer at Ron-tech</strong><br>...</p>
+                    <p><strong>Web Designer at Dalt Technology</strong><br>...</p>
                 </div>
             </div>
 
@@ -199,10 +199,10 @@
                     <h5>Education Informations</h5>
                 </div>
                 <div class="card-body p-3">
-                    <p><strong>International College of Arts and Science (UG)</strong><br>Bsc Computer Science<br>2000 -
-                        2003</p>
-                    <p><strong>International College of Arts and Science (PG)</strong><br>Msc Computer Science<br>2000 -
-                        2003</p>
+                    <p><strong>International College of Arts and Science (UG)</strong><br>
+                        Bsc Computer Science<br>2000 - 2003</p>
+                    <p><strong>International College of Arts and Science (PG)</strong><br>
+                        Msc Computer Science<br>2000 -2003</p>
                 </div>
             </div>
         </div>
