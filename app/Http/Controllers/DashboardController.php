@@ -30,7 +30,6 @@ class DashboardController extends Controller
         FROM accounts, recent_project, projects
         WHERE accounts.account_id = recent_project.account_id AND recent_project.project_id = projects.project_id
         AND accounts.account_id=$account_id
-        AND accounts.account_id=$id_account
         ORDER BY created_at DESC
         LIMIT 5 ";
 
