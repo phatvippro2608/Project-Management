@@ -79,7 +79,7 @@
                                                 $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
                                                 $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
                                                 ?>
-                                            <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
+                                            <a href="{{action('App\Http\Controllers\EmployeesController@updateView', $id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             |
@@ -139,6 +139,12 @@
                                             <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control phone_number" name="">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label for="inputText" class="col-sm-4 col-form-label">Email</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control email" name="">
                                             </div>
                                         </div>
                                     </div>
@@ -272,6 +278,7 @@
                     'date_of_birth': $('.md1 .date_of_birth').val(),
                     'national': $('.md1 .national :checked').val(),
                     'phone_number': $('.md1 .phone_number').val(),
+                    'email': $('.md1 .email').val()
                 };
 
                 $.ajax({

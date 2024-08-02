@@ -69,6 +69,18 @@ class EmployeesController extends Controller
         ];
 
         $employee_id = DB::table('employees')->insertGetId($dataEmployee);
+
+        $data_account = [
+            'email' => $request->email,
+            'username' => explode('@', $request->email)[0],
+            'password' => password_hash('123', PASSWORD_BCRYPT),
+            'status' => 1,
+            'permission' => 0,
+            'employee_id' => $employee_id,
+        ];
+
+        DB::table('accounts')->insert($data_account);
+
         if(DB::table('job_details')->where('employee_id',$employee_id)->insert(['employee_id' => $employee_id])){
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         }else{
@@ -368,7 +380,7 @@ class EmployeesController extends Controller
                 $data_account = [
                     'email' => $email,
                     'username' => explode('@', $email)[0],
-                    'password' => password_hash('123456', PASSWORD_BCRYPT),
+                    'password' => password_hash('123', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
                     'employee_id' => $employee_id,
