@@ -34,7 +34,7 @@ class ProposalApplicationController extends Controller
             'employee_id' => 'nullable|int',
             'proposal_id' => 'nullable|int',
             'proposal_description' => 'nullable|string',
-            'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048'
+            'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,ppt,pptx,txt|max:10000'
 
         ]);
 
@@ -86,7 +86,7 @@ class ProposalApplicationController extends Controller
             'employee_id' => 'required|int',
             'proposal_id' => 'required|int',
             'proposal_description' => 'nullable|string',
-            'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048'
+            'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,ppt,pptx,txt|max:10000'
         ]);
 
         $proposalApp = ProposalApplicationModel::findOrFail($id);
@@ -95,7 +95,14 @@ class ProposalApplicationController extends Controller
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $fileName = $file->getClientOriginalName();
-                $file->storeAs('proposal_files/' . $proposalApp->employee_id, $fileName);
+                $employeeId = $proposalApp->employee_id;
+                $filePath = 'proposal_files/' . $employeeId . '/' . $fileName;
+
+                if (!file_exists(public_path('proposal_files/' . $employeeId))) {
+                    mkdir(public_path('proposal_files/' . $employeeId), 0777, true);
+                }
+
+                $file->move(public_path('proposal_files/' . $employeeId), $fileName);
 
                 ProposalFileModel::create([
                     'proposal_file_name' => $fileName,
@@ -111,12 +118,15 @@ class ProposalApplicationController extends Controller
         ]);
     }
 
+
     public function destroy($id)
     {
         $proposalApp = ProposalApplicationModel::findOrFail($id);
 
+        $directoryPath = public_path('proposal_files/' . $proposalApp->employee_id);
+
         foreach ($proposalApp->files as $file) {
-            $filePath = public_path('proposal_files/' . $proposalApp->employee_id . '/' . $file->proposal_file_name);
+            $filePath = $directoryPath . '/' . $file->proposal_file_name;
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
@@ -128,6 +138,23 @@ class ProposalApplicationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Proposal application deleted successfully'
+        ]);
+    }
+
+    public function removeFile($id)
+    {
+        $file = ProposalFileModel::findOrFail($id);
+
+        $filePath = public_path('proposal_files/' . $file->proposal_app_id . '/' . $file->proposal_file_name);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $file->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File removed successfully'
         ]);
     }
 }

@@ -130,11 +130,17 @@
                                     <tr>
                                         <th>STT</th>
                                         <th>Proposal File Name</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_files" class="form-label">Add more files</label>
+                            <input class="form-control" type="file" id="edit_files" name="files[]" multiple>
+                            <ul id="editFileList" class="list-unstyled mt-2"></ul>
                         </div>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </form>
@@ -153,7 +159,7 @@
                     <th>Employee Name</th>
                     <th>Proposal Name Type</th>
                     <th>Description</th>
-                    <th>Progress</th>
+                    <th class='w-25'>Progress</th>
                     @if ($data['permission'] == 3)
                         <th class="text-center">Direct Department</th>
                     @endif
@@ -170,7 +176,9 @@
                         <td>{{ ++$stt }}</td>
                         <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->proposal_description }}</td>
+                        <td>
+                            <textarea name="" id="">{{ $item->proposal_description }}</textarea>
+                        </td>
                         <td>
                             <div class="progress">
                                 @if ($item->progress == 0)
@@ -305,30 +313,62 @@
                             location.reload();
                         }, 500);
                     } else {
-                                                     '</td><td><a href="{{ asset('proposal_files') }}' + '/' + data.employee.employee_id + '/' + file.proposal_file_name + '" download>' + file.proposal_file_name + '</a></td></tr>';     toastr.error("An error occurred", "Error");
+                        '</td><td><a href="{{ asset('proposal_files') }}' + '/' + data.employee
+                            .employee_id + '/' + file.proposal_file_name + '" download>' + file
+                            .proposal_file_name + '</a></td></tr>';
+                        toastr.error("An error occurred", "Error");
                     }
                 }
             });
         });
 
+        const EditfileArray = [];
+        const editInput = document.getElementById('edit_files');
+
+        editInput.addEventListener('change', function(event) {
+            for (let i = 0; i < editInput.files.length; i++) {
+                EditfileArray.push(editInput.files[i]);
+            }
+            updateEditFileList();
+        });
+
+        function updateEditFileList() {
+            const fileList = document.getElementById('editFileList');
+            fileList.innerHTML = '';
+
+            EditfileArray.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
+                listItem.textContent = file.name;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
+                removeButton.onclick = () => {
+                    EditfileArray.splice(index, 1);
+                    updateEditFileList();
+                };
+                listItem.appendChild(removeButton);
+                fileList.appendChild(listItem);
+            });
+        }
+
         $('#proposalApplicationsTable').on('click', '.edit-btn', function() {
-            var proposalAppId = $(this).data('id');
+            const proposalAppId = $(this).data('id');
 
             $.ajax({
                 url: '{{ route('proposal-application.edit', ':id') }}'.replace(':id', proposalAppId),
                 method: 'GET',
                 success: function(response) {
-                    console.log(response);
-                    var data = response.proposal_app;
+                    const data = response.proposal_app;
 
                     $('#editProposalId').val(data.proposal_application_id);
                     $('#edit_employee_id').val(data.employee.employee_id);
                     $('#employee_name').val(data.employee.first_name + ' ' + data.employee.last_name);
 
-                    var proposalTypeSelect = $('#edit_proposal_id');
+                    const proposalTypeSelect = $('#edit_proposal_id');
                     proposalTypeSelect.empty();
                     response.proposal_types.forEach(function(type) {
-                        var option = new Option(type.name, type.proposal_type_id);
+                        const option = new Option(type.name, type.proposal_type_id);
                         if (type.proposal_type_id === data.proposal_id) {
                             option.selected = true;
                         }
@@ -337,15 +377,14 @@
 
                     $('#edit_proposal_description').val(data.proposal_description);
 
-                    var fileListHtml = '';
+                    let fileListHtml = '';
                     if (data.files) {
                         data.files.forEach(function(file, index) {
-                            fileListHtml += '<tr><td>' + (index + 1) +
-                                '</td><td><a href="{{ asset('proposal_files') }}' + '/' + data
-                                .employee
-                                .employee_id +
-                                '/' + file.proposal_file_name + '"download">' + file
-                                .proposal_file_name + '</a></td></tr>';
+                            fileListHtml += `<tr>
+                                    <td>${index + 1}</td>
+                                    <td><a href="{{ asset('proposal_files') }}/${data.employee.employee_id}/${file.proposal_file_name}" download>${file.proposal_file_name}</a></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm remove-file" data-id="${file.proposal_file_id}">Remove</button></td>
+                                </tr>`;
                         });
                     } else {
                         console.error('No files in response');
@@ -356,6 +395,31 @@
                 },
                 error: function(xhr) {
                     toastr.error(xhr.responseJSON.message, "Error");
+                }
+            });
+        });
+
+        // Handle file removal
+        $(document).on('click', '.remove-file', function() {
+            const fileId = $(this).data('id');
+            const row = $(this).closest('tr');
+
+            $.ajax({
+                url: '{{ route('proposal-application.remove-file', ':id') }}'.replace(':id', fileId),
+                method: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        row.remove();
+                        toastr.success(response.message, "File removed successfully");
+                    } else {
+                        toastr.error(response.message, "Failed to remove file");
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("An error occurred.", "Error");
                 }
             });
         });
