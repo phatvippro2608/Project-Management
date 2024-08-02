@@ -1,7 +1,7 @@
 <?php
-
-use App\StaticString; ?>
-
+use App\StaticString;
+$token = 'position';
+?>
     <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +25,9 @@ use App\StaticString; ?>
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('assets/css/filepond.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/filepond-plugin-image-preview.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/filepond-plugin-image-overlay.min.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -43,13 +45,15 @@ use App\StaticString; ?>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
     <script src="{{asset('assets/js/datatables.js')}}"></script>
+    <script src="{{asset('assets/js/filepond.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
 
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
 
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
+          type="text/css" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -61,7 +65,7 @@ use App\StaticString; ?>
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-        <a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}"
+        <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
            class="d-flex align-items-center logo justify-content-center">
             <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
@@ -188,7 +192,6 @@ use App\StaticString; ?>
 
                             <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""
                                  class="rounded-circle">
-
                             <div>
                                 <h4>Anna Nelson</h4>
                                 <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -221,6 +224,7 @@ use App\StaticString; ?>
                 </ul>
 
             </li>
+
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
@@ -240,15 +244,14 @@ use App\StaticString; ?>
                             )
                             ->first();
             @endphp
+
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
                     @php
                         $photoPath = asset($data->photo);
                         $defaultPhoto = asset('assets/img/avt.png');
-                        $photoExists =
-                            !empty($data->photo) &&
-                            file_exists(public_path($data->photo));
+                        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
                     @endphp
 
                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
@@ -261,9 +264,11 @@ use App\StaticString; ?>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                        <span>@if($info)
-                                {{$info->position_name}}
-                            @endif</span>
+                        <span>
+                                @if ($info)
+                                {{ $info->position_name }}
+                            @endif
+                            </span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -272,7 +277,7 @@ use App\StaticString; ?>
                     <li>
 
                         <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id' => $data->employee_id]) }}">
 
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -338,8 +343,9 @@ use App\StaticString; ?>
             </a>
             <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Deparment</span>
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Deparments</span>
                     </a>
                 </li>
                 <li>
@@ -359,7 +365,8 @@ use App\StaticString; ?>
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a class="nav-sub-link" href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
                             <i class="bi bi-circle"></i><span>Employees</span>
                         </a>
                     </li>
@@ -369,14 +376,13 @@ use App\StaticString; ?>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-sub-link" href="#">
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
                 </ul>
             </li>
             @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
-
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
                        href="#">
@@ -385,14 +391,16 @@ use App\StaticString; ?>
                     <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>Info</span>
                             </a>
                         </li>
                         <li>
 
-                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
 
                                 <i class="bi bi-circle"></i><span>History</span>
                             </a>
@@ -422,12 +430,14 @@ use App\StaticString; ?>
             </a>
             <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
                         <i class="bi bi-circle"></i><span>Attendance List</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
                         <i class="bi bi-circle"></i><span>Add Attendance</span>
                     </a>
                 </li>
@@ -445,28 +455,28 @@ use App\StaticString; ?>
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{route('holidays.index')}}">
+                    <a class="nav-sub-link" href="{{ route('holidays.index') }}">
                         <i class="bi bi-circle"></i><span>Holiday</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-type.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Type</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-application.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Application</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('earn-leave.index')}}">
+                    <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
                         <i class="bi bi-circle"></i><span>Earned Leave</span>
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-report.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
                     </a>
                 </li>
@@ -492,6 +502,50 @@ use App\StaticString; ?>
             </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognitions</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#!!!">
+                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">Customer Manager</li>
+        <li class="nav-item">
+            <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
+                 href="">
+                <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+            </div>
+            <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Customer Support</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
         <li class="nav-heading">Project Management</li>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
@@ -500,7 +554,8 @@ use App\StaticString; ?>
             </a>
             <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
 
                         <i class="bi bi-circle"></i><span>Projects</span>
                     </a>
@@ -531,7 +586,8 @@ use App\StaticString; ?>
             </a>
             <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
 
                         <i class="bi bi-circle"></i><span>Teams</span>
                     </a>
@@ -555,7 +611,7 @@ use App\StaticString; ?>
                 <li>
                     <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        <i class="bi bi-circle"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>
@@ -588,7 +644,8 @@ use App\StaticString; ?>
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
                href="#">
-                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
@@ -624,6 +681,14 @@ use App\StaticString; ?>
                 </li>
             </ul>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link " href="{{ route('portfolio') }}">
+                <i class="bi bi-folder-fill"></i>
+                <span>Portfolio</span>
+            </a>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
                href="#">
@@ -632,7 +697,8 @@ use App\StaticString; ?>
             </a>
             <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\AccountController@loginHistory')}}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
                         <i class="bi bi-circle"></i><span>Activity Log</span>
                     </a>
                 </li>

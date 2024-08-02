@@ -35,6 +35,4 @@ class EarnLeaveModel extends Model
             ->groupBy('employees.employee_code', 'employees.first_name', 'employees.last_name', 'leave_applications.employee_id')
             ->get();
     }
-
-
 }

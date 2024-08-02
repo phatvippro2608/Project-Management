@@ -16,8 +16,8 @@ class DashboardController extends Controller
     public function getViewDashboard()
     {
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
-        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
         $em_c = count(EmployeeModel::all());
         $team_c = count(TeamModel::all());
@@ -35,14 +35,12 @@ class DashboardController extends Controller
 
         $recent_project = DB::select($sql);
 
-
         $task_sql = "SELECT * FROM tasks, employees, phases
          WHERE tasks.employee_id = employees.employee_id and phases.phase_id = tasks.phase_id
          AND DATE(tasks.start_date) <= CURDATE() AND DATE(tasks.end_date) >= CURDATE()
          AND employees.employee_id=$employee_id
          ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
-
 
         $subtask_sql = "SELECT * FROM sub_tasks, employees
          WHERE sub_tasks.employee_id = employees.employee_id
@@ -52,8 +50,10 @@ class DashboardController extends Controller
         $subtasks = DB::select($subtask_sql);
 
 
+        $department_c = DB::table('departments')->count();
 
         return view('auth.dashboard.dashboard',[
+            'department_c'=>$department_c,
             'em_c'=>$em_c,
             'team_c'=>$team_c,
             'project_c'=>$project_c,

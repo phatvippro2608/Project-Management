@@ -13,33 +13,22 @@ class ProgressController extends Controller
 {
     function getView()
     {
-        $tasks = DB::table('tasks')->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->select('sub_tasks.*')
-            ->get();
-
-        return view('auth.progress.progress', compact('tasks', 'subtasks'));
+        return view('auth.progress.progress');
     }
 
     function getViewHasID($id)
     {
-        $projectExists = DB::table('projects')->where('project_id', $id)->exists();
-        if (!$projectExists) {
+        $project = DB::table('projects')->where('project_id', $id)->exists();
+        if (!$project) {
             abort(404, 'Project not found');
         }
-        
-        $phases = DB::table("phases")->where('project_id', $id)->get();
-
-        $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
+        $tasks = DB::table('tasks')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name')
+            ->where('project_id', $id)
             ->get();
-
         $employees = DB::table('employees')->select('employee_id', 'photo', 'last_name', 'first_name')->get();
-        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
+        return view('auth.progress.progress', compact('tasks', 'employees', 'id'));
     }
 
     public function updateItem(Request $request)

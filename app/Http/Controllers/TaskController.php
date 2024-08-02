@@ -40,137 +40,147 @@ class TaskController extends Controller
     public function create(Request $request)
     {
         $validatedData = $request->validate([
+            'id' => 'required|string',
             'taskname' => 'required|string|max:255',
             'request' => 'nullable|string',
-            'c_users' => 'nullable|string',
+            'employee_id' => 'required|string',
             's_date' => 'required|date',
             'e_date' => 'required|date|after_or_equal:s_date',
-            'id' => 'required|string',
-            'user_id' => 'nullable|string',
         ]);
+        $progress = 0;
+        if($request->has('allmarkdone')){
+            $progress = 100;
+        }
+
         $task = TaskModel::create([
             'task_name' => $validatedData['taskname'],
             'project_id' => $validatedData['id'],
-            'phase_id' => $validatedData['id'],
             'request' => $validatedData['request'],
-            'engineers' => $validatedData['user_id'],
+            'employee_id' => $validatedData['employee_id'],
             'start_date' => $validatedData['s_date'],
             'end_date' => $validatedData['e_date'],
+            'progress' => $progress,
         ]);
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
-                SubTaskModel::create([
-                    'task_id' => $task->task_id,
-                    'sub_task_name' => $value,
+                $progress = 0;
+                if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
+                    $progress = 100;
+                }
+                TaskModel::create([
+                    'task_name' => $value,
+                    'project_id' => $validatedData['id'],
+                    'parent_id' => $task->task_id,
+                    'progress' => $progress,
+                ]);
+            }
+        }
+        if(!$request->has('allmarkdone')){
+            $subtasks = DB::table('tasks')->where('parent_id', $task->task_id)->get();
+            if(count($subtasks)){
+                $progress = 0;
+                foreach ($subtasks as $subtask) {
+                    $progress += $subtask->progress;
+                }
+                TaskModel::where('task_id', $task->task_id)->update([
+                    'progress' => $progress / count($subtasks),
                 ]);
             }
         }
 
-        $phases = DB::table("phases")->where('project_id', $validatedData['id'])->get();
-        // $project_id = DB::table("projects")->where('project_id', $validatedData['id'])->get();
-        $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
+
+        $tasks = DB::table('tasks')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name')
+            ->where('project_id', $validatedData['id'])
             ->get();
-        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
-    }
-
-    public function showTask($id)
-    {
-        $task = TaskModel::find($id);
-        $subtasks = SubTaskModel::where('task_id', $id)->get();
-        return response()->json(['task' => $task, 'subtasks' => $subtasks]);
-    }
-
-    public function showSubTask($id)
-    {
-        $subtask = SubTaskModel::find($id);
-        return response()->json(['subtask' => $subtask]);
+        return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks]);
     }
 
     public function update(Request $request)
     {
+        // return $request;
         $validatedData = $request->validate([
-            'task_id' => 'required|string|max:255',
+            'id' => 'required|string',
+            'task_id' => 'required|string',
             'taskname' => 'required|string|max:255',
             'request' => 'nullable|string',
-            'e_users' => 'nullable|string',
-            's_date' => 'nullable|date',
-            'e_date' => 'nullable|date|after_or_equal:s_date',
-            'id' => 'required|string',
-            'user_id' => 'nullable|string',
+            'employee_id' => 'required|string',
+            's_date' => 'required|date',
+            'e_date' => 'required|date|after_or_equal:s_date',
         ]);
-        $idtype = explode('_', $validatedData['task_id'])[0];
-        $id = explode('_', $validatedData['task_id'])[1];
-        if ($idtype == 'task') {
-            $task = TaskModel::find($id);
-            $task->task_name = $validatedData['taskname'];
-            $task->request = $validatedData['request'];
-            $task->engineers = $validatedData['user_id'];
-            $task->start_date = $validatedData['s_date'];
-            $task->end_date = $validatedData['e_date'];
-            $task->save();
+        //nếu tồn tại markdone thì progress = 100
+        $progress = 0;
+        if($request->has('allmarkdone')){
+            $progress = 100;
+        }
 
-            $subtask_ids = [];
-            foreach ($request->all() as $key => $value) {
-                if (strpos($key, 'subtask') === 0 && !empty($value)) {
-                    $subtask = SubTaskModel::find(explode('_', $key)[1]);
-                    if ($subtask) {
-                        $subtask->sub_task_name = $value;
-                        $subtask->save();
-                        $subtask_ids[] = explode('_', $key)[1];
-                        $subtask_ids[] = explode('_', $key)[1];
-                    } else {
-                        $subtask = SubTaskModel::create([
-                            'task_id' => $task->task_id,
-                            'sub_task_name' => $value,
-                        ]);
-                        $subtask_ids[] = $subtask->sub_task_id;
-                    }
+        TaskModel::where('task_id', $validatedData['task_id'])->update([
+            'task_name' => $validatedData['taskname'],
+            'request' => $validatedData['request'],
+            'employee_id' => $validatedData['employee_id'],
+            'start_date' => $validatedData['s_date'],
+            'end_date' => $validatedData['e_date'],
+            'progress' => $progress,
+        ]);
+        $sbtask_id = TaskModel::where('parent_id', $validatedData['task_id'])->pluck('task_id')->toArray();
+
+        //update subtask
+        $subtask_id = [];
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'subtask') === 0 && !empty($value)) {
+                $progress = 0;
+                if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
+                    $progress = 100;
+                }
+                if (strpos(explode('_', $key)[1], 'n') === 0) {
+                    $sub=TaskModel::create([
+                        'task_name' => $value,
+                        'parent_id' => $validatedData['task_id'],
+                        'project_id' => $validatedData['id'],
+                        'progress' => $progress,
+                    ]);
+                    array_push($subtask_id, $sub->task_id);
+                } else {
+                    TaskModel::where('task_id', explode('_', $key)[1])->update([
+                        'task_name' => $value,
+                        'progress' => $progress,
+                    ]);
+                    array_push($subtask_id, explode('_', $key)[1]);
                 }
             }
-            SubTaskModel::where('task_id', $task->task_id)->whereNotIn('sub_task_id', $subtask_ids)->delete();
-        } else {
-            $subtask = SubTaskModel::find($id);
-            $subtask->sub_task_name = $validatedData['taskname'];
-            $subtask->request = $validatedData['request'];
-            $subtask->engineers = $validatedData['user_id'];
-            $subtask->start_date = $validatedData['s_date'];
-            $subtask->end_date = $validatedData['e_date'];
-            $subtask->save();
         }
-        $phases = DB::table("phases")->where('project_id', $validatedData['id'])->get();
+        $delete_id = array_diff($sbtask_id, $subtask_id);
+        TaskModel::whereIn('task_id', $delete_id)->delete();
 
-        $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
+        
+
+        if(!$request->has('allmarkdone')){
+            $subtasks = DB::table('tasks')->where('parent_id', $validatedData['task_id'])->get();
+            if(count($subtasks)){
+                $progress = 0;
+                foreach ($subtasks as $subtask) {
+                    $progress += $subtask->progress;
+                }
+                TaskModel::where('task_id', $validatedData['task_id'])->update([
+                    'progress' => $progress / count($subtasks),
+                ]);
+            }
+        }
+
+        $tasks = DB::table('tasks')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name')
+            ->where('project_id', $validatedData['id'])
             ->get();
-        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
+        return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks]);
     }
 
     public function delete($id)
     {
-        $idtype = explode('_', $id)[0];
-        $id = explode('_', $id)[1];
-        if ($idtype == 'task') {
-            $phases_id = TaskModel::find($id)->phase_id;
-            SubTaskModel::where('task_id', $id)->delete();
-            TaskModel::find($id)->delete();
-        } else {
-            $phases_id = TaskModel::find(SubTaskModel::find($id)->task_id)->phase_id;
-            SubTaskModel::find($id)->delete();
-        }
+        TaskModel::find($id)->delete();
+        TaskModel::where('parent_id', $id)->delete();
 
-        $tasks = DB::table('tasks')->where('phase_id', $phases_id)->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
-            ->get();
-        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
+        return response()->json(['success' => true,'message' => 'Delete task success']);
     }
 }

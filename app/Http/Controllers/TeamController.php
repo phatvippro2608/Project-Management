@@ -12,14 +12,14 @@ class TeamController extends Controller
 
     function getView()
     {
-        $team = DB::table('team')->join('employees', 'employees.employee_id', '=', 'team.created_by')->get();
+        $team = DB::table('teams')->join('employees', 'employees.employee_id', '=', 'teams.created_by')->get();
         return view('auth.project-employee.team.team', ['team' => $team, 'status' => $this->status]);
     }
 
     function add(Request $request){
-        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND account_id = $account_id";
-        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
+        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
         $data = [
             'team_name' => $request->team_name,
             'team_description' => $request->team_description,
@@ -27,35 +27,35 @@ class TeamController extends Controller
             'created_by' => $employee_id,
         ];
         if(DB::table('team')->insert($data)){
-            return AccountController::status('Thêm thành công', 200);
+            return AccountController::status('Added a new team', 200);
         }else{
-            return AccountController::status('Thêm thất bại', 500);
+            return AccountController::status('Failed to add a team', 500);
         }
     }
 
     function update(Request $request)
     {
-        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_id_employee = "SELECT * FROM employees, account WHERE employees.employee_id = account.employee_id AND account_id = $account_id";
-        $employee_id = DB::selectOne($sql_get_id_employee)->employee_id;
+        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
+        $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
         $data = [
             'team_name' => $request->team_name,
             'team_description' => $request->team_description,
             'status' => $request->status,
             'created_by' => $employee_id,
         ];
-        if(DB::table('team')->where('id_team', $request->id_team)->update($data)){
-            return AccountController::status('Cập nhật thành công', 200);
+        if(DB::table('team')->where('team_id', $request->team_id)->update($data)){
+            return AccountController::status('Updated a team', 200);
         }else{
-            return AccountController::status('Cập nhật thất bại', 500);
+            return AccountController::status('Failed to update', 500);
         }
     }
 
     function delete(Request $request){
-        if(DB::table('team')->where('id_team', $request->id_team)->delete()){
-            return AccountController::status('Xóa thành công', 200);
+        if(DB::table('teams')->where('team_id', $request->team_id)->delete()){
+            return AccountController::status('Deleted a team', 200);
         }else{
-            return AccountController::status('Xóa thất bại', 500);
+            return AccountController::status('Failed to delete', 500);
         }
     }
 

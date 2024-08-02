@@ -10,37 +10,20 @@ class ProjectController extends Controller
 {
     function getView()
     {
-        // Đang triển khai
-        $inprogress_projects = DB::table('projects')->where('phase_id', 1)->get();
-        $inprogress_project_count = $inprogress_projects->count();
-
-        // Nghiệm thu
-        $inspection_projects = DB::table('projects')->where('phase_id', 2)->get();
-        $inspection_projects_count = $inspection_projects->count();
-
-        // Khảo sát - thiết kế
-        $survey_projects = DB::table('projects')->where('phase_id', 3)->get();
-        $survey_projects_count = $survey_projects->count();
-
-        // Hỗ trợ
-        $support_projects = DB::table('projects')->where('phase_id', 4)->get();
-        $support_projects_count = $support_projects->count();
-
-        // Đóng
-        $closed_projects = DB::table('projects')->where('phase_id', 5)->get();
-        $closed_projects_count = $closed_projects->count();
+        $projects = DB::table('projects')
+            ->join('contracts', 'contracts.contract_id', '=', 'projects.contract_id')
+            ->join('customers', 'customers.customer_id', '=', 'contracts.customer_id')
+            ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
+            ->select(
+                'projects.*',
+                DB::raw("CONCAT(customers.company_name, ' - ', customers.last_name, ' ', customers.first_name) AS customer_info"),
+                'phases.phase_name_eng'
+            )
+            ->orderBy('project_id', 'asc')
+            ->get();
 
         return view('auth.projects.project-list',
-            compact('inprogress_projects',
-                'inprogress_project_count',
-                'inspection_projects',
-                'inspection_projects_count',
-                'survey_projects',
-                'survey_projects_count',
-                'support_projects',
-                'support_projects_count',
-                'closed_projects',
-                'closed_projects_count'
+            compact('projects'
             ));
     }
 

@@ -22,7 +22,7 @@ class AttendanceController extends Controller
 
     function viewAttendanceByID($id)
     {
-        $attendance = DB::table('attendance')->where('id_attendance', $id)->get();
+        $attendance = DB::table('attendance')->where('attendance_id', $id)->get();
         $employees = DB::table('employees')
             ->select('photo', 'last_name', 'first_name')
             ->where('employee_id', $attendance[0]->employee_id)
@@ -33,7 +33,7 @@ class AttendanceController extends Controller
 
     function updateAttendance(Request $request)
     {
-        $id = $request->input('id_attendance');
+        $id = $request->input('attendance_id');
         $employee_id = $request->input('employee_id');
         $date = $request->input('date');
         $sign_in = $request->input('sign_in');
@@ -43,7 +43,7 @@ class AttendanceController extends Controller
             ->where('employee_id', $employee_id)
             ->where('date', $date)
             ->where('sign_in', $sign_in)
-            ->where('id_attendance', '!=', $id)
+            ->where('attendance_id', '!=', $id)
             ->first();
         if ($attendance) {
             return response()->json(['success' => false, 'message' => 'Error sign in time: employee already signed in this time!']);
@@ -53,7 +53,7 @@ class AttendanceController extends Controller
             ->where('employee_id', $employee_id)
             ->where('date', $date)
             ->where('sign_in', '<', $sign_out)
-            ->where('id_attendance', '!=', $id)
+            ->where('attendance_id', '!=', $id)
             ->first();
         if ($attendance) {
             return response()->json(['success' => false, 'message' => 'Error sign out time: employee must be signed out before signed in!']);
@@ -69,7 +69,7 @@ class AttendanceController extends Controller
         }
         //update attendance
         $attendance = DB::table('attendance')
-            ->where('id_attendance', $id)
+            ->where('attendance_id', $id)
             ->update([
                 'employee_id' => $employee_id,
                 'date' => $date,
@@ -135,8 +135,8 @@ class AttendanceController extends Controller
 
     function deleteAttendance(Request $request)
     {
-        $id = $request->input('id_attendance');
-        $attendance = DB::table('attendance')->where('id_attendance', $id)->delete();
+        $id = $request->input('attendance_id');
+        $attendance = DB::table('attendance')->where('attendance_id', $id)->delete();
         $attendance = DB::table('attendance')
             ->select('attendance.*', 'employees.first_name', 'employees.last_name')
             ->join('employees', 'attendance.employee_id', '=', 'employees.employee_id')
