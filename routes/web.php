@@ -250,3 +250,4 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
 
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
+});
