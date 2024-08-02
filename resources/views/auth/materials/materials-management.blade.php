@@ -117,41 +117,53 @@
 
         <div class="row mt-4">
             <div class="col-md-8">
-                <table class="table" style="border-radius: 10px; overflow: hidden;">
-                    <tbody>
-                        <tr>
-                            <td>Payment term</td>
-                            <td>- First payment: Deposit 30% of the Contract value included VAT within 7 working days</td>
-                        </tr>
-                        <tr>
-                            <td>Warranty term</td>
-                            <td>- All Goods of the Contract shall be warranted As</td>
-                        </tr>
-                        <tr>
-                            <td>Delivery & Installation</td>
-                            <td>For all the site at Quang Nam </br>
-                                Following the - Standard for cabling</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card border rounded-4 p-3">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td>Payment term</td>
+                                        <td>- First payment: Deposit 30% of the Contract value included VAT within 7 working days</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Warranty term</td>
+                                        <td>- All Goods of the Contract shall be warranted As</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Delivery & Installation</td>
+                                        <td>For all the site at Quang Nam </br>
+                                            Following the - Standard for cabling</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <table class="table" style="border-radius: 10px; overflow: hidden;">
-                    <tbody>
-                        <tr>
-                            <td><strong>Sub Total</strong></td>
-                            <td id="subTotal"><strong>{{ number_format($sub_total, 0, ',', '.') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>VAT of GOODS</td>
-                            <td id="vatOfGoods">{{ number_format($vat_of_goods, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>GRAND TOTAL</strong></td>
-                            <td id="grandTotal"><strong>{{ number_format($grand_total, 0, ',', '.') }}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card border rounded-4 p-3">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
+                                <tbody>
+                                <tr>
+                                    <td><strong>Sub Total</strong></td>
+                                    <td id="subTotal"><strong>{{ number_format($sub_total, 0, ',', '.') }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>VAT of GOODS</td>
+                                    <td id="vatOfGoods">{{ number_format($vat_of_goods, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GRAND TOTAL</strong></td>
+                                    <td id="grandTotal"><strong>{{ number_format($grand_total, 0, ',', '.') }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -609,7 +609,7 @@ $token = 'position';
                 <li>
                     <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        <i class="bi bi-circle"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>
