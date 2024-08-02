@@ -11,6 +11,13 @@
             overflow-y: auto;
         }
 
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+            border-bottom: 2px solid #ccc;
+        }
     </style>
     <div class="pagetitle">
         <h1>Proposal Applicaiton</h1>
@@ -131,11 +138,11 @@
                         <div class="mb-3 table-responsive">
                             <table class="table">
                                 <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Proposal File Name</th>
-                                    <th>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Proposal File Name</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody class="overflow-y-scroll">
                                 </tbody>
@@ -269,7 +276,7 @@
             fileArray.forEach((file, index) => {
                 const li = document.createElement('li');
                 li.className =
-                'mb-3 d-flex justify-content-between align-items-center text-truncate file-list-item';
+                    'mb-3 d-flex justify-content-between align-items-center text-truncate file-list-item';
                 let displayName = file.name;
                 const extension = displayName.split('.').pop();
                 const baseName = displayName.substring(0, displayName.lastIndexOf('.'));
