@@ -50,7 +50,6 @@ class EmployeesController extends Controller
         $dataContact = [
             'phone_number' => $request->input('phone_number'),
         ];
-
         $contact_id = DB::table('contacts')->insertGetId($dataContact);
 
         $dataEmployee = [
@@ -185,18 +184,27 @@ class EmployeesController extends Controller
         $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
         $data_contact = DB::table('contacts')
             ->where('contact_id',$contact_id)->first();
-        $data_job_detail = DB::table('job_detail')
+        $data_job_detail = DB::table('job_details')
             ->where('employee_id',$employee_id)
             ->first();
         $email = DB::table('accounts')->where('employee_id',$employee_id)->value('email');
         $data_cv = DB::table('employees')->where('employee_id',$employee_id)->value('cv');
         $data_medical_checkup = DB::table('medical_checkup')->where('employee_id',$employee_id)->get();
         $data_certificate = DB::table('certificates')
-            ->join('certificate_type', 'certificate_type.id_certificate_type', '=', 'certificates.id_type_certificate')
+            ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->where('certificates.employee_id',$employee_id)->get();
         Log::info(json_encode($data_job_detail));
         $data = new EmployeeModel();
-        $jobdetails = $data->getAllJobDetails();
+        $jobdetails = DB::table('job_details')
+            ->join('job_titles', 'job_titles.job_title_id', '=', 'job_details.job_title_id')
+            ->join('job_categories', 'job_categories.job_category_id', '=', 'job_details.job_category_id')
+            ->join('job_type_contracts', 'job_type_contracts.type_contract_id', '=', 'job_details.job_type_contract_id')
+            ->join('job_teams', 'job_teams.team_id', '=', 'job_details.job_team_id')
+            ->join('job_countries', 'job_countries.country_id', '=', 'job_details.job_country_id')
+            ->join('job_levels', 'job_levels.id_level', '=', 'job_details.job_level_id')
+            ->join('job_locations', 'job_locations.location_id', '=', 'job_details.job_location_id')
+            ->join('job_positions', 'job_positions.position_id', '=', 'job_details.job_position_id')
+            ->where('employee_id',$employee_id)->get();
         return view('auth.employees.info',[
             'data_employee' => $data_employee,
             'data_contact' => $data_contact,
@@ -223,12 +231,6 @@ class EmployeesController extends Controller
         return json_encode($data_certificates);
     }
 
-
-    static function getPassportInfo($employee_id)
-    {
-        $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();
-        return json_encode($data_passport);
-    }
     static function generateEmployeeCode()
     {
         $year = date('y');
@@ -246,7 +248,11 @@ class EmployeesController extends Controller
 
         return $employee_code;
     }
-
+    static function getPassportInfo($employee_id)
+    {
+        $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();
+        return $data_passport;
+    }
     public function checkFileExists(Request $request)
     {
         $filePath = public_path($request->input('path'));
@@ -260,7 +266,6 @@ class EmployeesController extends Controller
 
         if ($file_of == "cv") {
             $cv_list = json_decode(DB::table('employees')->where('employee_id', $employee_id)->value('cv'));
-
             if (in_array($filename, $cv_list)) {
                 $filePath = public_path("uploads/$employee_id/$filename");
                 if (File::exists($filePath)) {
@@ -490,25 +495,34 @@ class EmployeesController extends Controller
         $jobdetails = $item->getAllJobDetails();
         $type_certificate = $item->getTypeCertificate();
 
-        $id = $request->id;
-        $item = EmployeeModel::query()
+        $id_employee = $request->id;
+        $item = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
             ->join('job_details','job_details.employee_id','=','employees.employee_id')
-            ->where('fired','=','false', 'and', 'employee_id', '=', $id)
+            ->where('fired','false')
+            ->where('employees.employee_id', $id_employee)
             ->orderBy('employees.employee_code')
             ->first();
+
         if ($item) {
             // Augment the employee data with additional information
-            $item->medical = EmployeesController::getMedicalInfo($id);
-            $item->certificates = EmployeesController::getCertificateInfo($id);
-            $item->passport = EmployeesController::getPassportInfo($id);
-            $item->email = DB::table('accounts')->where('employee_id', $id)->value('email');
+            $item->medical = EmployeesController::getMedicalInfo($id_employee);
+            $item->certificates = EmployeesController::getCertificateInfo($id_employee);
+            $item->passport = EmployeesController::getPassportInfo($id_employee);
+            $item->email = DB::table('accounts')->where('employee_id', $id_employee)->value('email');
         }
-//        dd($item);
         return view('auth.employees.update_employee',[
             'item' => $item,
             'jobdetails' => $jobdetails,
             'type_certificate' => $type_certificate,
+        ]);
+    }
+
+    function inactiveView()
+    {
+        $data = DB::table('employees')->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')->where('fired', 'true')->orderBy('employee_code')->get();
+        return view('auth.employees.inactive_employee',[
+            'data' => $data
         ]);
     }
 }
