@@ -16,34 +16,36 @@
             <div class="row gx-3">
                 <div class="col-lg-6">
                     <div class="row mb-3">
-                        <input type="hidden" class="employee_id" value="{{$item->employee_id}}">
+                        <input type="hidden" class="employee_id" value="{{ optional($item)->employee_id ? optional($item)->employee_id : '' }}">
                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control employee_code" name="" @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif value="{{$item->employee_code}}">
+                            <input type="text" class="form-control employee_code" name=""
+                                   @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif
+                                   value="{{ optional($item)->employee_code }}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control first_name" name="" value="{{$item->first_name}}">
+                            <input type="text" class="form-control first_name" name="" value="{{$item->first_name ?? ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control last_name" name="" value="{{$item->last_name}}">
+                            <input type="text" class="form-control last_name" name="" value="{{$item->last_name ?? ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control en_name" name="" value="{{$item->en_name}}">
+                            <input type="text" class="form-control en_name" name="" value="{{$item->en_name ?? ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-lg-4 col-form-label">Photo</label>
                         <div class="col-lg-2 text-center">
-                            <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile" data="{{$item->photo}}">
+                            <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile" data="{{$item->photo ?? asset('/assets/img/avt.png')}}">
                         </div>
                         <div class="col-lg-6">
                             <form class="border rounded-4 p-2 text-center" action="{{route('img-store')}}" method="POST" enctype="multipart/form-data">
@@ -65,13 +67,13 @@
                         <div class="col-sm-8">
                             <div class="d-flex">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" @if($item->gender == "0") checked @endif>
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" @if($item->gender ?? '' == "0") checked @endif>
                                     <label class="form-check-label" for="male">
                                         Male
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1" @if($item->gender == "1") checked @endif>
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1" @if($item->gender ?? '' == "1") checked @endif>
                                     <label class="form-check-label" for="female">
                                         Female
                                     </label>
@@ -84,13 +86,13 @@
                         <div class="col-sm-8">
                             <div class="d-flex">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" @if($item->marital_status == "Single") checked @endif>
+                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" @if($item->marital_status ?? '' == "Single") checked @endif>
                                     <label class="form-check-label" for="single">
                                         Single
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married" @if($item->marital_status == "Married") checked @endif>
+                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married" @if($item->marital_status ?? '' == "Married") checked @endif>
                                     <label class="form-check-label" for="married">
                                         Married
                                     </label>
@@ -103,13 +105,13 @@
                         <div class="col-sm-8">
                             <div class="d-flex">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" @if($item->military_service == "Done") checked @endif>
+                                    <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" @if($item->military_service ?? '' == "Done") checked @endif>
                                     <label class="form-check-label" for="Done">
                                         Done
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet" @if($item->military_service == "No yet") checked @endif>
+                                    <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet" @if($item->military_service ?? '' == "No yet") checked @endif>
                                     <label class="form-check-label" for="Noyet">
                                         No yet
                                     </label>
@@ -120,13 +122,13 @@
                     <div class="row mb-3">
                         <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control date_of_birth" name="date_of_birth" value="{{$item->date_of_birth}}">
+                            <input type="date" class="form-control date_of_birth" name="date_of_birth" value="{{$item->date_of_birth ?? ''}}">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label class="col-sm-4 col-form-label">Nation</label>
                         <div class="col-sm-8">
-                            <select class="form-select selectpicker national" aria-label="Default select example" id="national" name="" data="{{$item->national}}">
+                            <select class="form-select selectpicker national" aria-label="Default select example" id="national" name="" data="{{$item->national ?? ''}}">
                             </select>
                         </div>
                     </div>
@@ -143,68 +145,72 @@
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control phone_number" name="" value="{{$item->phone_number}}">
+                        <input type="text" class="form-control phone_number" name="" value="{{$item->phone_number ?? ''}}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_number" name="" value="{{$item->passport->first()->passport_number}}">
+                        <input type="text" class="form-control passport_number" name="" value="{{ optional(optional($item)->passport)->passport_number ?? '' }}">
                     </div>
                 </div>
+
                 <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label">Passport place of Issue</label>
+                    <label for="inputText" class="col-sm-4 col-form-label">Passport Place of Issue</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_place_issue" name="" value="{{$item->passport->first()->passport_place_issue}}">
+                        <input type="text" class="form-control passport_place_issue" name="" value="{{ optional(optional($item)->passport)->passport_place_issue ?? '' }}">
                     </div>
                 </div>
+
                 <div class="row mb-3">
-                    <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Issue</label>
+                    <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Issue</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_issue_date" name="" value="{{$item->passport->first()->passport_issue_date}}">
+                        <input type="date" class="form-control passport_issue_date" name="" value="{{ optional(optional($item)->passport)->passport_issue_date ?? '' }}">
                     </div>
                 </div>
+
                 <div class="row mb-3">
-                    <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Expiry</label>
+                    <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Expiry</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_expiry_date" name="" value="{{$item->passport->first()->passport_expiry_date}}">
+                        <input type="date" class="form-control passport_expiry_date" name="" value="{{ optional(optional($item)->passport)->passport_expiry_date ?? '' }}">
                     </div>
                 </div>
+
                 <div class="row mb-4">
                     <label for="inputText" class="col-sm-4 col-form-label">Citizen identity Card Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control cic_number" name="" value="{{$item->cic_number}}">
+                        <input type="text" class="form-control cic_number" name="" value="{{$item->cic_number ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <label for="inputText" class="col-sm-4 col-form-label">Citizen place of issue</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control cic_place_issue" name="" value="{{$item->cic_place_issue}}">
+                        <input type="text" class="form-control cic_place_issue" name="" value="{{$item->cic_place_issue ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Issue</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control cic_issue_date" name="" value="{{$item->cic_issue_date}}">
+                        <input type="date" class="form-control cic_issue_date" name="" value="{{$item->cic_issue_date ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Expiry</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control cic_expiry_date" name="" value="{{$item->cic_expiry_date}}">
+                        <input type="date" class="form-control cic_expiry_date" name="" value="{{$item->cic_expiry_date ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <label for="inputText" class="col-sm-4 col-form-label">Place of Residence</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control current_residence" name="" value="{{$item->current_residence}}">
+                        <input type="text" class="form-control current_residence" name="" value="{{$item->current_residence ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <label for="inputText" class="col-sm-4 col-form-label">Permanent Address</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control permanent_address" name="" value="{{$item->permanent_address}}">
+                        <input type="text" class="form-control permanent_address" name="" value="{{$item->permanent_address ?? ''}}">
                     </div>
                 </div>
             </form>
@@ -221,7 +227,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_title" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTitles'] as $itemJob)
-                                <option value="{{$itemJob->job_title_id}}" @if($itemJob->job_title_id == $item->job_title_id) selected @endif>{{$itemJob->job_title}}</option>
+                                <option value="{{ optional($itemJob)->job_title_id }}" @if(optional($itemJob)->job_title_id == optional($item)->job_title_id) selected @endif>
+                                    {{ optional($itemJob)->job_title ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -231,7 +239,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_category" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCategories'] as $itemJob)
-                                <option value="{{$itemJob->job_category_id}}" @if($itemJob->job_category_id == $item->job_category_id) selected @endif>{{$itemJob->job_category_name}}</option>
+                                <option value="{{ optional($itemJob)->job_category_id }}" @if(optional($itemJob)->job_category_id == optional($item)->job_category_id) selected @endif>
+                                    {{ optional($itemJob)->job_category_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -241,7 +251,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_position" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobPositions'] as $itemJob)
-                                <option value="{{$itemJob->position_id}}" @if($itemJob->position_id == $item->job_position_id) selected @endif>{{$itemJob->position_name}}</option>
+                                <option value="{{ optional($itemJob)->position_id }}" @if(optional($itemJob)->position_id == optional($item)->job_position_id) selected @endif>
+                                    {{ optional($itemJob)->position_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -251,7 +263,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_team" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTeams'] as $itemJob)
-                                <option value="{{$itemJob->team_id}}" @if($itemJob->team_id == $item->job_team_id) selected @endif>{{$itemJob->team_name}}</option>
+                                <option value="{{ optional($itemJob)->team_id }}" @if(optional($itemJob)->team_id == optional($item)->job_team_id) selected @endif>
+                                    {{ optional($itemJob)->team_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -261,7 +275,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_level" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobLevels'] as $itemJob)
-                                <option value="{{$itemJob->id_level}}" @if($itemJob->id_level == $item->job_level_id) selected @endif>{{$itemJob->level_name}}</option>
+                                <option value="{{ optional($itemJob)->id_level }}" @if(optional($itemJob)->id_level == optional($item)->job_level_id) selected @endif>
+                                    {{ optional($itemJob)->level_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -269,19 +285,19 @@
                 <div class="row mb-3">
                     <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
                     <div class="col-sm-8">
-                        <input type="email" class="form-control email" name="" disabled value="{{$item->email}}">
+                        <input type="email" class="form-control email" name="" disabled value="{{$item->email ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Start Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control start_date" name="" value="{{$item->start_date}}">
+                        <input type="date" class="form-control start_date" name="" value="{{$item->start_date ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">End Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control end_date" name="" value="{{$item->end_date}}">
+                        <input type="date" class="form-control end_date" name="" value="{{$item->end_date ?? ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -289,7 +305,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_type_contract" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTypeContract'] as $itemJob)
-                                <option value="{{$itemJob->type_contract_id}}" @if($itemJob->type_contract_id == $item->job_type_contract_id) selected @endif>{{$itemJob->type_contract_name}}</option>
+                                <option value="{{ optional($itemJob)->type_contract_id }}" @if(optional($itemJob)->type_contract_id == optional($item)->job_type_contract_id) selected @endif>
+                                    {{ optional($itemJob)->type_contract_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -299,7 +317,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_country" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCountry'] as $itemJob)
-                                <option value="{{$itemJob->country_id}}" @if($itemJob->country_id == $item->job_country_id) selected @endif>{{$itemJob->country_name}}</option>
+                                <option value="{{ optional($itemJob)->country_id }}" @if(optional($itemJob)->country_id == optional($item)->job_country_id) selected @endif>
+                                    {{ optional($itemJob)->country_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -309,7 +329,9 @@
                     <div class="col-sm-8">
                         <select class="form-select job_location" aria-label="Default select example">
                             @foreach($jobdetails['jobLocation'] as $itemJob)
-                                <option value="{{$itemJob->location_id}}" @if($itemJob->location_id == $item->job_location_id) selected @endif>{{$itemJob->location_name}}</option>
+                                <option value="{{ optional($itemJob)->location_id }}" @if(optional($itemJob)->location_id == optional($item)->job_location_id) selected @endif>
+                                    {{ optional($itemJob)->location_name ?? '' }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -331,17 +353,17 @@
                         </tr>
                         </thead>
                         <tbody class="cv-list">
-                        @if($item->cv)
-                            @foreach(json_decode($item->cv) as $index => $row)
+                        @if(optional($item)->cv)
+                            @foreach(json_decode(optional($item)->cv) as $index => $row)
                                 <tr>
                                     <td>
-                                        {{ $loop->index + 1}}
+                                        {{ $loop->index + 1 }}
                                     </td>
                                     <td>
-                                        <a href="{{asset('/uploads/' . $item->employee_id . '/' . $row)}}">{{$row}}</a>
+                                        <a href="{{ asset('/uploads/' . optional($item)->employee_id . '/' . $row) }}">{{ $row }}</a>
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv" data_filename="{{$row}}">
+                                        <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_cv" data_filename="{{ $row }}">
                                             <i class="bi bi-trash3 text-danger"></i>
                                         </button>
                                     </td>
@@ -381,24 +403,34 @@
                         </tr>
                         </thead>
                         <tbody class="medical_list">
-                            @foreach(json_decode($item->medical) as $index => $row)
+                        @php
+                            $medicalRecords = json_decode(optional($item)->medical);
+                        @endphp
+
+                        @if($medicalRecords)
+                            @foreach($medicalRecords as $index => $row)
                                 <tr>
                                     <td>
-                                        {{ $loop->index + 1}}
+                                        {{ $loop->index + 1 }}
                                     </td>
                                     <td>
-                                        <a href="{{asset('/uploads/' . $item->employee_id . '/' . $row->medical_checkup_file)}}">{{$row->medical_checkup_file}}</a>
+                                        <a href="{{ asset('/uploads/' . optional($item)->employee_id . '/' . optional($row)->medical_checkup_file) }}">
+                                            {{ optional($row)->medical_checkup_file }}
+                                        </a>
                                     </td>
                                     <td>
-                                        {{$row->medical_checkup_issue_date}}
+                                        {{ optional($row)->medical_checkup_issue_date }}
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical" data_id_medical="{{$row->medical_checkup_id}}" data_filename = "{{$row->medical_checkup_file}}">
+                                        <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_medical"
+                                                data_id_medical="{{ optional($row)->medical_checkup_id }}"
+                                                data_filename="{{ optional($row)->medical_checkup_file }}">
                                             <i class="bi bi-trash3 text-danger"></i>
                                         </button>
                                     </td>
                                 </tr>
                             @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -436,27 +468,37 @@
                 </tr>
                 </thead>
                 <tbody class="certificate_list">
-                    @foreach(json_decode($item->certificates) as $index => $row)
+                @php
+                    $certificates = json_decode(optional($item)->certificates);
+                @endphp
+
+                @if($certificates)
+                    @foreach($certificates as $index => $row)
                         <tr>
                             <td>
-                                {{ $loop->index + 1}}
+                                {{ $loop->index + 1 }}
                             </td>
                             <td>
-                                <a href="{{asset('/uploads/' . $item->employee_id . '/' . $row->certificate)}}">{{$row->certificate}}</a>
+                                <a href="{{ asset('/uploads/' . optional($item)->employee_id . '/' . optional($row)->certificate) }}">
+                                    {{ optional($row)->certificate }}
+                                </a>
                             </td>
                             <td>
-                                {{$row->certificate_type_name}}
+                                {{ optional($row)->certificate_type_name }}
                             </td>
                             <td>
-                                {{$row->end_date_certificate}}
+                                {{ optional($row)->end_date_certificate }}
                             </td>
                             <td class="text-center">
-                                <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate" data_id_certificate="{{$row->certificate_id}}" data_filename="{{$row->certificate}}">
+                                <button class="btn p-0 border-0 bg-transparent shadow-none btn_delete_certificate"
+                                        data_id_certificate="{{ optional($row)->certificate_id }}"
+                                        data_filename="{{ optional($row)->certificate }}">
                                     <i class="bi bi-trash3 text-danger"></i>
                                 </button>
                             </td>
                         </tr>
                     @endforeach
+                @endif
                 </tbody>
             </table>
         </div>

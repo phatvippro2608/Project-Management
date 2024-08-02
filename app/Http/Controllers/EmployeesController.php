@@ -517,4 +517,12 @@ class EmployeesController extends Controller
             'type_certificate' => $type_certificate,
         ]);
     }
+
+    function inactiveView()
+    {
+        $data = DB::table('employees')->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')->where('fired', 'true')->orderBy('employee_code')->get();
+        return view('auth.employees.inactive_employee',[
+            'data' => $data
+        ]);
+    }
 }

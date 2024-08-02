@@ -199,31 +199,31 @@
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Title</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->job_title }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->job_title : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Category</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" data="" value="{{ $jobdetails->first()->job_category_name }}">
+                        <input type="text" name="" id="" class="form-control" data="" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->job_category_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Position</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->position_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->position_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Team</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->team_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->team_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Level</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->level_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->level_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -235,31 +235,31 @@
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Start Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control start_date" name="" value="{{ \Carbon\Carbon::parse($data_job_detail->start_date)->format('Y-m-d') }}">
+                        <input type="date" class="form-control start_date" name="" value="{{ optional($data_job_detail)->start_date ? \Carbon\Carbon::parse(optional($data_job_detail)->start_date)->format('Y-m-d') : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">End Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control end_date" name="" value="{{ \Carbon\Carbon::parse($data_job_detail->end_date)->format('Y-m-d') }}">
+                        <input type="date" class="form-control end_date" name="" value="{{ optional($data_job_detail)->end_date ? \Carbon\Carbon::parse(optional($data_job_detail)->end_date)->format('Y-m-d') : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Type of Contract</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->type_contract_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->type_contract_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Country</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->country_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->country_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Location</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->location_name }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->location_name : ''}}">
                     </div>
                 </div>
             </div>
