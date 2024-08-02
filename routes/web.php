@@ -232,6 +232,8 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
     Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
     Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
+    Route::post('/update', [RecognitionController::class, 'update'])->name('recognition.update');
+    Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
 // disciplinary
