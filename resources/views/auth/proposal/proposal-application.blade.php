@@ -1,12 +1,6 @@
 @extends('auth.main');
 @section('contents')
     <style>
-        .custom-img {
-            width: 100%;
-            /* Điều chỉnh kích thước chiều rộng */
-            height: auto;
-            /* Giữ tỷ lệ khung hình */
-        }
     </style>
     <div class="pagetitle">
         <h1>Proposal Applicaiton</h1>
@@ -159,7 +153,7 @@
                     <th>Employee Name</th>
                     <th>Proposal Name Type</th>
                     <th>Description</th>
-                    <th class='w-25'>Progress</th>
+                    <th class='w-25 '>Progress</th>
                     @if ($data['permission'] == 3)
                         <th class="text-center">Direct Department</th>
                     @endif
@@ -177,7 +171,7 @@
                         <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                         <td>{{ $item->name }}</td>
                         <td>
-                            <textarea name="" id="">{{ $item->proposal_description }}</textarea>
+                            <textarea readonly class="border border-light w-100"  rows="1" name="" id="">{{ $item->proposal_description }}</textarea>
                         </td>
                         <td>
                             <div class="progress">
