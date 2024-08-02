@@ -154,7 +154,7 @@
                             <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
-                            <li><a class="dropdown-item" id="dl_task_id" href="#">Delete</a></li>
+                            <li><a class="dropdown-item" id="dl_task_id" href="#" onclick="delTask(this)" >Delete</a></li>
                         </ul>
                     </div>
                     <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
@@ -223,7 +223,6 @@
             url: '{{ route('task.create') }}',
             data: data,
             success: function(response) {
-                console.log(response);
                 if(response.success) {
                     toastr.success(response.message);
                     setTimeout(function() {
@@ -246,7 +245,6 @@
             url: '{{ route('task.update') }}',
             data: data,
             success: function(response) {
-                console.log(response);
                 if(response.success) {
                     toastr.success(response.message);
                     setTimeout(function() {
@@ -259,9 +257,8 @@
             },
         });
     });
-    $('#dl_task_id').click(function(e) {
-        e.preventDefault();
-        var task_id = $(this).attr('data-task-id');
+    function delTask(e) {
+        var task_id = $(e).attr('data-task-id');
         $.ajax({
             type: 'post',
             url: '{{ url('task') }}/delete/' + task_id,
@@ -269,21 +266,20 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                console.log(response);
-
                 if (response.success) {
                     toastr.success(response.message);
-
+                    location.reload();
                 } else {
                     toastr.error(response.message);
                 }
             },
         });
-    });
+    };
     
     function viewTask(id){
         $('#modalViewTask').modal('show');
         var task = tasks.find(task => task.id == id);
+        $('#dl_task_id').attr('data-task-id', task.id);
         $('#task_id').val(task.id);
         $('#taskname').val(task.label);
         $('#request').val(task.req);
