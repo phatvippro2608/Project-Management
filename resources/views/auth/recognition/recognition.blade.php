@@ -13,6 +13,17 @@
 @endsection
 
 @section('contents')
+<style>
+    #recognitionTable th {
+        text-align: center !important;
+    }
+
+    #recognitionTable td:nth-child(3),
+    #recognitionTable td:nth-child(4) {
+        text-align: left !important;
+    }
+</style>
+
 <div class="pagetitle">
     <h1>Recognitions</h1>
     <nav>
@@ -47,8 +58,8 @@
                     <tr>
                         <th scope="col">{{ $recognition->recognition_id }}</th>
                         <th scope="col">{{ $recognition->employee_code }}</th>
-                        <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
-                        <th scope="col">{{ $recognition->recognition_type_name }}</th>
+                        <th scope="col" style="text-align: left !important;">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
+                        <th scope="col" style="text-align: left !important;">{{ $recognition->recognition_type_name }}</th>
                         <th scope="col">{{ $recognition->recognition_date }}</th>
                         <td>
                             <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
