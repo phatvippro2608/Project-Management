@@ -44,8 +44,6 @@
                                     $photoPath = asset($data->photo);
                                     $defaultPhoto = asset('assets/img/avt.png');
                                     $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
-
-
                             @endphp
                         <img
                             src="{{ $photoExists ? $photoPath : $defaultPhoto }}"

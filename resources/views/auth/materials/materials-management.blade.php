@@ -14,27 +14,37 @@
             white-space: normal;
         }
     </style>
-    <div class="container mt-5">
-        <h1 class="mb-4">Material Management</h1>
 
+    <div class="container-fluid">
+        <div class="pagetitle">
+            <h1>Material Management</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Material Management</li>
+                </ol>
+            </nav>
+        </div>
         {{-- @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>	
+        </div>
     @endif --}}
         <!-- Button to open the modal to add new material -->
         <button type="button" id="add-material-btn" class="btn btn-primary mb-4" data-bs-toggle="modal"
             data-bs-target="#addMaterialModal">
-            Add New Material
+            <i class="bi bi-plus-lg me-2"></i>Add New Material
         </button>
 
         <!-- Table to display materials -->
-        <div class="card">
+        <div class="card p-2 border rounded-4">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Material Management Table</div>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Material Management Table</h5>
                 <div class="table-responsive">
-                    <table id="materialsTable" class="display">
+                    <table id="materialsTable" class="table table-borderless table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -244,6 +254,13 @@
     <script>
         $(document).ready(function() {
             var table = $('#materialsTable').DataTable({
+                language: { search: "" },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
                 responsive: true
             });
 

@@ -41,15 +41,15 @@
                 </div>
                 <table id="employeesTable" class="table table-hover table-borderless">
                     <thead class="table-light">
-                    <tr>
-                        <th>Employee Code</th>
-                        <th class="text-center">Photo</th>
-                        <th>Full Name</th>
-                        <th>English Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th class="text-center">Photo</th>
+                            <th>Full Name</th>
+                            <th>English Name</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody id="employeesTableBody">
                             @foreach($data as $item)
@@ -79,7 +79,7 @@
                                                 $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
                                                 $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
                                                 ?>
-                                            <a href="{{action('App\Http\Controllers\EmployeesController@updateView', $id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
+                                            <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             |
@@ -139,12 +139,6 @@
                                             <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control phone_number" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Email</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control email" name="">
                                             </div>
                                         </div>
                                     </div>
@@ -278,7 +272,6 @@
                     'date_of_birth': $('.md1 .date_of_birth').val(),
                     'national': $('.md1 .national :checked').val(),
                     'phone_number': $('.md1 .phone_number').val(),
-                    'email': $('.md1 .email').val()
                 };
 
                 $.ajax({
@@ -303,6 +296,7 @@
                 });
             });
         });
+
         $('.at4').click(function () {
             var id = $(this).attr('data');
             if (confirm("Do you want to remove this employee?")){

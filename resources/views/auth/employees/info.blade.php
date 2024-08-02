@@ -199,31 +199,31 @@
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Title</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTitles'][$data_job_detail->id_job_title]) ? $jobdetails['jobTitles'][$data_job_detail->id_job_title - 1 ]->job_title : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->job_title }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Category</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" data="" value="{{ isset($jobdetails['jobCategories'][$data_job_detail->id_job_category-1]) ? $jobdetails['jobCategories'][$data_job_detail->id_job_category - 1 ]->job_category_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" data="" value="{{ $jobdetails->first()->job_category_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Position</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobPositions'][$data_job_detail->id_job_position]) ? $jobdetails['jobPositions'][$data_job_detail->id_job_position - 1]->position_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->position_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Team</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTeams'][$data_job_detail->id_job_team-12]) ? $jobdetails['jobTeams'][$data_job_detail->id_job_team - 12]->team_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->team_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Level</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLevels'][$data_job_detail->id_job_level]) ? $jobdetails['jobLevels'][$data_job_detail->id_job_level - 1]->level_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->level_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -247,19 +247,19 @@
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Type of Contract</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTypeContract'][$data_job_detail->id_job_type_contract]) ? $jobdetails['jobTypeContract'][$data_job_detail->id_job_type_contract - 1]->type_contract_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->type_contract_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Country</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobCountry'][$data_job_detail->id_job_country]) ? $jobdetails['jobCountry'][$data_job_detail->id_job_country - 1]->country_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->country_name }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Location</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLocation'][$data_job_detail->id_job_location-3]) ? $jobdetails['jobLocation'][$data_job_detail->id_job_location - 3]->location_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->first()->location_name }}">
                     </div>
                 </div>
             </div>

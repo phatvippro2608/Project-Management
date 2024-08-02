@@ -28,6 +28,10 @@
         background-color: #3FA2F6;
         color: white;
     }
+    td, th {
+        text-align: center !important;
+    }
+
 </style>
 <div class="pagetitle">
     <h1>Attendance</h1>
@@ -66,8 +70,8 @@
                     $working = strtotime($data->sign_out) - strtotime($data->sign_in);
                     $working = date('H:i', $working);
                     }
-                    $name=DB::table('employees')->where('employee_id', $data->employee_id)->first()->first_name;
-                    $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
+                    $name=DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
+                    $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->first_name;
                     @endphp
                     <tr>
                         <td>{{ $data->attendance_id }}</td>
@@ -128,7 +132,7 @@
                                 $defaultPhoto = asset('assets/img/avt.png');
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
-                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name  . ' ' . $employee->first_name }}">
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover ms-2" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
