@@ -228,7 +228,7 @@
                     toastr.success(response.message);
                     setTimeout(function() {
                         $('#modalCreateTask').modal('hide');
-                        // location.reload();
+                        location.reload();
                     }, 200);
                 }else {
                     toastr.error(response.message);
