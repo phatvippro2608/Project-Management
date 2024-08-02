@@ -369,7 +369,8 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a class="nav-sub-link" href="#">
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
                             <i class="bi bi-circle"></i><span>Disciplinary</span>
                         </a>
                     </li>

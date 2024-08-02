@@ -252,6 +252,15 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
     Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
+// disciplinary
+Route::group(['prefix' => '/disciplinary', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
+    Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
+    Route::post('/addType', [DisciplinaryController::class, 'addType'])->name('disciplinary.addType');
+    Route::post('/import', [DisciplinaryController::class, 'import'])->name('disciplinary.import');
+    Route::post('/update', [DisciplinaryController::class, 'update'])->name('disciplinary.update');
+    Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
+});
 
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
