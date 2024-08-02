@@ -28,4 +28,17 @@ class ProjectModel extends Model
         'project_contract_amount',
         'project_contractor_id',
     ];
+    public function getCustomer()
+    {
+        // Truy xuất customer_id từ hợp đồng liên kết
+        $contractId = $this->contract_id;
+
+        // Truy vấn khách hàng dựa trên contract_id
+        return DB::table('customers')
+            ->join('contracts', 'customers.customer_id', '=', 'contracts.customer_id')
+            ->where('contracts.contract_id', $contractId)
+            ->select('customers.*')
+            ->first();
+    }
+    
 }
