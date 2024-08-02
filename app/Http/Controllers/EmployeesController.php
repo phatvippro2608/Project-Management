@@ -246,11 +246,7 @@ class EmployeesController extends Controller
 
         return $employee_code;
     }
-    static function getPassportInfo($employee_id)
-    {
-        $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();
-        return $data_passport;
-    }
+
     public function checkFileExists(Request $request)
     {
         $filePath = public_path($request->input('path'));
