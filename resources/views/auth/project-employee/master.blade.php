@@ -193,9 +193,9 @@
             </li>
             @php
                 $data = \Illuminate\Support\Facades\DB::table('account')
-                    ->join('employees', 'account.id_employee', '=', 'employees.id_employee')
-                    ->join('job_detail', 'job_detail.id_employee', '=', 'employees.id_employee')
-                    ->where('id_account',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
+                    ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                    ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                    ->where('account_id',\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID))
                     ->first();
             @endphp
             <li class="nav-item dropdown pe-3">

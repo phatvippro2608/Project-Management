@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class RecognitionController extends Controller
 {
+    public function get($recognition_id)
+    {
+        return DB::table("recognitions")->where('recognition_id', $recognition_id)->get();
+    }
     // Hàm này trả về view cùng với danh sách recognitions và employees
     public function getView()
     {
@@ -47,6 +51,46 @@ class RecognitionController extends Controller
         }
     }
 
+    public function update()
+    {
+        try {
+            $validated = request()->validate([
+                'recognition_id' => 'required|string',
+                'recognition_type_id' => 'required|string',
+                'recognition_date' => 'required|date',
+                'recognition_hidden' => 'nullable|boolean',
+                'description' => 'required|string',
+            ]);
+
+            // Xử lý giá trị của recognition_hidden
+            $validated['recognition_hidden'] = request()->has('recognition_hidden') ? True : False;
+
+            // Tìm bản ghi bằng recognition_id
+            $recognition = RecognitionModel::where('recognition_id', $validated['recognition_id'])->first();
+            if ($recognition) {
+                // Cập nhật bản ghi với dữ liệu đã được xác thực
+                $recognition->update($validated);
+                return response()->json(['status' => 200, 'message' => 'Updated recognition successfully']);
+            } else {
+                return response()->json(['status' => 404, 'message' => 'Recognition not found']);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Trả về lỗi xác thực cụ thể
+            return response()->json([
+                'status' => 422,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),  // Trả về chi tiết lỗi
+            ]);
+        } catch (\Exception $e) {
+            // Trả về lỗi hệ thống khác
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to update recognition',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function addType(Request $request)
     {
         $validated = $request->validate([
@@ -65,7 +109,7 @@ class RecognitionController extends Controller
     {
         // Kiểm tra nếu không có tệp Excel nào được tải lên
         if (!$request->hasFile('file-excel')) {
-            return self::status('Không có tệp Excel nào được tải lên', 400);
+            return response()->json(['status' => 500, 'message' => 'Không có tệp Excel nào được tải lên']);
         }
 
         // Đọc dữ liệu từ tệp Excel
@@ -94,9 +138,9 @@ class RecognitionController extends Controller
             } else {
                 // Xử lý trường hợp không tìm thấy employee với employee_code tương ứng
                 // Bạn có thể ghi log, bỏ qua, hoặc trả về lỗi tùy thuộc vào yêu cầu của bạn
-                return self::status("Không tìm thấy employee với employee_code: $employee_code", 404);
+                return response()->json(['status' => 404, 'message' => "Không tìm thấy employee với employee_code: $employee_code"]);
             }
         }
-        return self::status('Import thành công', 200);
+        return response()->json(['status' => 200, 'message' => 'Import thành công']);
     }
 }

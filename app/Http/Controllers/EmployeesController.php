@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EmployeeModel;
 use App\Models\SpreadsheetModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
@@ -15,16 +16,20 @@ use function Laravel\Prompts\table;
 
 class EmployeesController extends Controller
 {
-    function getView()
+    function getView(Request $request)
     {
         $data = new EmployeeModel();
         $jobdetails = $data->getAllJobDetails();
         $type_certificate = $data->getTypeCertificate();
-//        $medical_checkup = $data->getMedicalCheckup();
-//        dd($jobdetails);
+
+        $data = EmployeeModel::query()
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
+            ->where('fired','false')
+            ->orderBy('employees.employee_code')
+            ->get();
         return view('auth.employees.employees',
             [
-                'data' => $data->getEmployee(),
+                'data' => $data,
                 'jobdetails'=>$jobdetails,
                 'type_certificate'=> $type_certificate,
 //                'medical_checkup'=> $medical_checkup
@@ -38,10 +43,14 @@ class EmployeesController extends Controller
     }
 
     function put(Request $request){
+        $exist = DB::table('employees')->where('employee_code',$request->input('employee_code'))->exists();
+        if($exist){
+            return json_encode((object)["status" => 500, "message" => "Employee code already exist"]);
+        }
         $dataContact = [
             'phone_number' => $request->input('phone_number'),
         ];
-        $id_contact = DB::table('contacts')->insertGetId($dataContact);
+        $contact_id = DB::table('contacts')->insertGetId($dataContact);
 
         $dataEmployee = [
             'employee_code'=>$request->input('employee_code'),
@@ -54,15 +63,25 @@ class EmployeesController extends Controller
             'military_service' =>$request->input('military_service'),
             'date_of_birth'=> $request->date_of_birth,
             'national'=>$request->input('national'),
-            'id_contact'=>$id_contact,
+            'contact_id'=>$contact_id,
             'fired' => 'false'
         ];
-        if(DB::table('employees')->where('employee_code',$request->input('employee_code'))->exists()){
-            return json_encode((object)["status" => 500, "message" => "Employee already exists"]);
-        }
 
         $employee_id = DB::table('employees')->insertGetId($dataEmployee);
-        if(DB::table('job_detail')->where('employee_id',$employee_id)->insert(['employee_id' => $employee_id])){
+
+
+        $data_account = [
+            'email' => $request->email,
+            'username' => explode('@', $request->email)[0],
+            'password' => password_hash('123', PASSWORD_BCRYPT),
+            'status' => 1,
+            'permission' => 0,
+            'employee_id' => $employee_id,
+        ];
+
+        DB::table('accounts')->insert($data_account);
+
+        if(DB::table('job_details')->where('employee_id',$employee_id)->insert(['employee_id' => $employee_id])){
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         }else{
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
@@ -85,8 +104,8 @@ class EmployeesController extends Controller
             return $value !== "";
         });
 
-        $employee_id = $request->employee_id;
-        $id_contact = $request->id_contact;
+        $employee_id = DB::table('employees')->where('employee_code',$request->employee_code)->value('employee_id');
+        $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
 
         DB::beginTransaction();
         try {
@@ -110,24 +129,24 @@ class EmployeesController extends Controller
                 DB::table('passport')->insert($dataPassport);
             }
 
-            $contactExists = DB::table('contacts')->where('id_contact', $id_contact)->exists();
+            $contactExists = DB::table('contacts')->where('contact_id', $contact_id)->exists();
             if ($contactExists) {
                 DB::table('contacts')
-                    ->where('id_contact', $id_contact)
+                    ->where('contact_id', $contact_id)
                     ->update($dataContact);
             } else {
-                $dataContact['id_contact'] = $id_contact;
+                $dataContact['contact_id'] = $contact_id;
                 DB::table('contacts')->insert($dataContact);
             }
 
-            $jobDetailExists = DB::table('job_detail')->where('employee_id', $employee_id)->exists();
+            $jobDetailExists = DB::table('job_details')->where('employee_id', $employee_id)->exists();
             if ($jobDetailExists) {
-                DB::table('job_detail')
+                DB::table('job_details')
                     ->where('employee_id', $employee_id)
                     ->update($dataJob);
             } else {
                 $dataJob['employee_id'] = $employee_id;
-                DB::table('job_detail')->insert($dataJob);
+                DB::table('job_details')->insert($dataJob);
             }
 
             DB::commit();
@@ -137,8 +156,6 @@ class EmployeesController extends Controller
             DB::rollBack();
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
-
-
     }
 
     function delete(Request $request){
@@ -164,21 +181,30 @@ class EmployeesController extends Controller
         $data_medical_checkup = DB::table('medical_checkup')
             ->where('employee_id',$employee_id)->first();
 
-        $id_contact = DB::table('employees')->where('employee_id',$employee_id)->value('id_contact');
+        $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
         $data_contact = DB::table('contacts')
-            ->where('id_contact',$id_contact)->first();
-        $data_job_detail = DB::table('job_detail')
+            ->where('contact_id',$contact_id)->first();
+        $data_job_detail = DB::table('job_details')
             ->where('employee_id',$employee_id)
             ->first();
-        $email = DB::table('account')->where('employee_id',$employee_id)->value('email');
+        $email = DB::table('accounts')->where('employee_id',$employee_id)->value('email');
         $data_cv = DB::table('employees')->where('employee_id',$employee_id)->value('cv');
         $data_medical_checkup = DB::table('medical_checkup')->where('employee_id',$employee_id)->get();
         $data_certificate = DB::table('certificates')
-            ->join('certificate_type', 'certificate_type.id_certificate_type', '=', 'certificates.id_type_certificate')
+            ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->where('certificates.employee_id',$employee_id)->get();
         Log::info(json_encode($data_job_detail));
         $data = new EmployeeModel();
-        $jobdetails = $data->getAllJobDetails();
+        $jobdetails = DB::table('job_details')
+            ->join('job_titles', 'job_titles.job_title_id', '=', 'job_details.job_title_id')
+            ->join('job_categories', 'job_categories.job_category_id', '=', 'job_details.job_category_id')
+            ->join('job_type_contracts', 'job_type_contracts.type_contract_id', '=', 'job_details.job_type_contract_id')
+            ->join('job_teams', 'job_teams.team_id', '=', 'job_details.job_team_id')
+            ->join('job_countries', 'job_countries.country_id', '=', 'job_details.job_country_id')
+            ->join('job_levels', 'job_levels.id_level', '=', 'job_details.job_level_id')
+            ->join('job_locations', 'job_locations.location_id', '=', 'job_details.job_location_id')
+            ->join('job_positions', 'job_positions.position_id', '=', 'job_details.job_position_id')
+            ->where('employee_id',$employee_id)->get();
         return view('auth.employees.info',[
             'data_employee' => $data_employee,
             'data_contact' => $data_contact,
@@ -200,15 +226,32 @@ class EmployeesController extends Controller
     static function getCertificateInfo($employee_id)
     {
         $data_certificates = DB::table('certificates')
-            ->join('certificate_type', 'certificates.id_type_certificate', '=', 'certificate_type.id_certificate_type')
+            ->join('certificate_types', 'certificates.type_certificate_id', '=', 'certificate_types.certificate_type_id')
             ->where('employee_id',$employee_id)->get();
         return json_encode($data_certificates);
     }
 
+    static function generateEmployeeCode()
+    {
+        $year = date('y');
+
+        $lastCode = DB::table('employees')
+            ->where('employee_code', 'like', $year . '%')
+            ->orderBy('employee_code', 'desc')
+            ->value('employee_code');
+
+        $nextId = $lastCode ? intval(substr($lastCode, 2)) + 1 : 1;
+
+        $employee_id = str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+        $employee_code = $year . $employee_id;
+
+        return $employee_code;
+    }
     static function getPassportInfo($employee_id)
     {
         $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();
-        return json_encode($data_passport);
+        return $data_passport;
     }
     public function checkFileExists(Request $request)
     {
@@ -217,13 +260,12 @@ class EmployeesController extends Controller
     }
 
     public function deleteFile(Request $request){
-        $employee_id = $request->employee_id;
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $filename = $request->filename;
         $file_of = $request->file_of;
 
         if ($file_of == "cv") {
             $cv_list = json_decode(DB::table('employees')->where('employee_id', $employee_id)->value('cv'));
-
             if (in_array($filename, $cv_list)) {
                 $filePath = public_path("uploads/$employee_id/$filename");
                 if (File::exists($filePath)) {
@@ -253,14 +295,14 @@ class EmployeesController extends Controller
                 ]);
             }
         } else if($file_of == "medical"){
-            $id_medical_checkup = $request->id_medical_checkup;
-            $medical_checkup_file = DB::table('medical_checkup')->where('id_medical_checkup', $id_medical_checkup)->value('medical_checkup_file');
+            $medical_checkup_id = $request->medical_checkup_id;
+            $medical_checkup_file = DB::table('medical_checkup')->where('medical_checkup_id', $medical_checkup_id)->value('medical_checkup_file');
             $filePath = public_path("uploads/$employee_id/$medical_checkup_file");
             if (File::exists($filePath)) {
                 // Delete the file from the server
                 File::delete($filePath);
 
-                DB::table('medical_checkup')->where('id_medical_checkup', $id_medical_checkup)->delete();
+                DB::table('medical_checkup')->where('medical_checkup_id', $medical_checkup_id)->delete();
 
                 return response()->json([
                     'status' => 200,
@@ -273,14 +315,14 @@ class EmployeesController extends Controller
                 ]);
             }
         } else if($file_of == "certificate"){
-            $id_certificate = $request->id_certificate;
-            $certificate_file = DB::table('certificates')->where('id_certificate', $id_certificate)->value('certificate');
+            $certificate_id = $request->certificate_id;
+            $certificate_file = DB::table('certificates')->where('certificate_id', $certificate_id)->value('certificate');
             $filePath = public_path("uploads/$employee_id/$certificate_file");
             if (File::exists($filePath)) {
                 // Delete the file from the server
                 File::delete($filePath);
 
-                DB::table('certificates')->where('id_certificate', $id_certificate)->delete();
+                DB::table('certificates')->where('certificate_id', $certificate_id)->delete();
 
                 return response()->json([
                     'status' => 200,
@@ -301,6 +343,10 @@ class EmployeesController extends Controller
         }
 
     }
+    static function getEmployeeId($employee_code)
+    {
+        return DB::table('employees')->where('employee_code', $employee_code)->value('employee_id');
+    }
     public function import(Request $request){
         $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
         $tong = 0;
@@ -313,22 +359,20 @@ class EmployeesController extends Controller
             }
 
             // Extract and trim data from Excel row
-            $employee_code = trim($item[0]);
-            $first_name = trim($item[1]);
-            $last_name = trim($item[2]);
-            $en_name = trim($item[3]);
-            $email = trim($item[4]);
-            $phone_number = trim($item[5]);
-            if (strlen($employee_code) === 0 || strlen($first_name) === 0 ||
+            $employee_code = EmployeesController::generateEmployeeCode();
+            $first_name = trim($item[0]);
+            $last_name = trim($item[1]);
+            $en_name = trim($item[2]);
+            $email = trim($item[3]);
+            $phone_number = trim($item[4]);
+            if (strlen($first_name) === 0 ||
                 strlen($last_name) === 0 || strlen($en_name) === 0 ||
                 strlen($email) === 0 || strlen($phone_number) === 0) {
                 continue; // Skip this row if any field is empty
             }
             try {
                 DB::beginTransaction();
-
-                $id_contact = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
-
+                $contact_id = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
                 $data_employee = [
                     'employee_code' => $employee_code,
                     'first_name' => $first_name,
@@ -336,26 +380,26 @@ class EmployeesController extends Controller
                     'en_name' => $en_name,
                     'photo' => null,
                     'fired' => "false",
-                    'id_contact' => $id_contact,
+                    'contact_id' => $contact_id,
                 ];
                 $employee_id = DB::table('employees')->insertGetId($data_employee);
 
-                DB::table('job_detail')->insert(['employee_id' => $employee_id]);
+                DB::table('job_details')->insert(['employee_id' => $employee_id]);
 
                 $data_account = [
                     'email' => $email,
                     'username' => explode('@', $email)[0],
-                    'password' => password_hash('123456', PASSWORD_BCRYPT),
+                    'password' => password_hash('123', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
                     'employee_id' => $employee_id,
                 ];
-                DB::table('account')->insertGetId($data_account);
+                DB::table('accounts')->insert($data_account);
 
                 DB::commit();
                 return response()->json([
                     'status' => 200,
-                    'message' => 'File deleted successfully'
+                    'message' => 'File import successfully'
                 ]);
 
             } catch (\Exception $e) {
@@ -420,5 +464,57 @@ class EmployeesController extends Controller
 
         $writer = IOFactory::createWriter($excel, 'Xlsx');
         $writer->save('php://output');
+    }
+    function removeVietnameseAccents($str) {
+        $accents_arr = [
+            'a' => ['à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ'],
+            'e' => ['è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ'],
+            'i' => ['ì', 'í', 'ị', 'ỉ', 'ĩ'],
+            'o' => ['ò', 'ó', 'ọ', 'ỏ', 'õ', 'ô', 'ồ', 'ố', 'ộ', 'ổ', 'ỗ', 'ơ', 'ờ', 'ớ', 'ợ', 'ở', 'ỡ'],
+            'u' => ['ù', 'ú', 'ụ', 'ủ', 'ũ', 'ư', 'ừ', 'ứ', 'ự', 'ử', 'ữ'],
+            'y' => ['ỳ', 'ý', 'ỵ', 'ỷ', 'ỹ'],
+            'd' => ['đ'],
+            'A' => ['À', 'Á', 'Ạ', 'Ả', 'Ã', 'Â', 'Ầ', 'Ấ', 'Ậ', 'Ẩ', 'Ẫ', 'Ă', 'Ằ', 'Ắ', 'Ặ', 'Ẳ', 'Ẵ'],
+            'E' => ['È', 'É', 'Ẹ', 'Ẻ', 'Ẽ', 'Ê', 'Ề', 'Ế', 'Ệ', 'Ể', 'Ễ'],
+            'I' => ['Ì', 'Í', 'Ị', 'Ỉ', 'Ĩ'],
+            'O' => ['Ò', 'Ó', 'Ọ', 'Ỏ', 'Õ', 'Ô', 'Ồ', 'Ố', 'Ộ', 'Ổ', 'Ỗ', 'Ơ', 'Ờ', 'Ớ', 'Ợ', 'Ở', 'Ỡ'],
+            'U' => ['Ù', 'Ú', 'Ụ', 'Ủ', 'Ũ', 'Ư', 'Ừ', 'Ứ', 'Ự', 'Ử', 'Ữ'],
+            'Y' => ['Ỳ', 'Ý', 'Ỵ', 'Ỷ', 'Ỹ'],
+            'D' => ['Đ']
+        ];
+
+        foreach ($accents_arr as $non_accent => $accents) {
+            $str = str_replace($accents, $non_accent, $str);
+        }
+
+        return $str;
+    }
+
+    function updateView(Request $request) {
+        $item = new EmployeeModel();
+        $jobdetails = $item->getAllJobDetails();
+        $type_certificate = $item->getTypeCertificate();
+
+        $id_employee = $request->id;
+        $item = DB::table('employees')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
+            ->join('job_details','job_details.employee_id','=','employees.employee_id')
+            ->where('fired','false')
+            ->where('employees.employee_id', $id_employee)
+            ->orderBy('employees.employee_code')
+            ->first();
+
+        if ($item) {
+            // Augment the employee data with additional information
+            $item->medical = EmployeesController::getMedicalInfo($id_employee);
+            $item->certificates = EmployeesController::getCertificateInfo($id_employee);
+            $item->passport = EmployeesController::getPassportInfo($id_employee);
+            $item->email = DB::table('accounts')->where('employee_id', $id_employee)->value('email');
+        }
+        return view('auth.employees.update_employee',[
+            'item' => $item,
+            'jobdetails' => $jobdetails,
+            'type_certificate' => $type_certificate,
+        ]);
     }
 }

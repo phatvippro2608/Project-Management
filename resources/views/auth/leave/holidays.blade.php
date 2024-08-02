@@ -1,83 +1,47 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>
-        .folded-corner {
-            position: relative;
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .folded-corner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            background-color: #1472e5;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-
-        .btn.custom-btn {
-            background-color: #007bff !important;
-            color: #fff !important;
-            border-color: #007bff !important;
-            border-radius: 5px !important;
-        }
-
-        .btn.custom-btn:hover {
-            background-color: #0056b3 !important;
-            border-color: #004085 !important;
-        }
-    </style>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-megaphone text-primary me-2"></i>
-                <h3 class="text-primary m-0">Holiday</h3>
-            </div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a
-                            href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Holidays</li>
+    <div class="container-fluid">
+        <div class="pagetitle">
+            <h1>Holiday</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Holiday</li>
                 </ol>
             </nav>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
+        <div class="row gx-3 my-3">
+            <div class="col-md-6 m-0">
                 <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
-                    <i class="bi bi-plus-circle"></i> Add Holiday
+                    <i class="bi bi-plus-lg me-2"></i> Add Holiday
                 </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> <a
-                        href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-                        style="all: unset; cursor: pointer;">
-                        Leave Application</a></button>
+                <a id="leaveApplicationBtn"
+                   class="btn btn-secondary"
+                   href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
+                >
+                    <i class="bi bi-list me-2"></i>Leave Application
+                </a>
             </div>
-
         </div>
-        <div class="folded-corner bg-white p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Holidays List</h5>
+        <div class="card p-2 rounded-4 border">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Employees List</div>
             </div>
-            <hr>
-            <div style="height: 100vh;">
-                <table id="holidaysTable" class="table table-bordered mt-3 mb-3">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Days</th>
-                            <th>Year</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="holidaysTable" class="table table-hover table-borderless">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Days</th>
+                                <th>Year</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @foreach ($holidays as $holiday)
                             <tr>
                                 <td>{{ $holiday->name }}</td>
@@ -100,98 +64,103 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-    </div>
-
-    <!-- Add Holiday Modal -->
-    <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addHolidayModalLabel">Add New Holiday</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addHolidayForm">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="start_date" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="start_date" name="start_date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="end_date" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="end_date" name="end_date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="days" class="form-label">Days</label>
-                            <input type="number" class="form-control" id="days" name="days" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="month_year" class="form-label">Year</label>
-                            <input type="month" class="form-control" id="month_year" name="year" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Holiday</button>
-                    </form>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-
-
-
-    <div class="modal fade" id="editHolidayModal" tabindex="-1" aria-labelledby="editHolidayModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editHolidayModalLabel">Edit Holiday</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Add Holiday Modal -->
+        <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addHolidayModalLabel">Add New Holiday</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addHolidayForm">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="days" class="form-label">Days</label>
+                                <input type="number" class="form-control" id="days" name="days" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="month_year" class="form-label">Year</label>
+                                <input type="month" class="form-control" id="month_year" name="year" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Holiday</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="editHolidayForm">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" id="editHolidayId" name="id">
-                        <div class="mb-3">
-                            <label for="edit_name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="edit_name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_start_date" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_end_date" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_days" class="form-label">Days</label>
-                            <input type="number" class="form-control" id="edit_days" name="days" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_year" class="form-label">Year</label>
-                            <input type="month" class="form-control" id="edit_year" name="year" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Edit Holiday</button>
-                    </form>
+            </div>
+        </div>
+        <div class="modal fade" id="editHolidayModal" tabindex="-1" aria-labelledby="editHolidayModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editHolidayModalLabel">Edit Holiday</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editHolidayForm">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" id="editHolidayId" name="id">
+                            <div class="mb-3">
+                                <label for="edit_name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="edit_name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_days" class="form-label">Days</label>
+                                <input type="number" class="form-control" id="edit_days" name="days" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit_year" class="form-label">Year</label>
+                                <input type="month" class="form-control" id="edit_year" name="year" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Edit Holiday</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 @endsection
 
 @section('script')
     <script>
         $(document).ready(function() {
-            var table = $('#holidaysTable').DataTable({});
+            var table = $('#holidaysTable').DataTable({
+                language: { search: "" },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
+            });
 
             table.buttons().container().appendTo('#holidaysTable_wrapper .col-md-6:eq(0)');
 

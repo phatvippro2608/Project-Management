@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Session;
 class AccountController extends Controller
 {
     private $status = [1 => 'Active', 2 => 'Offine', 3 => 'Locked'];
-    private $permission = [1 => 'Super Admin', 2 => 'Admin', 0 => 'User'];
+    private $permission = [1 => 'Super Admin', 2 => '', 0 => 'User'];
 
     function getView(Request $request)
     {
-        $perPage = (int)env('ITEM_PER_PAGE');
+        $perPage = (int) env('ITEM_PER_PAGE');
         $keyword = $request->input('keyw', '');
 
         $account = AccountModel::getAll($keyword);
@@ -69,7 +69,7 @@ class AccountController extends Controller
     {
         if (count($list)) {
             $tmp = array();
-            $data = (array)$data;
+            $data = (array) $data;
             foreach ($list as $key) {
                 $tmp[$key] = $data[$key];
             }
@@ -90,7 +90,7 @@ class AccountController extends Controller
 
     public static function status($message, $code)
     {
-        return json_encode((object)["status" => $code, "message" => $message]);
+        return json_encode((object) ["status" => $code, "message" => $message]);
     }
 
     function add(Request $request)
@@ -192,7 +192,8 @@ class AccountController extends Controller
         return view('auth.accounts.account_import_demo');
     }
 
-    function removeVietnameseAccents($str) {
+    function removeVietnameseAccents($str)
+    {
         $accents_arr = [
             'a' => ['à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ'],
             'e' => ['è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ'],
@@ -217,6 +218,7 @@ class AccountController extends Controller
         return $str;
     }
 
+
     function import(Request $request)
     {
         $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
@@ -225,7 +227,7 @@ class AccountController extends Controller
             if ($c) {
                 $c = false;
                 continue;
-            }
+            };
             $data = [
                 'email' => trim($item[0]),
                 'ho_ten' => trim($item[1]),
@@ -242,7 +244,7 @@ class AccountController extends Controller
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
-        if($permission == 1){
+        if ($permission == 1) {
             if ($keyword != null) {
                 $history = DB::table('login_history')->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
             } else

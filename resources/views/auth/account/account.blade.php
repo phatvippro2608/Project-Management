@@ -11,71 +11,64 @@
         </nav>
     </div>
 
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary mx-2 btn-add">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+                    Add Account
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="section employees">
         <div class="row">
             <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-inline-flex align-items-center">
-                            <div class="btn btn-primary mx-2 btn-add">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Add Account
-                                </div>
-                            </div>
-                            <div class="ms-auto text-secondary">
-                                <div class="search-container w-100">
-                                    <form method="GET"
-                                          action="{{ action('App\Http\Controllers\AccountController@getView') }}"
-                                          class="d-flex w-100">
-                                        <input name="keyw" type="text"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i
-                                                class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                <div class="card p-2 border rounded-4">
+                    <div class="card-header py-0">
+                        <div class="card-title my-3 p-0">Account List</div>
                     </div>
                     <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
-                                <tr>
-                                    <th style="width: 112px"></th>
-                                    <th class="text-center">Full Name</th>
-                                    <th class="text-center">Email</th>
-                                    <th class="text-center">Username</th>
-                                    <th class="text-center">Status</th>
-                                    <th class="text-center">Last Updated</th>
-                                </tr>
+                        <table id="accountsTable" class="table table-borderless table-hover">
+                            <thead class="table-light">
+                            <tr>
+                                <th style="width: 112px"></th>
+                                <th class="text-center">Employee Code</th>
+                                <th class="text-center">Full Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Username</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Last Updated</th>
+                            </tr>
 
-                                </thead>
-                                <tbody class="account-list">
-                                @foreach($account as $item)
-                                    <tr class="account-item">
-                                        <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <div class="action-buttons ">
-                                                    <a class=" edit">
-                                                        <i class="bi bi-pencil-square ic-update ic-btn"
-                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
-                                                    </a>
-                                                    <a class="delete me-2">
-                                                        <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="{{ $item->account_id }}"></i>
-                                                    </a>
-                                                </div>
-                                                <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
+                            </thead>
+                            <tbody class="account-list">
+                            @foreach($account as $item)
+                                <tr class="account-item">
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="action-buttons ">
+                                                <a class=" edit">
+                                                    <i class="bi bi-pencil-square ic-update ic-btn"
+                                                       data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                                </a>
+                                                <a class="delete me-2">
+                                                    <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
+                                                       data="{{ $item->account_id }}"></i>
+                                                </a>
                                             </div>
+                                            <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
+                                        </div>
 
                                         </td>
                                         <td class="text-center">
-                                            {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
+                                            {{$item->employee_code}}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-left">
+                                            {{$item->first_name}} {{$item->last_name}}
+                                        </td>
+                                        <td class="text-left">
                                             {{$item->email}}
                                         </td>
                                         <td class="text-center">
@@ -90,16 +83,15 @@
                                                 <i class="bi bi-circle-fill account-status"></i>
                                             @endif
 
-                                            {{$status[$item->status]}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->updated_at}}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                        {{$status[$item->status]}}
+                                    </td>
+                                    <td class="text-center">
+                                        {{$item->updated_at}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -192,6 +184,17 @@
 
             return password;
         }
+
+        var table = $('#accountsTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
 
         $('.name3').val(generatePassword(20));
         $('.name3').prop('disabled', $('.auto_pwd').is(':checked'));

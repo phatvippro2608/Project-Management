@@ -15,6 +15,7 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\DisciplinaryController;
@@ -64,8 +65,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
         Route::put('/add', 'App\Http\Controllers\CustomerController@add');
-
-        Route::get('/update', 'App\Http\Controllers\CustomerController@getUpdateView');
+        Route::get('/{customer_id}', 'App\Http\Controllers\CustomerController@getUpdateView');
         Route::post('/update', 'App\Http\Controllers\CustomerController@update');
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
     });
@@ -82,6 +82,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
+        Route::get('/update/{id}', 'App\Http\Controllers\EmployeesController@updateView');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
@@ -91,8 +92,11 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
 
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
-
     });
+
+    Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
+    Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
+    Route::delete('img-delete', 'App\Http\Controllers\UploadFileController@imgDelete')->name('img-delete');
 
     Route::group(['prefix' => '/profile'], function () {
         Route::get('/{employee_id}', 'App\Http\Controllers\ProfileController@getViewProfile');
@@ -143,35 +147,35 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
     Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
-});
 
-Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
-Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
 
-Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
-Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
-Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
-Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
-Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
-Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
+    Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
+    Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+
+    Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
+    Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
+    Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
+    Route::put('materials/{id}', [MaterialsController::class, 'update'])->name('materials.update');
+    Route::delete('materials/{id}', [MaterialsController::class, 'destroy'])->name('materials.destroy');
+    Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
 //Progress
-Route::post('/update-item', [ProgressController::class, 'updateItem']);
-Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
-Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
-Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
-Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
-Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
-Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+    Route::post('/update-item', [ProgressController::class, 'updateItem']);
+    Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
+    Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
+    Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+    Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
+    Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+    Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
 
 //Settings
-Route::get('/setting',[SettingsController::class, 'getView'])->name('settings.view');
-Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
+    Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
+    Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
-Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
-Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
-Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
+    Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
+    Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
+    Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
 Route::group(['prefix' => '/project'], function () {
     //show details and update project
@@ -198,32 +202,44 @@ Route::group(['prefix' => '/project'], function () {
 
 });
 
-Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
-    Route::get('teams', [MyXteamController::class, 'getView']);
-    Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
-    Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
-    Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
-
-});
+    Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('teams', [MyXteamController::class, 'getView']);
+        Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
+        Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
+        Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
+    });
 
 //Inventory Management
-Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
+    Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
 //Department
-Route::resource('departments', DepartmentController::class);
-Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
-Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
-Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+    Route::resource('departments', DepartmentController::class);
+    Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
+    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+    Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
 //Attendance
-Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
-Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
-Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
-Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
-Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
-Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+    Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
+    Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
+    Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
+    Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
+    Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
+    Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+
+//Proposal
+    Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
+        Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
+        Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
+        Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
+        Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
+        Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
+    });
+    Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
+    Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
+});
 
 // recognition
 Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
@@ -231,8 +247,11 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
     Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
     Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
+    Route::post('/update', [RecognitionController::class, 'update'])->name('recognition.update');
+    Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
-// disciplinary
-Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
+
+Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
+Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
 
