@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Models\ProjectModel;
 
+
 class ProjectBudgetController extends Controller
 {
 
@@ -46,17 +47,8 @@ class ProjectBudgetController extends Controller
         'project_name' => 'nullable|string',
         'project_description' => 'nullable|string',
         'project_address' => 'nullable|string',
-        'project_contact_name' => 'nullable|string',
-        'project_contact_website' => 'nullable|string',
-        'project_contact_phone' => 'nullable|string',
-        'project_contact_address' => 'nullable|string',
         'project_date_start' => 'nullable|date',
         'project_date_end' => 'nullable|date',
-        'project_contract_id' => 'nullable|exists:contracts,contract_id',
-        'project_contract_amount' => 'nullable|numeric',
-        'project_price_contingency' => 'nullable|numeric',
-        'contract_id' => 'nullable|integer',
-        'project_main_contractor' => 'nullable|string',
     ]);
 
     try {
@@ -65,17 +57,8 @@ class ProjectBudgetController extends Controller
             'project_name' => $request->input('project_name'),
             'project_description' => $request->input('project_description'),
             'project_address' => $request->input('project_address'),
-            'project_contact_name' => $request->input('project_contact_name'),
-            'project_contact_website' => $request->input('project_contact_website'),
-            'project_contact_phone' => $request->input('project_contact_phone'),
-            'project_contact_address' => $request->input('project_contact_address'),
             'project_date_start' => $request->input('project_date_start'),
             'project_date_end' => $request->input('project_date_end'),
-            'project_contract_id' => $request->input('project_contract_id'),
-            'project_contract_amount' => $request->input('project_contract_amount'),
-            'project_price_contingency' => $request->input('project_price_contingency'),
-            'contract_id' => $request->input('contract_id'),
-            'project_main_contractor' => $request->input('project_main_contractor'),
         ]);
 
         return response()->json([
@@ -96,11 +79,16 @@ class ProjectBudgetController extends Controller
 public function showProjectDetail($id)
 {
     $data = DB::table('projects')->where('project_id', $id)->first();
+    $prj = ProjectModel::find($id);
+    if ($prj){
+        // Gọi phương thức getCustomer để lấy thông tin khách hàng
+        $customer = $prj->getCustomer();
+        $contract = $prj->getContract();
+        $contactEmployee = $prj->getEmployee();
+    }
     $total = 0;
     $subtotal1 = 0;
     $items = DB::table('project_costs')->where('project_id', $id)->get();
-    $contracts = DB::table('contracts')->get();
-
     foreach ($items as $item) {
         $subtotal2 = $item->project_cost_labor_qty *
                     $item->project_cost_budget_qty *
@@ -116,8 +104,9 @@ public function showProjectDetail($id)
         'data' => $data,
         'id' => $id,
         'total' => $total,
-        'contracts' => $contracts,
-        'contractsJson' => $contracts->toJson()
+        'contract' => $contract,
+        'contactEmployee' => $contactEmployee,
+        'customer' => $customer
     ]);
 }
 
