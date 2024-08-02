@@ -159,4 +159,23 @@ class ProposalApplicationController extends Controller
             'message' => 'File removed successfully'
         ]);
     }
+
+    public function approve($id,$permission)
+    {
+        if($permission == 3){
+            $proposalApp = ProposalApplicationModel::findOrFail($id);
+            $proposalApp->progress = 1;
+            $proposalApp->save();
+        }elseif($permission == 4){
+            $proposalApp = ProposalApplicationModel::findOrFail($id);
+            $proposalApp->progress = 2;
+            $proposalApp->save();
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Proposal application approved successfully'
+        ]);
+    }
 }

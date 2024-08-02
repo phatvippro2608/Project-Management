@@ -195,29 +195,83 @@
                                 @if ($item->progress == 0)
                                     <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
                                         aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                                        Chưa xét
+                                        Not approve
                                     </div>
                                 @elseif($item->progress == 1)
                                     <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
                                         aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt cấp 1
+                                        Direct Derpartment approved
                                     </div>
                                 @elseif($item->progress == 2)
                                     <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
                                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt xong
+                                        Done
                                     </div>
                                 @endif
                             </div>
                         </td>
-                        @if ($data['permission'] == 3 || $data['permission'] == 4)
+                        @if ($data['permission'] == 3)
                             <td class="text-center">
-                                <button
-                                    class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
-                                    data-id="{{ $item->proposal_application_id }}">
-                                    <i class="bi bi-check-circle"></i>
-                                    Chưa duyệt
-                                </button>
+                                @if ($item->progress == 0)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}">
+                                        <i class="bi bi-check-circle"></i>
+                                        Not approve
+                                    </button>
+                                @elseif($item->progress == 1)
+                                    <button
+                                        class="text-warning btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none"
+                                        data-id="{{ $item->proposal_application_id }}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Direct Derpartment approved
+                                    </button>
+                                @elseif($item->progress == 2)
+                                    <button
+                                        class="text-success btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Done
+                                    </button>
+                                @endif
+                            </td>
+                        @endif
+
+                        @if ($data['permission'] == 4)
+                            <td class="text-center">
+                                @if ($item->progress == 0)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}" disabled>
+                                        <i class="bi bi-check-circle"></i>
+                                        Direct Department not approve
+                                    </button>
+{{--                                @elseif($item->progress == 1)--}}
+{{--                                    <button--}}
+{{--                                        class="text-warning btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"--}}
+{{--                                        data-id="{{ $item->proposal_application_id }}" disabled>--}}
+{{--                                        <i class="bi bi-check-circle-fill"></i>--}}
+{{--                                        Đã phê duyệt--}}
+{{--                                    </button>--}}
+                                @elseif($item->progress == 1)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}">
+                                        <i class="bi bi-check-circle"></i>
+                                        Not approve
+                                    </button>
+                                @elseif($item->progress == 2)
+                                    <button
+                                        class="text-success btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Done
+                                    </button>
+                                @endif
                             </td>
                         @endif
                         <td>
@@ -508,8 +562,7 @@
 
         $('#proposalApplicationsTable').on('click', '.btn_approved', function() {
             var proposalAppId = $(this).data('id');
-            var row = $(this).closest('tr');
-
+            var permis = $(this).data('permission');
             Swal.fire({
                 title: 'Are you sure?',
                 text: "Do you want to approve this proposal application?",
@@ -521,18 +574,21 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route('proposal-application.destroy', ':id') }}'.replace(':id',
-                            proposalAppId),
-                        method: 'DELETE',
+                        url: '{{ route('proposal-application.approve', ['id' => ':id', 'permission' => ':permission']) }}'
+                            .replace(':id', proposalAppId)
+                            .replace(':permission', permis),
+                        method: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
                         success: function(response) {
                             if (response.success) {
-                                table.row(row).remove().draw();
-                                toastr.success(response.message, "Deleted successfully");
+                                toastr.success(response.message, "Approved successfully");
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 250);
                             } else {
-                                toastr.error("Failed to delete the proposal application.",
+                                toastr.error("Failed to approve the proposal application.",
                                     "Operation Failed");
                             }
                         },
@@ -543,5 +599,6 @@
                 }
             });
         });
+
     </script>
 @endsection
