@@ -10,66 +10,64 @@
             </ol>
         </nav>
     </div>
-    <div class="rounded-4">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Application List</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 m-0">
-                        <button class="btn btn-primary me-2" id="addApplicationBtn" data-bs-toggle="modal"
-                                data-bs-target="#addApplicationModal">
-                            <i class="bi bi-plus-lg me-2"></i> Add Application
-                        </button>
-                        <button class="btn btn-success mx-2" id="exportExcelBtn">
-                            <i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel
-                        </button>
-                    </div>
-                </div>
-                <table id="applicationTable" class="table table-hover table-borderless">
-                    <thead class="table-light">
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <button class="btn btn-primary me-2" id="addApplicationBtn" data-bs-toggle="modal"
+                    data-bs-target="#addApplicationModal">
+                <i class="bi bi-plus-lg me-2"></i> Add Application
+            </button>
+            <button class="btn btn-success mx-2" id="exportExcelBtn">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel
+            </button>
+        </div>
+    </div>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Application List</div>
+        </div>
+        <div class="card-body">
+            <table id="applicationTable" class="table table-hover table-borderless">
+                <thead class="table-light">
+                <tr>
+                    <th>Employee Name</th>
+                    <th>PIN</th>
+                    <th>Leave Type</th>
+                    <th>Apply Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Duration</th>
+                    <th>Leave Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach ($leave_applications as $item)
                     <tr>
-                        <th>Employee Name</th>
-                        <th>PIN</th>
-                        <th>Leave Type</th>
-                        <th>Apply Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Duration</th>
-                        <th>Leave Status</th>
-                        <th>Action</th>
+                        <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                        <td>{{ $item->employee->employee_code }}</td>
+                        <td>{{ $item->leaveType->leave_type }}</td>
+                        <td>{{ $item->apply_date }}</td>
+                        <td>{{ $item->start_date }}</td>
+                        <td>{{ $item->end_date }}</td>
+                        <td>{{ $item->duration }} days</td>
+                        <td>{{ $item->leave_status }}</td>
+                        <td>
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="{{ $item->id }}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            |
+                            <button
+                                class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                data-id="{{ $item->id }}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($leave_applications as $item)
-                        <tr>
-                            <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
-                            <td>{{ $item->employee->employee_code }}</td>
-                            <td>{{ $item->leaveType->leave_type }}</td>
-                            <td>{{ $item->apply_date }}</td>
-                            <td>{{ $item->start_date }}</td>
-                            <td>{{ $item->end_date }}</td>
-                            <td>{{ $item->duration }} days</td>
-                            <td>{{ $item->leave_status }}</td>
-                            <td>
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                    data-id="{{ $item->id }}">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                |
-                                <button
-                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                    data-id="{{ $item->id }}">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+                @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 

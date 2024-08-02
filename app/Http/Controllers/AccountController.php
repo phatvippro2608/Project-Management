@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Session;
 class AccountController extends Controller
 {
     private $status = [1 => 'Active', 2 => 'Offine', 3 => 'Locked'];
-    private $permission = [1 => 'Super Admin', 2 => 'Admin', 0 => 'User'];
+    private $permission = [1 => 'Super Admin', 2 => '', 0 => 'User'];
 
     function getView(Request $request)
     {
