@@ -29,7 +29,7 @@ class ProposalApplicationController extends Controller
         $validated = $request->validate([
             'employee_id' => 'required|int',
             'proposal_id' => 'required|int',
-            'description' => 'nullable|string',
+            'proposal_description' => 'nullable|string',
             'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048'
         ]);
 

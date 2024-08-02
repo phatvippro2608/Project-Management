@@ -77,7 +77,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="description">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
+                            <textarea class="form-control" placeholder="Leave a Description here" id="proposal_description" name="proposal_description"
                                 style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
