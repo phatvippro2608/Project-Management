@@ -26,14 +26,21 @@ class PortfolioController extends Controller
         $employee = DB::table('employees')->where('employee_code', $id)->first();
         $contact = DB::table('contacts')->where('contact_id', $employee->contact_id)->first();
         $account = DB::table('accounts')->where('employee_id', $employee->employee_id)->first();
-        $dateOfJoin = DB::table('job_certificates')->where('employee_id', $employee->employee_id)->latest('job_certificate_id')->first();
+        $dateOfJoin = DB::table('job_details')->where('employee_id', $employee->employee_id)->oldest('start_date')->first();
+
+        $recognitions = DB::table('recognitions')->where('employee_id', $employee->employee_id)->get();
+        foreach ($recognitions as $recognition) {
+            $recognition->recognition_type = DB::table('recognition_types')->where('recognition_type_id', $recognition->recognition_type_id)->first();
+            $recognition->department = DB::table('departments')->where('department_id', $recognition->department_id)->first();
+        }
         return view(
             'auth.portfolio.portfolioHasId',
             [
                 'employee' => $employee,
                 'dateOfJoin' => $dateOfJoin,
                 'contact' => $contact,
-                'account' => $account
+                'account' => $account,
+                'recognitions' => $recognitions
             ]
         );
     }
