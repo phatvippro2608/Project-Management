@@ -224,7 +224,7 @@ $token = 'position';
                 </ul>
 
             </li>
-            
+
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
@@ -242,7 +242,7 @@ $token = 'position';
                     ->where('job_details.employee_id', $data->employee_id)
                     ->first();
             @endphp
-            
+
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
@@ -500,23 +500,23 @@ $token = 'position';
             </a>
         </li>
 
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">--}}
-{{--                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>--}}
-{{--            </a>--}}
-{{--            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">--}}
-{{--                <li>--}}
-{{--                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">--}}
-{{--                        <i class="bi bi-circle"></i><span>Recognitions</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--                <li>--}}
-{{--                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">--}}
-{{--                        <i class="bi bi-circle"></i><span>Disciplinaries</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--            </ul>--}}
-{{--        </li>--}}
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognitions</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#!!!">
+                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         <li class="nav-heading">Customer Manager</li>
         <li class="nav-item">
