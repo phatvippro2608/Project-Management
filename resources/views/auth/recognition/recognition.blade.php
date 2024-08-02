@@ -27,6 +27,8 @@
     <div class="card">
         <div class="card-header">
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
+            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">Add recognition type</button>
+            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">Import recognition</button>
         </div>
         <div class="card-body">
             <table id="recognitionTable" class="display">
@@ -108,7 +110,75 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade md1" id="addRecognitionTypeModal" tabindex="-1" aria-labelledby="addRecognitionTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProjectModalTypeLabel">Add new recognition type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Form trong view -->
+            <div class="modal-body">
+                <form id="recognitionTypeForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="recognition_type_" class="form-label">Recognition type</label>
+                            <input type="text" name="recognition_type_name" id="recognition_type_name" class="form-control" >
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnRecognitionTypeSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="modal fade md1" id="importRecognitionModal" tabindex="-1" aria-labelledby="importRecognitionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProjectModalTypeLabel">Import Recognition</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Form trong view -->
+            <div class="modal-body">
+                <form id="importRecognitionForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="recognition_types">Recognition Types</label>
+                            <select class="form-select name1" name="recognition_type_id" id="recognition_type_id" required>
+                                @foreach($recognition_types as $type)
+                                    <option value='{{$type->recognition_type_id}}'>{{$type->recognition_type_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label>Recognition Date</label>
+                            <input type="date" name="recognition_date" id="recognition_date" class="form-control">
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="recognition_types">Recognition Types</label>
+                            <label for="recognition_types">Upload file excel</label>
+                            <input accept=".xlsx" name="file-excel" type="file" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnimportRecognitionSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 @section('script')
 <script>
@@ -158,8 +228,6 @@
         let form = document.getElementById('recognitionForm');
         let formData = new FormData(form);
 
-        console.log(formData);
-
         fetch('{{ route('recognition.add') }}', {
             method: 'POST',
             headers: {
@@ -175,7 +243,7 @@
                     location.reload();
                 }, 500);
             } else {
-                // console.log(data);
+                console.log(data);
                 let errorMessage = data.message;
                 if (data.error) {
                     errorMessage += ': ' + data.error;
@@ -188,6 +256,74 @@
             console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
             toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
         });
+    });
+
+    document.getElementById('btnRecognitionTypeSubmit').addEventListener('click', function (event) {
+        let form = document.getElementById('recognitionTypeForm');
+        let formData = new FormData(form);
+
+        fetch('{{ route('recognition.addType') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    toastr.success(data.message, "Lưu thành công");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else {
+                    // console.log(data);
+                    let errorMessage = data.message;
+                    if (data.error) {
+                        errorMessage += ': ' + data.error;
+                        console.error('Error:', data.error);  // Log lỗi cụ thể ra console
+                    }
+                    toastr.error(errorMessage, "Thao tác thất bại");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+            });
+    });
+
+    document.getElementById('btnimportRecognitionSubmit').addEventListener('click', function (event) {
+        let form = document.getElementById('importRecognitionForm');
+        let formData = new FormData(form);
+
+        fetch('{{ route('recognition.import') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    toastr.success(data.message, "Lưu thành công");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else {
+                    console.log(data);
+                    let errorMessage = data.message;
+                    if (data.error) {
+                        errorMessage += ': ' + data.error;
+                        console.error('Error:', data.error);  // Log lỗi cụ thể ra console
+                    }
+                    toastr.error(errorMessage, "Thao tác thất bại");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+            });
     });
 </script>
 @endsection
