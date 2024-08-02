@@ -42,14 +42,13 @@ $token = 'position';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
-    <script src="{{asset('assets/js/datatables.js')}}"></script>
+    <script src="{{ asset('assets/js/datatables.js') }}"></script>
 
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
 
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
+          type="text/css" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -61,7 +60,7 @@ $token = 'position';
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-        <a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}"
+        <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
            class="d-flex align-items-center logo justify-content-center">
             <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
@@ -188,7 +187,6 @@ $token = 'position';
 
                             <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""
                                  class="rounded-circle">
-
                             <div>
                                 <h4>Anna Nelson</h4>
                                 <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -221,34 +219,32 @@ $token = 'position';
                 </ul>
 
             </li>
+            
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
-                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                    ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                    ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                    ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
-                            ->where(
-                            'accounts.account_id',
-                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                            )
-                            ->first();
+                    ->where(
+                        'accounts.account_id',
+                        \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                    )
+                    ->first();
                 $info = \Illuminate\Support\Facades\DB::table('job_details')
-                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
-                            ->where(
-                                'job_details.employee_id', $data->employee_id
-                            )
-                            ->first();
+                    ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
+                    ->where('job_details.employee_id', $data->employee_id)
+                    ->first();
             @endphp
+            
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
                     @php
                         $photoPath = asset($data->photo);
                         $defaultPhoto = asset('assets/img/avt.png');
-                        $photoExists =
-                            !empty($data->photo) &&
-                            file_exists(public_path($data->photo));
+                        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
                     @endphp
 
                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
@@ -261,9 +257,11 @@ $token = 'position';
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                        <span>@if($info)
-                                {{$info->position_name}}
-                            @endif</span>
+                        <span>
+                                @if ($info)
+                                {{ $info->position_name }}
+                            @endif
+                            </span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -272,7 +270,7 @@ $token = 'position';
                     <li>
 
                         <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id' => $data->employee_id]) }}">
 
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
@@ -338,8 +336,9 @@ $token = 'position';
             </a>
             <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Deparment</span>
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Deparments</span>
                     </a>
                 </li>
                 <li>
@@ -359,7 +358,8 @@ $token = 'position';
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a class="nav-sub-link" href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
                             <i class="bi bi-circle"></i><span>Employees</span>
                         </a>
                     </li>
@@ -376,7 +376,6 @@ $token = 'position';
                 </ul>
             </li>
             @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
-
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
                        href="#">
@@ -424,7 +423,8 @@ $token = 'position';
             </a>
             <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
                         <i class="bi bi-circle"></i><span>Attendance List</span>
                     </a>
                 </li>
@@ -448,28 +448,28 @@ $token = 'position';
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{route('holidays.index')}}">
+                    <a class="nav-sub-link" href="{{ route('holidays.index') }}">
                         <i class="bi bi-circle"></i><span>Holiday</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-type.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Type</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-application.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Application</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{route('earn-leave.index')}}">
+                    <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
                         <i class="bi bi-circle"></i><span>Earned Leave</span>
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-sub-link" href="{{route('leave-report.index')}}">
+                    <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
                         <i class="bi bi-circle"></i><span>Leave Report</span>
                     </a>
                 </li>
@@ -496,17 +496,21 @@ $token = 'position';
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
                         <i class="bi bi-circle"></i><span>Recognitions</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
                         <i class="bi bi-circle"></i><span>Disciplinaries</span>
                     </a>
                 </li>
@@ -521,7 +525,8 @@ $token = 'position';
             </div>
             <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\CustomerController@getView')}}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
                         <i class="bi bi-circle"></i><span>Customers</span>
                     </a>
                 </li>
@@ -546,7 +551,8 @@ $token = 'position';
             </a>
             <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
 
                         <i class="bi bi-circle"></i><span>Projects</span>
                     </a>
@@ -577,7 +583,8 @@ $token = 'position';
             </a>
             <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+                    <a class="nav-sub-link"
+                       href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
 
                         <i class="bi bi-circle"></i><span>Teams</span>
                     </a>
@@ -671,6 +678,14 @@ $token = 'position';
                 </li>
             </ul>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link " href="{{ route('portfolio') }}">
+                <i class="bi bi-folder-fill"></i>
+                <span>Portfolio</span>
+            </a>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
                href="#">
@@ -679,7 +694,8 @@ $token = 'position';
             </a>
             <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="{{action('App\Http\Controllers\AccountController@loginHistory')}}">
+                    <a class="nav-sub-link"
+                       href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
                         <i class="bi bi-circle"></i><span>Activity Log</span>
                     </a>
                 </li>

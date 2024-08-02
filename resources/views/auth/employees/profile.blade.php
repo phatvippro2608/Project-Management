@@ -18,26 +18,26 @@
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
                         @php
-                            $data = \Illuminate\Support\Facades\DB::table('account')
-                                        ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
+                            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                                        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
                                         ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-                                        ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                                        ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
                                         ->where(
-                                        'account.id_account',
+                                        'accounts.account_id',
                                         \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                                         )
                                         ->first();
-                            $info = \Illuminate\Support\Facades\DB::table('job_detail')
-                                        ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                            $info = \Illuminate\Support\Facades\DB::table('job_details')
+                                        ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
                                         ->where(
-                                            'job_detail.employee_id', $data->employee_id
+                                            'job_details.employee_id', $data->employee_id
                                         )
                                         ->first();
-                            $country = \Illuminate\Support\Facades\DB::table('job_detail')
-                                        ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                            $country = \Illuminate\Support\Facades\DB::table('job_details')
+                                        ->join('job_countries', 'job_details.job_country_id', '=', 'job_countries.country_id')
                                         ->where(
-                                            'job_detail.employee_id', $data->employee_id
+                                            'job_details.employee_id', $data->employee_id
                                         )
                                         ->first();
 
@@ -137,25 +137,13 @@
                                             Image</label>
                                         <div class="col-md-8 col-lg-9">
                                             <div class="row">
-                                                <div class="col-md-2 position-relative text-center">
-                                                    <img
-                                                        id="profileImage"
-                                                        src="{{$photoExists ? $photoPath : $defaultPhoto}}"
-                                                        alt="Profile"
-                                                        class="rounded-pill object-fit-cover"
-                                                        width="100"
-                                                        height="100">
-                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                    </div>
+                                                <div photo-input-target="photo" class="col-md-2 photo-upload">
+                                                    <img id="profileImage" src="{{$photoExists ? $photoPath : $defaultPhoto}}" alt="Profile">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 mt-2 text-center">
-                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                        Upload
-                                                    </button>
+                                                    <button class="btn btn-primary btn_photo rounded-4">Upload</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -184,7 +172,7 @@
                                             <select class="form-select" id="position_name" aria-label="Default select example">
                                                 <option value="">No Select</option>
                                                 @foreach( $dataEmployee['jobPositions'] as $item)
-                                                    <option value="{{$item->id_position}}"  @if($info){{ $item->id_position == $info->id_job_position ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
+                                                    <option value="{{$item->position_id}}"  @if($info){{ $item->position_id == $info->job_position_id ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -196,7 +184,7 @@
                                             <select class="form-select" id="country_name" aria-label="Default select example">
                                                 <option value="">No Select</option>
                                                 @foreach($dataEmployee['jobCountry'] as $item)
-                                                    <option value="{{$item->id_country}}" @if($country){{ $item->id_country == $country->id_job_country ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
+                                                    <option value="{{$item->country_id}}" @if($country){{ $item->country_id == $country->job_country_id ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -228,7 +216,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-primary btnLuu">Save Changes</button>
+                                        <button type="button" class="btn btn-primary btnLuu"><i class="bi bi-floppy me-3"></i>Save Changes</button>
                                     </div>
                                 </form><!-- End Profile Edit Form -->
 
@@ -311,8 +299,7 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-
-            let filePhoto = $('.photo')[0].files[0];
+            let filePhoto = $('#photo')[0].files[0];
             let formData = new FormData();
 
             if (filePhoto) {

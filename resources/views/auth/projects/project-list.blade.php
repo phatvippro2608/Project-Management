@@ -21,31 +21,56 @@
         <!-- Table to display materials -->
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-primary">Đang triển khai ({{$inprogress_project_count}})</h5>
-
                 <div class="table-responsive">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-hover mt-3">
+                        <thead class="text-center">
                         <tr>
-                            <th scope="col">Action</th>
+                            <th>#</th>
                             <th scope="col">Project Name</th>
-                            <th scope="col">Sale</th>
+                            <th scope="col">Customer</th>
+                            <th>Tags</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
-                            <th scope="col">Budget</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($inprogress_projects as $project)
+                        @foreach($projects as $project)
                             <tr>
+                                <td>{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td>{{ $project->customer_info }}</td>
+                                <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <td>
+                                    <span class="badge rounded-pill
+                                        @switch($project->phase_id)
+                                            @case(1)
+                                                bg-primary
+                                                @break
+                                            @case(2)
+                                                bg-info
+                                                @break
+                                            @case(3)
+                                                bg-success
+                                                @break
+                                            @case(4)
+                                                bg-warning
+                                                @break
+                                            @case(5)
+                                                bg-danger
+                                                @break
+                                            @default
+                                                bg-secondary
+                                        @endswitch">
+                                        {{ $project->phase_name_eng }}
+                                    </span>
+                                </td>
                                 <td>
                                     <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
                                 </td>
-                                <td>{{ $project->project_name }}</td>
-                                <td><b>...</b></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td><b>...</b></td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -53,146 +78,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-success">Nghiệm thu - Defect ({{$inspection_projects_count}})</h5>
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Sale</th>
-                            <th scope="col">StartDate</th>
-                            <th scope="col">EndDate</th>
-                            <th scope="col">Budget</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($inspection_projects as $project)
-                            <tr>
-                                <td>
-                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
-                                </td>
-                                <td>{{ $project->project_name }}</td>
-                                <td><b>...</b></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td><b>...</b></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-info">Khảo sát - Thiết kế ({{$survey_projects_count}})</h5>
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Sale</th>
-                            <th scope="col">StartDate</th>
-                            <th scope="col">EndDate</th>
-                            <th scope="col">Budget</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($survey_projects as $project)
-                            <tr>
-                                <td>
-                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
-                                </td>
-                                <td>{{ $project->project_name }}</td>
-                                <td><b>...</b></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td><b>...</b></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-warning">Support - Hổ trợ ({{$support_projects_count}})</h5>
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Sale</th>
-                            <th scope="col">StartDate</th>
-                            <th scope="col">EndDate</th>
-                            <th scope="col">Budget</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($support_projects as $project)
-                            <tr>
-                                <td>
-                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
-                                </td>
-                                <td>{{ $project->project_name }}</td>
-                                <td><b>...</b></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td><b>...</b></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-danger">Close ({{$closed_projects_count}})</h5>
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Action</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Sale</th>
-                            <th scope="col">StartDate</th>
-                            <th scope="col">EndDate</th>
-                            <th scope="col">Budget</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($closed_projects as $project)
-                            <tr>
-                                <td>
-                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
-                                </td>
-                                <td>{{ $project->project_name }}</td>
-                                <td><b>...</b></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td><b>...</b></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    </div>
 
         <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
