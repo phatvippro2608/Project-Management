@@ -224,7 +224,7 @@ $token = 'position';
                 </ul>
 
             </li>
-            
+
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
@@ -242,7 +242,7 @@ $token = 'position';
                     ->where('job_details.employee_id', $data->employee_id)
                     ->first();
             @endphp
-            
+
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
@@ -609,7 +609,7 @@ $token = 'position';
                 <li>
                     <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        <i class="bi bi-circle"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>

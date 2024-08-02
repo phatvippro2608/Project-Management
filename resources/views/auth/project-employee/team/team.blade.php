@@ -25,109 +25,81 @@
             </ol>
         </nav>
     </div>
+    <div class="btn btn-primary my-3 btn-add">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+            Add Team
+        </div>
+    </div>
 
-    <section class="section employees">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-inline-flex align-items-center">
-                            <div class="btn btn-primary mx-2 btn-add">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Add Team
-                                </div>
-                            </div>
-                            <div class="ms-auto text-secondary">
-                                <div class="search-container w-100">
-                                    <form method="GET" action="{{ action('App\Http\Controllers\AccountController@getView') }}" class="d-flex w-100">
-                                        <input name="keyw" type="text"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
-                                <tr>
-                                    <th style="width: 112px"></th>
-                                    <th class="text-center">Team name</th>
-                                    <th class="text-center">Team Description</th>
-                                    <th class="text-center">Created by</th>
-                                    <th class="text-center">Created at</th>
-                                    <th class="text-center">Last update</th>
-                                    <th class="text-center">Status</th>
-                                </tr>
+    <div class="card border rounded-4 p-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="teamListTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 112px">Action</th>
+                            <th class="text-center">Team name</th>
+                            <th class="text-center">Team Description</th>
+                            <th class="text-center">Created by</th>
+                            <th class="text-center">Created at</th>
+                            <th class="text-center">Last update</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-list">
+                        @foreach($team as $item)
+                            <tr class="account-item">
+                                <td class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="d-flex align-items-center">
+    {{--                                                        <input type="checkbox" name="" id="" class="custom-checkbox-lg">--}}
+                                            <a class=" edit">
+                                                <i class="bi bi-pencil-square ic-update ic-btn at2"
+                                                   data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                            </a>
+                                            <a class=" delete">
+                                                <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                                   data="{{$item->team_id}}"></i>
+                                            </a>
+                                        </div>
 
-                                </thead>
-                                <tbody class="account-list">
-                                    @foreach($team as $item)
-                                        <tr class="account-item">
-                                            <td class="text-center">
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="d-flex align-items-center">
-{{--                                                        <input type="checkbox" name="" id="" class="custom-checkbox-lg">--}}
-                                                        <a class=" edit">
-                                                            <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
-                                                        </a>
-                                                        <a class=" delete">
-                                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                               data="{{$item->team_id}}"></i>
-                                                        </a>
-                                                    </div>
+                                    </div>
 
-                                                </div>
+                                </td>
+                                <td class="text-center">
+                                    {{$item->team_name}}
+                                </td>
+                                <td class="text-center">
+                                    {{$item->team_description}}
+                                </td>
+                                <td class="text-center">
+                                    {{$item->first_name.' '.$item->last_name}}
+                                </td>
+                                <td class="text-center">
+                                    {{\App\Http\Controllers\AccountController::format($item->created_at)}}
+                                </td>
+                                <td class="text-center">
+                                    {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
+                                </td>
+                                <td class="text-center">
+                                    @if($status[$item->status] == 'Offine')
+                                        <i class="bi bi-circle-fill account-status offine"></i>
+                                    @elseif($status[$item->status] == 'Locked')
+                                        <i class="bi bi-circle-fill account-status" style="color:red;"></i>
+                                    @else
+                                        <i class="bi bi-circle-fill account-status"></i>
+                                    @endif
 
-                                            </td>
-                                            <td class="text-center">
-                                                {{$item->team_name}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{$item->team_description}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{$item->first_name.' '.$item->last_name}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{\App\Http\Controllers\AccountController::format($item->created_at)}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
-                                            </td>
-                                            <td class="text-center">
-                                                @if($status[$item->status] == 'Offine')
-                                                    <i class="bi bi-circle-fill account-status offine"></i>
-                                                @elseif($status[$item->status] == 'Locked')
-                                                    <i class="bi bi-circle-fill account-status" style="color:red;"></i>
-                                                @else
-                                                    <i class="bi bi-circle-fill account-status"></i>
-                                                @endif
-
-                                                {{$status[$item->status]}}
-                                            </td>
-                                            <td class="text-center">
-
-                                            </td>
-                                            <td class="text-center">
-
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                                    {{$status[$item->status]}}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </section>
+    </div>
     <div class="modal fade md1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -174,6 +146,16 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#teamListTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add New Team');
             $('.md1').modal('show');
@@ -278,6 +260,5 @@
                 }
             });
         })
-
     </script>
 @endsection

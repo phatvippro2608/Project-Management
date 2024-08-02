@@ -42,101 +42,69 @@
             </ol>
         </nav>
     </div>
+    <div class="btn btn-primary my-3 btn-add">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+            Add Customer
+        </div>
+    </div>
+    <div class="card border rounded-4 p-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="customerTable" class="table table-borderless table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 112px"></th>
+                            <th class="text-center">Full name</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Company</th>
+                            <th class="text-center">Address</th>
+                            <th class="text-center">Contract</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-list">
+                    @foreach($customer as $item)
+                        <tr class="account-item">
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="d-flex align-items-center">
+                                        <a class=" edit">
+                                            <i class="bi bi-pencil-square ic-update ic-btn at2"
+                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
+                                        </a>
+                                        <a class=" delete">
+                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                               data="id"></i>
+                                        </a>
+                                    </div>
 
-    <section class="section employees">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-inline-flex align-items-center">
-                            <div class="btn btn-primary mx-2 btn-add">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Add Customer
                                 </div>
-                            </div>
-                            <div class="ms-auto text-secondary">
-                                <div class="search-container w-100">
-                                    <form method="GET"
-                                          action="{{ action('App\Http\Controllers\AccountController@getView') }}"
-                                          class="d-flex w-100">
-                                        <input name="keyw" type="text"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i
-                                                class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
-                                <tr>
-                                    <th style="width: 112px"></th>
-                                    <th class="text-center">Full name</th>
-                                    <th class="text-center">Email</th>
-                                    <th class="text-center">Company</th>
-                                    <th class="text-center">Address</th>
-                                    <th class="text-center">Contract</th>
-                                </tr>
 
-                                </thead>
-                                <tbody class="account-list">
-                                @foreach($customer as $item)
-                                    <tr class="account-item">
-                                        <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <div class="d-flex align-items-center">
-                                                    <a class=" edit">
-                                                        <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
-                                                    </a>
-                                                    <a class=" delete">
-                                                        <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                           data="id"></i>
-                                                    </a>
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->first_name}} {{$item->last_name}}
-                                        </td>
-                                        <td class="text-left">
-                                            {{$item->email}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->company_name}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->address}}
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}" class="contract">
-                                                Contract Detail
-                                            </a>
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                            </td>
+                            <td class="text-center">
+                                {{$item->first_name}} {{$item->last_name}}
+                            </td>
+                            <td class="text-left">
+                                {{$item->email}}
+                            </td>
+                            <td class="text-center">
+                                {{$item->company_name}}
+                            </td>
+                            <td class="text-center">
+                                {{$item->address}}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}" class="contract">
+                                    Contract Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </section>
+    </div>
     <div class="modal modal-xl fade md1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -261,6 +229,16 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#customerTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add New Customer');
             $('.md1').modal('show');
