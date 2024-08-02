@@ -6,6 +6,28 @@
             <div class="col-lg-12">
                 <div class="row">
                     <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Overview</h4>
+
+                    <div class="col-xxl-3 col-xl-4 col-md-6">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title"><b>Department</b></h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-list-task"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>@if($department_c)
+                                                {{$department_c}}
+                                            @else
+                                                0
+                                            @endif</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">

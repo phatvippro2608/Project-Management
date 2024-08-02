@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostComissionModel;
 use App\Models\CostModel;
 use App\Models\CostGroupModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Models\ProjectModel;
-
 
 class ProjectBudgetController extends Controller
 {
@@ -275,7 +275,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
             <input type="text" class="form-control" id="description" name="description" value="' . htmlspecialchars($costGroup->description) . '">
         </div>
         <div class="form-group">
-            <label for="labor_qty">LABOR QTY</label>
+            <label for="labor_qty">LABOR QTY</label>s
             <input type="number" class="form-control" id="labor_qty" name="labor_qty" value="' . htmlspecialchars($costGroup->labor_qty) . '">
         </div>
         <div class="form-group">
@@ -296,7 +296,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
         </div>
         <div class="form-group">
             <label for="misc_cost">MISC. COST</label>
-            <input type="number" class="form-control" id="misc_cost" name="misc_cost" value="' . htmlspecialchars($costGroup->misc_cost) . '">
+            <input type="number" class="form-control" id="misc_cost" name="misc_cot" value="' . htmlspecialchars($costGroup->misc_cost) . '">
         </div>
         <div class="form-group">
             <label for="ot_budget">OT BUDGET</label>
@@ -433,4 +433,60 @@ public function exportCsv($id)
             return response()->json(['success' => false, 'message' => 'Failed to delete cost commission item.']);
         }
     }
+    public function updateCommission(Request $request, $project_id, $commission_id)
+{
+    $costCommission = CostComissionModel::find($commission_id);
+
+    if (!$costCommission) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Commission not found.'
+        ], 404);
+    }
+
+    $costCommission->description = $request->input('description');
+    $costCommission->amount = $request->input('amount');
+    $costCommission->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Cost commission updated successfully.'
+    ]);
 }
+public function addNewCommission(Request $request, $project_id, $group_id)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'description' => 'required|string|max:255',
+        'amount' => 'required|numeric|min:0'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => $validator->errors()->first()
+        ]);
+    }
+
+    // Create new commission entry
+    $CommissionCost = new CostComissionModel();
+    $CommissionCost->project_id = $project_id; // Assuming this needs to be set
+    $CommissionCost->groupcommission_id = $group_id;
+    $CommissionCost->description = $request->input('description');
+    $CommissionCost->amount = $request->input('amount');
+
+    if ($CommissionCost->save()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Commission added successfully!',
+            'commission' => $CommissionCost // Return the new commission data
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to add commission.'
+        ]);
+    }
+}
+}
+

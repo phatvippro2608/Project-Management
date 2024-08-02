@@ -49,7 +49,11 @@ class DashboardController extends Controller
          ORDER BY sub_tasks.state ASC";
         $subtasks = DB::select($subtask_sql);
 
+
+        $department_c = DB::table('departments')->count();
+
         return view('auth.dashboard.dashboard',[
+            'department_c'=>$department_c,
             'em_c'=>$em_c,
             'team_c'=>$team_c,
             'project_c'=>$project_c,

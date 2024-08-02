@@ -1,73 +1,36 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>
-        .folded-corner {
-            position: relative;
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .folded-corner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            background-color: #1472e5;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-
-        .btn.custom-btn {
-            background-color: #007bff !important;
-            color: #fff !important;
-            border-color: #007bff !important;
-            border-radius: 5px !important;
-        }
-
-        .btn.custom-btn:hover {
-            background-color: #0056b3 !important;
-            border-color: #004085 !important;
-        }
-    </style>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-megaphone text-primary me-2"></i>
-                <h3 class="text-primary m-0">Holiday</h3>
+    <div class="pagetitle">
+        <h1>Holiday</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Holiday</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="rounded-4">
+        <div class="card">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Employees List</div>
             </div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a
-                            href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Holidays</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
-                    <i class="bi bi-plus-circle"></i> Add Holiday
-                </button>
-                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> <a
-                        href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-                        style="all: unset; cursor: pointer;">
-                        Leave Application</a></button>
-            </div>
-
-        </div>
-        <div class="folded-corner bg-white p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Holidays List</h5>
-            </div>
-            <hr>
-            <div style="height: 100vh;">
-                <table id="holidaysTable" class="table table-bordered mt-3 mb-3">
-                    <thead>
+            <div class="card-body">
+                <div class="row gx-3 my-3">
+                    <div class="col-md-6 m-0">
+                        <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
+                            <i class="bi bi-plus-lg me-2"></i> Add Holiday
+                        </button>
+                        <a id="leaveApplicationBtn"
+                           class="btn btn-secondary"
+                           href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
+                        >
+                            <i class="bi bi-list me-2"></i>Leave Application
+                        </a>
+                    </div>
+                </div>
+                <table id="holidaysTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
                         <tr>
                             <th>Name</th>
                             <th>Start Date</th>
@@ -78,34 +41,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($holidays as $holiday)
-                            <tr>
-                                <td>{{ $holiday->name }}</td>
-                                <td>{{ $holiday->start_date }}</td>
-                                <td>{{ $holiday->end_date }}</td>
-                                <td>{{ $holiday->days }}</td>
-                                <td>{{ $holiday->year }}</td>
-                                <td>
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="{{ $holiday->id }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    |
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="{{ $holiday->id }}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+                    @foreach ($holidays as $holiday)
+                        <tr>
+                            <td>{{ $holiday->name }}</td>
+                            <td>{{ $holiday->start_date }}</td>
+                            <td>{{ $holiday->end_date }}</td>
+                            <td>{{ $holiday->days }}</td>
+                            <td>{{ $holiday->year }}</td>
+                            <td>
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="{{ $holiday->id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                |
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="{{ $holiday->id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
-
-
     </div>
 
     <!-- Add Holiday Modal -->
@@ -145,9 +106,6 @@
             </div>
         </div>
     </div>
-
-
-
     <div class="modal fade" id="editHolidayModal" tabindex="-1" aria-labelledby="editHolidayModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -191,7 +149,16 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            var table = $('#holidaysTable').DataTable({});
+            var table = $('#holidaysTable').DataTable({
+                language: { search: "" },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
+            });
 
             table.buttons().container().appendTo('#holidaysTable_wrapper .col-md-6:eq(0)');
 
