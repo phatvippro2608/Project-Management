@@ -573,6 +573,41 @@ $token = 'position';
                     </li>
                 </ul>
             </li>
+            @php
+
+                $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+
+                            ->where(
+                            'accounts.account_id',
+                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                            )
+                            ->first();
+                $info = \Illuminate\Support\Facades\DB::table('job_details')
+                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
+                            ->where(
+                                'job_details.employee_id', $data->employee_id
+                            )
+                            ->first();
+            @endphp
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+                   data-bs-toggle="dropdown">
+                    @php
+                        $photoPath = asset($data->photo);
+                        $defaultPhoto = asset('assets/img/avt.png');
+                        $photoExists =
+                            !empty($data->photo) &&
+                            file_exists(public_path($data->photo));
+                    @endphp
+
+                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                         class="rounded-circle object-fit-cover" width="36" height="36">
+                    <span class="d-none d-md-block dropdown-toggle ps-2">
+                            {{ $data->last_name . ' ' . $data->first_name }}
+                        </span>
 
             <li class="nav-heading">myXteam Manager</li>
             <li class="nav-item">
@@ -599,9 +634,10 @@ $token = 'position';
                 </a>
                 <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a class="nav-sub-link"
-                            href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Dashboard</span>
+                        <a class="dropdown-item d-flex align-items-center"
+                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id'=>$data->employee_id]) }}">
+                            <i class="bi bi-person"></i>
+                            <span>My Profile</span>
                         </a>
                     </li>
                     <li>
@@ -700,7 +736,164 @@ $token = 'position';
                     </li>
                 </ul>
             </li>
+            @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
 
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
+                       href="#">
+                        <i class="bi bi-person"></i><span>Account</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+
+                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+
+                                <i class="bi bi-circle"></i><span>Info</span>
+                            </a>
+                        </li>
+                        <li>
+
+                            <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+
+                                <i class="bi bi-circle"></i><span>History</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+        @endif
+
+        @php
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                ->where(
+                    'account_id',
+                    \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                )
+                ->first();
+        @endphp
+
+        <li class="nav-item">
+
+            <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-calendar-check"></i><span>Attendance</span><i
+                    class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Attendance List</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
+                        <i class="bi bi-circle"></i><span>Add Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#">
+                        <i class="bi bi-circle"></i><span>Attendance Report</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{route('holidays.index')}}">
+                        <i class="bi bi-circle"></i><span>Holiday</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{route('leave-type.index')}}">
+                        <i class="bi bi-circle"></i><span>Leave Type</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{route('leave-application.index')}}">
+                        <i class="bi bi-circle"></i><span>Leave Application</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{route('earn-leave.index')}}">
+                        <i class="bi bi-circle"></i><span>Earned Leave</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-sub-link" href="{{route('leave-report.index')}}">
+                        <i class="bi bi-circle"></i><span>Leave Report</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>KPI</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="kpi-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>KPI</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                <i class="bi bi-people"></i><span>Team List</span>
+            </a>
+        </li>
+
+        <li class="nav-heading">Project Management</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
+
+                        <i class="bi bi-circle"></i><span>Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
+                        <i class="bi bi-circle"></i><span>Project Manager</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Task List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Field Visit</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-heading">myXteam Manager</li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
+               href="#">
+                <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+                 </li>
             <li class="nav-item">
                 <a class="nav-link " href="#">
                     <i class="bi bi-clipboard2-fill"></i>

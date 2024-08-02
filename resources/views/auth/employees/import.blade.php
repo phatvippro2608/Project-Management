@@ -91,7 +91,6 @@
         let _post_import = '{{action('App\Http\Controllers\EmployeesController@import')}}';
         $('.at2').click(function (event) {
             event.preventDefault();
-
         })
         $(document).ready(function() {
             $('#uploadBtn').on('click', function (e) {
@@ -105,9 +104,6 @@
 
                 if (fileInput === undefined) {
                     toastr.error("Vui lòng chọn file", "Thao tác thất bại");
-                    // setTimeout(function () {
-                    //     window.location.reload();
-                    // }, 500);
                 }
 
                 var formData = new FormData();
@@ -124,9 +120,6 @@
                         result = JSON.parse(result);
                         if (result.status === 200) {
                             toastr.success(result.message, "Thao tác thành công");
-                            // setTimeout(function () {
-                            //     window.location.reload();
-                            // }, 500);
                         } else {
                             toastr.error(result.message, "Thao tác thất bại");
                         }
