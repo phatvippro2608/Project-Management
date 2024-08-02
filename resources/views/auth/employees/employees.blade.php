@@ -303,7 +303,6 @@
                 });
             });
         });
-
         $('.at4').click(function () {
             var id = $(this).attr('data');
             if (confirm("Do you want to remove this employee?")){

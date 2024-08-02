@@ -20,31 +20,49 @@
             <div class="card-header py-0">
                 <div class="card-title my-3 p-0">Leave Report</div>
             </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 d-flex m-0">
-                        <form id="searchForm" class="d-flex align-items-center">
-                            @csrf
-                            <div class="form-group me-2">
-                                <label for="reportMonthYear" class="sr-only">Month-Year</label>
-                                <input type="month" class="form-control" id="reportMonthYear" name="report_month_year" required>
-                            </div>
-                            <div class="form-group me-2">
-                                <label for="employee" class="sr-only">Employee</label>
-                                <select class="form-control" id="employee" name="employee_id" required>
-                                    <option value="" selected disabled>Select Employee</option>
-                                    @foreach ($employees as $employee)
-                                        <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
-                                            {{ $employee->first_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
-                        </form>
-                        <a class="btn btn-success mx-2" href="{{route('leave-report.export')}}">
-                            <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export
-                        </a>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a
+                            href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Leave Report</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="container mt-3">
+            <form id="searchForm" class="d-flex justify-content-start align-items-center mb-3">
+                @csrf
+                <div class="form-group me-2">
+                    <label for="reportMonthYear" class="sr-only">Month-Year</label>
+                    <input type="month" class="form-control" id="reportMonthYear" name="report_month_year" required>
+                </div>
+                <div class="form-group me-2">
+                    <label for="employee" class="sr-only">Employee</label>
+                    <select class="form-control" id="employee" name="employee_id" required>
+                        <option value="" selected disabled>Select Employee</option>
+                        @foreach ($employees as $employee)
+                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                                {{ $employee->first_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Search</button>
+                <div class="form-group me-2" style="margin-left: 0.5rem">
+                    <button type="button" class="btn btn-secondary" id="refreshButton">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="folded-corner bg-white p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Report List</h5>
+                <a class="btn btn-success mx-2" href="{{ route('leave-report.export') }}">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
+                        Export
                     </div>
                 </div>
                 <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
@@ -73,16 +91,9 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            // var table = $('#leavetypesTable').DataTable();
-            var table = $('#leavereportsTable').DataTable({
-                language: { search: "" },
-                initComplete: function (settings, json) {
-                    $('.dt-search').addClass('input-group');
-                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>`)
-                },
-                responsive: true
+            var table = $('#leavereportsTable').DataTable();
+            $('#refreshButton').on('click', function() {
+                location.reload();
             });
 
             table.buttons().container().appendTo('#leavereportsTable_wrapper .col-md-6:eq(0)');
@@ -150,7 +161,7 @@
                                 '<strong>not approved</strong>';
 
                             table.row.add([
-                                report.pin,
+                                report.employee.employee_code,
                                 report.employee.last_name + ' ' + report
                                 .employee.first_name,
                                 report.leave_type.leave_type,
@@ -225,15 +236,16 @@
     </script>
 @endsection
 @section('head')
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css" />
 
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
         src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>

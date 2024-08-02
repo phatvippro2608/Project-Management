@@ -98,10 +98,10 @@
                             <button type="button" class="btn btn-info btn-sm w-auto rename-btn"
                                 data-id="{{ $costGroup->project_cost_group_id }}"
                                 data-name="{{ $costGroup->project_cost_group_name }}" data-bs-toggle="modal"
-                                data-bs-target="#renameModal">Rename</button>
+                                data-bs-target="#renameModal"><i class="bi bi-pencil-square"></i></button>
                             <button type="button" class="btn btn-danger btn-sm delete-group-btn"
                                 data-id="{{ $costGroup->project_cost_group_id }}"
-                                data-name="{{ $costGroup->project_cost_group_name }}">X</button>
+                                data-name="{{ $costGroup->project_cost_group_name }}"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
                     @foreach ($dataCost as $cost)
@@ -150,7 +150,7 @@
                                 <td>{{ $cost->project_cost_remaks }}</td>
                                 <td class="text-center align-middle"><button type="button"
                                         class="btn btn-danger btn-sm delete-btn"
-                                        data-id="{{ $cost->project_cost_id }}">X</button></td>
+                                        data-id="{{ $cost->project_cost_id }}"><i class="bi bi-trash3"></i></button></td>
                             </tr>
                         @endif
                     @endforeach
@@ -162,7 +162,7 @@
                         <td colspan="8"></td>
                         <td colspan="3"><b>{{ number_format($total, 0, ',', '.') }} VND</b></td>
                     </tr>
-                    <tr><td></td></tr>
+                    <tr><td colspan="12"></td></tr>
                 @endforeach
             </tbody>
         </table>
@@ -364,7 +364,6 @@
                     '{{ route('budget.deleteCostGroup', ['project_id' => '__PROJECT_ID__', 'cost_group_id' => '__GROUP_ID__']) }}'
                     .replace('__PROJECT_ID__', projectId)
                     .replace('__GROUP_ID__', costGroupId);
-
                 $.ajax({
                     url: url,
                     type: 'DELETE',

@@ -1,0 +1,33 @@
+.edit-customer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid gray;
+    border-radius: 50%;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.edit-customer:hover {
+    background: #babbbc;
+}
+
+.edit-customer i:hover {
+    color: whitesmoke;
+}
+
+
+.contract-item {
+    box-shadow: #F3f3f3 0px 0px 3px 3px;
+    border-radius: 5px;
+    min-height: 50px;
+}
+
+.contract-item:hover {
+    opacity: 0.8;
+    box-shadow: #F3f0f0 0px 0px 1px 1px;
+    cursor: pointer;
+}

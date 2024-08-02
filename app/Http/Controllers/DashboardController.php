@@ -15,8 +15,8 @@ class DashboardController extends Controller
     private $state_todo = [1, 2];
     public function getViewDashboard()
     {
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $id_account";
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
         $em_c = count(EmployeeModel::all());
@@ -29,12 +29,12 @@ class DashboardController extends Controller
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
         FROM accounts, recent_project, projects
         WHERE accounts.account_id = recent_project.account_id AND recent_project.project_id = projects.project_id
+        AND accounts.account_id=$account_id
         AND accounts.account_id=$id_account
         ORDER BY created_at DESC
         LIMIT 5 ";
 
         $recent_project = DB::select($sql);
-
 
         $task_sql = "SELECT * FROM tasks, employees, phases
          WHERE tasks.employee_id = employees.employee_id and phases.phase_id = tasks.phase_id
@@ -42,7 +42,6 @@ class DashboardController extends Controller
          AND employees.employee_id=$employee_id
          ORDER BY tasks.state ASC";
         $tasks = DB::select($task_sql);
-
 
         $subtask_sql = "SELECT * FROM sub_tasks, employees
          WHERE sub_tasks.employee_id = employees.employee_id
@@ -52,8 +51,10 @@ class DashboardController extends Controller
         $subtasks = DB::select($subtask_sql);
 
 
+        $department_c = DB::table('departments')->count();
 
         return view('auth.dashboard.dashboard',[
+            'department_c'=>$department_c,
             'em_c'=>$em_c,
             'team_c'=>$team_c,
             'project_c'=>$project_c,

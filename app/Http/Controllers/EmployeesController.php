@@ -70,6 +70,7 @@ class EmployeesController extends Controller
 
         $employee_id = DB::table('employees')->insertGetId($dataEmployee);
 
+
         $data_account = [
             'email' => $request->email,
             'username' => explode('@', $request->email)[0],
@@ -222,6 +223,12 @@ class EmployeesController extends Controller
         return json_encode($data_certificates);
     }
 
+
+    static function getPassportInfo($employee_id)
+    {
+        $data_passport = DB::table('passport')->where('employee_id',$employee_id)->get();
+        return json_encode($data_passport);
+    }
     static function generateEmployeeCode()
     {
         $year = date('y');
@@ -257,6 +264,7 @@ class EmployeesController extends Controller
 
         if ($file_of == "cv") {
             $cv_list = json_decode(DB::table('employees')->where('employee_id', $employee_id)->value('cv'));
+
             if (in_array($filename, $cv_list)) {
                 $filePath = public_path("uploads/$employee_id/$filename");
                 if (File::exists($filePath)) {

@@ -21,11 +21,11 @@ class ProjectModel extends Model
         'project_address',
         'project_date_start',
         'project_date_end',
-        'project_main_contractor',
         'project_contact_name',
         'project_contact_phone',
         'project_contact_address',
         'project_contact_website',
         'project_contract_amount',
+        'project_contractor_id',
     ];
 }

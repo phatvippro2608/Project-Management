@@ -11,13 +11,13 @@ class EmployeeModel extends Model
 {
     use HasFactory;
     protected $table = 'employees';
-    protected $primaryKey = 'id_employee';
+    protected $primaryKey = 'employee_id';
     function getEmployee()
     {
         $perPage = intval(env('ITEM_PER_PAGE'));
         return DB::table('employees')
-            ->join('job_detail', 'employees.id_employee', '=', 'job_detail.id_employee')
-            ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
+            ->join('job_details', 'employees.employee_id', '=', 'job_details.employee_id')
+            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
             ->where('employees.fired', 'false')
             ->paginate($perPage);
     }
@@ -84,7 +84,7 @@ class EmployeeModel extends Model
     // Thiết lập mối quan hệ với bảng leave_applications
     public function leaveApplications()
     {
-        return $this->hasMany(LeaveApplicationModel::class, 'employee_id', 'id_employee');
+        return $this->hasMany(LeaveApplicationModel::class, 'employee_id', 'employee_id');
     }
 
 }
