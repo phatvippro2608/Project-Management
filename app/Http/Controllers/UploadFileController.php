@@ -74,9 +74,9 @@ class UploadFileController extends Controller
 
         if (count($failedFiles) > 0) {
             // Xóa dữ liệu liên quan nếu có lỗi upload
-            $id_contact = DB::table('employees')->where('employee_id', $employee_id)->value('id_contact');
+            $contact_id = DB::table('employees')->where('employee_id', $employee_id)->value('contact_id');
             DB::table('employees')->where('employee_id', $employee_id)->delete();
-            DB::table('contacts')->where('id_contact', $id_contact)->delete();
+            DB::table('contacts')->where('contact_id', $contact_id)->delete();
             DB::table('job_detail')->where('employee_id', $employee_id)->delete();
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
