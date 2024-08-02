@@ -859,7 +859,6 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         FilePond.registerPlugin(
             FilePondPluginImagePreview,
-            FilePondPluginPdfPreview,
         );
 
         FilePond.create(
