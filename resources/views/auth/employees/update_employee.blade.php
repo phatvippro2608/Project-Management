@@ -32,17 +32,18 @@
                     </div>
                     <div class="row mb-3">
                         <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                        <div class="col-sm-8">
-                            <div class="row">
-                                <div photo-input-target="photoUpdate" class="col-md-2 photo-upload">
-                                    <img id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile" data="{{$item->photo}}">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-2 mt-2 text-center">
-                                    <button class="btn btn-primary btn_photo rounded-4">Upload</button>
-                                </div>
-                            </div>
+                        <div class="col-sm-2 text-center">
+                            <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile" data="{{$item->photo}}">
+                        </div>
+                        <div class="col text-center p-2 me-3 rounded-4 border">
+                            <form action="{{route('img-store')}}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file"
+                                       id="image"
+                                       name="image"
+                                       data-max-files="1">
+                                <button class="btn btn-primary mx-auto" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -854,6 +855,37 @@
             });
         })
 
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        FilePond.registerPlugin(
+            FilePondPluginImagePreview,
+            FilePondPluginPdfPreview,
+        );
+
+        FilePond.create(
+            document.querySelector('#image'),
+            {
+                server: {
+                    process: {
+                        url: '{{route('img-upload')}}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        ondata: (formData) => {
+                            formData.append('_token', csrfToken);
+                            formData.append('employee_code',$('.employee_code').val())
+                            return formData;
+                        },
+                    },
+                    revert:{
+                        url: '{{route('img-delete')}}',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    }
+                },
+            }
+        );
     </script>
-    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

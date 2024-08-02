@@ -79,7 +79,7 @@
                                                 $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
                                                 $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
                                                 ?>
-                                            <a href="#" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3" data="{{\App\Http\Controllers\AccountController::toAttrJson($item)}}">
+                                            <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             |

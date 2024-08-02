@@ -99,6 +99,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
 
+    Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
+    Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
+    Route::delete('img-delete', 'App\Http\Controllers\UploadFileController@imgDelete')->name('img-delete');
+
     Route::group(['prefix' => '/profile'], function () {
         Route::get('/{employee_id}', 'App\Http\Controllers\ProfileController@getViewProfile');
         Route::post('/update', 'App\Http\Controllers\ProfileController@postProfile');
