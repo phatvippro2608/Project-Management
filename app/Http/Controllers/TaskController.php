@@ -178,23 +178,9 @@ class TaskController extends Controller
 
     public function delete($id)
     {
-        $idtype = explode('_', $id)[0];
-        $id = explode('_', $id)[1];
-        if ($idtype == 'task') {
-            $phases_id = TaskModel::find($id)->phase_id;
-            SubTaskModel::where('task_id', $id)->delete();
-            TaskModel::find($id)->delete();
-        } else {
-            $phases_id = TaskModel::find(SubTaskModel::find($id)->task_id)->phase_id;
-            SubTaskModel::find($id)->delete();
-        }
+        TaskModel::find($id)->delete();
+        TaskModel::where('parent_id', $id)->delete();
 
-        $tasks = DB::table('tasks')->where('phase_id', $phases_id)->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
-            ->get();
-        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
+        return response()->json(['success' => true,'message' => 'Delete task success']);
     }
 }
