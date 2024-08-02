@@ -319,6 +319,7 @@
                         </tr>
                         </thead>
                         <tbody class="cv-list">
+                        @if($item->cv)
                             @foreach(json_decode($item->cv) as $index => $row)
                                 <tr>
                                     <td>
@@ -334,6 +335,7 @@
                                     </td>
                                 </tr>
                             @endforeach
+                        @endif
                         </tbody>
                     </table>
                 </div>
