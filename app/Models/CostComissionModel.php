@@ -13,7 +13,9 @@ class CostComissionModel extends Model
     public $timestamps = false; // Disable timestamps
 
     protected $fillable = [
+        'group_id',
         'description',
         'amount',
+        'project_id',
     ];
 }
