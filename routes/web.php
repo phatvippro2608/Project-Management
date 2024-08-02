@@ -1,6 +1,8 @@
 <?php
 use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\ProposalApplicationController;
+use App\Http\Controllers\ProposalTypesController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
 
