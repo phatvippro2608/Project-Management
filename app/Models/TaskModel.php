@@ -14,6 +14,8 @@ class TaskModel extends Model
 
     protected $fillable = [
         'task_name',
+        'phase_id',
+        'project_id',
         'request',
         'engineers',
         'start_date',

@@ -19,9 +19,9 @@ class UploadFileController extends Controller
         $photo = $request->file('photo');
         $personalFiles = $request->file('personal');
         $certificateFiles = $request->file('certificate');
-        $id_employee = $request->input('id_employee');
+        $employee_id = $request->input('employee_id');
 
-        $directoryPath = public_path('uploads/' . $id_employee);
+        $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
             mkdir($directoryPath, 0777, true);
@@ -70,18 +70,18 @@ class UploadFileController extends Controller
 
         if (count($failedFiles) > 0) {
             // Xóa dữ liệu liên quan nếu có lỗi upload
-            $id_contact = DB::table('employees')->where('id_employee', $id_employee)->value('id_contact');
-            DB::table('employees')->where('id_employee', $id_employee)->delete();
+            $id_contact = DB::table('employees')->where('employee_id', $employee_id)->value('id_contact');
+            DB::table('employees')->where('employee_id', $employee_id)->delete();
             DB::table('contacts')->where('id_contact', $id_contact)->delete();
-            DB::table('job_detail')->where('id_employee', $id_employee)->delete();
+            DB::table('job_detail')->where('employee_id', $employee_id)->delete();
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
 
         // Update database with uploaded file names
         DB::table('employees')
-            ->where('id_employee', $id_employee)
+            ->where('employee_id', $employee_id)
             ->update([
-                'photo' => $photo_filename,
+                'photo' => 'uploads/'.$employee_id . '/' . $photo_filename,
                 'cv' => json_encode($uploadedPersonalFiles),
             ]);
 //        DB:table('contacts')->insert([])
@@ -94,17 +94,16 @@ class UploadFileController extends Controller
         $request->validate([
             'photo' => 'nullable|file|max:1048576', // 10MB
         ]);
-
         $photo = $request->file('photo');
-        $id_employee = $request->input('id_employee');
-        $directoryPath = public_path('uploads/' . $id_employee);
+        $employee_id = $request->input('employee_id');
+        $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
             mkdir($directoryPath, 0777, true);
         }
 
         // Get old photo filename
-        $oldPhoto = DB::table('employees')->where('id_employee', $id_employee)->value('photo');
+        $oldPhoto = DB::table('employees')->where('employee_id', $employee_id)->value('photo');
         $photo_filename = $photo ? $photo->getClientOriginalName() : '';
 
         // Check if the new photo is the same as the old photo
@@ -130,7 +129,7 @@ class UploadFileController extends Controller
 
                     // Update database to remove old photo reference
                     DB::table('employees')
-                        ->where('id_employee', $id_employee)
+                        ->where('employee_id', $employee_id)
                         ->update(['photo' => null]);
                 }
             } catch (\Exception $e) {
@@ -143,8 +142,8 @@ class UploadFileController extends Controller
         }
 
         DB::table('employees')
-            ->where('id_employee', $id_employee)
-            ->update(['photo' => $photo_filename]);
+            ->where('employee_id', $employee_id)
+            ->update(['photo' => 'uploads/' . $employee_id.'/'.$photo_filename]);
 
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
     }
@@ -153,34 +152,31 @@ class UploadFileController extends Controller
     public function uploadPersonalProfile(Request $request)
     {
         $request->validate([
-            'personal_profile.*' => 'nullable|file|max:1048576', // 10MB
+            'personal_profile.*' => 'nullable|file|max:1048576', // 1MB
         ]);
 
         $personalProfiles = $request->file('personal_profile');
-        $id_employee = $request->input('id_employee');
-        $directoryPath = public_path('uploads/' . $id_employee);
+        $employee_id = $request->input('employee_id');
+        $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
             mkdir($directoryPath, 0777, true);
         }
 
-        // Get old photo filenames
-        $oldProfiles = DB::table('employees')->where('id_employee', $id_employee)->value('cv');
-
-        // Check if $oldProfiles is null, set it to an empty array
+        // Get old profile filenames
+        $oldProfiles = DB::table('employees')->where('employee_id', $employee_id)->value('cv');
         $oldProfiles = $oldProfiles ? json_decode($oldProfiles, true) : [];
 
         $uploadedFiles = [];
         $failedFiles = [];
 
-        // Handle photo uploads
         if ($personalProfiles) {
             foreach ($personalProfiles as $file) {
                 try {
                     $filename = $file->getClientOriginalName();
 
                     // Check if the new photo is the same as one of the old photos
-                    if (!in_array($filename, (array)$oldProfiles)) { // Cast $oldProfiles to array to avoid null error
+                    if (!in_array($filename, $oldProfiles)) {
                         $file->move($directoryPath, $filename);
                         $uploadedFiles[] = $filename;
                     }
@@ -190,21 +186,24 @@ class UploadFileController extends Controller
             }
         }
 
-        // Remove old photos that are not in the new uploads
-        if (!empty($oldProfiles) && is_array($oldProfiles)) {
-            foreach ($oldProfiles as $oldProfile) {
-                if (!in_array($oldProfile, $uploadedFiles)) {
-                    $oldProfilePath = $directoryPath . '/' . $oldProfile;
-                    if (file_exists($oldProfilePath)) {
-                        unlink($oldProfilePath);
-                    }
+        // Combine old and new file lists, ensuring no duplicates
+        $allProfiles = array_unique(array_merge($oldProfiles, $uploadedFiles));
+
+        // Remove old files that are not in the new uploads
+        foreach ($oldProfiles as $oldProfile) {
+            if (!in_array($oldProfile, $allProfiles)) {
+                $oldProfilePath = $directoryPath . '/' . $oldProfile;
+                if (file_exists($oldProfilePath)) {
+                    unlink($oldProfilePath);
                 }
             }
         }
 
+        // Update the employee's cv in the database
         DB::table('employees')
-            ->where('id_employee', $id_employee)
-            ->update(['cv' => json_encode($uploadedFiles)]);
+            ->where('employee_id', $employee_id)
+            ->update(['cv' => json_encode($allProfiles)]);
+
 
         if (count($failedFiles) > 0) {
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
@@ -220,9 +219,9 @@ class UploadFileController extends Controller
         ]);
 
         $medicalFile = $request->file('medical_file');
-        $id_employee = $request->input('id_employee');
+        $employee_id = $request->input('employee_id');
         $medical_checkup_date = $request->input('medical_checkup_date');
-        $directoryPath = public_path('uploads/' . $id_employee);
+        $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
             mkdir($directoryPath, 0777, true);
@@ -243,7 +242,7 @@ class UploadFileController extends Controller
         }
 
         DB::table('medical_checkup')->insert([
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'medical_checkup_file' => $uploadedFile,
             'medical_checkup_issue_date' => $medical_checkup_date,
         ]);
@@ -261,10 +260,10 @@ class UploadFileController extends Controller
             'certificate_file' => 'nullable|file|max:1048576', // 10MB
         ]);
         $certificate_file = $request->file('certificate_file');
-        $id_employee = $request->input('id_employee');
+        $employee_id = $request->input('employee_id');
         $certificate_end_date = $request->input('certificate_end_date');
         $type_certificate = $request->input('type_certificate');
-        $directoryPath = public_path('uploads/' . $id_employee);
+        $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
             mkdir($directoryPath, 0777, true);
@@ -285,7 +284,7 @@ class UploadFileController extends Controller
         }
 
         DB::table('certificates')->insert([
-            'id_employee' => $id_employee,
+            'employee_id' => $employee_id,
             'certificate' => $uploadedFile,
             'id_type_certificate' => $type_certificate,
             'end_date_certificate' => $certificate_end_date

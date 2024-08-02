@@ -19,9 +19,7 @@
                         <div class="d-inline-flex align-items-center">
                             <div class="btn btn-primary mx-2 btn-add">
                                 <div class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    add
-                                </span>
+                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                                     Add Account
                                 </div>
                             </div>
@@ -67,7 +65,7 @@
                                                     </a>
                                                     <a class="delete me-2">
                                                         <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                           data="{{ $item->id_account }}"></i>
+                                                           data="{{ $item->account_id }}"></i>
                                                     </a>
                                                 </div>
                                                 <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
@@ -108,7 +106,7 @@
         </div>
     </section>
     <div class="modal fade md1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog g-cemodal-dialontered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title text-bold"></h4>
@@ -122,11 +120,10 @@
                             <select class="form-select name1" aria-label="Default">
                                 <option value="-1">No select</option>
                                 @foreach($employees as $employee)
-                                    <option value="{{$employee->id_employee}}">{{$employee->employee_code}}
+                                    <option value="{{$employee->employee_id}}">{{$employee->employee_code}}
                                         - {{$employee->first_name}} {{$employee->last_name}}</option>
                                 @endforeach
                             </select>
-
                         </div>
                     </div>
                     <div class="row">
@@ -234,7 +231,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_employee': $('.name1').val(),
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),
@@ -245,14 +242,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            // toastr.success(result.message, "Thao tác thành công");
-                            alert(result.message);
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            // toastr.error(result.message, "Thao tác thất bại");
-                            alert(result.message);
+                            toastr.error(result.message, "Failed");
                         }
                     }
                 });
@@ -263,7 +258,7 @@
             $('.md1 .modal-title').text('Update Account');
             $('.md1 .passName').text('New Password');
             var data = JSON.parse($(this).attr('data'));
-            $('.name1').val(data.id_employee);
+            $('.name1').val(data.employee_id);
             $('.name2').val(data.username);
             $('.email').val(data.email);
             $('.name3').val('');
@@ -271,6 +266,7 @@
             $('.auto_pwd').prop('checked',false);
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
+            $('.at2').text('Update')
             $('.md1').modal('show');
 
             $('.at2').click(function () {
@@ -292,8 +288,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id_account': data.id_account,
-                        'id_employee': $('.name1').val(),
+                        'account_id': data.account_id,
+                        'employee_id': $('.name1').val(),
                         'username': $('.name2').val(),
                         'email': $('.email').val(),
                         'password': $('.name3').val(),
@@ -304,14 +300,12 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            // toastr.success(result.message, "Thao tác thành công");
-                            alert(result.message);
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
                         } else {
-                            // toastr.error(result.message, "Thao tác thất bại");
-                            alert(result.message);
+                            toastr.error(result.message, "Failed");
                         }
                     }
                 });
@@ -331,17 +325,17 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    'id_account': id,
+                    'account_id': id,
                 },
                 success: function (result) {
                     result = JSON.parse(result);
                     if (result.status === 200) {
-                        alert(result.message);
+                        toastr.success(result.message, "Successfully");
                         setTimeout(function () {
                             window.location.reload();
                         }, 500);
                     } else {
-                        alert(result.message);
+                        toastr.success(result.message, "Failed");
                     }
                 }
             });
@@ -349,4 +343,3 @@
 
     </script>
 @endsection
-

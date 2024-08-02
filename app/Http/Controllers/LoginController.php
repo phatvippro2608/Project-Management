@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use function Laravel\Prompts\select;
+use function Laravel\Prompts\table;
 
 class LoginController extends Controller
 {
@@ -20,9 +21,10 @@ class LoginController extends Controller
 
     public function postLogin(Request $request)
     {
-        $sql = "SELECT * FROM account WHERE username = '$request->username' or email = '$request->username' LIMIT 1";
+        $sql = "SELECT * FROM accounts WHERE username = '$request->username' or email = '$request->username' LIMIT 1";
         $account = DB::select($sql);
         if (!$account) {
+            DB::table('login_history')->insert(['status'=>0,'desc'=>'fail', 'username'=>$request->username, 'ip'=>\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::POSITION)]);
             return redirect()
                 ->action('App\Http\Controllers\LoginController@postLogin')
                 ->with('msg', 'Username or password is incorrect');
@@ -31,10 +33,12 @@ class LoginController extends Controller
         if (password_verify($request->password, $account[0]->password)) {
             $request->session()->put(StaticString::SESSION_ISLOGIN, true);
             $request->session()->put(StaticString::PERMISSION, $account[0]->permission);
-            $request->session()->put(StaticString::ACCOUNT_ID, $account[0]->id_account);
+            $request->session()->put(StaticString::ACCOUNT_ID, $account[0]->account_id);
+            DB::table('login_history')->insert(['status'=>1,'desc'=>'success', 'username'=>$request->username, 'ip'=>\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::POSITION)]);
             return redirect()->action('App\Http\Controllers\DashboardController@getViewDashboard');
         }
 
+        DB::table('login_history')->insert(['status'=>0,'desc'=>'fail', 'username'=>$request->username, 'ip'=>\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::POSITION)]);
         return redirect()
             ->action('App\Http\Controllers\LoginController@postLogin')
             ->with('msg', 'Username or password is incorrect');

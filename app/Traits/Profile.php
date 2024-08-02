@@ -13,4 +13,6 @@ trait Profile
     public $email;
     public $id_account;
 
+    public $id_employee;
+
 }

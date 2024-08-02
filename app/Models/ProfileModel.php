@@ -15,8 +15,8 @@ class ProfileModel extends Model
     function getProfile()
     {
         $profiles = DB::table('account')
-            ->join('employees', 'employees.id_employee', '=', 'account.id_employee')
-            ->join('job_detail', 'employees.id_employee', '=', 'job_detail.id_employee')
+            ->join('employees', 'employees.employee_id', '=', 'account.employee_id')
+            ->join('job_detail', 'employees.employee_id', '=', 'job_detail.employee_id')
             ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
             ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
             ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
@@ -30,11 +30,9 @@ class ProfileModel extends Model
         $query =
             "
                 UPDATE employees
-                INNER JOIN job_detail ON employees.id_employee = job_detail.id_employee
-                INNER JOIN job_position ON job_detail.id_job_position = job_position.id_position
-                INNER JOIN job_country ON job_detail.id_job_country = job_country.id_country
+                INNER JOIN job_detail ON employees.employee_id = job_detail.employee_id
                 INNER JOIN contacts ON employees.id_contact = contacts.id_contact
-                INNER JOIN account ON employees.id_employee = account.id_employee
+                INNER JOIN account ON employees.employee_id = account.employee_id
                 SET
                     employees.first_name = :first_name,
                     employees.last_name = :last_name,
@@ -43,7 +41,7 @@ class ProfileModel extends Model
                     contacts.permanent_address = :permanent_address,
                     contacts.phone_number = :phone_number,
                     account.email = :email
-                WHERE account.id_account = :id_account
+                WHERE account.employee_id = :employee_id
            ";
 
         $par = [
@@ -54,7 +52,7 @@ class ProfileModel extends Model
             'permanent_address' => $this->permanent_address,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
-            'id_account'=>$this->id_account
+            'employee_id'=>$this->employee_id
         ];
 
         return DB::update($query, $par);
