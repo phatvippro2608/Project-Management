@@ -19,6 +19,7 @@ class ProjectController extends Controller
                 DB::raw("CONCAT(customers.company_name, ' - ', customers.last_name, ' ', customers.first_name) AS customer_info"),
                 'phases.phase_name_eng'
             )
+            ->orderBy('project_id', 'asc')
             ->get();
 
         return view('auth.projects.project-list',
