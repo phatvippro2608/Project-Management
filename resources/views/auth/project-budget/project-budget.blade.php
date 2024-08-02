@@ -30,7 +30,7 @@
                     <tbody>
                         <tr>
                             <td scope="row">AMOUNT OF CONTRACT</td>
-                            <td>{{ number_format($data->project_contract_amount, 0, ',', '.') }} VND</td>
+                            <td>{{ number_format($contract->amount, 0, ',', '.') }} VND</td>
                         </tr>
                         <tr>
                             <td scope="row">SUBTOTAL (Budget)</td>
@@ -46,7 +46,7 @@
                         </tr>
                         <tr class="table-primary">
                             <th scope="row">FUNDS REMAINING</th>
-                            <td>{{ number_format($data->project_contract_amount - $total - $data->project_price_contingency, 0, ',', '.') }} VND</td>
+                            <td>{{ number_format($contract->amount - $total - $data->project_price_contingency, 0, ',', '.') }} VND</td>
                         </tr>
                     </tbody>
                 </table>
@@ -76,29 +76,34 @@
                                     <td id="project_address">{{ $data->project_address }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Main Contractor</th>
+                                    <th>Contract</th>
+                                    <td id="Contract">{{$contract->contract_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Main Contractor Company</th>
                                     <td id="project_contractor">
-                                        @php
-                                            $contract = $contracts->firstWhere('contract_id', $data->contract_id);
-                                        @endphp
-                                        {{ $contract ? $contract->contract_name : 'Not Available' }}
+                                        {{ $customer->company_name}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Contact Name</th>
-                                    <td id="project_contact_name">{{ $data->project_contact_name }}</td>
+                                    <td id="project_contact_name">{{ $customer->first_name}} {{$customer->last_name}} </td>
                                 </tr>
                                 <tr>
                                     <th>Contact Website</th>
-                                    <td id="project_contact_website">{{ $data->project_contact_website }}</td>
+                                    <td id="project_contact_website"><a href="{{ $customer->website }}">{{ $customer->website }}</a></td>
                                 </tr>
                                 <tr>
                                     <th>Contact Phone</th>
-                                    <td id="project_contact_phone">{{ $data->project_contact_phone }}</td>
+                                    <td id="project_contact_phone">{{ $customer->phone_number }}</td>
                                 </tr>
                                 <tr>
                                     <th>Contact Address</th>
-                                    <td id="project_contact_address">{{ $data->project_contact_address }}</td>
+                                    <td id="project_contact_address">{{ $customer->address }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Leader Of Project</th>
+                                    <td id="project_lead">{{ $contactEmployee->first_name }} {{ $contactEmployee->last_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Start Date</th>
@@ -141,32 +146,6 @@
                             <input type="text" class="form-control" id="edit_project_address" name="project_address" value="{{ $data->project_address }}">
                         </div>
                         <div class="mb-3">
-                            <label for="edit_project_main_contractor" class="form-label">Main Contractor</label>
-                            <select class="form-select" id="edit_project_main_contractor" name="project_contract_id">
-                                @foreach($contracts as $contract)
-                                    <option value="{{ $contract->contract_id }}" {{ $data->contract_id == $contract->contract_id ? 'selected' : '' }}>
-                                        {{ $contract->contract_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_contact_name" class="form-label">Contact Name</label>
-                            <input type="text" class="form-control" id="edit_project_contact_name" name="project_contact_name" value="{{ $data->project_contact_name }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_contact_website" class="form-label">Contact Website</label>
-                            <input type="text" class="form-control" id="edit_project_contact_website" name="project_contact_website" value="{{ $data->project_contact_website }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_contact_phone" class="form-label">Contact Phone</label>
-                            <input type="text" class="form-control" id="edit_project_contact_phone" name="project_contact_phone" value="{{ $data->project_contact_phone }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_contact_address" class="form-label">Contact Address</label>
-                            <input type="text" class="form-control" id="edit_project_contact_address" name="project_contact_address" value="{{ $data->project_contact_address }}">
-                        </div>
-                        <div class="mb-3">
                             <label for="edit_project_date_start" class="form-label">Start Date</label>
                             <input type="date" class="form-control" id="edit_project_date_start" name="project_date_start" value="{{ $data->project_date_start }}">
                         </div>
@@ -183,7 +162,6 @@
 
     <script>
     // Assuming contracts data is passed as JSON
-    const contractors = {!! $contractsJson !!};
 
     document.getElementById('editProjectForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -209,15 +187,7 @@
                 document.getElementById('project_description').textContent = formData.get('project_description');
                 document.getElementById('project_address').textContent = formData.get('project_address');
 
-                // Update the Main Contractor field
-                const contractorId = formData.get('contract_id');
-                const contractor = contractors.find(c => c.contract_id == contractorId);
-                document.getElementById('project_contractor').textContent = contractor ? contractor.contract_name : 'Not Available';
-
-                document.getElementById('project_contact_name').textContent = formData.get('project_contact_name');
-                document.getElementById('project_contact_website').textContent = formData.get('project_contact_website');
-                document.getElementById('project_contact_phone').textContent = formData.get('project_contact_phone');
-                document.getElementById('project_contact_address').textContent = formData.get('project_contact_address');
+                
                 document.getElementById('project_date_start').textContent = formData.get('project_date_start');
                 document.getElementById('project_date_end').textContent = formData.get('project_date_end');
                 
