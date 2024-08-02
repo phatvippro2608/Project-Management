@@ -47,14 +47,13 @@
                     <form id="addProposalApplicationForm" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="department_name" class="form-label">Employee name</label>
+                            <label for="employee_id" class="form-label">Employee name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="employee_id"
-                                @if ($data['permission'] == 0) disabled @endif>
+                               >
                                 @if ($data['permission'] == 0)
                                     <option value="{{ $data['list_proposal'][0]->employee_id }}">
                                         {{ $data['list_proposal'][0]->first_name }}
-                                        {{ $data['list_proposal'][0]->last_name }}
-                                    </option>
+                                        {{ $data['list_proposal'][0]->last_name }}</option>
                                 @elseif($data['permission'] == 3)
                                     @foreach ($data['employee_of_depart'] as $item)
                                         <option value="{{ $item->employee_id }}">{{ $item->first_name }}
@@ -69,7 +68,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="department_name" class="form-label">Proposal Type</label>
+                            <label for="proposal_id" class="form-label">Proposal Type</label>
                             <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
                                 @foreach ($proposal_types as $item)
                                     <option value="{{ $item->proposal_type_id }}">{{ $item->name }}</option>
@@ -77,7 +76,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="floatingTextarea2">Description</label>
+                            <label for="description">Description</label>
                             <textarea class="form-control" placeholder="Leave a Description here" id="description" name="description"
                                 style="height: 100px"></textarea>
                         </div>
@@ -89,7 +88,6 @@
                         <button type="submit" class="btn btn-primary">Add Proposal Application</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>

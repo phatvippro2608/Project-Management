@@ -18,7 +18,7 @@ class ProposalApplicationController extends Controller
         $data = $model_proposal->getListProposal();
         $proposal_types = $model_proposal->getProposalTypes();
         $employee_name = $model_proposal->getEmployeeName();
-//        dd($employee_name);
+        // dd($employee_name);
         return view(
             'auth.proposal.proposal-application',
             compact('data', 'employee_name', 'proposal_types')
@@ -29,8 +29,8 @@ class ProposalApplicationController extends Controller
         $validated = $request->validate([
             'employee_id' => 'required|int',
             'proposal_id' => 'required|int',
-            'description' => 'required|string',
-            'files.*' => 'mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048'
+            'description' => 'nullable|string',
+            'files.*' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,txt|max:2048'
         ]);
 
         $validated['progress'] = 0;
