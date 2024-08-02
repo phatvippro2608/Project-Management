@@ -206,15 +206,15 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
     Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
-    //Proposal
-    Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function () {
-        Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
-        Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
-        Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
-        Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
-        Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
-        Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
-    });
+    //Proposal-Types
+    Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
+    Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
+    Route::get('/proposal-types/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-types.show');
+    Route::put('/proposal-types/{id}/update', [ProposalTypesController::class, 'update'])->name('proposal-types.update');
+    Route::delete('/proposal-types/{id}/destroy', [ProposalTypesController::class, 'destroy'])->name('proposal-types.destroy');
+    Route::get('/proposal-types/export', [ProposalTypesController::class, 'exportExcel'])->name('proposal-types.export');
+
+    //Proposal-Application
     Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
     Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
     Route::get('/proposal/{id}/edit', [ProposalApplicationController::class, 'edit'])->name('proposal-application.edit');
@@ -222,4 +222,5 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::delete('/proposal/{id}', [ProposalApplicationController::class, 'destroy'])->name('proposal-application.destroy');
     Route::delete('/proposal/remove-file/{id}', [ProposalApplicationController::class, 'removeFile'])->name('proposal-application.removeFile');
     Route::post('/proposal/approve/{id}/{permission}', [ProposalApplicationController::class, 'approve'])->name('proposal-application.approve');
+    Route::get('/proposal/export', [ProposalApplicationController::class, 'exportExcel'])->name('proposal-application.export');
 });

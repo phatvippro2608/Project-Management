@@ -36,12 +36,27 @@
                     Add Proposal Applicaiton
                 </div>
             </div>
-            <div class="btn btn-success mx-2 btn-export">
-                <a href="" class="d-flex align-items-center text-white">
-                    <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                    Export
-                </a>
-            </div>
+            @if ($data['permission'] == 3)
+                <div class="btn btn-success mx-2 btn-export">
+                    <a href="{{route('proposal-application.export',[
+                                                                    'permission'  => $data['permission'],
+                                                                    'employee_id' => $data['employee_current']->employee_id
+                                                                    ])}}"
+                       class="d-flex align-items-center text-white">
+                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        Export
+                    </a>
+                </div>
+            @elseif($data['permission'] == 4)
+                <div class="btn btn-success mx-2 btn-export">
+                    <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
+                                                                    'employee_id' => $data['employee_current']->employee_id])}}" class="d-flex align-items-center text-white">
+                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        Export
+                    </a>
+                </div>
+            @endif
+
         </div>
     </div>
     <div class="modal fade" id="addProposalApplicationModal">
