@@ -137,25 +137,13 @@
                                             Image</label>
                                         <div class="col-md-8 col-lg-9">
                                             <div class="row">
-                                                <div class="col-md-2 position-relative text-center">
-                                                    <img
-                                                        id="profileImage"
-                                                        src="{{$photoExists ? $photoPath : $defaultPhoto}}"
-                                                        alt="Profile"
-                                                        class="rounded-pill object-fit-cover"
-                                                        width="100"
-                                                        height="100">
-                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                    </div>
+                                                <div photo-input-target="photo" class="col-md-2 photo-upload">
+                                                    <img id="profileImage" src="{{$photoExists ? $photoPath : $defaultPhoto}}" alt="Profile">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-2 mt-2 text-center">
-                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                        Upload
-                                                    </button>
+                                                    <button class="btn btn-primary btn_photo rounded-4">Upload</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -228,7 +216,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-primary btnLuu">Save Changes</button>
+                                        <button type="button" class="btn btn-primary btnLuu"><i class="bi bi-floppy me-3"></i>Save Changes</button>
                                     </div>
                                 </form><!-- End Profile Edit Form -->
 
@@ -311,8 +299,7 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-
-            let filePhoto = $('.photo')[0].files[0];
+            let filePhoto = $('#photo')[0].files[0];
             let formData = new FormData();
 
             if (filePhoto) {

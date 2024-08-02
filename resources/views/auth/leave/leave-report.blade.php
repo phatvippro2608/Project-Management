@@ -1,53 +1,24 @@
 @extends('auth.main')
 
 @section('contents')
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.dataTables.min.css') }}">
     <style>
-        .folded-corner {
-            position: relative;
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .folded-corner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            background-color: #1472e5;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-
-        .btn.custom-btn {
-            background-color: #007bff !important;
-            color: #fff !important;
-            border-color: #007bff !important;
-            border-radius: 5px !important;
-        }
-
-        .btn.custom-btn:hover {
-            background-color: #0056b3 !important;
-            border-color: #004085 !important;
-        }
-
-        .text-success {
-            font-weight: bold !important;
-        }
-
-        table td:last-child {
+        #leavereportsTable tbody tr:last-child{
             text-align: center;
         }
     </style>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-bag-check text-primary me-2"></i>
-                <h3 class="text-primary m-0">Leave Report</h3>
+    <div class="pagetitle">
+        <h1>Leave Report</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Leave Report</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="rounded-4">
+        <div class="card p-2">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Leave Report</div>
             </div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb m-0">
@@ -93,23 +64,20 @@
                         <i class="bi bi-file-earmark-arrow-down-fill pe-2"></i>
                         Export
                     </div>
-                </a>
-            </div>
-            <hr>
-            <div style="height: 100vh;">
-                <table id="leavereportsTable" class="table table-bordered mt-3 mb-3">
+                </div>
+                <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
                     <thead>
-                        <tr>
-                            <th>Employee_Code</th>
-                            <th>Employee</th>
-                            <th>Leave Type</th>
-                            <th>Apply Date</th>
-                            <th>Duration</th>
-                            <th>Start Leave</th>
-                            <th>End Leave</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                    <tr>
+                        <th>Employee_Code</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Apply Date</th>
+                        <th>Duration</th>
+                        <th>Start Leave</th>
+                        <th>End Leave</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
                     </thead>
                     <tbody>
 
@@ -203,7 +171,7 @@
                                 report.end_date,
                                 '<span class="' + statusClass + '">' +
                                 statusText + '</span>',
-                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn vertical-align-middle" data-id="' +
+                                '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn text-center" data-id="' +
                                 report.id +
                                 '"><i class="bi bi-check-circle"></i></button>'
                             ]).draw(false);

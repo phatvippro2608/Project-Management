@@ -1,26 +1,48 @@
-//Image Upload
-const btnPhoto = document.querySelector('.btn_photo')
-const overlays = document.querySelectorAll('.overlay-upload');
-const fileInput = document.getElementById('fileInput');
-const profileImage = document.getElementById('profileImage');
 
-overlays.forEach(overlay => {
-    overlay.addEventListener('click', function() {
-        fileInput.click();
+// =======Photo upload=========
+const photoUploads = document.querySelectorAll('.photo-upload');
+if (photoUploads) {
+    photoUploads.forEach(photoUpload => {
+        const idTarget = photoUpload.getAttribute('photo-input-target');
+        if (idTarget) {
+            const overlayDiv = document.createElement('div');
+            overlayDiv.className = 'overlay';
+
+            const icon = document.createElement('i');
+            icon.className = 'bi bi-camera';
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.id = idTarget;
+            input.className = 'photoInput';
+
+            overlayDiv.appendChild(icon);
+            overlayDiv.appendChild(input);
+
+            photoUpload.insertBefore(overlayDiv, photoUpload.firstChild);
+        }
+
+        const overlay = photoUpload.querySelector('.overlay');
+        const fileInput = photoUpload.querySelector('input[type="file"]');
+        const profileImage = photoUpload.querySelector('img');
+
+        overlay.onclick = () => {
+            fileInput.click();
+        }
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
     });
-});
-
-fileInput.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            profileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-    btnPhoto.classList.remove('d-none')
-});
+}
 
 //File upload
 const uploadSections = document.querySelectorAll('.upload-section');
