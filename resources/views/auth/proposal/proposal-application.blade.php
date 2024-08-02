@@ -127,15 +127,15 @@
                             <textarea class="form-control" placeholder="Leave a Description here" id="edit_proposal_description"
                                 name="proposal_description" style="height: 100px"></textarea>
                         </div>
+                        <label for="proposal_files">Proposal File Uploaded</label>
                         <div class="mb-3 table-responsive">
-                            <label for="proposal_files">Proposal File Uploaded</label>
                             <table class="table">
                                 <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Proposal File Name</th>
-                                        <th>Action</th>
-                                    </tr>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Proposal File Name</th>
+                                    <th>Action</th>
+                                </tr>
                                 </thead>
                                 <tbody class="overflow-y-scroll">
                                 </tbody>
