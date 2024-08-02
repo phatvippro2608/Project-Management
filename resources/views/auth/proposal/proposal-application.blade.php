@@ -36,7 +36,6 @@
     <div class="modal fade" id="addProposalApplicationModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h4 class="modal-title">Add Proposal Application</h4>
                     @component('auth.component.btnCloseModal')
@@ -76,8 +75,9 @@
                         </div>
                         <div class="mb-3">
                             <label for="description">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="proposal_description" name="proposal_description"
-                                style="height: 100px"></textarea>
+                            <textarea class="form-control" placeholder="Leave a Description here"
+                                      id="proposal_description" name="proposal_description"
+                                      style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="file" class="form-label">Upload your files</label>
@@ -90,10 +90,75 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="editProposalModal" tabindex="-1" aria-labelledby="editProposalModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProposalModalLabel">Edit Proposal</h5>
+                    @component('auth.component.btnCloseModal')@endcomponent
+                </div>
+                <div class="modal-body">
+                    <form id="editProposalForm">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="editDepartmentId" name="department_id">
+                        <div class="mb-3">
+                            <label for="employee_id" class="form-label">Employee name</label>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id">
+                                @if ($data['permission'] == 0)
+                                    <option value="{{ $data['list_proposal'][0]->employee_id }}">
+                                        {{ $data['list_proposal'][0]->first_name }}
+                                        {{ $data['list_proposal'][0]->last_name }}</option>
+                                @elseif($data['permission'] == 3)
+                                    @foreach ($data['employee_of_depart'] as $item)
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
+                                    @endforeach
+                                @elseif($data['permission'] == 4)
+                                    @foreach ($employee_name as $item)
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <label for="proposal_id" class="form-label">Proposal Type</label>
+                            <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
+                                @foreach ($proposal_types as $item)
+                                    <option value="{{ $item->proposal_type_id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="mb-3">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" placeholder="Leave a Description here"
+                                          id="proposal_description" name="proposal_description"
+                                          style="height: 100px"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="proposal_files">Proposal File Uploaded</label>
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Proposal File Name</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <td></td>
+                                        <td></td>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
         <h3 class="text-left mb-4">Proposal Application</h3>
-        <table id="departmentsTable" class="table table-hover table-borderless">
+        <table id="proposalTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
                 <th>No</th>
@@ -110,33 +175,42 @@
                 <th>Action</th>
             </tr>
             </thead>
-            <tbody id="departmentsTableBody">
-                @php($stt = 0)
-                @foreach ($data['list_proposal'] as $item)
-                    <tr>
-                        <td>{{ $stt++ }}</td>
-                        <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->proposal_description }}</td>
-                        <td>
-                            <div class="progress">
-                                @if ($item->progress == 0)
-                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
-                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                                        Chưa xét
-                                    </div>
-                                @elseif($item->progress == 1)
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
-                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt cấp 1
-                                    </div>
-                                @elseif($item->progress == 2)
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
-                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                        Đã duyệt xong
-                                    </div>
-                                @endif
-                            </div>
+            <tbody id="proposalTableBody">
+            @php($stt = 0)
+            @foreach ($data['list_proposal'] as $item)
+                <tr>
+                    <td>{{ $stt++ }}</td>
+                    <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->proposal_description }}</td>
+                    <td>
+                        <div class="progress">
+                            @if ($item->progress == 0)
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
+                                     aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                    Chưa xét
+                                </div>
+                            @elseif($item->progress == 1)
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                     aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                    Đã duyệt cấp 1
+                                </div>
+                            @elseif($item->progress == 2)
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                    Đã duyệt xong
+                                </div>
+                            @endif
+                        </div>
+                    </td>
+                    @if ($data['permission'] == 3)
+                        <td class="text-center">
+                            <button
+                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="">
+                                <i class="bi bi-check-circle"></i>
+                                Chưa duyệt
+                            </button>
                         </td>
                     @endif
                     @if ($data['permission'] == 4)
@@ -146,19 +220,20 @@
                                 data-id="">
                                 <i class="bi bi-check-circle "></i>
                                 Chưa duyệt
-
                             </button>
                         </td>
                     @endif
                     <td>
                         <button
                             class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                            data-bs-toggle="modal" data-bs-target="#editProposalModal"
                             data-id="{{ $item->proposal_application_id }}">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         |
                         <button
                             class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                            data-bs-toggle="modal" data-bs-target="#editProposalModal"
                             data-id="{{ $item->proposal_application_id }}">
                             <i class="bi bi-trash3"></i>
                         </button>
@@ -172,7 +247,7 @@
 
 @section('script')
     <script>
-        var table = $('#departmentsTable').DataTable({
+        var table = $('#proposalTable').DataTable({
             language: {
                 search: ""
             },
@@ -247,11 +322,11 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload();
                         }, 500);
                     } else {
@@ -268,5 +343,6 @@
                 }
             });
         });
+
     </script>
 @endsection

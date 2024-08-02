@@ -63,4 +63,13 @@ class ProposalApplicationController extends Controller
             'message' => 'Proposal application added successfully',
         ]);
     }
+
+    public function show($id)
+    {
+        $proposal = ProposalApplicationModel::findOrFail($id);
+
+        return response()->json([
+            'proposal' => $proposal,
+        ]);
+    }
 }

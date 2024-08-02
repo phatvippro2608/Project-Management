@@ -217,6 +217,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
     Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
     Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
+    Route::get('/proposal/{id}/show', [ProposalTypesController::class, 'show'])->name('proposal-application.show');
 });
 
 
