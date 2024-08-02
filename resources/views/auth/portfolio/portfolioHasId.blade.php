@@ -17,6 +17,13 @@
         .nav-link.active {
             border-bottom: 3px solid #007bff;
         }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
     </style>
 @endsection
 
@@ -48,14 +55,38 @@
                     <div class="ms-3">
                         <h4>{{ $employee->last_name . ' ' . $employee->first_name }}</h4>
                         <p>
-                            UI/UX Design Team<br>
-                            Web Designer<br>
-                            Employee ID: {{ $employee->employee_code }}<br>
+                            @if (empty($department->department_name))
+                                No information
+                            @else
+                                {{ $department->department_name }}
+                            @endif
+                            <br>
+                            @if (empty($job_title->job_title))
+                                No information
+                            @else
+                                {{ $job_title->job_title }}
+                            @endif
+                            <br>
+                            Employee ID: {{ $employee->employee_code }}
+                            <br>
                             Date of Join:
                             @if (empty($dateOfJoin->start_date))
                                 No information
                             @else
                                 {{ $dateOfJoin->start_date }}
+                            @endif
+                            <br>
+                            Status:
+                            @if ($status == 1)
+                                <i class="bi bi-circle-fill text-primary"></i> In project
+                            @elseif ($status == 2)
+                                <i class="bi bi-circle-fill text-success"></i> Free
+                            @elseif ($status == 3)
+                                <i class="bi bi-circle-fill text-warning"></i> On leave
+                            @elseif ($status == 4)
+                                <i class="bi bi-circle-fill text-danger"></i> Discipline
+                            @elseif ($status == 5)
+                                <i class="bi bi-circle-fill text-secondary"></i> Quit
                             @endif
                         </p>
                     </div>
@@ -103,6 +134,13 @@
                             Female
                         @endif
                     </li>
+                    <li class="list-group-item"><strong>Degree:</strong>
+                        @if (!empty($employee_degree->employee_degrees_name))
+                            {{ $employee_degree->employee_degrees_name }}
+                        @else
+                            No information
+                        @endif
+                    </li>
                 </ul>
             </div>
         </div>
@@ -115,7 +153,7 @@
                 <a class="nav-link" href="#">Projects</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Bank & Statutory <small class="text-muted">(Admin Only)</small></a>
+                <a class="nav-link" href="#">Bank & Statutory</a>
             </li>
         </ul>
     </div>
@@ -173,12 +211,13 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Experience</h5>
             </div>
             <div class="card-body p-3">
+                <p><strong>...</strong><br>...</p>
                 <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
                 <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
             </div>
@@ -189,6 +228,9 @@
                 <h5>Education Information</h5>
             </div>
             <div class="card-body p-3">
+                <p><strong>...</strong><br>
+                    ...<br>
+                    ...</p>
                 <p><strong>International College of Arts and Science (PG)</strong><br>
                     MSc Computer Science<br>
                     2000 - 2003</p>
