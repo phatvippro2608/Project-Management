@@ -322,13 +322,17 @@ class UploadFileController extends Controller
             Storage::disk('public_uploads')->put($path, $fileContent);
             DB::table('employees')->where('employee_id', $employee_id)->update(['photo' => $path]);
             Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_file->folder);
-            return redirect()->action('App\Http\Controllers\EmployeesController@updateView', $employee_id);
+            return redirect()->back();
         }
         return '';
     }
     public function imgUpload(Request $request)
     {
-        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        if($request->employee_code){
+            $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        }else{
+            $employee_id = $request->employee_id;
+        }
         if($request->hasFile('image')){
             $image = $request->file('image');
             $file_name = $image->getClientOriginalName();
