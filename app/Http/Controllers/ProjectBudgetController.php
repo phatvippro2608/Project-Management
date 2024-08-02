@@ -124,7 +124,7 @@ public function showProjectDetail($id)
 
     public function editBudget($id)
     {
-        $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
+        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
         $dataCostGroupData = DB::table('project_cost_datagroup')->get();
@@ -147,7 +147,7 @@ public function showProjectDetail($id)
 
         try {
             // Lấy dữ liệu ngân sách
-            $budgetData = DB::table('project_cost')
+            $budgetData = DB::table('project_costs')
             ->where('project_cost_id', $costId)
             ->get();
             return response()->json($budgetData);
@@ -200,7 +200,7 @@ public function showProjectDetail($id)
 
     try {
         // Cập nhật dữ liệu ngân sách
-        DB::table('project_cost')
+        DB::table('project_costs')
             ->where('project_cost_id', $costId)
             ->update($data);
 
@@ -214,7 +214,7 @@ public function showProjectDetail($id)
     public function deleteBudget($project_id, $cost_id)
     {
         try {
-            DB::table('project_cost')->where('project_cost_id', $cost_id)->delete();
+            DB::table('project_costs')->where('project_cost_id', $cost_id)->delete();
             return response()->json(['success' => true, 'message' => 'Cost item deleted successfully.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to delete cost item.']);

@@ -500,23 +500,23 @@ $token = 'position';
             </a>
         </li>
 
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">--}}
-{{--                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>--}}
-{{--            </a>--}}
-{{--            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">--}}
-{{--                <li>--}}
-{{--                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">--}}
-{{--                        <i class="bi bi-circle"></i><span>Recognitions</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--                <li>--}}
-{{--                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">--}}
-{{--                        <i class="bi bi-circle"></i><span>Disciplinaries</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-{{--            </ul>--}}
-{{--        </li>--}}
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognitions</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="#!!!">
+                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         <li class="nav-heading">Customer Manager</li>
         <li class="nav-item">
@@ -609,7 +609,7 @@ $token = 'position';
                 <li>
                     <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        <i class="bi bi-circle"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>

@@ -1,5 +1,15 @@
 @extends('auth.main')
 @section('contents')
+    <div class="pagetitle">
+        <h1>Employees</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item "><a href="{{action('App\Http\Controllers\EmployeesController@getView')}}">Employees List</a></li>
+                <li class="breadcrumb-item active">Update Employee</li>
+            </ol>
+        </nav>
+    </div>
     <div class="card mb-0 shadow-none">
         <div class="card-header bg-light fw-semibold">Personal Details</div>
         <div class="card-body p-3">
@@ -444,7 +454,7 @@
             </div>
         </div>
     </div>
-    <div class="card mb-0 shadow-none">
+    <div class="card mb-5 shadow-none">
         <div class="card-header bg-light fw-semibold">Certificate</div>
         <div class="card-body p-3 table-overflow">
             <table class="table table-hover table-borderless">
@@ -514,9 +524,11 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
+        <div class="card mb-0 shadow-none">
+            <div class="card-header text-end">
+                <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')

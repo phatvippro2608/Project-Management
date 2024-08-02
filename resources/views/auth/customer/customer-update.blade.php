@@ -176,6 +176,7 @@
 @section('script')
     <script>
         $('.name5').val({{$customer['status']}});
+
         {{--$('.at1').click(function () {--}}
         {{--    $.ajax({--}}
         {{--        url: `{{action('App\Http\Controllers\CustomerController@add')}}`,--}}

@@ -44,7 +44,6 @@
                                     <label class="fw-bolder" for=""><i class="bi bi-person"></i> ID</label>
                                     <input id="employee_id" class="form-control" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-6 mt-3" style="border-left: 1px solid black;">
@@ -75,7 +74,7 @@
                     $defaultPhoto = asset('assets/img/avt.png');
                     $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                     @endphp
-                    <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                    <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name  . ' ' . $employee->first_name }}">
                         <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
                         <div class="empl_val ms-1"></div>
                     </div>

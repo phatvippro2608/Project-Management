@@ -74,9 +74,9 @@ class UploadFileController extends Controller
 
         if (count($failedFiles) > 0) {
             // Xóa dữ liệu liên quan nếu có lỗi upload
-            $id_contact = DB::table('employees')->where('employee_id', $employee_id)->value('id_contact');
+            $contact_id = DB::table('employees')->where('employee_id', $employee_id)->value('contact_id');
             DB::table('employees')->where('employee_id', $employee_id)->delete();
-            DB::table('contacts')->where('id_contact', $id_contact)->delete();
+            DB::table('contacts')->where('contact_id', $contact_id)->delete();
             DB::table('job_detail')->where('employee_id', $employee_id)->delete();
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
@@ -322,13 +322,17 @@ class UploadFileController extends Controller
             Storage::disk('public_uploads')->put($path, $fileContent);
             DB::table('employees')->where('employee_id', $employee_id)->update(['photo' => $path]);
             Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_file->folder);
-            return redirect()->action('App\Http\Controllers\EmployeesController@updateView', $employee_id);
+            return redirect()->back();
         }
         return '';
     }
     public function imgUpload(Request $request)
     {
-        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        if($request->employee_code){
+            $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        }else{
+            $employee_id = $request->employee_id;
+        }
         if($request->hasFile('image')){
             $image = $request->file('image');
             $file_name = $image->getClientOriginalName();
