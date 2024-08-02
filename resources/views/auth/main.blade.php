@@ -337,7 +337,7 @@ $token = 'position';
                     <li>
                         <a class="nav-sub-link"
                             href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Deparment</span>
+                            <i class="bi bi-circle"></i><span>Deparments</span>
                         </a>
                     </li>
                     <li>
