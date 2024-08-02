@@ -5,10 +5,28 @@
 
 <script src="https://unpkg.com/gantt-elastic/dist/GanttElastic.umd.js"></script>
 <script src="https://unpkg.com/gantt-elastic-header/dist/Header.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gantt-schedule-timeline-calendar"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/gantt-schedule-timeline-calendar"></script> -->
 @endsection
 @section('contents')
 <style>
+    .gantt-elastic__chart-calendar-container{
+        height: 50px !important;
+    }
+    .gantt-elastic__task-list-header{
+        height: 50px !important;
+    }
+    .gantt-elastic__task-list-items{
+        height: fit-content !important;
+    }
+    .gantt-elastic__main-container-wrapper{
+        height: fit-content !important;
+    }
+    .gantt-elastic__main-container{
+        height: fit-content !important;
+    }
+    .gantt-elastic__task-list-container{
+        height: fit-content !important;
+    }
     .employees-dropdown {
         min-width: 10%;
         max-height: 200px;
@@ -32,28 +50,24 @@
 <div class="section employees">
     <div class="card">
         <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTask"><i class="bi bi-plus me-1"></i>Create</button>
                 <div class="btn-group">
                     <button class="btn btn-primary" id="btnD">Day</button>
                     <button class="btn btn-primary" id="btnM">Month</button>
                     <button class="btn btn-primary" id="btnY">Year</button>
                 </div>
-                <!-- button mở model modalViewTask -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTask">test 1</button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalViewTask">test 2</button>
             </div>
         </div>
         <div class="card-body">
-            <div style="width:100%;height:100%;">
-                <div id="timeline" v-if="!destroy">
-                    <gantt-elastic :tasks="tasks" :options="options" :dynamic-style="dynamicStyle"></gantt-elastic>
-                </div>
+            <div id="timeline" class="mt-2" v-if="!destroy">
+                <gantt-elastic :tasks="tasks" :options="options" :dynamic-style="dynamicStyle"></gantt-elastic>
             </div>
         </div>
     </div>
 </div>
 <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <form id="create-task-form" method="post">
                 @csrf
@@ -82,7 +96,6 @@
                                     Assigned</strong></label>
                             <div class="row form-group mt-3">
                                 <div class="d-flex justify-content-between">
-                                    <img src="{{ asset('assets/img/avt.png') }}" class="rounded-circle object-fit-cover me-1 empl_img" minwidth="25" width="25" minheight="25" height="25">
                                     <input class="form-control empl_name" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                     <input class="form-control empl_id" style="width: 25%;" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                 </div>
@@ -121,7 +134,7 @@
 </div>
 </div>
 <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <form id="edit-task-form">
                 @csrf
@@ -156,9 +169,8 @@
                             <label><strong><i class="bi bi-person-circle"></i> Assigned</strong></label>
                             <div class="row form-group mt-3">
                                 <div class="d-flex justify-content-between">
-                                    <img src="{{ asset('assets/img/avt.png') }}" class="rounded-circle object-fit-cover me-1 empl_img" minwidth="25" width="25" minheight="25" height="25">
-                                    <input class="form-control empl_name" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
-                                    <input class="form-control empl_id" style="width: 25%;" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                    <input id="empl_name" class="form-control empl_name" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                    <input id="empl_id" class="form-control empl_id" style="width: 25%;" name="employee_id" onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                 </div>
                             </div>
                             <div class="employees-dropdown fs-5">
@@ -198,15 +210,18 @@
         var form = $(this);
         var data = form.serialize();
         data += '&id=' + {{ $id }};
-        data += '&user_id=' + $('input[name="c_users"]').attr('data-user-id');
         $.ajax({
             type: 'post',
             url: '{{ route('task.create') }}',
             data: data,
             success: function(response) {
+                console.log(response);
                 if(response.success) {
                     toastr.success(response.message);
-
+                    setTimeout(function() {
+                        $('#modalCreateTask').modal('hide');
+                        location.reload();
+                    }, 200);
                 }else {
                     toastr.error(response.message);
                 }
@@ -218,15 +233,18 @@
         var form = $(this);
         var data = form.serialize();
         data += '&id=' + {{ $id }};
-        data += '&user_id=' + $('input[name="e_users"]').attr('data-user-id');
         $.ajax({
             type: 'post',
             url: '{{ route('task.update') }}',
             data: data,
             success: function(response) {
+                console.log(response);
                 if(response.success) {
                     toastr.success(response.message);
-
+                    setTimeout(function() {
+                        $('#modalViewTask').modal('hide');
+                        location.reload();
+                    }, 200);
                 }else {
                     toastr.error(response.message);
                 }
@@ -243,6 +261,8 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                console.log(response);
+
                 if (response.success) {
                     toastr.success(response.message);
 
@@ -253,51 +273,38 @@
         });
     });
     
-    function getTask(e) {
-        var task_id = e.getAttribute('data-task-id');
-        $.ajax({
-            type: 'get',
-            url: '{{ url('task') }}/task/' + task_id,
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                var task = response.task;
-                var subtasks = response.subtasks;
-                $('#subTaskHol').show();
-                $('#task_id').val("task_" + task_id);
-                $('#dl_task_id').attr('data-task-id', "task_" + task_id);
-                $('#taskname').val(task.task_name);
-                $('#request').val(task.request);
-                $('#users').attr('data-user-id', task.engineers);
-                @foreach ($employees as $employee)
-                    if ('{{ $employee->employee_id }}' == task.engineers) {
-                        $('#users').val('{{ $employee->last_name }} {{ $employee->first_name }}');
-                    }
-                @endforeach
-                $('#s_date').val(task.start_date);
-                $('#e_date').val(task.end_date);
-                $('#e-subtasks-holder').html('');
-                for (var i = 0; i < subtasks.length; i++) {
-                    var subtask = document.createElement('div');
-                    subtask.classList.add('row');
-                    subtask.style.marginTop = '1%';
-                    subtask.style.marginBottom = '1%';
-                    subtask.innerHTML = `
-                <div class="col-10">
-                    <input name="subtask_${subtasks[i].sub_task_id}" type="text" class="form-control" value="${subtasks[i].sub_task_name}">
-                </div>
-                <div class="col-1">
-                    <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-                </div>`;
-                    document.getElementById('e-subtasks-holder').appendChild(subtask);
-                }
-                $('#modalViewTask').modal('show');
-            },
-            error: function(response) {
-                console.log(response);
+    function viewTask(id){
+        $('#modalViewTask').modal('show');
+        var task = tasks.find(task => task.id == id);
+        $('#task_id').val(task.id);
+        $('#taskname').val(task.label);
+        $('#request').val(task.req);
+        $('#empl_name').val(task.empl_name);
+        $('#empl_id').val(task.empl_id);
+        $('#s_date').val(task.start);
+        $('#e_date').val(task.end);
+        //nếu task là subtask thì ẩn phần subtask
+        if(task.parentId !== undefined){
+            $('#subTaskHol').hide();
+            $('#e-subtasks-holder').html('');
+        }else{
+            var subtasks = tasks.filter(subtask => subtask.parentId == id);
+            $('#subTaskHol').show();
+            $('#e-subtasks-holder').html('');
+            for (var i = 0; i < subtasks.length; i++) {
+                var subtask = document.createElement('div');
+                subtask.classList.add('input-group');
+                subtask.style.marginTop = '1%';
+                subtask.style.marginBottom = '1%';
+                subtask.innerHTML = `
+                    <input name="markdone_${subtasks[i].id}" type="checkbox" class="btn-check" id="btn-check-${subtasks[i].id}" autocomplete="off" ${subtasks[i].progress == 100 ? 'checked' : ''}>
+                    <label class="btn btn-outline-success me-2" for="btn-check-${subtasks[i].id}"><i class="bi bi-check"></i></label>
+                    <input name="subtask_${subtasks[i].id}" type="text" class="form-control" value="${subtasks[i].label}">
+                    <a class="btn btn-danger" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
+                `;
+                document.getElementById('e-subtasks-holder').appendChild(subtask);
             }
-        });
+        }
     }
 </script>
 
@@ -358,23 +365,19 @@
         $('.empl_name').val($(this).attr('data-value'));
         $('.empl_id').val($(this).attr('data-id'));
         $('.employees-dropdown').css('display', 'none');
-        var photoPath = $(this).find('img').attr('src');
-        $('.empl_img').attr('src', photoPath);
     });
     c_subtaskCount=0;
     function c_addSubTask() {
         c_subtaskCount++;
         var subtask = document.createElement('div');
-        subtask.classList.add('row');
+        subtask.classList.add('input-group');
         subtask.style.marginTop = '1%';
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
-            <div class="col-10">
-                <input name="subtask${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-            </div>
-            <div class="col-1">
-                <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-            </div>
+            <input name="markdone_${c_subtaskCount}" type="checkbox" class="btn-check" id="btn-check-${c_subtaskCount}" autocomplete="off">
+            <label class="btn btn-outline-success me-2" for="btn-check-${c_subtaskCount}"><i class="bi bi-check"></i></label>
+            <input name="subtask_${c_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+            <a class="btn btn-danger" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
             `;
         document.getElementById('c-subtasks-holder').appendChild(subtask);
     }
@@ -382,22 +385,20 @@
     function e_addSubTask() {
         e_subtaskCount++;
         var subtask = document.createElement('div');
-        subtask.classList.add('row');
+        subtask.classList.add('input-group');
         subtask.style.marginTop = '1%';
         subtask.style.marginBottom = '1%';
         subtask.innerHTML = `
-            <div class="col-10">
-                <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
-            </div>
-            <div class="col-1">
-                <a class="btn" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
-            </div>
+            <input name="markdone_n${e_subtaskCount}" type="checkbox" class="btn-check" id="btn-check-${e_subtaskCount}" autocomplete="off">
+            <label class="btn btn-outline-success me-2" for="btn-check-${e_subtaskCount}"><i class="bi bi-check"></i></label>
+            <input name="subtask_n${e_subtaskCount}" type="text" class="form-control" placeholder="What need to be done?">
+            <a class="btn btn-danger" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>
         `;
         document.getElementById('e-subtasks-holder').appendChild(subtask);
     }
 
     function removeSubTask(e) {
-        e.parentElement.parentElement.remove();
+        e.parentElement.remove();
     }
 
     function checkDate(formId) {
@@ -420,29 +421,33 @@
             startDateInput.max = "";
         }
     }
-</script>
-
-<script>
-    let tasks = [
+    var tasks = [
         @foreach($tasks as $data)
         @php
-        $duration = strtotime($data->end_date) - strtotime($data->start_date) + 24 * 60 * 60;
+        $duration = 0;
+        $sdate='';
+        $edate='';
+        if ($data->start_date && $data->end_date) {
+            $sdate = $data->start_date;
+            $edate = $data->end_date;
+            $duration = strtotime($data->end_date) - strtotime($data->start_date) + 24 * 60 * 60;
+        }
         $duration = $duration * 1000;
-        $photoPath = asset($data->photo);
-        $defaultPhoto = asset('assets/img/avt.png');
-        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
         @endphp
         {
             id: {{ $data->task_id }},
             label: '{{ $data->task_name }}',
-            user: '<img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="20" height="20" alt="{{ $data->first_name }} {{ $data->last_name }}">',
-            start: '{{ $data->start_date }}',
+            empl_id: '{{ $data->employee_id }}',
+            empl_name: '{{ $data->first_name }} {{ $data->last_name }}',
+            req: '{{ $data->request }}',
+            start: '{{ $sdate }}',
+            end: '{{ $edate }}',
             duration: {{ $duration }},
             @if($data->parent_id !== null)
                 parentId: {{ $data->parent_id }},
             @endif
             durationDay: '{{ $duration / 1000 / 60 / 60 / 24 }} days',
-            progress: {{ $data->progress ?? 0 }},
+            progress: {{ round($data->progress ?? 0) }},
             type: 'task',
             collapsed: false,
             style: {
@@ -489,39 +494,65 @@
                             data,
                             column
                         }) {
-                            alert('description clicked!\n' + data.id);
+                            // alert('description clicked!\n' + data.id);
+                            viewTask(data.id);
                         },
                     },
                 },
                 {
                     id: 2,
-                    label: '',
-                    value: 'user',
-                    width: 35,
-                    html: true,
+                    label: 'Start',
+                    value: (task) => {
+                        if (task.start && dayjs(task.start).isValid()) {
+                            return dayjs(task.start).format('YYYY-MM-DD');
+                        } else {
+                            return '';
+                        }
+                    },
+                    width: 120,
                 },
                 {
                     id: 3,
-                    label: 'Start',
-                    value: (task) => dayjs(task.start).format('YYYY-MM-DD'),
+                    label: 'End',
+                    value: (task) => {
+                        if (task.end && dayjs(task.end).isValid()) {
+                            return dayjs(task.end).format('YYYY-MM-DD');
+                        } else {
+                            return '';
+                        }
+                    },
                     width: 120,
                 },
                 {
                     id: 4,
                     label: 'Duration',
-                    value: 'durationDay',
+                    value: (task) => {
+                        if (task.durationDay === '0 days') {
+                            return '';
+                        } else if (task.durationDay === '1 days') {
+                            return '1 day';
+                        } else {
+                            return task.durationDay;
+                        }
+                    },
                     width: 100,
                 },
                 {
                     id: 5,
                     label: '%',
-                    value: 'progress',
+                    value: (task) => {
+                        if (task.duration === 0) {
+                            return '';
+                        } else {
+                            return task.progress;
+                        }
+                    },
                     width: 45,
                 },
             ],
         },
     };
-    const app = new Vue({
+    var app = new Vue({
         components: {
             'gantt-header': Header,
             'gantt-elastic': GanttElastic,
@@ -554,9 +585,24 @@
             destroy: false,
         },
     });
+    function addTask() {
+        const task = {
+            id: 88,
+            label:
+            '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Yeaahh! you have added a task bro!</a>',
+            user:
+            '<a href="https://images.pexels.com/photos/423364/pexels-photo-423364.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" target="_blank" style="color:#0077c0;">Awesome!</a>',
+            parentId: 1,
+            start: '2021-09-01',
+            end: '2021-09-10',
+            duration: 1 * 24 * 60 * 60 * 1000,
+            percent: 50,
+            type: 'project'
+        };
+    app.tasks.push(task);
+    }
 
 
-    let ganttState, ganttInstance;
     $(document).ready(function() {
         $('#btnD').click(function() {
             options.times.stepDuration = 'day';
@@ -577,7 +623,7 @@
             app.options = options;
         });
     });
-
+    
     app.$mount('#timeline');
 </script>
 @endsection

@@ -23,8 +23,8 @@ class ProgressController extends Controller
             abort(404, 'Project not found');
         }
         $tasks = DB::table('tasks')
-            ->join('employees', 'tasks.employee_id', '=', 'employees.employee_id')
-            ->select('tasks.*', 'employees.photo', 'employees.last_name', 'employees.first_name')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name')
             ->where('project_id', $id)
             ->get();
         $employees = DB::table('employees')->select('employee_id', 'photo', 'last_name', 'first_name')->get();

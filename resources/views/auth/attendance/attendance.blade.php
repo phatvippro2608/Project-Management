@@ -28,6 +28,10 @@
         background-color: #3FA2F6;
         color: white;
     }
+    td, th {
+        text-align: center !important;
+    }
+
 </style>
 <div class="pagetitle">
     <h1>Attendance</h1>
