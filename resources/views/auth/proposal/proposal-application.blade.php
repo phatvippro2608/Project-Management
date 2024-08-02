@@ -1,6 +1,16 @@
 @extends('auth.main');
 @section('contents')
     <style>
+        .table-responsive {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .modal-body {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
     </style>
     <div class="pagetitle">
         <h1>Proposal Applicaiton</h1>
@@ -117,7 +127,7 @@
                             <textarea class="form-control" placeholder="Leave a Description here" id="edit_proposal_description"
                                 name="proposal_description" style="height: 100px"></textarea>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 table-responsive">
                             <label for="proposal_files">Proposal File Uploaded</label>
                             <table class="table">
                                 <thead>
@@ -258,7 +268,8 @@
             fileList.innerHTML = '';
             fileArray.forEach((file, index) => {
                 const li = document.createElement('li');
-                li.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
+                li.className =
+                'mb-3 d-flex justify-content-between align-items-center text-truncate file-list-item';
                 let displayName = file.name;
                 const extension = displayName.split('.').pop();
                 const baseName = displayName.substring(0, displayName.lastIndexOf('.'));
