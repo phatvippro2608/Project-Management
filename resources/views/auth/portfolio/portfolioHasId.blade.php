@@ -35,7 +35,7 @@
         </nav>
 
         <div class="card mb-4">
-            <div class="card-body d-flex justify-content-between align-items-center mt-3 mx-3">
+            <div class="card-body p-3 d-flex justify-content-between align-items-center mt-3 mx-3">
                 <div class="col-4 mt-3 border-end">
                     <div class="d-flex align-items-center">
                         @if (empty($employee->photo) || !file_exists(public_path($employee->photo)))
@@ -93,7 +93,7 @@
                 <div class="card-header">
                     <h5>Personal Informations</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <p>Passport No.: 9876543210</p>
                     <p>Passport Exp Date: 9876543210</p>
                     <p>Tel: <a href="tel:9876543210">9876543210</a></p>
@@ -109,7 +109,7 @@
                 <div class="card-header">
                     <h5>Bank Information</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <p>Bank name: ICICI Bank</p>
                     <p>Bank account No: 159843014641</p>
                     <p>IFSC Code: ICI24504</p>
@@ -121,7 +121,7 @@
                 <div class="card-header">
                     <h5>Education Informations</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <p><strong>International College of Arts and Science (UG)</strong><br>Bsc Computer Science<br>2000 -
                         2003</p>
                     <p><strong>International College of Arts and Science (PG)</strong><br>Msc Computer Science<br>2000 -
@@ -135,7 +135,7 @@
                 <div class="card-header">
                     <h5>Emergency Contact</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <h6>Primary</h6>
                     <p>Name: John Doe</p>
                     <p>Relationship: Father</p>
@@ -151,7 +151,7 @@
                 <div class="card-header">
                     <h5>Family Informations</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <p>Name: Leo</p>
                     <p>Relationship: Brother</p>
                     <p>Date of Birth: Feb 16th, 2019</p>
@@ -163,7 +163,7 @@
                 <div class="card-header">
                     <h5>Experience</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <p><strong>Web Designer at Zen Corporation</strong><br>Jan 2013 - Present (6 years 2 months)</p>
                     <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
                     <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
