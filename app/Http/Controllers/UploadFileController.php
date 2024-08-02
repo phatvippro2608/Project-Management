@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
+use App\Models\PostFile;
+use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
@@ -303,5 +307,52 @@ class UploadFileController extends Controller
         }
 
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
+    }
+
+    public function imgStore(Request $request)
+    {
+        $imageData = json_decode($request->input('image'), true);
+        $employee_id = $imageData['employee_id'];
+        $folder = $imageData['folder'];
+        $tmp_file = TemporaryFile::where('folder', $folder)->first();
+        if($tmp_file){
+            $path = 'uploads/'.$employee_id.'/'.$tmp_file->file;
+            $fileContentPath = 'uploads/img/'. $tmp_file->folder .'/'. $tmp_file->file;
+            $fileContent = Storage::disk('public')->get($fileContentPath);
+            Storage::disk('public_uploads')->put($path, $fileContent);
+            DB::table('employees')->where('employee_id', $employee_id)->update(['photo' => $path]);
+            Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_file->folder);
+            return redirect()->action('App\Http\Controllers\EmployeesController@updateView', $employee_id);
+        }
+        return '';
+    }
+    public function imgUpload(Request $request)
+    {
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $file_name = $image->getClientOriginalName();
+            $folder = uniqid('image-', true);
+            $image->storeAs('uploads/img/'.$folder, $file_name);
+            TemporaryFile::create([
+                'folder'=>$folder,
+                'file'=>$file_name,
+            ]);
+            return response()->json([
+                'folder' => $folder,
+                'employee_id' => $employee_id
+            ]);
+        }
+        return '';
+    }
+
+    public function imgDelete(Request $request)
+    {
+        $tmp_image = TemporaryFile::where('folder', $request->getContent())->first();
+        if($tmp_image){
+            Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_image->folder);
+            TemporaryFile::where('folder', $request->getContent())->delete();
+        }
+        return '';
     }
 }
