@@ -235,3 +235,5 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
 // disciplinary
 Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
 
+Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
+Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');

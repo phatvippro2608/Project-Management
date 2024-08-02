@@ -24,8 +24,18 @@ class PortfolioController extends Controller
             return abort(404); // Trả về trang 404 nếu không tìm thấy mã nhân viên
         }
         $employee = DB::table('employees')->where('employee_code', $id)->first();
+        $contact = DB::table('contacts')->where('contact_id', $employee->contact_id)->first();
+        $account = DB::table('accounts')->where('employee_id', $employee->employee_id)->first();
         $dateOfJoin = DB::table('job_certificates')->where('employee_id', $employee->employee_id)->latest('job_certificate_id')->first();
-        return view('auth.portfolio.portfolioHasId', ['employee' => $employee, 'dateOfJoin' => $dateOfJoin]);
+        return view(
+            'auth.portfolio.portfolioHasId',
+            [
+                'employee' => $employee,
+                'dateOfJoin' => $dateOfJoin,
+                'contact' => $contact,
+                'account' => $account
+            ]
+        );
     }
 
 

@@ -62,13 +62,48 @@
                 </div>
                 <div class="col">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Phone:</strong> 9876543210</li>
-                        <li class="list-group-item"><strong>Email:</strong> johndoe@example.com</li>
-                        <li class="list-group-item"><strong>Birthday:</strong> 24th July</li>
-                        <li class="list-group-item"><strong>Address:</strong> 1861 Bayonne Ave, Manchester Township,
-                            NJ,08759</li>
-                        <li class="list-group-item"><strong>Gender:</strong> Male</li>
-                        <li class="list-group-item"><strong>Reports to:</strong> Jeffery Lalor</li>
+                        <li class="list-group-item">
+                            <strong>Phone:</strong>
+                            @if (!empty($contact->phone_number))
+                                $contact->phone_number
+                            @else
+                                No information
+                            @endif
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong>
+                            @if (!empty($account->email))
+                                $account->email
+                            @else
+                                No information
+                            @endif
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Birthday:</strong>
+                            {{-- 24th July --}}
+                            @if (!empty($employee->date_of_birth))
+                                {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('jS F') }}
+                            @else
+                                No information
+                            @endif
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Address:</strong>
+                            {{-- 1861 Bayonne Ave, Manchester Township, NJ, 08759 --}}
+                            @if (!empty($contact->permanent_address))
+                                {{ $contact->permanent_address }}
+                            @else
+                                No information
+                            @endif
+                        </li>
+                        <li class="list-group-item"><strong>Gender:</strong>
+                            @if ($employee->gender == '0')
+                                Male
+                            @else
+                                Female
+                            @endif
+                        </li>
+                        {{-- <li class="list-group-item"><strong>Reports to:</strong> Jeffery Lalor</li> --}}
                     </ul>
                 </div>
             </div>
@@ -96,12 +131,11 @@
                 <div class="card-body p-3">
                     <p>Passport No.: 9876543210</p>
                     <p>Passport Exp Date: 9876543210</p>
-                    <p>Tel: <a href="tel:9876543210">9876543210</a></p>
                     <p>Nationality: Indian</p>
-                    <p>Religion: Christian</p>
+                    {{-- <p>Religion: Christian</p> --}}
                     <p>Marital status: Married</p>
-                    <p>Employment of spouse: No</p>
-                    <p>No. of children: 2</p>
+                    {{-- <p>Employment of spouse: No</p> --}}
+                    {{-- <p>No. of children: 2</p> --}}
                 </div>
             </div>
 
@@ -117,21 +151,11 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Education Informations</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p><strong>International College of Arts and Science (UG)</strong><br>Bsc Computer Science<br>2000 -
-                        2003</p>
-                    <p><strong>International College of Arts and Science (PG)</strong><br>Msc Computer Science<br>2000 -
-                        2003</p>
-                </div>
-            </div>
+
         </div>
 
         <div class="col-md-6">
-            <div class="card mb-4">
+            {{-- <div class="card mb-4">
                 <div class="card-header">
                     <h5>Emergency Contact</h5>
                 </div>
@@ -145,9 +169,9 @@
                     <p>Relationship: Brother</p>
                     <p>Phone: 9876543210, 9876543210</p>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="card mb-4">
+            {{-- <div class="card mb-4">
                 <div class="card-header">
                     <h5>Family Informations</h5>
                 </div>
@@ -157,7 +181,7 @@
                     <p>Date of Birth: Feb 16th, 2019</p>
                     <p>Phone: 9876543210</p>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="card mb-4">
                 <div class="card-header">
@@ -167,6 +191,18 @@
                     <p><strong>Web Designer at Zen Corporation</strong><br>Jan 2013 - Present (6 years 2 months)</p>
                     <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
                     <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Education Informations</h5>
+                </div>
+                <div class="card-body p-3">
+                    <p><strong>International College of Arts and Science (UG)</strong><br>Bsc Computer Science<br>2000 -
+                        2003</p>
+                    <p><strong>International College of Arts and Science (PG)</strong><br>Msc Computer Science<br>2000 -
+                        2003</p>
                 </div>
             </div>
         </div>
