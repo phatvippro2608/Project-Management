@@ -34,6 +34,7 @@
                             <thead class="table-light">
                             <tr>
                                 <th style="width: 112px"></th>
+                                <th class="text-center">Employee Code</th>
                                 <th class="text-center">Full Name</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Username</th>
@@ -60,24 +61,27 @@
                                             <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
                                         </div>
 
-                                    </td>
-                                    <td class="text-center">
-                                        {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$item->email}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$item->username}}
-                                    </td>
-                                    <td class="text-center">
-                                        @if($status[$item->status] == 'Offine')
-                                            <i class="bi bi-circle-fill account-status offine"></i>
-                                        @elseif($status[$item->status] == 'Locked')
-                                            <i class="bi bi-circle-fill account-status" style="color:red;"></i>
-                                        @else
-                                            <i class="bi bi-circle-fill account-status"></i>
-                                        @endif
+                                        </td>
+                                        <td class="text-center">
+                                            {{$item->employee_code}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{$item->first_name}} {{$item->last_name}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{$item->email}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{$item->username}}
+                                        </td>
+                                        <td class="text-center">
+                                            @if($status[$item->status] == 'Offine')
+                                                <i class="bi bi-circle-fill account-status offine"></i>
+                                            @elseif($status[$item->status] == 'Locked')
+                                                <i class="bi bi-circle-fill account-status" style="color:red;"></i>
+                                            @else
+                                                <i class="bi bi-circle-fill account-status"></i>
+                                            @endif
 
                                         {{$status[$item->status]}}
                                     </td>
