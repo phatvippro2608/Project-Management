@@ -192,7 +192,7 @@ class AccountController extends Controller
         return view('auth.accounts.account_import_demo');
     }
 
-    function removeVietnameseAccents($str)
+    static function removeVietnameseAccents($str)
     {
         $accents_arr = [
             'a' => ['à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ'],

@@ -54,7 +54,7 @@
                 <table id="customerTable" class="table table-borderless table-hover">
                     <thead class="table-light">
                         <tr>
-{{--                            <th style="width: 112px"></th>--}}
+                            <th style="width: 112px"></th>
                             <th class="text-center">Full name</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">Company</th>
@@ -63,6 +63,7 @@
                         </tr>
                     </thead>
                     <tbody class="account-list">
+                    @php($i=1)
                     @foreach($customer as $item)
                         <tr class="account-item">
 {{--                            <td class="text-center">--}}
@@ -81,11 +82,11 @@
 {{--                                </div>--}}
 
 {{--                            </td>--}}
-                            <td class="text-left">
-                                {{$i}}
+                            <td class="text-center">
+                                {{$i}}@php($i++)
                             </td>
                             <td class="text-left">
-                                {{$item->first_name}} {{$item->last_name}}
+                                {{$item->last_name}} {{$item->first_name}}
                             </td>
                             <td class="text-left">
                                 {{$item->email}}
@@ -93,7 +94,7 @@
                             <td class="text-center">
                                 {{$item->company_name}}
                             </td>
-                            <td class="text-center">
+                            <td class="text-left">
                                 {{$item->address}}
                             </td>
                             <td class="text-center">
