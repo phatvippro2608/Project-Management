@@ -10,8 +10,7 @@
             </ol>
         </nav>
     </div>
-    <section class="section employees">
-        <div class="card">
+        <div class="card  p-2 rounded-4 border">
             <div class="card-header py-0">
                 <div class="card-title my-3 p-0">Inactive List</div>
             </div>
@@ -43,10 +42,7 @@
                     </tbody>
                 </table>
             </div>
-            </div>
-        </div>
-        </div>
-    </section>
+    </div>
 @endsection
 @section('script')
     <script>
