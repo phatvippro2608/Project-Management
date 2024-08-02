@@ -54,7 +54,7 @@
                 <table id="customerTable" class="table table-borderless table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 112px"></th>
+{{--                            <th style="width: 112px"></th>--}}
                             <th class="text-center">Full name</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">Company</th>
@@ -65,23 +65,26 @@
                     <tbody class="account-list">
                     @foreach($customer as $item)
                         <tr class="account-item">
-                            <td class="text-center">
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <div class="d-flex align-items-center">
-                                        <a class=" edit">
-                                            <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
-                                        </a>
-                                        <a class=" delete">
-                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                               data="id"></i>
-                                        </a>
-                                    </div>
+{{--                            <td class="text-center">--}}
+{{--                                <div class="d-flex align-items-center justify-content-center">--}}
+{{--                                    <div class="d-flex align-items-center">--}}
+{{--                                        <a class=" edit">--}}
+{{--                                            <i class="bi bi-pencil-square ic-update ic-btn at2"--}}
+{{--                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>--}}
+{{--                                        </a>--}}
+{{--                                        <a class=" delete">--}}
+{{--                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"--}}
+{{--                                               data="id"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </div>--}}
 
-                                </div>
+{{--                                </div>--}}
 
+{{--                            </td>--}}
+                            <td class="text-left">
+                                {{$i}}
                             </td>
-                            <td class="text-center">
+                            <td class="text-left">
                                 {{$item->first_name}} {{$item->last_name}}
                             </td>
                             <td class="text-left">
