@@ -50,7 +50,8 @@ class EmployeesController extends Controller
         $dataContact = [
             'phone_number' => $request->input('phone_number'),
         ];
-        $id_contact = DB::table('contacts')->insertGetId($dataContact);
+
+        $contact_id = DB::table('contacts')->insertGetId($dataContact);
 
         $dataEmployee = [
             'employee_code'=>$request->input('employee_code'),
@@ -104,8 +105,8 @@ class EmployeesController extends Controller
             return $value !== "";
         });
 
-        $employee_id = $request->employee_id;
-        $id_contact = $request->id_contact;
+        $employee_id = DB::table('employees')->where('employee_code',$request->employee_code)->value('employee_id');
+        $contact_id = DB::table('employees')->where('employee_id',$employee_id)->value('contact_id');
 
         DB::beginTransaction();
         try {
@@ -366,9 +367,7 @@ class EmployeesController extends Controller
             }
             try {
                 DB::beginTransaction();
-
-                $id_contact = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
-
+                $contact_id = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
                 $data_employee = [
                     'employee_code' => $employee_code,
                     'first_name' => $first_name,

@@ -47,6 +47,11 @@ class TaskController extends Controller
             's_date' => 'required|date',
             'e_date' => 'required|date|after_or_equal:s_date',
         ]);
+        $progress = 0;
+        if($request->has('allmarkdone')){
+            $progress = 100;
+        }
+
         $task = TaskModel::create([
             'task_name' => $validatedData['taskname'],
             'project_id' => $validatedData['id'],
@@ -54,12 +59,12 @@ class TaskController extends Controller
             'employee_id' => $validatedData['employee_id'],
             'start_date' => $validatedData['s_date'],
             'end_date' => $validatedData['e_date'],
-            'progress' => 0,
+            'progress' => $progress,
         ]);
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
                 $progress = 0;
-                if($request->has('markdone_'.explode('_', $key)[1])){
+                if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
                     $progress = 100;
                 }
                 TaskModel::create([
@@ -70,6 +75,19 @@ class TaskController extends Controller
                 ]);
             }
         }
+        if(!$request->has('allmarkdone')){
+            $subtasks = DB::table('tasks')->where('parent_id', $task->task_id)->get();
+            if(count($subtasks)){
+                $progress = 0;
+                foreach ($subtasks as $subtask) {
+                    $progress += $subtask->progress;
+                }
+                TaskModel::where('task_id', $task->task_id)->update([
+                    'progress' => $progress / count($subtasks),
+                ]);
+            }
+        }
+
 
         $tasks = DB::table('tasks')
             ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
@@ -81,6 +99,7 @@ class TaskController extends Controller
 
     public function update(Request $request)
     {
+        // return $request;
         $validatedData = $request->validate([
             'id' => 'required|string',
             'task_id' => 'required|string',
@@ -90,23 +109,28 @@ class TaskController extends Controller
             's_date' => 'required|date',
             'e_date' => 'required|date|after_or_equal:s_date',
         ]);
-        //update task
+        //nếu tồn tại markdone thì progress = 100
+        $progress = 0;
+        if($request->has('allmarkdone')){
+            $progress = 100;
+        }
+
         TaskModel::where('task_id', $validatedData['task_id'])->update([
             'task_name' => $validatedData['taskname'],
             'request' => $validatedData['request'],
             'employee_id' => $validatedData['employee_id'],
             'start_date' => $validatedData['s_date'],
             'end_date' => $validatedData['e_date'],
+            'progress' => $progress,
         ]);
         $sbtask_id = TaskModel::where('parent_id', $validatedData['task_id'])->pluck('task_id')->toArray();
-
 
         //update subtask
         $subtask_id = [];
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
                 $progress = 0;
-                if($request->has('markdone_'.explode('_', $key)[1])){
+                if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
                     $progress = 100;
                 }
                 if (strpos(explode('_', $key)[1], 'n') === 0) {
@@ -128,12 +152,28 @@ class TaskController extends Controller
         }
         $delete_id = array_diff($sbtask_id, $subtask_id);
         TaskModel::whereIn('task_id', $delete_id)->delete();
+
+        
+
+        if(!$request->has('allmarkdone')){
+            $subtasks = DB::table('tasks')->where('parent_id', $validatedData['task_id'])->get();
+            if(count($subtasks)){
+                $progress = 0;
+                foreach ($subtasks as $subtask) {
+                    $progress += $subtask->progress;
+                }
+                TaskModel::where('task_id', $validatedData['task_id'])->update([
+                    'progress' => $progress / count($subtasks),
+                ]);
+            }
+        }
+
         $tasks = DB::table('tasks')
             ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
             ->select('tasks.*', 'employees.last_name', 'employees.first_name')
             ->where('project_id', $validatedData['id'])
             ->get();
-        return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks, 'subtasks' => $delete_id]);
+        return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks]);
     }
 
     public function delete($id)

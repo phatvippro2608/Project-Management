@@ -74,7 +74,7 @@
                     $defaultPhoto = asset('assets/img/avt.png');
                     $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                     @endphp
-                    <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                    <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name  . ' ' . $employee->first_name }}">
                         <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
                         <div class="empl_val ms-1"></div>
                     </div>

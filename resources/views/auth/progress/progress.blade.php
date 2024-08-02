@@ -71,9 +71,13 @@
         <div class="modal-content">
             <form id="create-task-form" method="post">
                 @csrf
-                <div class="modal-header">
-                    <input type="text" class="form-control modal-title fs-5 no-background" name="taskname" placeholder="[Task Name]" required>
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
+                <div class="modal-header bg-white">
+                    <div class="input-group">
+                        <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
+                        <label class="btn btn-outline-success me-2" for="btn-check-c"><i class="bi bi-check"></i></label>
+                        <input type="text" class="form-control modal-title fs-5 no-background" name="taskname" placeholder="[Task Name]" required>
+                    </div>
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                 </div>
                 <div class="modal-body row">
                     <div class="form-group col-6">
@@ -107,7 +111,7 @@
                                 $defaultPhoto = asset('assets/img/avt.png');
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
-                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name . ' ' . $employee->first_name }}">
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
@@ -138,18 +142,22 @@
         <div class="modal-content">
             <form id="edit-task-form">
                 @csrf
-                <div class="modal-header">
+                <div class="modal-header bg-white">
                     <input type="text" id="task_id" name="task_id" style="display:none;" required>
-                    <input type="text" class="form-control modal-title fs-5" id="taskname" name="taskname" required>
+                    <div class="input-group">
+                        <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e" autocomplete="off">
+                        <label class="btn btn-outline-success me-2" for="btn-check-e"><i class="bi bi-check"></i></label>
+                        <input type="text" class="form-control modal-title fs-5" id="taskname" name="taskname" required>
+                    </div>
                     <div class="dropdown">
-                        <button class="btn text-white" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
                             <li><a class="dropdown-item" id="dl_task_id" href="#">Delete</a></li>
                         </ul>
                     </div>
-                    <button type="button" class="btn text-white" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x" style="font-size: 3vh;"></i></button>
                 </div>
                 <div class="modal-body row">
                     <div class="form-group col-6">
@@ -180,7 +188,7 @@
                                 $defaultPhoto = asset('assets/img/avt.png');
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
-                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name . ' ' . $employee->first_name}}">
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
@@ -220,7 +228,7 @@
                     toastr.success(response.message);
                     setTimeout(function() {
                         $('#modalCreateTask').modal('hide');
-                        location.reload();
+                        // location.reload();
                     }, 200);
                 }else {
                     toastr.error(response.message);
@@ -283,6 +291,7 @@
         $('#empl_id').val(task.empl_id);
         $('#s_date').val(task.start);
         $('#e_date').val(task.end);
+        $('#btn-check-e').prop('checked', task.progress == 100);
         //nếu task là subtask thì ẩn phần subtask
         if(task.parentId !== undefined){
             $('#subTaskHol').hide();
@@ -438,7 +447,7 @@
             id: {{ $data->task_id }},
             label: '{{ $data->task_name }}',
             empl_id: '{{ $data->employee_id }}',
-            empl_name: '{{ $data->first_name }} {{ $data->last_name }}',
+            empl_name: '{{ $data->last_name }} {{ $data->first_name }}',
             req: '{{ $data->request }}',
             start: '{{ $sdate }}',
             end: '{{ $edate }}',
@@ -540,13 +549,7 @@
                 {
                     id: 5,
                     label: '%',
-                    value: (task) => {
-                        if (task.duration === 0) {
-                            return '';
-                        } else {
-                            return task.progress;
-                        }
-                    },
+                    value: 'progress',
                     width: 45,
                 },
             ],
