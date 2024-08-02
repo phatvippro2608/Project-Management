@@ -3,8 +3,8 @@
     <div class="card mb-0 shadow-none">
         <div class="card-header bg-light fw-semibold">Personal Details</div>
         <div class="card-body p-3">
-            <div class="row">
-                <div class="col-6">
+            <div class="row gx-3">
+                <div class="col-lg-6">
                     <div class="row mb-3">
                         <input type="hidden" class="employee_id" value="{{$item->employee_id}}">
                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
@@ -31,23 +31,25 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                        <div class="col-sm-2 text-center">
+                        <label for="inputText" class="col-lg-4 col-form-label">Photo</label>
+                        <div class="col-lg-2 text-center">
                             <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{asset('/assets/img/avt.png')}}" alt="Profile" data="{{$item->photo}}">
                         </div>
-                        <div class="col text-center p-2 me-3 rounded-4 border">
-                            <form action="{{route('img-store')}}" method="POST" enctype="multipart/form-data">
+                        <div class="col-lg-6">
+                            <form class="border rounded-4 p-2 text-center" action="{{route('img-store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="file"
                                        id="image"
                                        name="image"
-                                       data-max-files="1">
+                                       data-max-files="1"
+                                       data-pdf-preview-height="320"
+                                       data-pdf-component-extra-params="toolbar=0&navpanes=0&scrollbar=0&view=fitH">
                                 <button class="btn btn-primary mx-auto" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                             </form>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-lg-6">
                     <fieldset class="row mb-3">
                         <legend class="col-form-label col-sm-4 pt-0">Gender</legend>
                         <div class="col-sm-8">
@@ -866,6 +868,9 @@
         FilePond.create(
             document.querySelector('#image'),
             {
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
                         url: '{{route('img-upload')}}',
@@ -888,5 +893,7 @@
                 },
             }
         );
+
     </script>
+    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

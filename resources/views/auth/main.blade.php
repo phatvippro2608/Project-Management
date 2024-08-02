@@ -27,7 +27,7 @@ $token = 'position';
     <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/filepond.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/filepond-plugin-image-preview.min.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('assets/css/filepond-plugin-image-overlay.min.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -47,6 +47,7 @@ $token = 'position';
     <script src="{{asset('assets/js/datatables.js')}}"></script>
     <script src="{{asset('assets/js/filepond.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
 
     <script type="text/javascript"
             src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
