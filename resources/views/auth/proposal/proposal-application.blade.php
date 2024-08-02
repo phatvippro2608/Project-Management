@@ -43,47 +43,41 @@
                     @endcomponent
                 </div>
                 <div class="modal-body">
-                    <form id="addProposalApplicationForm">
+                    <form id="addProposalApplicationForm" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="department_name" class="form-label">Employee name</label>
+                            <label for="employee_id" class="form-label">Employee name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="employee_id">
                                 @if ($data['permission'] == 0)
                                     <option value="{{ $data['list_proposal'][0]->employee_id }}">
                                         {{ $data['list_proposal'][0]->first_name }}
-                                        {{ $data['list_proposal'][0]->last_name }}
-                                    </option>
+                                        {{ $data['list_proposal'][0]->last_name }}</option>
                                 @elseif($data['permission'] == 3)
                                     @foreach ($data['employee_of_depart'] as $item)
-                                        <option value="{{ $item->employee_id }}">
-                                            {{ $item->first_name }} {{ $item->last_name }}
-                                        </option>
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
                                     @endforeach
                                 @elseif($data['permission'] == 4)
                                     @foreach ($employee_name as $item)
-                                        <option value="{{ $item->employee_id }}">
-                                            {{ $item->first_name }} {{ $item->last_name }}
-                                        </option>
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="department_name" class="form-label">Proposal Type</label>
+                            <label for="proposal_id" class="form-label">Proposal Type</label>
                             <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
                                 @foreach ($proposal_types as $item)
-                                    <option value="{{ $item->proposal_type_id }}">
-                                        {{ $item->name }}
-                                    </option>
+                                    <option value="{{ $item->proposal_type_id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="floatingTextarea2">Description</label>
-                            <textarea class="form-control" placeholder="Leave a Description here" id="description"
-                                      name="description"
-                                      style="height: 100px"></textarea>
+                            <label for="description">Description</label>
+                            <textarea class="form-control" placeholder="Leave a Description here" id="proposal_description" name="proposal_description"
+                                style="height: 100px"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="file" class="form-label">Upload your files</label>
@@ -117,41 +111,32 @@
             </tr>
             </thead>
             <tbody id="departmentsTableBody">
-            @php($stt = 0)
-            @foreach ($data['list_proposal'] as $item)
-                <tr>
-                    <td>{{ $stt++ }}</td>
-                    <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->proposal_description }}</td>
-                    <td>
-                        <div class="progress">
-                            @if ($item->progress == 0)
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
-                                     aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-                                    Chưa xét
-                                </div>
-                            @elseif($item->progress == 1)
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
-                                     aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                                    Đã duyệt cấp 1
-                                </div>
-                            @elseif($item->progress == 2)
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
-                                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                    Đã duyệt xong
-                                </div>
-                            @endif
-                        </div>
-                    </td>
-                    @if ($data['permission'] == 3)
-                        <td class="text-center">
-                            <button
-                                class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="">
-                                <i class="bi bi-check-circle"></i>
-                                Chưa duyệt
-                            </button>
+                @php($stt = 0)
+                @foreach ($data['list_proposal'] as $item)
+                    <tr>
+                        <td>{{ $stt++ }}</td>
+                        <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->proposal_description }}</td>
+                        <td>
+                            <div class="progress">
+                                @if ($item->progress == 0)
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
+                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                        Chưa xét
+                                    </div>
+                                @elseif($item->progress == 1)
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                        Đã duyệt cấp 1
+                                    </div>
+                                @elseif($item->progress == 2)
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                        Đã duyệt xong
+                                    </div>
+                                @endif
+                            </div>
                         </td>
                     @endif
                     @if ($data['permission'] == 4)
@@ -223,9 +208,15 @@
                 const li = document.createElement('li');
                 li.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
                 let displayName = file.name;
-                if (displayName.length > 30) {
-                    displayName = displayName.substring(0, 25) + '...';
+                const extension = displayName.split('.').pop();
+                const baseName = displayName.substring(0, displayName.lastIndexOf('.'));
+
+                if (baseName.length > 30) {
+                    displayName = baseName.substring(0, 25) + '...' + '.' + extension;
+                } else {
+                    displayName = baseName + '.' + extension;
                 }
+
                 li.textContent = displayName + ' ';
 
                 const removeBtn = document.createElement('button');
@@ -244,16 +235,24 @@
         $('#addProposalApplicationForm').submit(function (e) {
             e.preventDefault();
 
+            var formData = new FormData(this);
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
             $.ajax({
                 url: '{{ route('proposal-application.add') }}',
                 method: 'POST',
-                data: $(this).serialize(),
-                success: function (response) {
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
                     if (response.success) {
                         $('#addProposalApplicationModal').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function () {
-                            location.reload()
+                        setTimeout(function() {
+                            location.reload();
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
