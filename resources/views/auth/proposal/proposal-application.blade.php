@@ -171,7 +171,7 @@
                         <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                         <td>{{ $item->name }}</td>
                         <td>
-                            <textarea readonly class="border border-light w-100"  rows="1" name="" id="">{{ $item->proposal_description }}</textarea>
+                            <textarea readonly class="border border-light w-100" rows="1" name="" id="">{{ $item->proposal_description }}</textarea>
                         </td>
                         <td>
                             <div class="progress">
@@ -393,13 +393,12 @@
             });
         });
 
-        // Handle file removal
         $(document).on('click', '.remove-file', function() {
-            const fileId = $(this).data('id');
-            const row = $(this).closest('tr');
+            var fileId = $(this).data('id');
+            var row = $(this).closest('tr');
 
             $.ajax({
-                url: '{{ route('proposal-application.remove-file', ':id') }}'.replace(':id', fileId),
+                url: '{{ route('proposal-application.removeFile', ':id') }}'.replace(':id', fileId),
                 method: 'DELETE',
                 data: {
                     _token: '{{ csrf_token() }}'
@@ -407,9 +406,7 @@
                 success: function(response) {
                     if (response.success) {
                         row.remove();
-                        toastr.success(response.message, "File removed successfully");
-                    } else {
-                        toastr.error(response.message, "Failed to remove file");
+                        toastr.success(response.message, "File Removed");
                     }
                 },
                 error: function(xhr) {
@@ -417,6 +414,7 @@
                 }
             });
         });
+
 
         $('#editProposalForm').submit(function(e) {
             e.preventDefault();

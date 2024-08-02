@@ -220,5 +220,5 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/proposal/{id}/edit', [ProposalApplicationController::class, 'edit'])->name('proposal-application.edit');
     Route::put('/proposal/{id}/update', [ProposalApplicationController::class, 'update'])->name('proposal-application.update');
     Route::delete('/proposal-application/{id}', [ProposalApplicationController::class, 'destroy'])->name('proposal-application.destroy');
-    Route::delete('/proposal-application/remove-file/{id}', [ProposalApplicationController::class, 'removeFile'])->name('proposal-application.remove-file');
+    Route::delete('/proposal-application/remove-file/{id}', [ProposalApplicationController::class, 'removeFile'])->name('proposal-application.removeFile');
 });

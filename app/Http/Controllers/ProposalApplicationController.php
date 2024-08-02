@@ -145,7 +145,9 @@ class ProposalApplicationController extends Controller
     {
         $file = ProposalFileModel::findOrFail($id);
 
-        $filePath = public_path('proposal_files/' . $file->proposal_app_id . '/' . $file->proposal_file_name);
+        $proposalApp = ProposalApplicationModel::findOrFail($file->proposal_app_id);
+        $filePath = public_path('proposal_files/' . $proposalApp->employee_id . '/' . $file->proposal_file_name);
+
         if (file_exists($filePath)) {
             unlink($filePath);
         }
