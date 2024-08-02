@@ -15,6 +15,7 @@ use App\Http\Controllers\HolidaysController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveReportsController;
 use App\Http\Controllers\MyXteamController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\DisciplinaryController;
@@ -234,3 +235,5 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
 // disciplinary
 Route::get('/disciplinary', [DisciplinaryController::class, 'getView'])->name('isciplinary');
 
+Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
+Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');

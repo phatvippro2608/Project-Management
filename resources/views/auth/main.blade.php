@@ -687,6 +687,13 @@ $token = 'position';
         </li>
 
         <li class="nav-item">
+            <a class="nav-link " href="{{ route('portfolio') }}">
+                <i class="bi bi-folder-fill"></i>
+                <span>Portfolio</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a class="nav-link " href="#">
                 <i class="bi bi-clipboard2-fill"></i>
                 <span>Notice</span>
