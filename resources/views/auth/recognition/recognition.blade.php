@@ -165,7 +165,7 @@
                         <div class="col-md-12" style="margin-top: 1rem">
                             <label for="recognition_types">Recognition Types</label>
                             <label for="recognition_types">Upload file excel</label>
-                            <input accept=".xlsx" name="file-excel" type="file" class="form-control">
+                            <input accept=".xlsx" name="file-excel" id="file-excel" type="file" class="form-control">
                         </div>
                     </div>
                 </form>
@@ -294,6 +294,23 @@
 
     document.getElementById('btnimportRecognitionSubmit').addEventListener('click', function (event) {
         let form = document.getElementById('importRecognitionForm');
+        let recognition_date = form.querySelector('#recognition_date').value;
+        const fileInput = form.querySelector('#file-excel');
+
+        // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
+        if (!recognition_date) {
+            event.preventDefault(); // Ngăn chặn việc gửi form
+            toastr.error('Vui lòng vui lòng chọn ngày.', "Lỗi nhập liệu");
+            return;
+        }
+
+        // Kiểm tra nếu file input không tồn tại hoặc không có file nào được chọn
+        if (!fileInput || !fileInput.files.length) {
+            event.preventDefault(); // Ngăn chặn việc gửi form
+            toastr.error('Vui lòng chọn tệp.', "Lỗi nhập liệu");
+            return;
+        }
+
         let formData = new FormData(form);
 
         fetch('{{ route('recognition.import') }}', {

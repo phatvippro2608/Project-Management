@@ -85,6 +85,7 @@
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
+                <th>ID</th>
                 <th>Department Name</th>
                 <th>Action</th>
             </tr>
@@ -92,6 +93,7 @@
             <tbody id="departmentsTableBody">
             @foreach ($departments as $department)
                 <tr>
+                    <td>{{ $department->department_id }}</td>
                     <td>{{ $department->department_name }}</td>
                     <td>
                         <button
