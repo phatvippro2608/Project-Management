@@ -477,5 +477,18 @@ public function addNewCommission(Request $request, $project_id, $group_id)
         ]);
     }
 }
+public function editNameGroup(Request $request, $project_id, $group_id) {
+    $request->validate([
+        'groupName' => 'required|string|max:255',
+    ]);
+
+    $groupName = $request->input('groupName');
+
+    DB::table('project_group_cost_commission')
+        ->where('group_id', $group_id)
+        ->update(['groupcommission_name' => $groupName]);
+
+    return response()->json(['success' => true, 'message' => 'Cost group name updated successfully.']);
+}
 }
 
