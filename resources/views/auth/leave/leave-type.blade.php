@@ -50,13 +50,13 @@
                     <td>
                         <button
                             class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                            data-id="{{ $leave_type->id }}">
+                            data-id="{{ $leave_type->leave_type_id }}">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         |
                         <button
                             class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                            data-id="{{ $leave_type->id }}">
+                            data-id="{{ $leave_type->leave_type_id }}">
                             <i class="bi bi-trash3"></i>
                         </button>
                     </td>
@@ -109,7 +109,7 @@
                     <form id="editHolidayForm">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" id="editHolidayId" name="id">
+                        <input type="hidden" id="editHolidayId" name="leave_type_id">
                         <div class="mb-3">
                             <label for="edit_leave_type" class="form-label">Leave Type</label>
                             <input type="text" class="form-control" id="edit_leave_type" name="leave_type" required>
@@ -156,16 +156,16 @@
                             $('#successModal').modal('show');
                             toastr.success(response.response, "Add successful");
                             table.row.add([
-                                response.leave_type.id,
+                                response.leave_type.leave_type_id,
                                 response.leave_type.leave_type,
                                 response.leave_type.number_of_days,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.leave_type.id + '">' +
+                                response.leave_type.leave_type_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.leave_type.id + '">' +
+                                response.leave_type.leave_type_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
@@ -194,7 +194,7 @@
                     url: url,
                     method: 'GET',
                     success: function(response) {
-                        $('#editHolidayId').val(response.leave_type.id);
+                        $('#editHolidayId').val(response.leave_type.leave_type_id);
                         $('#edit_leave_type').val(response.leave_type.leave_type);
                         $('#edit_number_of_days').val(response.leave_type.number_of_days);
                         $('#editLeaveTypesModal').modal('show');
@@ -222,16 +222,16 @@
                             var row = table.row($('button[data-id="' + leavetypesID + '"]')
                                 .parents('tr'));
                             row.data([
-                                response.leave_type.id,
+                                response.leave_type.leave_type_id,
                                 response.leave_type.leave_type,
                                 response.leave_type.number_of_days,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.leave_type.id + '">' +
+                                response.leave_type.leave_type_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.leave_type.id + '">' +
+                                response.leave_type.leave_type_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
