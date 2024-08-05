@@ -18,7 +18,9 @@ use App\Http\Controllers\MyXteamController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecognitionController;
+use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
+use App\Http\Controllers\DisciplinaryTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -253,6 +255,7 @@ Route::group(['prefix' => '/project'], function () {
 // recognition
 Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
     Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
+    Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
     Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
     Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
@@ -260,6 +263,16 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
     Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
+// disciplinary
+Route::group(['prefix' => '/disciplinary', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
+    Route::get('/type', [DisciplinaryTypeController::class, 'getView'])->name('disciplinarytype.index');
+    Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
+    Route::post('/addType', [DisciplinaryController::class, 'addType'])->name('disciplinary.addType');
+    Route::post('/import', [DisciplinaryController::class, 'import'])->name('disciplinary.import');
+    Route::post('/update', [DisciplinaryController::class, 'update'])->name('disciplinary.update');
+    Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
+});
 
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');

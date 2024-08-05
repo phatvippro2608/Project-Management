@@ -18,11 +18,9 @@ class RecognitionController extends Controller
     // Hàm này trả về view cùng với danh sách recognitions và employees
     public function getView()
     {
-        $recognitions = (new RecognitionModel)->getRecognitions();
-        $recognition_types = (new RecognitionModel)->getRecognitionTypes();
+        $recognitions = RecognitionModel::getRecognitions();
+        $recognition_types = RecognitionModel::getRecognitionTypes();
         $employees = DB::table('employees')->get();
-
-//        dd($recognitions);
 
         // Hiển thị kết quả với view recognition
         return view('auth.recognition.recognition', [
@@ -35,7 +33,6 @@ class RecognitionController extends Controller
 
     public function add(Request $request)
     {
-//        return $request;
         $validated = $request->validate([
             'employee_id' => 'required|string',
             'recognition_type_id' => 'required|string',
