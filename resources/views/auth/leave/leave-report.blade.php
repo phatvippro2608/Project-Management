@@ -1,9 +1,9 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>
-        tr td:last-child {
-            text-align: center;
+    <style>       
+        table th, table td {
+            text-align: center !important; 
         }
     </style>
     <div class="pagetitle">
