@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Models\ProjectModel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class ProjectBudgetController extends Controller
@@ -490,5 +491,41 @@ public function editNameGroup(Request $request, $project_id, $group_id) {
 
     return response()->json(['success' => true, 'message' => 'Cost group name updated successfully.']);
 }
+public function cost_exportCsv($id)
+    {
+        $costs = CostModel::where('project_id', $id)->get();
+
+        $response = new StreamedResponse(function () use ($costs) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Add CSV headers
+            fputcsv($handle, [
+                'Description', 'Labor Qty', 'Labor Unit', 'Budget Qty', 'Budget Unit', 'Labor Cost', 
+                'Misc. Cost', 'OT Budget', 'Per Diem Pay', 'Subtotal', 'Remark'
+            ]);
+
+            // Add CSV rows
+            foreach ($costs as $cost) {
+                $subtotal = $cost->project_cost_labor_qty * $cost->project_cost_budget_qty * 
+                    ($cost->project_cost_labor_cost + $cost->project_cost_misc_cost + 
+                    $cost->project_cost_ot_budget + $cost->project_cost_perdiempay);
+
+                fputcsv($handle, [
+                    $cost->project_cost_description, $cost->project_cost_labor_qty, $cost->project_cost_labor_unit, 
+                    $cost->project_cost_budget_qty, $cost->project_budget_unit, $cost->project_cost_labor_cost, 
+                    $cost->project_cost_misc_cost, $cost->project_cost_ot_budget, $cost->project_cost_perdiempay, 
+                    $subtotal, $cost->project_cost_remaks
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="project_budget.csv"');
+
+        return $response;
+    }
 }
 
