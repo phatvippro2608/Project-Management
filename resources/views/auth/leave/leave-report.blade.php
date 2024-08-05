@@ -160,7 +160,7 @@
                                 '<span class="' + statusClass + '">' +
                                 statusText + '</span>',
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn text-center" data-id="' +
-                                report.id +
+                                report.leave_application_id +
                                 '"><i class="bi bi-check-circle"></i></button>'
                             ]).draw(false);
                         });
