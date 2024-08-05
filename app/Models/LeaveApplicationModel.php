@@ -23,7 +23,7 @@ class LeaveApplicationModel extends Model
 
     //Add data
     protected $table = 'leave_applications';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'leave_application_id';
     protected $fillable = [
         'employee_id',
         'pin',
