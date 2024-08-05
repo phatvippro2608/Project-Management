@@ -44,7 +44,7 @@
             <tbody>
             @foreach ($leave_types as $leave_type)
                 <tr>
-                    <td>{{ $leave_type->id }}</td>
+                    <td>{{ $leave_type->leave_type_id }}</td>
                     <td>{{ $leave_type->leave_type }}</td>
                     <td>{{ $leave_type->number_of_days }}</td>
                     <td>

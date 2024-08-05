@@ -2,7 +2,7 @@
 
 @section('contents')
     <style>
-        tr td:last-child{
+        tr td:last-child {
             text-align: center;
         }
     </style>
@@ -16,7 +16,7 @@
         </nav>
     </div>
     <div class="row gx-3 my-3">
-        <div class="col-md-6 d-flex m-0">
+        <div class="col-md-8 d-flex m-0">
             <form id="searchForm" class="d-flex align-items-center">
                 @csrf
                 <div class="form-group me-2">
@@ -28,13 +28,15 @@
                     <select class="form-control" id="employee" name="employee_id" required>
                         <option value="" selected disabled>Select Employee</option>
                         @foreach ($employees as $employee)
-                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                            <option value="{{ $employee->employee_id }}">{{ $employee->last_name }}
                                 {{ $employee->first_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
+                <button style="margin-left: 10px" type="button" class="btn btn-primary" onclick="location.reload();"><i
+                        class="bi bi-arrow-clockwise me-2"></i>Refresh</button>
             </form>
 
         </div>
@@ -46,17 +48,17 @@
         <div class="card-body">
             <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
                 <thead>
-                <tr>
-                    <th>Employee_Code</th>
-                    <th>Employee</th>
-                    <th>Leave Type</th>
-                    <th>Apply Date</th>
-                    <th>Duration</th>
-                    <th>Start Leave</th>
-                    <th>End Leave</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>Employee_Code</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Apply Date</th>
+                        <th>Duration</th>
+                        <th>Start Leave</th>
+                        <th>End Leave</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
                 <tbody>
 
@@ -70,8 +72,10 @@
     <script>
         $(document).ready(function() {
             var table = $('#leavereportsTable').DataTable({
-                language: { search: "" },
-                initComplete: function (settings, json) {
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
