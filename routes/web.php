@@ -117,7 +117,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/holidays/{holidays}/edit', [HolidaysController::class, 'edit'])->name('holidays.edit');
         Route::put('/holidays/{holidays}', [HolidaysController::class, 'update'])->name('holidays.update');
         Route::delete('/holidays/{holidays}', [HolidaysController::class, 'destroy'])->name('holidays.destroy');
-
+        Route::get('/holidayst/export', [HolidaysController::class, 'exportExcel'])->name('holidays.export');
 
         //Leave Type
         Route::resource('/leave-type', LeaveTypeController::class);
@@ -133,7 +133,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/leave-application/{id}/edit', [LeaveApplicationController::class, 'edit'])->name('leave-application.edit');
         Route::put('/leave-application/{id}/update', [LeaveApplicationController::class, 'update'])->name('leave-application.update');
         Route::delete('/leave-application/{id}/delete', [LeaveApplicationController::class, 'destroy'])->name('leave-application.destroy');
-        
+
 
         //Leave Report
         Route::get('/leave-report', [LeaveReportsController::class, 'getView'])->name('leave-report.index');

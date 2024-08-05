@@ -16,10 +16,12 @@
                 <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
                     <i class="bi bi-plus-lg me-2"></i> Add Holiday
                 </button>
-                <a id="leaveApplicationBtn" class="btn btn-secondary"
-                    href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
-                    <i class="bi bi-list me-2"></i>Leave Application
-                </a>
+                <div class="btn btn-success mx-2 btn-export">
+                    <a href="{{route('holidays.export')}}"
+                       class="d-flex align-items-center text-white">
+                        <i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel
+                    </a>
+                </div>
             </div>
         </div>
         <div class="card p-2 rounded-4 border">

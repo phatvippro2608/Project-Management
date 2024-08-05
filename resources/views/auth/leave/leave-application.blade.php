@@ -2,11 +2,11 @@
 
 @section('contents')
     <div class="pagetitle">
-        <h1>Application</h1>
+        <h1>Leave Application</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Application</li>
+                <li class="breadcrumb-item active">Leave Application</li>
             </ol>
         </nav>
     </div>
@@ -15,9 +15,6 @@
             <button class="btn btn-primary me-2" id="addApplicationBtn" data-bs-toggle="modal"
                 data-bs-target="#addApplicationModal">
                 <i class="bi bi-plus-lg me-2"></i> Add Application
-            </button>
-            <button class="btn btn-success mx-2" id="exportExcelBtn">
-                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel
             </button>
         </div>
     </div>
@@ -152,7 +149,7 @@
 
                         </div>
                         <div class="mb-3">
-                            <label for="edit_pin" class="form-label">PIN</label>
+                            <label for="edit_pin" class="form-label">Employee Code</label>
                             <input type="text" class="form-control" id="edit_pin" name="pin" readonly>
                         </div>
 
