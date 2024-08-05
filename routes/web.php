@@ -133,6 +133,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/leave-application/{id}/edit', [LeaveApplicationController::class, 'edit'])->name('leave-application.edit');
         Route::put('/leave-application/{id}/update', [LeaveApplicationController::class, 'update'])->name('leave-application.update');
         Route::delete('/leave-application/{id}/delete', [LeaveApplicationController::class, 'destroy'])->name('leave-application.destroy');
+        
 
         //Leave Report
         Route::get('/leave-report', [LeaveReportsController::class, 'getView'])->name('leave-report.index');

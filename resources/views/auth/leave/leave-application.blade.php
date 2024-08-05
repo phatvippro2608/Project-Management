@@ -13,7 +13,7 @@
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
             <button class="btn btn-primary me-2" id="addApplicationBtn" data-bs-toggle="modal"
-                    data-bs-target="#addApplicationModal">
+                data-bs-target="#addApplicationModal">
                 <i class="bi bi-plus-lg me-2"></i> Add Application
             </button>
             <button class="btn btn-success mx-2" id="exportExcelBtn">
@@ -28,44 +28,44 @@
         <div class="card-body">
             <table id="applicationTable" class="table table-hover table-borderless">
                 <thead class="table-light">
-                <tr>
-                    <th>Employee Name</th>
-                    <th>PIN</th>
-                    <th>Leave Type</th>
-                    <th>Apply Type</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Duration</th>
-                    <th>Leave Status</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>PIN</th>
+                        <th>Leave Type</th>
+                        <th>Apply Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Duration</th>
+                        <th>Leave Status</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach ($leave_applications as $item)
-                    <tr>
-                        <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
-                        <td>{{ $item->employee->employee_code }}</td>
-                        <td>{{ $item->leaveType->leave_type }}</td>
-                        <td>{{ $item->apply_date }}</td>
-                        <td>{{ $item->start_date }}</td>
-                        <td>{{ $item->end_date }}</td>
-                        <td>{{ $item->duration }} days</td>
-                        <td>{{ $item->leave_status }}</td>
-                        <td>
-                            <button
-                                class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="{{ $item->leave_application_id }}">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            |
-                            <button
-                                class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                data-id="{{ $item->leave_application_id }}">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
+                    @foreach ($leave_applications as $item)
+                        <tr>
+                            <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                            <td>{{ $item->employee->employee_code }}</td>
+                            <td>{{ $item->leaveType->leave_type }}</td>
+                            <td>{{ $item->apply_date }}</td>
+                            <td>{{ $item->start_date }}</td>
+                            <td>{{ $item->end_date }}</td>
+                            <td>{{ $item->duration }} days</td>
+                            <td>{{ $item->leave_status }}</td>
+                            <td>
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                |
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -140,15 +140,16 @@
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
-                            @foreach ($employee_name as $item)
+
                             <label for="edit_employee_id" class="form-label">Employee Name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
-
+                                @foreach ($employee_name as $item)
                                     <option value="{{ $item->employee_id }}">{{ $item->employee_code }} -
                                         {{ $item->first_name }} {{ $item->last_name }}</option>
+                                @endforeach
                             </select>
-                            @endforeach
+
                         </div>
                         <div class="mb-3">
                             <label for="edit_pin" class="form-label">PIN</label>
@@ -206,8 +207,10 @@
 
         $(document).ready(function() {
             var table = $('#applicationTable').DataTable({
-                language: { search: "" },
-                initComplete: function (settings, json) {
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
@@ -258,7 +261,7 @@
                         var data = response.leave_app;
                         $('#edit_employee_id').val(data.employee_id);
                         $('#edit_pin').val(data.employee.employee_code);
-                        $('#edit_leave_type').val(data.leave_type.id);
+                        $('#edit_leave_type').val(data.leave_type.leave_type_id);
                         $('#edit_apply_date').val(data.apply_date);
                         $('#edit_start_date').val(data.start_date);
                         $('#edit_end_date').val(data.end_date);
