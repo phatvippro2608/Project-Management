@@ -73,7 +73,7 @@ class PortfolioController extends Controller
             ->get();
 
         $status = 1;
-        
+
         return view(
             'auth.portfolio.portfolioHasId',
             [
