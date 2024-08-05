@@ -14,18 +14,18 @@
 
 @section('contents')
     <style>
-        #recognitionTable th {
+        #disciplinaryTable th {
             text-align: center !important;
         }
 
-        #recognitionTable td:nth-child(3),
-        #recognitionTable td:nth-child(4) {
+        #disciplinaryTable td:nth-child(3),
+        #disciplinaryTable td:nth-child(4) {
             text-align: left !important;
         }
     </style>
 
     <div class="pagetitle">
-        <h1>Recognitions</h1>
+        <h1>Disciplinary</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
@@ -34,7 +34,7 @@
         </nav>
     </div>
 
-    <div class="section recognition">
+    <div class="section disciplinary">
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addDisciplinaryModal">Add</button>
@@ -49,22 +49,22 @@
                         <th scope="col">ID</th>
                         <th scope="col">Employee Code</th>
                         <th scope="col">Employee Name</th>
-                        <th scope="col">Disciplinary</th>
-                        <th scope="col">Disciplinary Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($disciplinaries as $disciplinary)
-                        <tr class="{{ $disciplinary->recognition_hidden ? 'hidden-row' : '' }}">
-                            <th scope="col">{{ $disciplinary->recognition_id }}</th>
+                        <tr class="{{ $disciplinary->disciplinary_hidden ? 'hidden-row' : '' }}">
+                            <th scope="col">{{ $disciplinary->disciplinary_id }}</th>
                             <th scope="col">{{ $disciplinary->employee_code }}</th>
                             <th scope="col" style="text-align: left !important;">{{ $disciplinary->last_name }} {{ $disciplinary->first_name }}</th>
-                            <th scope="col" style="text-align: left !important;">{{ $disciplinary->recognition_type_name }}</th>
-                            <th scope="col">{{ $disciplinary->recognition_date }}</th>
+                            <th scope="col" style="text-align: left !important;">{{ $disciplinary->disciplinary_type_name }}</th>
+                            <th scope="col">{{ $disciplinary->disciplinary_date }}</th>
                             <td align="center">
-                                <button data-recognition="{{ $disciplinary->recognition_id }}" class="btn btn-primary text-white" onclick="editRecognition(this)"><i class="bi bi-pencil-square"></i></button>
-                                <button data-recognition="{{ $disciplinary->recognition_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-primary text-white" onclick="editDisciplinary(this)"><i class="bi bi-pencil-square"></i></button>
+                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     @endforeach
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <div class="modal fade md1" id="addRecognitionModal" tabindex="-1" aria-labelledby="addRecognitionModalLabel" aria-hidden="true">
+    <div class="modal fade md1" id="addDisciplinaryModal" tabindex="-1" aria-labelledby="addDisciplinaryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -83,12 +83,12 @@
                 </div>
                 <!-- Form trong view -->
                 <div class="modal-body">
-                    <form id="recognitionForm">
+                    <form id="disciplinaryForm">
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="employee_id" class="form-label">Employee Name</label>
-                                <select class="form-select name1" name="employee_id" id="employee_id" required>
+                                <label for="select_add_employee_id" class="form-label">Employee Name</label>
+                                <select class="form-select name1" name="employee_id" id="select_add_employee_id" required>
                                     <option value="-1">No select</option>
                                     @foreach($employees as $employee)
                                         <option value="{{$employee->employee_id}}">{{$employee->employee_code}}
@@ -97,27 +97,28 @@
                                 </select>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="recognition_types">Recognition Types</label>
-                                <select class="form-select name1" name="recognition_type_id" id="recognition_type_id" required>
+                                <label for="select_add_disciplinary_type_id">Disciplinary Types</label>
+                                <select class="form-select name1" name="disciplinary_type_id" id="select_add_disciplinary_type_id" required>
+                                    <option value="-1">No select</option>
                                     @foreach($disciplinary_types as $type)
-                                        <option value='{{$type->recognition_type_id}}'>{{$type->recognition_type_name}}</option>
+                                        <option value='{{$type->disciplinary_type_id}}'>{{$type->disciplinary_type_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label>Recognition Date</label>
-                                <input type="date" name="recognition_date" id="recognition_date" class="form-control">
+                                <label for="input_add_disciplinary_date">Disciplinary Date</label>
+                                <input type="date" name="disciplinary_date" id="input_add_disciplinary_date" class="form-control">
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="recognition_description" class="form-label">Description</label>
-                                <textarea name="description" id="description" rows="2" class="form-control"></textarea>
+                                <label for="textarea_add_description" class="form-label">Description</label>
+                                <textarea name="description" id="textarea_add_description" rows="2" class="form-control"></textarea>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="btnRecognitionSubmit">Submit</button>
+                    <button type="button" class="btn btn-success" id="btnDisciplinarySubmit">Submit</button>
                 </div>
             </div>
         </div>
@@ -150,33 +151,33 @@
         </div>
     </div>
 
-    <div class="modal fade md1" id="importRecognitionModal" tabindex="-1" aria-labelledby="importRecognitionModalLabel" aria-hidden="true">
+    <div class="modal fade md1" id="importDisciplinaryModal" tabindex="-1" aria-labelledby="importDisciplinaryModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addProjectModalTypeLabel">Import Recognition</h5>
+                    <h5 class="modal-title" id="addProjectModalTypeLabel">Import Disciplinary</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <!-- Form trong view -->
                 <div class="modal-body">
-                    <form id="importRecognitionForm">
+                    <form id="importDisciplinaryForm">
                         @csrf
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="recognition_types">Recognition Types</label>
-                                <select class="form-select name1" name="recognition_type_id" id="recognition_type_id" required>
+                                <label for="disciplinary_types">Disciplinary Types</label>
+                                <select class="form-select name1" name="disciplinary_type_id" id="disciplinary_type_id" required>
                                     @foreach($disciplinary_types as $type)
-                                        <option value='{{$type->recognition_type_id}}'>{{$type->recognition_type_name}}</option>
+                                        <option value='{{$type->disciplinary_type_id}}'>{{$type->disciplinary_type_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label>Recognition Date</label>
-                                <input type="date" name="recognition_date" id="recognition_date" class="form-control">
+                                <label>Disciplinary Date</label>
+                                <input type="date" name="disciplinary_date" id="disciplinary_date" class="form-control">
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="recognition_types">Recognition Types</label>
-                                <label for="recognition_types">Upload file excel</label>
+                                <label for="disciplinary_types">Disciplinary Types</label>
+                                <label for="disciplinary_types">Upload file excel</label>
                                 <input accept=".xlsx" name="file-excel" id="file-excel" type="file" class="form-control">
                             </div>
                         </div>
@@ -184,26 +185,26 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="btnimportRecognitionSubmit">Submit</button>
+                    <button type="button" class="btn btn-success" id="btnimportDisciplinarySubmit">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="editRecognitionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="editDisciplinaryModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <form id="editRecognitionForm">
+                <form id="editDisciplinaryForm">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit Recognition</h5>
+                        <h5 class="modal-title">Edit Disciplinary</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
-                                {{--                                <label class="form-label">Recognition ID</label>--}}
-                                <input type="text" name="recognition_id" id="edit_recognition_id" class="form-control" hidden>
+                                {{--                                <label class="form-label">Disciplinary ID</label>--}}
+                                <input type="text" name="disciplinary_id" id="edit_disciplinary_id" class="form-control" hidden>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
                                 <label for="edit_employee_id" class="form-label">Employee Name</label>
@@ -216,20 +217,20 @@
                                 </select>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="edit_recognition_type_id" class="form-label">Recognition Type</label>
-                                <select class="form-select" name="recognition_type_id" id="edit_recognition_type_id" required>
+                                <label for="edit_disciplinary_type_id" class="form-label">Disciplinary Type</label>
+                                <select class="form-select" name="disciplinary_type_id" id="edit_disciplinary_type_id" required>
                                     @foreach($disciplinary_types as $type)
-                                        <option value="{{$type->recognition_type_id}}">{{$type->recognition_type_name}}</option>
+                                        <option value="{{$type->disciplinary_type_id}}">{{$type->disciplinary_type_name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="edit_recognition_date" class="form-label">Recognition Date</label>
-                                <input type="date" name="recognition_date" id="edit_recognition_date" class="form-control">
+                                <label for="edit_disciplinary_date" class="form-label">Disciplinary Date</label>
+                                <input type="date" name="disciplinary_date" id="edit_disciplinary_date" class="form-control">
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
-                                <label for="edit_recognition_hidden">Hidden</label>
-                                <input type="checkbox" name="recognition_hidden" id="edit_recognition_hidden">
+                                <label for="edit_disciplinary_hidden">Hidden</label>
+                                <input type="checkbox" name="disciplinary_hidden" id="edit_disciplinary_hidden">
                             </div>
                             <div class="col-md-12" style="margin-top: 1rem">
                                 <label for="edit_description" class="form-label">Description</label>
@@ -239,7 +240,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" id="btnEditRecognitionSubmit">Save</button>
+                        <button type="button" class="btn btn-success" id="btnEditDisciplinarySubmit">Save</button>
                     </div>
                 </form>
             </div>
@@ -292,11 +293,45 @@
         $('.dt-search label').addClass('d-flex align-items-center');
         $('.dt-search input').addClass('form-control ml-2');
 
-        document.getElementById('btnRecognitionSubmit').addEventListener('click', function (event) {
-            let form = document.getElementById('recognitionForm');
+        document.getElementById('btnDisciplinarySubmit').addEventListener('click', function (event) {
+            const form = document.getElementById('disciplinaryForm');
+            const select_add_employee_id = document.getElementById('select_add_employee_id').value;
+            const select_add_disciplinary_type_id = document.getElementById('select_add_disciplinary_type_id').value;
+            const input_add_disciplinary_date = document.getElementById('input_add_disciplinary_date').value;
+            const textarea_add_description = document.getElementById('textarea_add_description').value;
             let formData = new FormData(form);
 
-            fetch('{{ route('recognition.add') }}', {
+            // Hàm kiểm tra và thông báo lỗi
+            function showError(message) {
+                event.preventDefault(); // Ngăn chặn việc gửi form
+                toastr.error(message, "Lỗi nhập liệu");
+            }
+
+            // Kiểm tra nếu người dùng không chọn employee
+            if (!select_add_employee_id || select_add_employee_id == -1) {
+                showError('Vui lòng chọn nhân viên.');
+                return;
+            }
+
+            // Kiểm tra nếu người dùng không chọn loại kỷ luật
+            if (!select_add_disciplinary_type_id || select_add_disciplinary_type_id == -1) {
+                showError('Vui lòng chọn loại kỷ luật.');
+                return;
+            }
+
+            // Kiểm tra chưa nhập date
+            if (!input_add_disciplinary_date) {
+                showError('Vui lòng chọn ngày.');
+                return;
+            }
+
+            // Kiểm tra chưa nhập mô tả
+            if (!textarea_add_description) {
+                showError('Vui lòng nhập mô tả.');
+                return;
+            }
+
+            fetch('{{ route('disciplinary.add') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -360,13 +395,14 @@
                 });
         });
 
-        document.getElementById('btnimportRecognitionSubmit').addEventListener('click', function (event) {
-            let form = document.getElementById('importRecognitionForm');
-            let recognition_date = form.querySelector('#recognition_date').value;
+        document.getElementById('btnimportDisciplinarySubmit').addEventListener('click', function (event) {
+            let form = document.getElementById('importDisciplinaryForm');
+            let formData = new FormData(form);
+            let disciplinary_date = form.querySelector('#disciplinary_date').value;
             const fileInput = form.querySelector('#file-excel');
 
             // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
-            if (!recognition_date) {
+            if (!disciplinary_date) {
                 event.preventDefault(); // Ngăn chặn việc gửi form
                 toastr.error('Vui lòng vui lòng chọn ngày.', "Lỗi nhập liệu");
                 return;
@@ -379,54 +415,52 @@
                 return;
             }
 
-            let formData = new FormData(form);
-
-            fetch('{{ route('recognition.import') }}', {
+            fetch('{{ route('disciplinary.import') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: formData
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 200) {
-                        toastr.success(data.message, "Lưu thành công");
-                        setTimeout(function () {
-                            location.reload();
-                        }, 500);
-                    } else {
-                        console.log(data);
-                        let errorMessage = data.message;
-                        if (data.error) {
-                            errorMessage += ': ' + data.error;
-                            console.error('Error:', data.error);  // Log lỗi cụ thể ra console
-                        }
-                        toastr.error(errorMessage, "Thao tác thất bại");
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    toastr.success(data.message, "Lưu thành công");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else {
+                    console.log(data);
+                    let errorMessage = data.message;
+                    if (data.error) {
+                        errorMessage += ': ' + data.error;
+                        console.error('Error:', data.error);  // Log lỗi cụ thể ra console
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
-                    toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
-                });
+                    toastr.error(errorMessage, "Thao tác thất bại");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);  // Log lỗi mạng hoặc lỗi khác ra console
+                toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
+            });
         });
 
-        function editRecognition(button) {
-            var recognition_id = button.getAttribute('data-recognition');
+        function editDisciplinary(button) {
+            var disciplinary_id = button.getAttribute('data-disciplinary');
             // Dùng Ajax để lấy dữ liệu từ máy chủ và điền vào form chỉnh sửa
-            fetch(`/recognition/${recognition_id}`)
+            fetch(`/disciplinary/${disciplinary_id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (Array.isArray(data) && data.length > 0) {
-                        let recognition = data[0];
-                        document.getElementById('edit_recognition_id').value = recognition.recognition_id || '';
-                        document.getElementById('edit_employee_id').value = recognition.employee_id || '';
-                        document.getElementById('edit_recognition_type_id').value = recognition.recognition_type_id || '';
-                        document.getElementById('edit_recognition_date').value = recognition.recognition_date ? new Date(recognition.recognition_date).toISOString().split('T')[0] : '';
-                        document.getElementById('edit_recognition_hidden').checked = recognition.recognition_hidden == 1;
-                        document.getElementById('edit_description').value = recognition.description || '';
+                        let disciplinary = data[0];
+                        document.getElementById('edit_disciplinary_id').value = disciplinary.disciplinary_id || '';
+                        document.getElementById('edit_employee_id').value = disciplinary.employee_id || '';
+                        document.getElementById('edit_disciplinary_type_id').value = disciplinary.disciplinary_type_id || '';
+                        document.getElementById('edit_disciplinary_date').value = disciplinary.disciplinary_date ? new Date(disciplinary.disciplinary_date).toISOString().split('T')[0] : '';
+                        document.getElementById('edit_disciplinary_hidden').checked = disciplinary.disciplinary_hidden == 1;
+                        document.getElementById('edit_description').value = disciplinary.description || '';
 
-                        var editModal = new bootstrap.Modal(document.getElementById('editRecognitionModal'));
+                        var editModal = new bootstrap.Modal(document.getElementById('editDisciplinaryModal'));
                         editModal.show();
                     } else {
                         toastr.error('Dữ liệu không hợp lệ.', "Thao tác thất bại");
@@ -438,18 +472,18 @@
                 });
         }
 
-        document.getElementById('btnEditRecognitionSubmit').addEventListener('click', function (event) {
-            let form = document.getElementById('editRecognitionForm');
+        document.getElementById('btnEditDisciplinarySubmit').addEventListener('click', function (event) {
+            let form = document.getElementById('editDisciplinaryForm');
             let formData = new FormData(form);
 
             // Thêm giá trị 0 nếu checkbox không được chọn
-            if (!formData.has('recognition_hidden')) {
-                formData.append('recognition_hidden', 0);
+            if (!formData.has('disciplinary_hidden')) {
+                formData.append('disciplinary_hidden', 0);
             } else {
-                formData.set('recognition_hidden', 1);
+                formData.set('disciplinary_hidden', 1);
             }
 
-            fetch('{{ route('recognition.update') }}', {
+            fetch('{{ route('disciplinary.update') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -481,14 +515,12 @@
         });
 
         document.getElementById('toggleHiddenRows').addEventListener('click', function() {
-            var tableRows = document.querySelectorAll('#recognitionTable tbody tr');
+            var tableRows = document.querySelectorAll('#disciplinaryTable tbody tr');
             tableRows.forEach(function(row) {
                 if (row.classList.contains('hidden-row')) {
                     row.classList.toggle('d-none');
                 }
             });
         });
-
-
     </script>
 @endsection

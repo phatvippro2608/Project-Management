@@ -12,6 +12,7 @@ class DisciplinaryModel extends Model
     protected $table = 'disciplinaries';
     protected $primaryKey = 'disciplinary_id';
     protected $fillable = [
+        'employee_id',
         'disciplinary_id',
         'disciplinary_type_id',
         'disciplinary_date',
@@ -19,19 +20,19 @@ class DisciplinaryModel extends Model
         'description'
     ];
 
-    public function getRecognitions()
+    public static function getDisciplinaries()
     {
         try {
             // Lấy dữ liệu với left join các bảng liên quan và phân trang
-            $recognitions = DB::table('recognitions')
-                ->Join('employees', 'employees.employee_id', '=', 'recognitions.employee_id')
-                ->Join('recognition_types', 'recognition_types.recognition_type_id', '=', 'recognitions.recognition_type_id')
+            $disciplinaries = DB::table('disciplinaries')
+                ->Join('employees', 'employees.employee_id', '=', 'disciplinaries.employee_id')
+                ->Join('disciplinary_types', 'disciplinary_types.disciplinary_type_id', '=', 'disciplinaries.disciplinary_type_id')
                 ->select(
                     'employees.employee_id', 'employees.employee_code', 'employees.last_name', 'employees.first_name', // Chọn các cột cần thiết từ bảng employees
-                    'recognitions.recognition_id', 'recognitions.recognition_date', 'recognitions.recognition_hidden', // Chọn các cột cần thiết từ bảng recognitions
-                    'recognition_types.recognition_type_id', 'recognition_types.recognition_type_name' // Chọn các cột cần thiết từ bảng recognition_types
+                    'disciplinaries.disciplinary_id', 'disciplinaries.disciplinary_date', 'disciplinaries.disciplinary_hidden', // Chọn các cột cần thiết từ bảng recognitions
+                    'disciplinary_types.disciplinary_type_id', 'disciplinary_types.disciplinary_type_name' // Chọn các cột cần thiết từ bảng recognition_types
                 )->get();
-            return $recognitions;
+            return $disciplinaries;
         } catch (\Exception $e) {
             // Xử lý lỗi nếu có
             return response()->json([
@@ -42,9 +43,9 @@ class DisciplinaryModel extends Model
     }
 
 
-    public static function getRecognitionTypes()
+    public static function getDisciplinaryTypes()
     {
-        return DB::table('recognition_types')->get();
+        return DB::table('disciplinary_types')->get();
     }
 
 }

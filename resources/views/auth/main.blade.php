@@ -371,12 +371,6 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Disciplinary</span>
-                        </a>
-                    </li>
-                    <li>
                         <a class="nav-sub-link" href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
@@ -423,7 +417,34 @@ $token = 'position';
         @endphp
 
         <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognition</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionTypeController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Recognitions Types</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryTypeController@getView') }}">
+                        <i class="bi bi-circle"></i><span>Disciplinarie Types</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
+        <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
                href="#">
                 <i class="bi bi-calendar-check"></i><span>Attendance</span><i
@@ -501,24 +522,6 @@ $token = 'position';
             <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
                 <i class="bi bi-people"></i><span>Team List</span>
             </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Recognitions</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="#!!!">
-                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
-                    </a>
-                </li>
-            </ul>
         </li>
 
         <li class="nav-heading">Customer Manager</li>
