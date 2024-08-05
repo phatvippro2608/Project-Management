@@ -61,14 +61,36 @@
                 <div class="modal-body bg-white p-0">
                     <ul class="nav nav-tabs d-flex" role="tablist">
                         <li class="nav-item flex-fill" role="presentation">
-                            <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-justified" type="button" role="tab" aria-controls="home" aria-selected="true">Successful</button>
+                            <button class="nav-link w-100 active"
+                                    id="success-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#success-justified"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls=""
+                                    aria-selected="true"
+                            >
+                                Successful
+                            </button>
                         </li>
                         <li class="nav-item flex-fill" role="presentation">
-                            <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-justified" type="button" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Error</button>
+                            <button class="nav-link d-flex align-items-center justify-content-center w-100"
+                                    id="profile-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#error-justified"
+                                    type="button" role="tab"
+                                    aria-controls=""
+                                    aria-selected="false"
+                                    tabindex="-1"
+                            >
+                                Error
+                                <span class="badge text-bg-danger ms-2">3</span>
+                                <span class="badge text-bg-success ms-2">0</span>
+                            </button>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade active show" id="home-justified" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="tab-pane fade active show" id="success-justified" role="tabpanel" aria-labelledby="success-tab">
                             <div class="table-responsive p-2">
                                 <table id="successfulTable" class="table table-borderless table-hover">
                                     <thead class="table-light">
@@ -80,7 +102,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="profile-justified" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="tab-pane fade" id="error-justified" role="tabpanel" aria-labelledby="profile-tab">
                             <div class="table-responsive p-2">
                                 <table id="errorTable" class="table table-borderless table-hover">
                                     <thead class="table-light">
