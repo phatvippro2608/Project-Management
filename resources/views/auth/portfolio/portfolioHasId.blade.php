@@ -214,6 +214,35 @@
 
         <div class="card mb-4">
             <div class="card-header">
+                <h5>Disciplinaries</h5>
+            </div>
+            <div class="card-body p-3">
+                <table class="table table-hover" id="disciplinariesTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Department</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Evaluate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($disciplinaries as $disciplinarie)
+                            @if ($disciplinarie->disciplinarie_type && $disciplinarie->disciplinarie_date && $disciplinarie->department)
+                                <tr>
+                                    <td>{{ $disciplinarie->department->department_name }}</td>
+                                    <td>{{ $disciplinarie->disciplinarie_date }}
+                                    </td>
+                                    <td>{{ $disciplinarie->disciplinarie_type->disciplinarie_type_name }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
                 <h5>Experience</h5>
             </div>
             <div class="card-body p-3">
@@ -240,7 +269,54 @@
 
     <div class="card">
         <div class="card-body">
-
+            <div class="col">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Project Name</th>
+                            <th scope="col">StartDate</th>
+                            <th scope="col">EndDate</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($projects as $index => $project)
+                            <tr>
+                                <th scope="row">{{ $index + 1 }}</th>
+                                <td>{{ $project->project_name }}</td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <th>
+                                    <span
+                                        class="badge rounded-pill
+                                    @switch($project->phase_id)
+                                        @case(1)
+                                            bg-primary
+                                            @break
+                                        @case(2)
+                                            bg-info
+                                            @break
+                                        @case(3)
+                                            bg-success
+                                            @break
+                                        @case(4)
+                                            bg-warning
+                                            @break
+                                        @case(5)
+                                            bg-danger
+                                            @break
+                                        @default
+                                            bg-secondary
+                                    @endswitch">
+                                        {{ $project->phase_name_eng }}
+                                    </span>
+                                </th>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -270,6 +346,16 @@
 
             // Khởi tạo DataTable
             $('#recognitionsTable').DataTable({
+                "pagingType": "simple_numbers",
+                "pageLength": 10,
+                "lengthChange": false,
+                "searching": false,
+                "order": [
+                    [1, 'desc']
+                ]
+            });
+
+            $('#disciplinariesTable').DataTable({
                 "pagingType": "simple_numbers",
                 "pageLength": 10,
                 "lengthChange": false,
