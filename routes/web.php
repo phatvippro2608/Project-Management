@@ -90,8 +90,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/info/{employee_id}', 'App\Http\Controllers\EmployeesController@getEmployee');
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
         Route::post('/delete_file', 'App\Http\Controllers\EmployeesController@deleteFile');
+        Route::post('/loadExcel', 'App\Http\Controllers\EmployeesController@loadExcel');
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
-
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
 
