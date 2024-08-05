@@ -24,27 +24,33 @@ class PortfolioController extends Controller
     }
     public function getViewHasId($id)
     {
-        $existsCode = DB::table('employees')->where('employee_code', $id)->exists();
-        if (!$existsCode) {
-            return abort(404); // Trả về trang 404 nếu không tìm thấy mã nhân viên
-        }
         $employee = DB::table('employees')->where('employee_code', $id)->first();
+        if (!$employee) {
+            return abort(404);
+        }
+
         $contact = DB::table('contacts')->where('contact_id', $employee->contact_id)->first();
         $account = DB::table('accounts')->where('employee_id', $employee->employee_id)->first();
         $dateOfJoin = DB::table('job_details')->where('employee_id', $employee->employee_id)->oldest('start_date')->first();
         $employee_degree = DB::table('employee_degrees')->where('employee_degrees_id', $employee->employee_degrees_id)->first();
 
         $recognitions = DB::table('recognitions')->where('employee_id', $employee->employee_id)->get();
-        foreach ($recognitions as $recognition) {
-            $recognition->recognition_type = DB::table('recognition_types')->where('recognition_type_id', $recognition->recognition_type_id)->first();
-            $recognition->department = DB::table('departments')->where('department_id', $recognition->department_id)->first();
+        if ($recognitions) {
+            foreach ($recognitions as $recognition) {
+                $recognition->recognition_type = DB::table('recognition_types')->where('recognition_type_id', $recognition->recognition_type_id)->first();
+                $recognition->department = DB::table('departments')->where('department_id', $recognition->department_id)->first();
+            }
         }
 
         $disciplinaries = DB::table('disciplinaries')->where('employee_id', $employee->employee_id)->get();
-        foreach ($disciplinaries as $disciplinarie) {
-            $disciplinarie->disciplinarie_type = DB::table('disciplinarie_types')->where('disciplinarie_type_id', $disciplinarie->disciplinarie_type_id)->first();
-            $disciplinarie->department = DB::table('departments')->where('department_id', $disciplinarie->department_id)->first();
+        if ($disciplinaries) {
+            foreach ($disciplinaries as $disciplinarie) {
+                $disciplinarie->disciplinarie_type = DB::table('disciplinary_types')->where('disciplinary_type_id', $disciplinarie->disciplinary_type_id)->first();
+                $disciplinarie->department = DB::table('departments')->where('department_id', $disciplinarie->department_id)->first();
+            }
         }
+
+        // dd($disciplinaries);
 
         $job_detail = DB::table('job_details')->where('employee_id', $employee->employee_id)->first();
         $job_title = null;
@@ -57,32 +63,17 @@ class PortfolioController extends Controller
             $department = DB::table('departments')->where('department_id', $job_detail->department_id)->first();
         }
 
-        // $job_detail = DB::table('job_details')
-        //     ->leftJoin('job_titles', 'job_details.job_title_id', '=', 'job_titles.job_title_id')
-        //     ->leftJoin('job_teams', 'job_details.job_team_id', '=', 'job_teams.team_id')
-        //     ->leftJoin('departments', 'job_details.department_id', '=', 'departments.department_id')
-        //     ->select(
-        //         'job_details.*',
-        //         'job_titles.title_name', // Điều chỉnh tên cột theo tên thực tế trong bảng job_titles
-        //         'job_teams.team_name',   // Điều chỉnh tên cột theo tên thực tế trong bảng job_teams
-        //         'departments.department_name' // Điều chỉnh tên cột theo tên thực tế trong bảng departments
-        //     )
-        //     ->where('job_details.employee_id', $employee->employee_id)
-        //     ->first();
-            
-        $status = 1;
-
-        // $team_detail = DB::table('team_detail')->where('employee_id', $employee->employee_id)->get();
-
-        $projects = DB::table('projects')
-            ->join('phases', 'projects.phase_id', '=', 'phases.phase_id')
-            ->join('team_detail', 'projects.employee_id', '=', 'team_detail.employee_id')
-            ->join('teams', 'team_detail.team_id', '=', 'teams.team_id')
-            ->join('employees', 'team_detail.employee_id', '=', 'employees.employee_id')
-            ->select('projects.*', 'phases.phase_name_eng')
+        $projects = DB::table('employees')
+            ->join('team_details', 'team_details.employee_id', '=', 'employees.employee_id')
+            ->join('project_teams', 'project_teams.team_id', '=', 'team_details.team_id')
+            ->join('projects', 'projects.project_id', '=', 'project_teams.project_id')
+            ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
             ->where('employees.employee_code', $id)
+            ->select('projects.*', 'phases.phase_name_eng')
             ->get();
-        // return dd($projects);
+
+        $status = 1;
+        
         return view(
             'auth.portfolio.portfolioHasId',
             [
