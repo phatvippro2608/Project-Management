@@ -54,13 +54,13 @@
                         <td>
                             <button
                                 class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="{{ $item->id }}">
+                                data-id="{{ $item->leave_application_id }}">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             |
                             <button
                                 class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                data-id="{{ $item->id }}">
+                                data-id="{{ $item->leave_application_id }}">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </td>
@@ -86,18 +86,16 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Employee Name</label>
                             {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required> --}}
-                            <select class="form-select" aria-label="Default" name="employee_id">
-                                <option value="">No select</option>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="add_employee_id">
                                 @foreach ($employee_name as $item)
                                     <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
                                         - {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
+
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="start_date" class="form-label">PIN</label>
-                            <input type="text" class="form-control" id="pin" name="pin" readonly>
-                        </div>
+
+
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Leave Type</label>
                             {{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required> --}}
@@ -107,10 +105,6 @@
                                     <option value="{{ $item->leave_type_id }}">{{ $item->leave_type }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="end_date" class="form-label">Apply Date</label>
-                            <input type="date" class="form-control" id="apply_date" name="apply_date" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date</label>
@@ -123,10 +117,6 @@
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Duration</label>
                             <input type="text" class="form-control" id="duration" name="duration" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label for="days" class="form-label">Leaves Status</label>
-                            <input type="number" class="form-control" id="leave_status" name="leave_status" readonly>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Application</button>
                     </form>
@@ -150,19 +140,21 @@
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
+                            @foreach ($employee_name as $item)
                             <label for="edit_employee_id" class="form-label">Employee Name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
-                                @foreach ($employee_name as $item)
+
                                     <option value="{{ $item->employee_id }}">{{ $item->employee_code }} -
                                         {{ $item->first_name }} {{ $item->last_name }}</option>
-                                @endforeach
                             </select>
+                            @endforeach
                         </div>
                         <div class="mb-3">
                             <label for="edit_pin" class="form-label">PIN</label>
                             <input type="text" class="form-control" id="edit_pin" name="pin" readonly>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_leave_type" class="form-label">Leave Type</label>
                             <select class="form-select" aria-label="Default" name="leave_type" id="edit_leave_type">
@@ -203,6 +195,15 @@
 
 @section('script')
     <script>
+        // $('#edit_employee_id').val(data.employee_id);
+        $(document).ready(function() {
+            $('#add_employee_id').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var pin = selectedOption.data('');
+                $('#pin').val(pin);
+            });
+        });
+
         $(document).ready(function() {
             var table = $('#applicationTable').DataTable({
                 language: { search: "" },
