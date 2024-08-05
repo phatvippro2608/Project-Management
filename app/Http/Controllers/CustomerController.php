@@ -24,7 +24,7 @@ class CustomerController extends Controller
         $id_customer = $request->customer_id;
         $customer = CustomerModel::where('customer_id', $id_customer)->first();
         $contracts = ContractModel::where('customer_id', $id_customer)->get();
-        return view('auth.customer.customer-update', ['customer' => $customer, 'contracts' => $contracts,'status' => $this->status]);
+        return view('auth.customer.customer-update', ['customer' => $customer, 'contracts' => $contracts, 'status' => $this->status]);
     }
 
     function add(Request $request)
@@ -38,7 +38,7 @@ class CustomerController extends Controller
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
-        if ($id_new_customer=DB::table('customers')->insertGetId($new_customer)) {
+        if ($id_new_customer = DB::table('customers')->insertGetId($new_customer)) {
             $new_contract = [
                 'customer_id' => $id_new_customer,
                 'contract_name' => $request->contract_name,
@@ -46,9 +46,9 @@ class CustomerController extends Controller
                 'contract_end_date' => $request->contract_end_date,
                 'contract_details' => $request->contract_details
             ];
-            if($id_new_contract=DB::table('contracts')->insertGetId($new_contract)){
+            if ($id_new_contract = DB::table('contracts')->insertGetId($new_contract)) {
                 return AccountController::status('Thêm thành công', 200);
-            }else{
+            } else {
                 DB::table('customers')->where('customer_id', $id_new_customer)->delete();
                 return AccountController::status('Thêm thất bại', 500);
             }
@@ -59,8 +59,7 @@ class CustomerController extends Controller
 
     function update(Request $request)
     {
-        $new_customer = [
-            'customer_id' => $request->customer_id,
+        $update_customer = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'date_of_birth' => $request->date_of_birth,
@@ -70,25 +69,14 @@ class CustomerController extends Controller
             'status' => $request->status,
         ];
 
-        if ($id_new_customer=DB::table('customers')->insertGetId($new_customer)) {
-            $new_contract = [
-                'customer_id' => $id_new_customer,
-                'contract_name' => $request->contract_name,
-                'contract_date' => $request->contract_date,
-                'contract_end_date' => $request->contract_end_date,
-                'contract_details' => $request->contract_details
-            ];
-            if($id_new_contract=DB::table('contracts')->insertGetId($new_contract)){
-                return AccountController::status('Thêm thành công', 200);
-            }else{
-                DB::table('customers')->where('customer_id', $id_new_customer)->delete();
-                return AccountController::status('Thêm thất bại', 500);
-            }
+        if (DB::table('contracts')->where('customer_id', $request->customer_id)->update($update_customer)) {
+            return AccountController::status('Thêm thành công', 200);
         } else {
             return AccountController::status('Thêm thất bại', 500);
         }
-    }
 
+    }
+    
     function delete(Request $request)
     {
         if (DB::table('team')->where('id_team', $request->id_team)->delete()) {
@@ -97,5 +85,4 @@ class CustomerController extends Controller
             return AccountController::status('Xóa thất bại', 500);
         }
     }
-
 }

@@ -90,8 +90,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/info/{employee_id}', 'App\Http\Controllers\EmployeesController@getEmployee');
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
         Route::post('/delete_file', 'App\Http\Controllers\EmployeesController@deleteFile');
+        Route::post('/loadExcel', 'App\Http\Controllers\EmployeesController@loadExcel');
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
-
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
 
@@ -161,7 +161,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
-//Progress
+    //Progress
     Route::post('/update-item', [ProgressController::class, 'updateItem']);
     Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
     Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
@@ -170,7 +170,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
     Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
 
-//Settings
+    //Settings
     Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
     Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
@@ -210,10 +210,10 @@ Route::group(['prefix' => '/project'], function () {
         Route::post('team/{WorkspaceId}/project/{ProjectId}/task/{TaskId}', [MyXteamController::class, 'updateTask']);
     });
 
-//Inventory Management
+    //Inventory Management
     Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
-//Department
+    //Department
     Route::resource('departments', DepartmentController::class);
     Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
     Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
@@ -221,7 +221,7 @@ Route::group(['prefix' => '/project'], function () {
     Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
     Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
-//Attendance
+    //Attendance
     Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
     Route::get('/attendance/add', [AttendanceController::class, 'addAttendanceView'])->name('attendance.addIndex');
     Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
@@ -229,7 +229,7 @@ Route::group(['prefix' => '/project'], function () {
     Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
     Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
-//Proposal
+    //Proposal
     Route::group(['prefix' => '/proposal', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
         Route::post('/proposal-types/add', [ProposalTypesController::class, 'add'])->name('proposal-types.add');
@@ -240,6 +240,11 @@ Route::group(['prefix' => '/project'], function () {
     });
     Route::get('/proposal', [ProposalApplicationController::class, 'getView'])->name('proposal-application.index');
     Route::post('/proposal/add', [ProposalApplicationController::class, 'add'])->name('proposal-application.add');
+    Route::get('/proposal/{id}/edit', [ProposalApplicationController::class, 'edit'])->name('proposal-application.edit');
+    Route::put('/proposal/{id}/update', [ProposalApplicationController::class, 'update'])->name('proposal-application.update');
+    Route::delete('/proposal/{id}', [ProposalApplicationController::class, 'destroy'])->name('proposal-application.destroy');
+    Route::delete('/proposal/remove-file/{id}', [ProposalApplicationController::class, 'removeFile'])->name('proposal-application.removeFile');
+    Route::post('/proposal/approve/{id}/{permission}', [ProposalApplicationController::class, 'approve'])->name('proposal-application.approve');
 });
 
 // recognition
