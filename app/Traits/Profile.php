@@ -11,8 +11,8 @@ trait Profile
     public $permanent_address;
     public $phone_number;
     public $email;
-    public $id_account;
+    public $account_id;
 
-    public $id_employee;
+    public $employee_id;
 
 }

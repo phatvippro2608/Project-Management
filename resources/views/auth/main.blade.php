@@ -25,7 +25,9 @@ $token = 'position';
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('assets/css/filepond.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/filepond-plugin-image-preview.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/filepond-plugin-image-overlay.min.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -42,7 +44,10 @@ $token = 'position';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
-    <script src="{{ asset('assets/js/datatables.js') }}"></script>
+    <script src="{{asset('assets/js/datatables.js')}}"></script>
+    <script src="{{asset('assets/js/filepond.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
 
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
@@ -219,25 +224,27 @@ $token = 'position';
                 </ul>
 
             </li>
-            
+
             @php
 
                 $data = \Illuminate\Support\Facades\DB::table('accounts')
-                    ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                    ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-                    ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
-                    ->where(
-                        'accounts.account_id',
-                        \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                    )
-                    ->first();
+                            ->where(
+                            'accounts.account_id',
+                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                            )
+                            ->first();
                 $info = \Illuminate\Support\Facades\DB::table('job_details')
-                    ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
-                    ->where('job_details.employee_id', $data->employee_id)
-                    ->first();
+                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
+                            ->where(
+                                'job_details.employee_id', $data->employee_id
+                            )
+                            ->first();
             @endphp
-            
+
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                    data-bs-toggle="dropdown">
@@ -369,7 +376,7 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a class="nav-sub-link" href="#">
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
@@ -496,21 +503,17 @@ $token = 'position';
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
                         <i class="bi bi-circle"></i><span>Recognitions</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
+                    <a class="nav-sub-link" href="#!!!">
                         <i class="bi bi-circle"></i><span>Disciplinaries</span>
                     </a>
                 </li>
@@ -608,7 +611,7 @@ $token = 'position';
                 <li>
                     <a class="nav-sub-link"
                        href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-basket-fill"></i><span>Material Management</span>
+                        <i class="bi bi-circle"></i><span>Material Management</span>
                     </a>
                 </li>
             </ul>
@@ -667,12 +670,12 @@ $token = 'position';
             </a>
             <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{route('proposal-application.index')}}">
                         <i class="bi bi-circle"></i><span>Proposal Application</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{ route('proposal-types.index') }}">
                         <i class="bi bi-circle"></i><span>Proposal Types</span>
                     </a>
                 </li>

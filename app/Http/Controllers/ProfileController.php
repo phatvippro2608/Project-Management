@@ -26,7 +26,7 @@ class ProfileController extends Controller
     {
         try {
             $data = new ProfileModel();
-            $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+            $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->position_name = $request->position_name;
@@ -34,7 +34,7 @@ class ProfileController extends Controller
             $data->permanent_address = $request->permanent_address;
             $data->phone_number = $request->phone_number;
             $data->email = $request->email;
-            $data->id_account = $id_account;
+            $data->account_id = $account_id;
             $data->employee_id =  $request->employee_id;
             $data->updateProfile();
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
@@ -55,8 +55,8 @@ class ProfileController extends Controller
             return json_encode((object)["status" => 400, "message" => "Mật khẩu mới không khớp"]);
         }
 
-        $id_account = $request->session()->get(StaticString::ACCOUNT_ID);
-        $account = AccountModel::where('id_account', $id_account)->first();
+        $account_id = $request->session()->get(StaticString::ACCOUNT_ID);
+        $account = AccountModel::where('account_id', $account_id)->first();
 
         if (!$account || !password_verify($currentPassword, $account->password)) {
             return json_encode((object)["status" => 400, "message" => "Mật khẩu hiện tại không đúng"]);

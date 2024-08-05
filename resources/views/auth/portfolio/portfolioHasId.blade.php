@@ -2,6 +2,7 @@
 
 @section('head')
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <style>
         .profile-img {
             width: 100px;
@@ -15,6 +16,13 @@
 
         .nav-link.active {
             border-bottom: 3px solid #007bff;
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
         }
     </style>
 @endsection
@@ -33,186 +41,245 @@
                 <li class="breadcrumb-item active">{{ $employee->employee_code }}</li>
             </ol>
         </nav>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center mt-3 mx-3">
+            <div class="col-4 mt-3 border-end">
+                <div class="d-flex align-items-center">
+                    @if (empty($employee->photo) || !file_exists(public_path($employee->photo)))
+                        <img src="{{ asset('assets/img/avt.png') }}" alt="Profile Image" class="profile-img">
+                    @else
+                        <img src="{{ asset($employee->photo) }}" alt="Profile Image" class="profile-img">
+                    @endif
+                    <div class="ms-3">
+                        <h4>{{ $employee->last_name . ' ' . $employee->first_name }}</h4>
+                        <p>
+                            @if (empty($department->department_name))
+                                No information
+                            @else
+                                {{ $department->department_name }}
+                            @endif
+                            <br>
+                            @if (empty($job_title->job_title))
+                                No information
+                            @else
+                                {{ $job_title->job_title }}
+                            @endif
+                            <br>
+                            Employee ID: {{ $employee->employee_code }}
+                            <br>
+                            Date of Join:
+                            @if (empty($dateOfJoin->start_date))
+                                No information
+                            @else
+                                {{ $dateOfJoin->start_date }}
+                            @endif
+                            <br>
+                            Status:
+                            @if ($status == 1)
+                                <i class="bi bi-circle-fill text-primary"></i> In project
+                            @elseif ($status == 2)
+                                <i class="bi bi-circle-fill text-success"></i> Free
+                            @elseif ($status == 3)
+                                <i class="bi bi-circle-fill text-warning"></i> On leave
+                            @elseif ($status == 4)
+                                <i class="bi bi-circle-fill text-danger"></i> Discipline
+                            @elseif ($status == 5)
+                                <i class="bi bi-circle-fill text-secondary"></i> Quit
+                            @endif
+                        </p>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3">Send Message</button>
+            </div>
+            <div class="col">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Phone:</strong>
+                        @if (!empty($contact->phone_number))
+                            {{ $contact->phone_number }}
+                        @else
+                            No information
+                        @endif
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Email:</strong>
+                        @if (!empty($account->email))
+                            {{ $account->email }}
+                        @else
+                            No information
+                        @endif
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Birthday:</strong>
+                        @if (!empty($employee->date_of_birth))
+                            {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('jS F Y') }}
+                        @else
+                            No information
+                        @endif
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Address:</strong>
+                        @if (!empty($contact->permanent_address))
+                            {{ $contact->permanent_address }}
+                        @else
+                            No information
+                        @endif
+                    </li>
+                    <li class="list-group-item"><strong>Gender:</strong>
+                        @if ($employee->gender == '0')
+                            Male
+                        @else
+                            Female
+                        @endif
+                    </li>
+                    <li class="list-group-item"><strong>Degree:</strong>
+                        @if (!empty($employee_degree->employee_degrees_name))
+                            {{ $employee_degree->employee_degrees_name }}
+                        @else
+                            No information
+                        @endif
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Projects</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Bank & Statutory</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row content">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Bank Information</h5>
+            </div>
+            <div class="card-body p-3">
+                <p>Bank name: ICICI Bank</p>
+                <p>Bank account No: 159843014641</p>
+                <p>IFSC Code: ICI24504</p>
+                <p>PAN No: TC000Y56</p>
+            </div>
+        </div>
 
         <div class="card mb-4">
-            <div class="card-body p-3 d-flex justify-content-between align-items-center mt-3 mx-3">
-                <div class="col-4 mt-3 border-end">
-                    <div class="d-flex align-items-center">
-                        @if (empty($employee->photo) || !file_exists(public_path($employee->photo)))
-                            <img src="{{ asset('assets/img/avt.png') }}" alt="Profile Image" class="profile-img">
-                        @else
-                            <img src="{{ asset($employee->photo) }}" alt="Profile Image" class="profile-img">
-                        @endif
-                        <div class="ms-3">
-                            <h4>{{ $employee->last_name . ' ' . $employee->first_name }}</h4>
-                            <p>
-                                UI/UX Design Team<br>
-                                Web Designer<br>
-                                Employee ID: {{ $employee->employee_code }}<br>
-                                Date of Join:
-                                @if (empty($dateOfJoin->job_certificate_start_day))
-                                    No information
-                                @else
-                                    {{ $dateOfJoin->job_certificate_start_day }}
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary mt-3">Send Message</button>
-                </div>
-                <div class="col">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <strong>Phone:</strong>
-                            @if (!empty($contact->phone_number))
-                                {{ $contact->phone_number }}
-                            @else
-                                No information
-                            @endif
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Email:</strong>
-                            @if (!empty($account->email))
-                                {{ $account->email }}
-                            @else
-                                No information
-                            @endif
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Birthday:</strong>
-                            {{-- 24th July --}}
-                            @if (!empty($employee->date_of_birth))
-                                {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('jS F Y') }}
-                            @else
-                                No information
-                            @endif
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Address:</strong>
-                            {{-- 1861 Bayonne Ave, Manchester Township, NJ, 08759 --}}
-                            @if (!empty($contact->permanent_address))
-                                {{ $contact->permanent_address }}
-                            @else
-                                No information
-                            @endif
-                        </li>
-                        <li class="list-group-item"><strong>Gender:</strong>
-                            @if ($employee->gender == '0')
-                                Male
-                            @else
-                                Female
-                            @endif
-                        </li>
-                        {{-- <li class="list-group-item"><strong>Reports to:</strong> Jeffery Lalor</li> --}}
-                    </ul>
-                </div>
+            <div class="card-header">
+                <h5>Personal Information</h5>
             </div>
+            <div class="card-body p-3">
+                <p>Passport No.: 9876543210</p>
+                <p>Passport Exp Date: 9876543210</p>
+                <p>Nationality: Indian</p>
+                <p>Marital status: Married</p>
+            </div>
+        </div>
 
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Projects</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Bank & Statutory <small class="text-muted">(Admin Only)</small></a>
-                </li>
-            </ul>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Recognitions</h5>
+            </div>
+            <div class="card-body p-3">
+                <table class="table table-hover" id="recognitionsTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Department</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Evaluate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($recognitions as $recognition)
+                            @if ($recognition->recognition_type && $recognition->recognition_date && $recognition->department)
+                                <tr>
+                                    <td>{{ $recognition->department->department_name }}</td>
+                                    <td>{{ $recognition->recognition_date }}
+                                    </td>
+                                    <td>{{ $recognition->recognition_type->recognition_type_name }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Experience</h5>
+            </div>
+            <div class="card-body p-3">
+                <p><strong>...</strong><br>...</p>
+                <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
+                <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Education Information</h5>
+            </div>
+            <div class="card-body p-3">
+                <p><strong>...</strong><br>
+                    ...<br>
+                    ...</p>
+                <p><strong>International College of Arts and Science (PG)</strong><br>
+                    MSc Computer Science<br>
+                    2000 - 2003</p>
+            </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="card">
+        <div class="card-body">
 
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Bank Information</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p>Bank name: ICICI Bank</p>
-                    <p>Bank account No: 159843014641</p>
-                    <p>IFSC Code: ICI24504</p>
-                    <p>PAN No: TC000Y56</p>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Personal Informations</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p>Passport No.: 9876543210</p>
-                    <p>Passport Exp Date: 9876543210</p>
-                    <p>Nationality: Indian</p>
-                    {{-- <p>Religion: Christian</p> --}}
-                    <p>Marital status: Married</p>
-                    {{-- <p>Employment of spouse: No</p> --}}
-                    {{-- <p>No. of children: 2</p> --}}
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-md-6">
-            {{-- <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Emergency Contact</h5>
-                </div>
-                <div class="card-body p-3">
-                    <h6>Primary</h6>
-                    <p>Name: John Doe</p>
-                    <p>Relationship: Father</p>
-                    <p>Phone: 9876543210, 9876543210</p>
-                    <h6>Secondary</h6>
-                    <p>Name: Karen Wills</p>
-                    <p>Relationship: Brother</p>
-                    <p>Phone: 9876543210, 9876543210</p>
-                </div>
-            </div> --}}
-
-            {{-- <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Family Informations</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p>Name: Leo</p>
-                    <p>Relationship: Brother</p>
-                    <p>Date of Birth: Feb 16th, 2019</p>
-                    <p>Phone: 9876543210</p>
-                </div>
-            </div> --}}
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Experience</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p><strong>Web Designer at Zen Corporation</strong><br>...</p>
-                    <p><strong>Web Designer at Ron-tech</strong><br>...</p>
-                    <p><strong>Web Designer at Dalt Technology</strong><br>...</p>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5>Education Informations</h5>
-                </div>
-                <div class="card-body p-3">
-                    <p><strong>International College of Arts and Science (UG)</strong><br>
-                        Bsc Computer Science<br>2000 - 2003</p>
-                    <p><strong>International College of Arts and Science (PG)</strong><br>
-                        Msc Computer Science<br>2000 -2003</p>
-                </div>
-            </div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Tạo hai thẻ div với lớp col-md-6
+            var $col1 = $('<div class="col-md-6"></div>');
+            var $col2 = $('<div class="col-md-6"></div>');
+
+            // Thêm các thẻ div vào row
+            $('.content').prepend($col1).append($col2);
+            $col1.css('height', 'max-content');
+            $col2.css('height', 'max-content');
+            Array.from(document.querySelectorAll('.content .card')).forEach(element => {
+                var height1 = $col1.outerHeight();
+                var height2 = $col2.outerHeight();
+                if (height1 > height2) {
+                    $col2.append(element);
+                } else {
+                    $col1.append(element);
+                }
+            });
+
+            // Khởi tạo DataTable
+            $('#recognitionsTable').DataTable({
+                "pagingType": "simple_numbers",
+                "pageLength": 10,
+                "lengthChange": false,
+                "searching": false,
+                "order": [
+                    [1, 'desc']
+                ]
+            });
+
+            // Xử lý khi nhấp vào các liên kết trong nav
             $('.nav-link').click(function() {
                 $('.nav-link').removeClass('active');
                 $(this).addClass('active');

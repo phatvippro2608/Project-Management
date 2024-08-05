@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class RecognitionController extends Controller
 {
+    public function get($recognition_id)
+    {
+        return DB::table("recognitions")->where('recognition_id', $recognition_id)->get();
+    }
     // Hàm này trả về view cùng với danh sách recognitions và employees
     public function getView()
     {
@@ -44,6 +48,46 @@ class RecognitionController extends Controller
             return response()->json(['status' => 200, 'message' => 'Added recognition']);
         } catch (\Exception $e) {
             return response()->json(['status' => 500, 'message' => 'Failed to add recognition', 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function update()
+    {
+        try {
+            $validated = request()->validate([
+                'recognition_id' => 'required|string',
+                'recognition_type_id' => 'required|string',
+                'recognition_date' => 'required|date',
+                'recognition_hidden' => 'nullable|boolean',
+                'description' => 'required|string',
+            ]);
+
+            // Xử lý giá trị của recognition_hidden
+            $validated['recognition_hidden'] = request()->has('recognition_hidden') ? True : False;
+
+            // Tìm bản ghi bằng recognition_id
+            $recognition = RecognitionModel::where('recognition_id', $validated['recognition_id'])->first();
+            if ($recognition) {
+                // Cập nhật bản ghi với dữ liệu đã được xác thực
+                $recognition->update($validated);
+                return response()->json(['status' => 200, 'message' => 'Updated recognition successfully']);
+            } else {
+                return response()->json(['status' => 404, 'message' => 'Recognition not found']);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Trả về lỗi xác thực cụ thể
+            return response()->json([
+                'status' => 422,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),  // Trả về chi tiết lỗi
+            ]);
+        } catch (\Exception $e) {
+            // Trả về lỗi hệ thống khác
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to update recognition',
+                'error' => $e->getMessage()
+            ]);
         }
     }
 

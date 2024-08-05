@@ -11,36 +11,35 @@
         </nav>
     </div>
 
-    <section class="section employees">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Employees List</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 m-0">
-                        <div class="btn btn-primary me-2">
-                            <div class="d-flex align-items-center at1">
-                                <i class="bi bi-file-earmark-plus pe-2"></i>
-                                Add
-                            </div>
-                        </div>
-                        <div class="btn btn-success mx-2">
-                            <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-                                <i class="bi bi-file-earmark-arrow-up pe-2"></i>
-                                Import
-                            </a>
-                        </div>
-                        <div class="btn btn-success mx-2 btn-export">
-                            <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
-                                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                                Export
-                            </a>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Employees List</div>
+        </div>
+        <div class="card-body">
+            <div class="row gx-3 my-3">
+                <div class="col-md-6 m-0">
+                    <div class="btn btn-primary me-2">
+                        <div class="d-flex align-items-center at1">
+                            <i class="bi bi-file-earmark-plus pe-2"></i>
+                            Add
                         </div>
                     </div>
+                    <div class="btn btn-success mx-2">
+                        <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
+                            <i class="bi bi-file-earmark-arrow-up pe-2"></i>
+                            Import
+                        </a>
+                    </div>
+                    <div class="btn btn-success mx-2 btn-export">
+                        <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
+                            <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                            Export
+                        </a>
+                    </div>
                 </div>
-                <table id="employeesTable" class="table table-hover table-borderless">
-                    <thead class="table-light">
+            </div>
+            <table id="employeesTable" class="table table-hover table-borderless">
+                <thead class="table-light">
                     <tr>
                         <th>Employee Code</th>
                         <th class="text-center">Photo</th>
@@ -50,52 +49,50 @@
                         <th>Phone</th>
                         <th>Action</th>
                     </tr>
-                    </thead>
-                    <tbody id="employeesTableBody">
-                            @foreach($data as $item)
-                                @if($item->fired == "false")
-                                    <tr>
-                                        <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
-                                        @php
-                                            $imageUrl = asset('assets/img/avt.png');
+                </thead>
+                <tbody id="employeesTableBody">
+                        @foreach($data as $item)
+                            @if($item->fired == "false")
+                                <tr>
+                                    <td><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
+                                    @php
+                                        $imageUrl = asset('assets/img/avt.png');
 
-                                            if($item->photo != null){
-                                                $imagePath = public_path($item->photo);
-                                                if(file_exists($imagePath)) {
-                                                    $imageUrl = asset($item->photo);
-                                                }
+                                        if($item->photo != null){
+                                            $imagePath = public_path($item->photo);
+                                            if(file_exists($imagePath)) {
+                                                $imageUrl = asset($item->photo);
                                             }
-                                        @endphp
-                                        <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
-                                        <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                        <td>{{$item->en_name}}</td>
-                                        <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
-                                        <td>{{$item->phone_number}}</td>
-                                        <td>
-                                                <?php
-                                                $id = $item->employee_id;
-                                                $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                                $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                                $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                                $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
-                                                ?>
-                                            <a href="{{action('App\Http\Controllers\EmployeesController@updateView', $id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            |
-                                            <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                        }
+                                    @endphp
+                                    <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
+                                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
+                                    <td>{{$item->en_name}}</td>
+                                    <td>{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
+                                    <td>{{$item->phone_number}}</td>
+                                    <td>
+                                            <?php
+                                            $id = $item->employee_id;
+                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                            $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
+                                            ?>
+                                        <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        |
+                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </section>
     <div class="modal fade md1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -139,12 +136,6 @@
                                             <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control phone_number" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Email</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control email" name="">
                                             </div>
                                         </div>
                                     </div>
@@ -278,7 +269,6 @@
                     'date_of_birth': $('.md1 .date_of_birth').val(),
                     'national': $('.md1 .national :checked').val(),
                     'phone_number': $('.md1 .phone_number').val(),
-                    'email': $('.md1 .email').val()
                 };
 
                 $.ajax({
@@ -303,6 +293,7 @@
                 });
             });
         });
+
         $('.at4').click(function () {
             var id = $(this).attr('data');
             if (confirm("Do you want to remove this employee?")){

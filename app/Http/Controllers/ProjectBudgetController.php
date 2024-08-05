@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostComissionModel;
 use App\Models\CostModel;
 use App\Models\CostGroupModel;
 use Illuminate\Http\Request;
@@ -46,17 +47,8 @@ class ProjectBudgetController extends Controller
         'project_name' => 'nullable|string',
         'project_description' => 'nullable|string',
         'project_address' => 'nullable|string',
-        'project_contact_name' => 'nullable|string',
-        'project_contact_website' => 'nullable|string',
-        'project_contact_phone' => 'nullable|string',
-        'project_contact_address' => 'nullable|string',
         'project_date_start' => 'nullable|date',
         'project_date_end' => 'nullable|date',
-        'project_contract_id' => 'nullable|exists:contracts,contract_id',
-        'project_contract_amount' => 'nullable|numeric',
-        'project_price_contingency' => 'nullable|numeric',
-        'contract_id' => 'nullable|integer',
-        'project_main_contractor' => 'nullable|string',
     ]);
 
     try {
@@ -65,17 +57,8 @@ class ProjectBudgetController extends Controller
             'project_name' => $request->input('project_name'),
             'project_description' => $request->input('project_description'),
             'project_address' => $request->input('project_address'),
-            'project_contact_name' => $request->input('project_contact_name'),
-            'project_contact_website' => $request->input('project_contact_website'),
-            'project_contact_phone' => $request->input('project_contact_phone'),
-            'project_contact_address' => $request->input('project_contact_address'),
             'project_date_start' => $request->input('project_date_start'),
             'project_date_end' => $request->input('project_date_end'),
-            'project_contract_id' => $request->input('project_contract_id'),
-            'project_contract_amount' => $request->input('project_contract_amount'),
-            'project_price_contingency' => $request->input('project_price_contingency'),
-            'contract_id' => $request->input('contract_id'),
-            'project_main_contractor' => $request->input('project_main_contractor'),
         ]);
 
         return response()->json([
@@ -96,11 +79,16 @@ class ProjectBudgetController extends Controller
 public function showProjectDetail($id)
 {
     $data = DB::table('projects')->where('project_id', $id)->first();
+    $prj = ProjectModel::find($id);
+    if ($prj){
+        // Gọi phương thức getCustomer để lấy thông tin khách hàng
+        $customer = $prj->getCustomer();
+        $contract = $prj->getContract();
+        $contactEmployee = $prj->getEmployee();
+    }
     $total = 0;
     $subtotal1 = 0;
     $items = DB::table('project_costs')->where('project_id', $id)->get();
-    $contracts = DB::table('contracts')->get();
-
     foreach ($items as $item) {
         $subtotal2 = $item->project_cost_labor_qty *
                     $item->project_cost_budget_qty *
@@ -116,15 +104,16 @@ public function showProjectDetail($id)
         'data' => $data,
         'id' => $id,
         'total' => $total,
-        'contracts' => $contracts,
-        'contractsJson' => $contracts->toJson()
+        'contract' => $contract,
+        'contactEmployee' => $contactEmployee,
+        'customer' => $customer
     ]);
 }
 
 
     public function editBudget($id)
     {
-        $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
+        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
         $dataCostGroupData = DB::table('project_cost_datagroup')->get();
@@ -147,7 +136,7 @@ public function showProjectDetail($id)
 
         try {
             // Lấy dữ liệu ngân sách
-            $budgetData = DB::table('project_cost')
+            $budgetData = DB::table('project_costs')
             ->where('project_cost_id', $costId)
             ->get();
             return response()->json($budgetData);
@@ -200,7 +189,7 @@ public function showProjectDetail($id)
 
     try {
         // Cập nhật dữ liệu ngân sách
-        DB::table('project_cost')
+        DB::table('project_costs')
             ->where('project_cost_id', $costId)
             ->update($data);
 
@@ -214,7 +203,7 @@ public function showProjectDetail($id)
     public function deleteBudget($project_id, $cost_id)
     {
         try {
-            DB::table('project_cost')->where('project_cost_id', $cost_id)->delete();
+            DB::table('project_costs')->where('project_cost_id', $cost_id)->delete();
             return response()->json(['success' => true, 'message' => 'Cost item deleted successfully.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to delete cost item.']);
@@ -275,7 +264,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
             <input type="text" class="form-control" id="description" name="description" value="' . htmlspecialchars($costGroup->description) . '">
         </div>
         <div class="form-group">
-            <label for="labor_qty">LABOR QTY</label>
+            <label for="labor_qty">LABOR QTY</label>s
             <input type="number" class="form-control" id="labor_qty" name="labor_qty" value="' . htmlspecialchars($costGroup->labor_qty) . '">
         </div>
         <div class="form-group">
@@ -296,7 +285,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
         </div>
         <div class="form-group">
             <label for="misc_cost">MISC. COST</label>
-            <input type="number" class="form-control" id="misc_cost" name="misc_cost" value="' . htmlspecialchars($costGroup->misc_cost) . '">
+            <input type="number" class="form-control" id="misc_cost" name="misc_cot" value="' . htmlspecialchars($costGroup->misc_cost) . '">
         </div>
         <div class="form-group">
             <label for="ot_budget">OT BUDGET</label>
@@ -435,47 +424,58 @@ public function exportCsv($id)
     }
     public function updateCommission(Request $request, $project_id, $commission_id)
 {
-    dd($request);
-    // Validate the incoming request data
-    $validated = $request->validate([
-        'description' => 'required|string|max:255',
-        'amount' => 'required|numeric',
-    ]);
+    $costCommission = CostComissionModel::find($commission_id);
 
-    try {
-        // Find the commission by ID
-        $commission = DB::table('project_cost_commissions')->where('commission_id', $commission_id)->first();
-
-        // Check if the commission exists
-        if (!$commission) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Commission not found'
-            ], 404);
-        }
-
-        // Update the commission
-        DB::table('project_cost_commissions')->where('commission_id', $commission_id)->update([
-            'description' => $validated['description'],
-            'amount' => $validated['amount']
-        ]);
-
-        // Return success response
-        return response()->json([
-            'success' => true,
-            'message' => 'Commission updated successfully!'
-        ]);
-    } catch (\Exception $e) {
-        // Log the error for debugging
-        \Log::error('Error updating commission: ' . $e->getMessage());
-
-        // Return a generic error response
+    if (!$costCommission) {
         return response()->json([
             'success' => false,
-            'message' => 'An error occurred while updating the commission.'
-        ], 500);
+            'message' => 'Commission not found.'
+        ], 404);
+    }
+
+    $costCommission->description = $request->input('description');
+    $costCommission->amount = $request->input('amount');
+    $costCommission->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Cost commission updated successfully.'
+    ]);
+}
+public function addNewCommission(Request $request, $project_id, $group_id)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'description' => 'required|string|max:255',
+        'amount' => 'required|numeric|min:0'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => $validator->errors()->first()
+        ]);
+    }
+
+    // Create new commission entry
+    $CommissionCost = new CostComissionModel();
+    $CommissionCost->project_id = $project_id; // Assuming this needs to be set
+    $CommissionCost->groupcommission_id = $group_id;
+    $CommissionCost->description = $request->input('description');
+    $CommissionCost->amount = $request->input('amount');
+
+    if ($CommissionCost->save()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Commission added successfully!',
+            'commission' => $CommissionCost // Return the new commission data
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to add commission.'
+        ]);
     }
 }
-
-
 }
+

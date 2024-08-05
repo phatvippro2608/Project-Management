@@ -10,8 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 
 @section('contents')
@@ -183,7 +181,6 @@
 
 @endsection
 @section('script')
-<<<<<<< Updated upstream
 <script>
     var table = $('#recognitionTable').DataTable({
         responsive: true,
@@ -200,18 +197,6 @@
         },
             {
                 extend: 'excelHtml5',
-=======
-    <script>
-        // $('#employee_id').select2({
-        //     tags: true
-        // });
-
-        var table = $('#recognitionTable').DataTable({
-            responsive: true,
-            dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
-            buttons: [{
-                extend: 'csv',
->>>>>>> Stashed changes
                 className: 'btn btn-primary',
                 exportOptions: {
                     columns: ':not(:last-child)'

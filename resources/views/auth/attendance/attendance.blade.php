@@ -24,68 +24,71 @@
         position: absolute;
         z-index: 1;
     }
+
     .employee-item:hover{
         background-color: #3FA2F6;
         color: white;
     }
+    td, th {
+        text-align: center !important;
+    }
+
 </style>
 <div class="pagetitle">
     <h1>Attendance</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item active">Attendance</li>
         </ol>
     </nav>
 </div>
-<div class="section employees">
-    <div class="card">
-        <div class="card-header">
-            <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-plus"></i> Add Attendance</a>
-            <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-info text-white"><i class="bi bi-file-earmark-fill"></i> Attendance Report</a>
-        </div>
-        <div class="card-body">
-            <table id="attendanceTable" class="display">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Employee Name</th>
-                        <th scope="col" style="width: 12%;">Employee ID</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Sign In</th>
-                        <th scope="col">Sign Out</th>
-                        <th scope="col">Working</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($attendance as $data)
-                    @php
-                    $working = null;
-                    if ($data->sign_in && $data->sign_out) {
-                    $working = strtotime($data->sign_out) - strtotime($data->sign_in);
-                    $working = date('H:i', $working);
-                    }
-                    $name=DB::table('employees')->where('employee_id', $data->employee_id)->first()->first_name;
-                    $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
-                    @endphp
-                    <tr>
-                        <td>{{ $data->attendance_id }}</td>
-                        <td>{{ $name }}</td>
-                        <td>{{ $data->employee_id }}</td>
-                        <td>{{ $data->date }}</td>
-                        <td>{{ $data->sign_in }}</td>
-                        <td>{{ $data->sign_out }}</td>
-                        <td>{{ $working }}</td>
-                        <td>
-                            <button data-attendance="{{ $data->attendance_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
-                            <button data-attendance="{{ $data->attendance_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+<div class="card border rounded-4 p-2">
+    <div class="card-header">
+        <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-primary text-white"><i class="bi bi-plus-lg"></i> Add Attendance</a>
+        <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-primary text-white"><i class="bi bi-file-earmark-fill"></i> Attendance Report</a>
+    </div>
+    <div class="card-body">
+        <table id="attendanceTable" class="display">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Employee Name</th>
+                    <th scope="col" style="width: 12%;">Employee ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Sign In</th>
+                    <th scope="col">Sign Out</th>
+                    <th scope="col">Working</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($attendance as $data)
+                @php
+                $working = null;
+                if ($data->sign_in && $data->sign_out) {
+                $working = strtotime($data->sign_out) - strtotime($data->sign_in);
+                $working = date('H:i', $working);
+                }
+                $name=DB::table('employees')->where('employee_id', $data->employee_id)->first()->first_name;
+                $name .= ' ' . DB::table('employees')->where('employee_id', $data->employee_id)->first()->last_name;
+                @endphp
+                <tr>
+                    <td>{{ $data->attendance_id }}</td>
+                    <td>{{ $name }}</td>
+                    <td>{{ $data->employee_id }}</td>
+                    <td>{{ $data->date }}</td>
+                    <td>{{ $data->sign_in }}</td>
+                    <td>{{ $data->sign_out }}</td>
+                    <td>{{ $working }}</td>
+                    <td>
+                        <button data-attendance="{{ $data->attendance_id }}" class="btn btn-primary" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
+                        <button data-attendance="{{ $data->attendance_id }}" class="btn btn-danger" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -128,7 +131,7 @@
                                 $defaultPhoto = asset('assets/img/avt.png');
                                 $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
                                 @endphp
-                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->first_name  . ' ' . $employee->last_name }}">
+                                <div class="employee-item d-flex align-items-center" data-id="{{ $employee->employee_id }}" data-value="{{ $employee->last_name  . ' ' . $employee->first_name }}">
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover ms-2" width="22" height="22">
                                     <div class="empl_val ms-1"></div>
                                 </div>
