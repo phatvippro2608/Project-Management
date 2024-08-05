@@ -301,7 +301,7 @@
                     </thead>
                     <tbody>
                         @foreach ($projects as $project)
-                            <tr data-href="{{ route('portfolio.id', ['id' => $item->employee_code]) }}">
+                            <tr data-href="{{ url('project/' . $project->project_id) }}" role="button">
                                 <td class="text-center">{{ $project->project_id }}</td>
                                 <td>{{ $project->project_name }}</td>
                                 <td>{{ $project->project_date_start }}</td>
@@ -389,7 +389,11 @@
                 ]
             });
 
-            $('#table--project').DataTable();
+            $('#table--project').DataTable({
+                "order": [
+                    [3, 'desc']
+                ]
+            });
 
             $('#content').addClass('active');
             content();
@@ -400,6 +404,12 @@
                 var target = $(this).data('target');
                 $(target).addClass('active');
             });
+        });
+        $('#table--project').on('click', 'tr', function() {
+            var url = $(this).data('href');
+            if (url) {
+                window.location.href = url;
+            }
         });
     </script>
 @endsection
