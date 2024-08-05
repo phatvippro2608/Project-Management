@@ -202,7 +202,7 @@ class EmployeesController extends Controller
             ->join('job_type_contracts', 'job_type_contracts.type_contract_id', '=', 'job_details.job_type_contract_id')
             ->join('job_teams', 'job_teams.team_id', '=', 'job_details.job_team_id')
             ->join('job_countries', 'job_countries.country_id', '=', 'job_details.job_country_id')
-            ->join('job_levels', 'job_levels.id_level', '=', 'job_details.job_level_id')
+            ->join('job_levels', 'job_levels.level_id', '=', 'job_details.job_level_id')
             ->join('job_locations', 'job_locations.location_id', '=', 'job_details.job_location_id')
             ->join('job_positions', 'job_positions.position_id', '=', 'job_details.job_position_id')
             ->where('employee_id',$employee_id)->get();
