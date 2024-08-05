@@ -72,7 +72,8 @@ class PortfolioController extends Controller
             ->select('projects.*', 'phases.phase_name_eng')
             ->get();
 
-        $status = 1;
+        $status = 2;
+        
 
         return view(
             'auth.portfolio.portfolioHasId',

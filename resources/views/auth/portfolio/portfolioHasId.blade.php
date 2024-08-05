@@ -103,8 +103,6 @@
                             @elseif ($status == 3)
                                 <i class="bi bi-circle-fill text-warning"></i> On leave
                             @elseif ($status == 4)
-                                <i class="bi bi-circle-fill text-danger"></i> Discipline
-                            @elseif ($status == 5)
                                 <i class="bi bi-circle-fill text-secondary"></i> Quit
                             @endif
                         </p>
