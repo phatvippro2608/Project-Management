@@ -16,10 +16,8 @@
                 <button class="btn btn-primary" id="addHolidayBtn" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
                     <i class="bi bi-plus-lg me-2"></i> Add Holiday
                 </button>
-                <a id="leaveApplicationBtn"
-                   class="btn btn-secondary"
-                   href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-                >
+                <a id="leaveApplicationBtn" class="btn btn-secondary"
+                    href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
                     <i class="bi bi-list me-2"></i>Leave Application
                 </a>
             </div>
@@ -42,35 +40,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($holidays as $holiday)
-                            <tr>
-                                <td>{{ $holiday->name }}</td>
-                                <td>{{ $holiday->start_date }}</td>
-                                <td>{{ $holiday->end_date }}</td>
-                                <td>{{ $holiday->days }}</td>
-                                <td>{{ $holiday->year }}</td>
-                                <td>
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="{{ $holiday->id }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    |
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="{{ $holiday->id }}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach ($holidays as $holiday)
+                                <tr>
+                                    <td>{{ $holiday->name }}</td>
+                                    <td>{{ $holiday->start_date }}</td>
+                                    <td>{{ $holiday->end_date }}</td>
+                                    <td>{{ $holiday->days }}</td>
+                                    <td>{{ $holiday->year }}</td>
+                                    <td>
+                                        <button
+                                            class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                            data-id="{{ $holiday->holiday_id }}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        |
+                                        <button
+                                            class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                            data-id="{{ $holiday->holiday_id }}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
         <!-- Add Holiday Modal -->
-        <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addHolidayModal" tabindex="-1" aria-labelledby="addHolidayModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -124,7 +123,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="edit_start_date" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                                <input type="date" class="form-control" id="edit_start_date" name="start_date"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="edit_end_date" class="form-label">End Date</label>
@@ -145,15 +145,16 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('script')
     <script>
         $(document).ready(function() {
             var table = $('#holidaysTable').DataTable({
-                language: { search: "" },
-                initComplete: function (settings, json) {
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
@@ -183,12 +184,12 @@
                                 response.holiday.days,
                                 response.holiday.year,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.holiday.holiday_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.holiday.holiday_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
@@ -214,7 +215,7 @@
                     url: '{{ url('leave/holidays') }}/' + holidaysID + '/edit',
                     method: 'GET',
                     success: function(response) {
-                        $('#editHolidayId').val(response.holiday.id);
+                        $('#editHolidayId').val(response.holiday.holiday_id);
                         $('#edit_name').val(response.holiday.name);
                         $('#edit_start_date').val(response.holiday.start_date);
                         $('#edit_end_date').val(response.holiday.end_date);
@@ -248,12 +249,12 @@
                                 response.holiday.days,
                                 response.holiday.year,
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.holiday.holiday_id + '">' +
                                 '<i class="bi bi-pencil-square"></i>' +
                                 '</button>' +
                                 ' | ' +
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                                response.holiday.id + '">' +
+                                response.holiday.holiday_id + '">' +
                                 '<i class="bi bi-trash3"></i>' +
                                 '</button>'
                             ]).draw();
@@ -271,7 +272,7 @@
 
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "Do you want to delete this holiday?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -279,17 +280,19 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        var url = '{{ route('holidays.destroy', ':id') }}'.replace(':id',
+                            holidaysID);
                         $.ajax({
-                            url: '{{ url('leave/holidays') }}/' + holidaysID,
+                            url: url,
                             method: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
                             success: function(response) {
                                 if (response.success) {
+                                    table.row(row).remove().draw();
                                     toastr.success(response.message,
                                         "Deleted successfully");
-                                    table.row(row).remove().draw();
                                 } else {
                                     toastr.error("Failed to delete holiday.",
                                         "Operation Failed");
@@ -302,7 +305,6 @@
                     }
                 });
             });
-
 
             function addDateValidation(startDateInput, endDateInput, daysInput, monthYearInput) {
                 function calculateDays() {
@@ -396,9 +398,9 @@
 @endsection
 @section('head')
     <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+        href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js">
