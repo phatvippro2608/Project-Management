@@ -67,13 +67,13 @@
                         <div class="col-sm-8">
                             <div class="d-flex">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" @if($item->gender ?? '' == "0") checked @endif>
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" @if($item->gender == "0") checked @endif>
                                     <label class="form-check-label" for="male">
                                         Male
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1" @if($item->gender ?? '' == "1") checked @endif>
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1" @if($item->gender == "1") checked @endif>
                                     <label class="form-check-label" for="female">
                                         Female
                                     </label>

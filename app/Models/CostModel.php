@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CostModel extends Model
 {
     use HasFactory;
-    protected $table = 'project_cost';
+    protected $table = 'project_costs';
     protected $primaryKey = 'project_cost_id';
     public $timestamps = false; // Disable timestamps
 

@@ -4,6 +4,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <style>
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
         .profile-img {
             width: 100px;
             height: 100px;
@@ -23,6 +30,18 @@
             width: 10px;
             border-radius: 50%;
             display: inline-block;
+        }
+
+        #content,
+        #card,
+        #bank-content {
+            display: none;
+        }
+
+        #content.active,
+        #card.active,
+        #bank-content.active {
+            display: flex;
         }
     </style>
 @endsection
@@ -84,8 +103,6 @@
                             @elseif ($status == 3)
                                 <i class="bi bi-circle-fill text-warning"></i> On leave
                             @elseif ($status == 4)
-                                <i class="bi bi-circle-fill text-danger"></i> Discipline
-                            @elseif ($status == 5)
                                 <i class="bi bi-circle-fill text-secondary"></i> Quit
                             @endif
                         </p>
@@ -147,18 +164,18 @@
 
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" href="#">Profile</a>
+                <span class="nav-link active no-select" id="profile" data-target="#content">Profile</span>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Projects</a>
+                <span class="nav-link no-select" id="projects" data-target="#card">Projects</span>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Bank & Statutory</a>
+                <span class="nav-link no-select" id="bank" data-target="#bank-content">Bank & Statutory</span>
             </li>
         </ul>
     </div>
 
-    <div class="row content">
+    <div class="row content" id="content">
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Bank Information</h5>
@@ -214,6 +231,35 @@
 
         <div class="card mb-4">
             <div class="card-header">
+                <h5>Disciplinaries</h5>
+            </div>
+            <div class="card-body p-3">
+                <table class="table table-hover" id="disciplinariesTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Department</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Evaluate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($disciplinaries as $disciplinarie)
+                            @if ($disciplinarie->disciplinarie_type && $disciplinarie->disciplinary_date && $disciplinarie->department)
+                                <tr>
+                                    <td>{{ $disciplinarie->department->department_name }}</td>
+                                    <td>{{ $disciplinarie->disciplinary_date }}
+                                    </td>
+                                    <td>{{ $disciplinarie->disciplinarie_type->disciplinarie_type_name }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
                 <h5>Experience</h5>
             </div>
             <div class="card-body p-3">
@@ -238,10 +284,60 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="card">
         <div class="card-body">
-
+            <div class="col p-3">
+                <table id="table--project" class="table table-hover no-select">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Project ID</th>
+                            <th scope="col">Project Name</th>
+                            <th scope="col">StartDate</th>
+                            <th scope="col">EndDate</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($projects as $project)
+                            <tr data-href="{{ url('project/' . $project->project_id) }}" role="button">
+                                <td class="text-center">{{ $project->project_id }}</td>
+                                <td>{{ $project->project_name }}</td>
+                                <td>{{ $project->project_date_start }}</td>
+                                <td>{{ $project->project_date_end }}</td>
+                                <th>
+                                    <span
+                                        class="badge rounded-pill
+                                    @switch($project->phase_id)
+                                        @case(1)
+                                            bg-primary
+                                            @break
+                                        @case(2)
+                                            bg-info
+                                            @break
+                                        @case(3)
+                                            bg-success
+                                            @break
+                                        @case(4)
+                                            bg-warning
+                                            @break
+                                        @case(5)
+                                            bg-danger
+                                            @break
+                                        @default
+                                            bg-secondary
+                                    @endswitch">
+                                        {{ $project->phase_name_eng }}
+                                    </span>
+                                </th>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+
+    <div class="bank-content" id="bank-content">
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -250,23 +346,25 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Tạo hai thẻ div với lớp col-md-6
-            var $col1 = $('<div class="col-md-6"></div>');
-            var $col2 = $('<div class="col-md-6"></div>');
+            function content() {
+                // Tạo hai thẻ div với lớp col-md-6
+                var $col1 = $('<div class="col-md-6"></div>');
+                var $col2 = $('<div class="col-md-6"></div>');
 
-            // Thêm các thẻ div vào row
-            $('.content').prepend($col1).append($col2);
-            $col1.css('height', 'max-content');
-            $col2.css('height', 'max-content');
-            Array.from(document.querySelectorAll('.content .card')).forEach(element => {
-                var height1 = $col1.outerHeight();
-                var height2 = $col2.outerHeight();
-                if (height1 > height2) {
-                    $col2.append(element);
-                } else {
-                    $col1.append(element);
-                }
-            });
+                // Thêm các thẻ div vào row
+                $('.content').prepend($col1).append($col2);
+                $col1.css('height', 'max-content');
+                $col2.css('height', 'max-content');
+                Array.from(document.querySelectorAll('.content .card')).forEach(element => {
+                    var height1 = $col1.outerHeight();
+                    var height2 = $col2.outerHeight();
+                    if (height1 > height2) {
+                        $col2.append(element);
+                    } else {
+                        $col1.append(element);
+                    }
+                });
+            }
 
             // Khởi tạo DataTable
             $('#recognitionsTable').DataTable({
@@ -279,11 +377,37 @@
                 ]
             });
 
-            // Xử lý khi nhấp vào các liên kết trong nav
+            $('#disciplinariesTable').DataTable({
+                "pagingType": "simple_numbers",
+                "pageLength": 10,
+                "lengthChange": false,
+                "searching": false,
+                "order": [
+                    [1, 'desc']
+                ]
+            });
+
+            $('#table--project').DataTable({
+                "order": [
+                    [3, 'desc']
+                ]
+            });
+
+            $('#content').addClass('active');
+            content();
             $('.nav-link').click(function() {
                 $('.nav-link').removeClass('active');
+                $('.row.content, .card, .bank-content').removeClass('active');
                 $(this).addClass('active');
+                var target = $(this).data('target');
+                $(target).addClass('active');
             });
+        });
+        $('#table--project').on('click', 'tr', function() {
+            var url = $(this).data('href');
+            if (url) {
+                window.location.href = url;
+            }
         });
     </script>
 @endsection
