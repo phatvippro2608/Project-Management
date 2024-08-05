@@ -97,10 +97,10 @@
                                 ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + applyDate.getDate()).slice(-2);
 
-                            var statusClass = report.leave_status === 'approved' ?
+                            var statusClass = report.leave_status === 'Approved' ?
                                 'text-success' : 'text-danger';
-                            var statusText = report.leave_status === 'approved' ?
-                                '<strong>approved</strong>' : '<strong>not approved</strong>';
+                            var statusText = report.leave_status === 'Approved' ?
+                                '<strong>Approved</strong>' : '<strong>Not approved</strong>';
 
                             table.row.add([
                                 report.employee.employee_code,
@@ -142,11 +142,11 @@
                                 ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + applyDate.getDate()).slice(-2);
 
-                            var statusClass = report.leave_status === 'approved' ?
+                            var statusClass = report.leave_status === 'Approved' ?
                                 'text-success' : 'text-danger';
-                            var statusText = report.leave_status === 'approved' ?
-                                '<strong>approved</strong>' :
-                                '<strong>not approved</strong>';
+                            var statusText = report.leave_status === 'Approved' ?
+                                '<strong>Approved</strong>' :
+                                '<strong>Not approved</strong>';
 
                             table.row.add([
                                 report.employee.employee_code,
@@ -204,7 +204,7 @@
 
                                     row.find('td').eq(3).html(formattedDate);
                                     row.find('td').eq(7).html(
-                                        '<span class="text-success"><strong>approved</strong></span>'
+                                        '<span class="text-success"><strong>Approved</strong></span>'
                                     );
                                     toastr.success(response.message,
                                         "Approved successfully");

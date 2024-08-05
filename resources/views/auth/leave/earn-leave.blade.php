@@ -18,7 +18,7 @@
             <table id="applicationTable" class="table table-borderless table-hover">
                 <thead class="table-light">
                 <tr>
-                    <th class="text-start">Employee Pin</th>
+                    <th class="text-start">Employee Code</th>
                     <th>Employee Name</th>
                     <th>Total Hour</th>
                 </tr>
