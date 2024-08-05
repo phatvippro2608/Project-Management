@@ -46,7 +46,7 @@
             <div class="card-title my-3 p-0">Leave Report</div>
         </div>
         <div class="card-body">
-            <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
+            <table id="leavereportsTable" class="table table-borderless table-hover">
                 <thead>
                     <tr>
                         <th>Employee_Code</th>

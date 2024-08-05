@@ -24,7 +24,7 @@
         </div>
         <div class="card p-2 rounded-4 border">
             <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Employees List</div>
+                <div class="card-title my-3 p-0">Holiday List</div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
