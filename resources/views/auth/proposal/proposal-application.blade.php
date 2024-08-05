@@ -38,8 +38,7 @@
             </div>
             @if ($data['permission'] == 3)
                 <div class="btn btn-success mx-2 btn-export">
-                    <a href="{{route('proposal-application.export',[
-                                                                    'permission'  => $data['permission'],
+                    <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
                                                                     'employee_id' => $data['employee_current']->employee_id
                                                                     ])}}"
                        class="d-flex align-items-center text-white">
