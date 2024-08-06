@@ -43,6 +43,8 @@ class AccountController extends Controller
         return Session::get(StaticString::PERMISSION);
     }
 
+
+
     function position(Request $request)
     {
         $request->session()->put(StaticString::POSITION, $request->input('position'));

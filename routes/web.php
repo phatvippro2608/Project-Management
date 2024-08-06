@@ -68,16 +68,24 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{customer_id}', 'App\Http\Controllers\CustomerController@getUpdateView');
         Route::post('/update', 'App\Http\Controllers\CustomerController@update');
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
+        Route::get('/query', 'App\Http\Controllers\CustomerController@query');
     });
 
 
 
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
-        Route::get('/team', 'App\Http\Controllers\TeamController@getView');
+        Route::get('/', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
+
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
+        Route::put('/add-employees', 'App\Http\Controllers\TeamDetailsController@add');
+        Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
+        Route::delete('/delete-employees', 'App\Http\Controllers\TeamDetailsController@delete');
     });
+
+
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');

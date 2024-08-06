@@ -13,6 +13,16 @@
             margin-bottom: 1px;
             margin-right: 5px;
         }
+        .hover-details{
+            text-decoration: none;
+            color: var(--bs-primary);
+        }
+        .hover-details:hover{
+            text-decoration: underline;
+            opacity: 1;
+            color: var(--bs-primary);
+        }
+
     </style>
 @endsection
 @section('contents')
@@ -38,7 +48,7 @@
                 <table id="teamListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center" style="width: 112px">Action</th>
+                            <th class="text-center" style="width: 60px!important;">Action</th>
                             <th class="text-center">Team name</th>
                             <th class="text-center">Team Description</th>
                             <th class="text-center">Created by</th>
@@ -53,7 +63,6 @@
                                 <td class="text-center">
                                     <div class="d-flex align-items-center justify-content-center">
                                         <div class="d-flex align-items-center">
-    {{--                                                        <input type="checkbox" name="" id="" class="custom-checkbox-lg">--}}
                                             <a class=" edit">
                                                 <i class="bi bi-pencil-square ic-update ic-btn at2"
                                                    data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
@@ -67,10 +76,12 @@
                                     </div>
 
                                 </td>
-                                <td class="text-center">
-                                    {{$item->team_name}}
+                                <td class="text-left fw-bold pt-1 pb-1">
+                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details">
+                                        {{$item->team_name}}
+                                    </a>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-left">
                                     {{$item->team_description}}
                                 </td>
                                 <td class="text-center">
@@ -260,5 +271,7 @@
                 }
             });
         })
+
+
     </script>
 @endsection

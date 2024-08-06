@@ -1,4 +1,4 @@
-@extends('auth.customer.main')
+@extends('auth.main')
 
 @section('head')
     <style>
@@ -54,8 +54,8 @@
                     <div class="card-header">
                         <div class="col-md-12 position-relative">
                             <h5 class="w-100 text-center fw-bolder">Customer Info</h5>
-                            <div class="edit-customer position-absolute">
-                                <i class="bi bi-pencil-fill"></i>
+                            <div class="edit-customer position-absolute btn-open-update">
+                                <i class="bi bi-pencil-fill btn-save"></i>
                             </div>
                         </div>
                     </div>
@@ -81,13 +81,13 @@
                                 <label for="">
                                     Date of birth
                                 </label>
-                                <input type="date" class="form-control name4" value="{{$customer['date_of_birth']}}" disabled>
+                                <input type="date" class="form-control name3" value="{{$customer['date_of_birth']}}" disabled>
                             </div>
                             <div class="col-md-6" style="margin-top: 1rem">
                                 <label for="">
                                     Phone number
                                 </label>
-                                <input type="text" class="form-control name8" value="{{$customer['phone_number']}}" disabled>
+                                <input type="text" class="form-control name4" value="{{$customer['phone_number']}}" disabled>
                             </div>
                         </div>
 
@@ -96,7 +96,7 @@
                                 <label for="">
                                     Email
                                 </label>
-                                <input type="text" class="form-control name3" value="{{$customer['email']}}" disabled>
+                                <input type="text" class="form-control name5" value="{{$customer['email']}}" disabled>
                             </div>
                         </div>
 
@@ -117,7 +117,7 @@
                             <label for="">
                                 Status
                             </label>
-                            <select type="text" class="form-select name5" disabled>
+                            <select type="text" class="form-select name8" disabled>
                                 @foreach($status as $key => $value)
                                     <option value="{{$key}}">{{$value}}</option>
                                 @endforeach
@@ -125,7 +125,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-none border-danger at1 text-danger fw-bolder">Delete
+                        <button type="button" class="btn btn-none border-danger at1 text-danger fw-bolder btn-delete">Delete
                             Customer
                         </button>
                     </div>
@@ -176,42 +176,79 @@
 @section('script')
     <script>
         $('.name5').val({{$customer['status']}});
+        $('.btn-open-update').click(() => {
+            for (let i = 1; i <= 8; i++) {
+                $(`.name${i}`).prop('disabled', (i, val) => !val);
+            }
 
-        {{--$('.at1').click(function () {--}}
-        {{--    $.ajax({--}}
-        {{--        url: `{{action('App\Http\Controllers\CustomerController@add')}}`,--}}
-        {{--        type: "PUT",--}}
-        {{--        headers: {--}}
-        {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--        },--}}
-        {{--        data: {--}}
-        {{--            'first_name': $('.name1').val(),--}}
-        {{--            'last_name': $('.name2').val(),--}}
-        {{--            'email': $('.name3').val(),--}}
-        {{--            'date_of_birth': $('.name4').val(),--}}
-        {{--            'status': $('.name5').val(),--}}
-        {{--            'address': $('.name6').val(),--}}
-        {{--            'company_name': $('.name7').val(),--}}
-        {{--            'phone_number': $('.name8').val(),--}}
+            const icon = $('.btn-open-update i');
+            if (icon.hasClass('bi-pencil-fill')) {
+                icon.removeClass('bi-pencil-fill').addClass('bi-floppy2');
+            } else {
+                icon.removeClass('bi-floppy2').addClass('bi-pencil-fill');
+            }
+        });
+        $('.btn-save').click(function () {
+            if($('.btn-save').hasClass('bi-floppy2')){
+                $.ajax({
+                    url: `{{action('App\Http\Controllers\CustomerController@update')}}`,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'customer_id': {{$customer->customer_id}},
+                        'first_name': $('.name1').val(),
+                        'last_name': $('.name2').val(),
+                        'date_of_birth': $('.name3').val(),
+                        'phone_number': $('.name4').val(),
+                        'email': $('.name5').val(),
 
-        {{--            'contract_name': $('.name21').val(),--}}
-        {{--            'contract_date': $('.name22').val(),--}}
-        {{--            'contract_end_date': $('.name23').val(),--}}
-        {{--            'contract_details': $('.name24').val()--}}
-        {{--        },--}}
-        {{--        success: function (result) {--}}
-        {{--            result = JSON.parse(result);--}}
-        {{--            if (result.status === 200) {--}}
-        {{--                toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                setTimeout(function () {--}}
-        {{--                    window.location.reload();--}}
-        {{--                }, 300);--}}
-        {{--            } else {--}}
-        {{--                toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--});--}}
+                        'address': $('.name6').val(),
+                        'company_name': $('.name7').val(),
+                        'status': $('.name8').val(),
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Thao tác thành công");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            toastr.error(result.message, "Thao tác thất bại");
+                        }
+                    }
+                });
+            }
+
+        });
+        $('.btn-delete').click(function (){
+            if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
+                return;
+            }
+            $.ajax({
+                url: `{{action('App\Http\Controllers\CustomerController@delete')}}`,
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'customer_id': {{$customer->customer_id}},
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Thao tác thành công");
+                        setTimeout(function () {
+                            window.location.href = "{{action('App\Http\Controllers\CustomerController@getView')}}";
+                        }, 500);
+                    } else {
+                        toastr.error(result.message, "Thao tác thất bại");
+                    }
+                }
+            });
+        })
     </script>
 @endsection
 

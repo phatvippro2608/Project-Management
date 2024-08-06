@@ -24,7 +24,7 @@
 }
 
 .form-control {
-    padding-right: 40px;
+    /*padding-right: 40px;*/
 }
 
 
@@ -51,6 +51,16 @@
     opacity: 1;
     transform: translateX(-28px);
     transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.account-photo2{
+    max-height: 36px!important;
+    width: 36px!important;
+    height: 36px!important;
+}
+.account-list .account-photo2 {
+    background-color: transparent;
+    opacity: 1;
 }
 
 .account-list tr:hover .account-photo {
