@@ -68,21 +68,27 @@ class CustomerController extends Controller
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
+        $count = DB::table('customers')->where('customer_id', $request->customer_id)->update($update_customer);
 
-        if (DB::table('contracts')->where('customer_id', $request->customer_id)->update($update_customer)) {
-            return AccountController::status('Thêm thành công', 200);
+        if ($count>0) {
+            return AccountController::status('Cập nhật thông tin thành công', 200);
         } else {
-            return AccountController::status('Thêm thất bại', 500);
+            return AccountController::status('Cập nhật thất bại', 500);
         }
-
     }
-    
+
     function delete(Request $request)
     {
-        if (DB::table('team')->where('id_team', $request->id_team)->delete()) {
+        if (DB::table('customers')->where('customer_id', $request->customer_id)->delete()) {
             return AccountController::status('Xóa thành công', 200);
         } else {
             return AccountController::status('Xóa thất bại', 500);
         }
+    }
+
+    function query()
+    {
+        DB::table("projects")->all();
+        return true;
     }
 }

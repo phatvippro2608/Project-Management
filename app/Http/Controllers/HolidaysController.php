@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\HolidaysModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class HolidaysController extends Controller
 {
@@ -93,5 +97,49 @@ class HolidaysController extends Controller
             'success' => true,
             'message' => 'Holiday deleted successfully',
         ]);
+    }
+
+    public function exportExcel()
+    {
+
+        $inputFileName = public_path('excel-example/holiday-export.xlsx');
+
+        $inputFileType = IOFactory::identify($inputFileName);
+
+        $objReader = IOFactory::createReader($inputFileType);
+
+        $excel = $objReader->load($inputFileName);
+
+        $excel->setActiveSheetIndex(0);
+        $excel->getDefaultStyle()->getFont()->setName('Times New Roman');
+
+        $stt = 1;
+        $cell = $excel->getActiveSheet();
+        $holidays = HolidaysModel::all();
+
+
+        $num_row = 3;
+        foreach ($holidays as $row) {
+            $cell->setCellValue('A' . $num_row, $stt++);
+            $cell->setCellValue('B' . $num_row, $row->name);
+            $cell->setCellValue('C' . $num_row, $row->start_date);
+            $cell->setCellValue('D' . $num_row, $row->end_date);
+            $cell->setCellValue('E' . $num_row, $row->days);
+            $cell->setCellValue('F' . $num_row, $row->year);
+            $borderStyle = $cell->getStyle('A'.$num_row.':F' . $num_row)->getBorders();
+            $borderStyle->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $cell->getStyle('A'.$num_row.':F' . $num_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $num_row++;
+        }
+        foreach (range('A', 'F') as $columnID) {
+            $excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = "Holiday-export" . '.xlsx';
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $writer->save('php://output');
     }
 }
