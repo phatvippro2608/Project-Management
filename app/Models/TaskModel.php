@@ -21,6 +21,7 @@ class TaskModel extends Model
         'engineers',
         'start_date',
         'end_date',
+        'employee_id',
         'parent_id',
     ];
 

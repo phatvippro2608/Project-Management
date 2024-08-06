@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-
-
 class ProjectModel extends Model
 {
     use HasFactory;
@@ -31,6 +29,7 @@ class ProjectModel extends Model
         'project_contract_amount',
         'project_contractor_id',
     ];
+
     public function getCustomer()
     {
         // Truy xuất customer_id từ hợp đồng liên kết
@@ -43,6 +42,7 @@ class ProjectModel extends Model
             ->select('customers.*')
             ->first();
     }
+
     public function getContract()
     {
         // Truy xuất contract_id từ project hiện tại
@@ -54,6 +54,7 @@ class ProjectModel extends Model
             ->select('*')
             ->first();
     }
+
     public function getEmployee()
     {
         // Truy xuất employee_id từ project hiện tại
@@ -65,5 +66,5 @@ class ProjectModel extends Model
             ->select('*')
             ->first();
     }
-    
+
 }

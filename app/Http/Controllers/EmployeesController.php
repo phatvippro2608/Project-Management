@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountModel;
 use App\Models\EmployeeModel;
 use App\Models\SpreadsheetModel;
 use Illuminate\Http\Request;
@@ -201,7 +202,7 @@ class EmployeesController extends Controller
             ->join('job_type_contracts', 'job_type_contracts.type_contract_id', '=', 'job_details.job_type_contract_id')
             ->join('job_teams', 'job_teams.team_id', '=', 'job_details.job_team_id')
             ->join('job_countries', 'job_countries.country_id', '=', 'job_details.job_country_id')
-            ->join('job_levels', 'job_levels.id_level', '=', 'job_details.job_level_id')
+            ->join('job_levels', 'job_levels.level_id', '=', 'job_details.job_level_id')
             ->join('job_locations', 'job_locations.location_id', '=', 'job_details.job_location_id')
             ->join('job_positions', 'job_positions.position_id', '=', 'job_details.job_position_id')
             ->where('employee_id',$employee_id)->get();
@@ -347,19 +348,14 @@ class EmployeesController extends Controller
     {
         return DB::table('employees')->where('employee_code', $employee_code)->value('employee_id');
     }
-    public function import(Request $request){
+    public function loadExcel(Request $request){
         $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
         $tong = 0;
         $num_row = 0;
         $tt = 0;
         foreach ($dataExcel['data'] as $item) {
             $num_row++;
-            if ($num_row == 1) {
-                continue; // Skip header row
-            }
 
-            // Extract and trim data from Excel row
-            $employee_code = EmployeesController::generateEmployeeCode();
             $first_name = trim($item[0]);
             $last_name = trim($item[1]);
             $en_name = trim($item[2]);
@@ -368,11 +364,70 @@ class EmployeesController extends Controller
             if (strlen($first_name) === 0 ||
                 strlen($last_name) === 0 || strlen($en_name) === 0 ||
                 strlen($email) === 0 || strlen($phone_number) === 0) {
-                continue; // Skip this row if any field is empty
+                continue;
             }
+            $data = [
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'en_name' => $en_name,
+                'email' => $email,
+                'phone_number' => $phone_number,
+            ];
+
+            $processedData[] = $data;
+        }
+        return response()->json($processedData);
+    }
+    public function import(Request $request) {
+        // Decode JSON data if necessary
+        $dataExcel = json_decode($request->input('dataExcel'), true);
+
+        $num_row = 0;
+        $successfulRows = [];
+        $errorRows = [];
+
+        foreach ($dataExcel as $item) {
+            $num_row++;
+            if ($num_row == 1) {
+                continue; // Skip header row
+            }
+
+            $employee_code = EmployeesController::generateEmployeeCode();
+            $first_name = trim($item['first_name']);
+            $last_name = trim($item['last_name']);
+            $en_name = trim($item['en_name']);
+            $email = trim($item['email']);
+            $phone_number = trim($item['phone_number']);
+
+            // Check if account with the same email already exists
+            if (AccountModel::where('email', $email)->exists()) {
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => 'Account with this email already exists',
+                ];
+                continue; // Skip this item and continue to the next one
+            }
+
+            // Check for missing fields
+            if (strlen($first_name) === 0 ||
+                strlen($last_name) === 0 || strlen($en_name) === 0 ||
+                strlen($email) === 0 || strlen($phone_number) === 0) {
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => 'Missing required fields',
+                ];
+                continue;
+            }
+
             try {
                 DB::beginTransaction();
+
+                // Insert contact and get the ID
                 $contact_id = DB::table('contacts')->insertGetId(['phone_number' => $phone_number]);
+
+                // Insert employee data
                 $data_employee = [
                     'employee_code' => $employee_code,
                     'first_name' => $first_name,
@@ -384,31 +439,49 @@ class EmployeesController extends Controller
                 ];
                 $employee_id = DB::table('employees')->insertGetId($data_employee);
 
+                // Insert job details
                 DB::table('job_details')->insert(['employee_id' => $employee_id]);
+
+                // Insert account data
 
                 $data_account = [
                     'email' => $email,
-                    'username' => explode('@', $email)[0],
-                    'password' => password_hash('123', PASSWORD_BCRYPT),
+                    'username' => DB::table('employees')->where('employee_id', $employee_id)->value('employee_code'),
+                    'password' => password_hash('123456', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
                     'employee_id' => $employee_id,
                 ];
+
                 DB::table('accounts')->insert($data_account);
 
                 DB::commit();
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'File import successfully'
-                ]);
+
+                $successfulRows[] = [
+                    'employee_code' => $employee_code,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'en_name' => $en_name,
+                    'email' => $email,
+                    'phone_number' => $phone_number,
+                ];
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Failed to process row ' . $num_row . ': ' . $e->getMessage());
                 continue;
             }
         }
+
+
+        return response()->json([
+            'successfulRows' => $successfulRows,
+            'errorRows' => $errorRows
+        ]);
     }
+
+
+
+
     public function export(Request $request)
     {
         $inputFileName = public_path('excel-example/Employees.xlsx');
