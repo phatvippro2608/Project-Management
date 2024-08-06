@@ -24,11 +24,19 @@
 </div>
 
 <div class="section recognition">
-    <div class="card">
+    <div class="card border rounded-4 p-2">
         <div class="card-header">
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">Add recognition type</button>
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">Import recognition</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">
+                <i class="bi bi-plus-lg"></i>Add
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">
+                <i class="bi bi-plus-lg"></i>
+                Add recognition type
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+                Import recognition
+            </button>
         </div>
         <div class="card-body">
             <table id="recognitionTable" class="display">
@@ -39,7 +47,7 @@
                     <th scope="col">Employee Name</th>
                     <th scope="col">Recognition</th>
                     <th scope="col">Recognition Date</th>
-                    <th scope="col">Actions</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,9 +58,14 @@
                         <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
                         <th scope="col">{{ $recognition->recognition_type_name }}</th>
                         <th scope="col">{{ $recognition->recognition_date }}</th>
-                        <td>
-                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
-                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                        <td class="text-center">
+                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn p-1 text-primary" onclick="viewAttendanceByID(this)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            |
+                            <button data-attendance="{{ $recognition->recognition_id }}" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)" >
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -183,6 +196,13 @@
 @section('script')
 <script>
     var table = $('#recognitionTable').DataTable({
+        language: { search: "" },
+        initComplete: function (settings, json) {
+            $('.dt-search').addClass('input-group');
+            $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+        },
         responsive: true,
         dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
         buttons: [{
@@ -195,34 +215,31 @@
                 return "\uFEFF" + csv;
             }
         },
-            {
-                extend: 'excelHtml5',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                },
+        {
+            extend: 'excelHtml5',
+            className: 'btn btn-primary',
+            exportOptions: {
+                columns: ':not(:last-child)'
             },
-            {
-                extend: 'pdf',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                }
-            },
-            {
-                extend: 'print',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                }
+        },
+        {
+            extend: 'pdf',
+            className: 'btn btn-primary',
+            exportOptions: {
+                columns: ':not(:last-child)'
             }
+        },
+        {
+            extend: 'print',
+            className: 'btn btn-primary',
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        }
         ],
         lengthMenu: [10, 25, 50, 100, -1],
         pageLength: 10
     });
-    $('.dt-search').addClass('d-flex align-items-center');
-    $('.dt-search label').addClass('d-flex align-items-center');
-    $('.dt-search input').addClass('form-control ml-2');
 
     document.getElementById('btnRecognitionSubmit').addEventListener('click', function (event) {
         let form = document.getElementById('recognitionForm');
