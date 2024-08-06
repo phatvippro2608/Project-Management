@@ -36,11 +36,12 @@ class ProfileModel extends Model
                 SET
                     employees.first_name = :first_name,
                     employees.last_name = :last_name,
-                     job_details.job_position_id = :position_name,
-                        job_detail.job_country_id = :country_name,
+                    job_details.job_position_id = :position_name,
+                    job_details.job_country_id = :country_name,
                     contacts.permanent_address = :permanent_address,
                     contacts.phone_number = :phone_number,
-                    accounts.email = :email
+                    accounts.email = :email,
+                    accounts.username = :username
                 WHERE accounts.employee_id = :employee_id
            ";
 
@@ -52,6 +53,7 @@ class ProfileModel extends Model
             'permanent_address' => $this->permanent_address,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
+            'username' => $this->username,
             'employee_id'=>$this->employee_id
         ];
 
