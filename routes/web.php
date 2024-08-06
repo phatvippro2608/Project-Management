@@ -75,7 +75,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
 
 
-
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/team', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');
@@ -109,7 +108,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/change-password', 'App\Http\Controllers\ProfileController@changePassword');
     });
 
-    Route::group(['prefix' => '/leave', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/leave'], function () {
         //Holiday
         Route::resource('/holidays', HolidaysController::class);
         Route::get('/holidays', [HolidaysController::class, 'getView'])->name('holidays.index');
@@ -134,7 +133,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/leave-application/{id}/update', [LeaveApplicationController::class, 'update'])->name('leave-application.update');
         Route::delete('/leave-application/{id}/delete', [LeaveApplicationController::class, 'destroy'])->name('leave-application.destroy');
 
-
         //Leave Report
         Route::get('/leave-report', [LeaveReportsController::class, 'getView'])->name('leave-report.index');
         Route::post('/leave-report/search', [LeaveReportsController::class, 'searchReports'])->name('leave-report.search');
@@ -148,7 +146,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Earn Leave
         Route::get('/earn-leave', [EarnLeaveController::class, 'getView'])->name('earn-leave.index');
     });
-
     Route::post('/upload', 'App\Http\Controllers\UploadFileController@uploadFile');
     Route::post('/upload_photo', 'App\Http\Controllers\UploadFileController@uploadPhoto');
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
@@ -251,18 +248,19 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::delete('/proposal/remove-file/{id}', [ProposalApplicationController::class, 'removeFile'])->name('proposal-application.removeFile');
     Route::post('/proposal/approve/{id}/{permission}', [ProposalApplicationController::class, 'approve'])->name('proposal-application.approve');
     Route::get('/proposal/export', [ProposalApplicationController::class, 'exportExcel'])->name('proposal-application.export');
-});
+
 
 // recognition
-Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
-    Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
-    Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
-    Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
-    Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
-    Route::post('/update', [RecognitionController::class, 'update'])->name('recognition.update');
-    Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
+    Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
+        Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
+        Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
+        Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
+        Route::post('/update', [RecognitionController::class, 'update'])->name('recognition.update');
+        Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
+    });
+
+
+    Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
+    Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
 });
-
-
-Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
-Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
