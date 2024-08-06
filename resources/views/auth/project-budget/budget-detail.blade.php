@@ -29,8 +29,9 @@
             <div class="d-flex ms-auto">
                 <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                     data-bs-target="#chooseGroupModal">Add New Cost</button>
-                <a href="{{ route('budget.edit', $id) }}" class="btn btn-info btn-sm">Edit</a>
-            </div>
+                <a href="{{ route('budget.edit', $id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
+                <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
+                </div>
         </div>
 
         <h5>LIST OF EXPENSES</h5>

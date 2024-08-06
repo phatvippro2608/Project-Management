@@ -15,7 +15,7 @@
     <h3>List of Commission Project: <b>{{ $project->project_name }}</b></h3>
     <div role="group" aria-label="Button group">
         <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-                    data-bs-target="#addNewCostModal">Add New</button>
+                data-bs-target="#addNewCostModal">Add New</button>
         <a href="{{ route('budget.export.csv', $project->project_id) }}" class="btn btn-sm btn-success">
             <i class="bi bi-file-earmark-arrow-down pe-2"></i>Export CSV
         </a>
@@ -34,7 +34,22 @@
         @php $i = 1; @endphp
         @foreach ($dataGroupCommission as $commissionGroup)
             <tr class="table-warning">
-                <th colspan="4">Group: {{ $commissionGroup->groupcommission_name }}</th>
+                <th colspan="3">Group: <span class="group-name">{{ $commissionGroup->groupcommission_name }}</span></th>
+                <td class="text-center align-middle">
+                    <button type="button" class="btn btn-info btn-sm w-auto editName-btn"
+                            data-id="{{ $commissionGroup->group_id }}"
+                            data-name="{{ $commissionGroup->groupcommission_name }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editNameGroup"
+                            onclick="showEditModal('{{ $commissionGroup->group_id }}', '{{ $commissionGroup->groupcommission_name }}')">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm delete-group-btn"
+                            data-id="{{ $commissionGroup->group_id }}"
+                            data-name="{{ $commissionGroup->groupcommission_name }}">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
             </tr>
             @foreach ($dataCommission as $data)
                 @if ($data->project_id == $id && $data->groupcommission_id == $commissionGroup->group_id)
@@ -64,9 +79,34 @@
     </tbody>
 </table>
 
+<!-- Edit Name Group Commission Modal -->
+<div class="modal fade" id="editNameGroup" tabindex="-1" role="dialog" aria-labelledby="editNameGroup" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNameGroup">Edit Name</h5>
+            </div>
+            <form id="editNameGroupCommissionForm" method="POST" action="{{ route('budget.editNameGroup', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <input type="hidden" id="groupId" name="groupId">
+                    <div class="mb-3">
+                        <label for="editCommissionName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="groupName" name="groupName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Edit Commission Modal -->
-<div class="modal fade" id="editCommissionModal" tabindex="-1" role="dialog" aria-labelledby="editCommissionModalLabel"
-        aria-hidden="true">
+<div class="modal fade" id="editCommissionModal" tabindex="-1" role="dialog" aria-labelledby="editCommissionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -77,7 +117,6 @@
                 @method('PUT')
                 <div class="modal-body">
                     <input type="hidden" id="editCommissionId" name="commission_id">
-                    
                     <div class="mb-3">
                         <label for="editCommissionDescription" class="form-label">Description</label>
                         <input type="text" class="form-control" id="editCommissionDescription" name="description" required>
@@ -132,7 +171,6 @@
     </div>
 </div>
 
-
 <script>
 document.getElementById('editCommissionForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -151,67 +189,67 @@ document.getElementById('editCommissionForm').addEventListener('submit', functio
         },
         body: formData
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => { throw new Error(data.message || 'An error occurred.'); });
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the UI with the new values
-            const commissionRow = document.getElementById(commissionId).closest('tr');
-            commissionRow.querySelector('td:nth-child(2)').textContent = formData.get('description');
-            commissionRow.querySelector('td:nth-child(3)').textContent = new Intl.NumberFormat().format(formData.get('amount')) + ' VND';
-
-            // Update the button attributes with new values
-            const editButton = commissionRow.querySelector('.edit-btn');
-            editButton.setAttribute('data-name', formData.get('description'));
-            editButton.setAttribute('data-amount', formData.get('amount'));
-
-            // Close the modal
-            const modal = document.getElementById('editCommissionModal');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-            toastr.success('Update Successful!');
-
-            // Reset the modal fields
-            form.reset();
+            alert('Commission updated successfully');
+            location.reload();
         } else {
-            toastr.error(data.message || 'Error updating commission');
+            alert('An error occurred: ' + data.message);
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        toastr.error(error.message || 'An error occurred while updating the commission.');
+        alert('An error occurred: ' + error);
     });
 });
 
-document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const commissionId = this.getAttribute('data-id');
-        const description = this.getAttribute('data-name');
-        const amount = this.getAttribute('data-amount');
+document.getElementById('editNameGroupCommissionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-        // Reset the modal fields
-        const form = document.getElementById('editCommissionForm');
-        form.reset();
+    const form = event.target;
+    const formData = new FormData(form);
+    const groupId = formData.get('groupId');
+    const url = form.action.replace('__GROUP_ID__', groupId);
 
-        // Update modal fields
-        document.getElementById('editCommissionId').value = commissionId;
-        document.getElementById('editCommissionDescription').value = description;
-        document.getElementById('editCommissionAmount').value = amount;
+    fetch(url, {
+        method: 'POST', // POST with X-HTTP-Method-Override header for PUT
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-HTTP-Method-Override': 'PUT',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const groupElement = document.querySelector(`.group-name[data-id="${groupId}"]`);
+            if (groupElement) {
+                groupElement.innerText = formData.get('groupName');
+            } else {
+                console.error('Group name element not found');
+            }
+            alert('Group name updated successfully');
+            location.reload();
+        } else {
+            alert('An error occurred: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred: ' + error);
     });
 });
 
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const commissionId = this.getAttribute('data-id');
-        const url = "{{ route('budget.deleteCommission', ['project_id' => $id, 'cost_commission_id' => '__COMMISSION_ID__']) }}"
-            .replace('__COMMISSION_ID__', commissionId);
+function showEditModal(groupId, groupName) {
+    document.getElementById('groupId').value = groupId;
+    document.getElementById('groupName').value = groupName;
+}
 
-        if (confirm('Are you sure you want to delete this commission?')) {
-            fetch(url, {
+document.querySelectorAll('.delete-group-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const groupId = this.dataset.id;
+        if (confirm('Are you sure you want to delete this group?')) {
+            fetch(`/project/{{ $project->project_id }}/commission/${groupId}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -220,80 +258,43 @@ document.querySelectorAll('.delete-btn').forEach(button => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    toastr.success('Deleted successfully!');
-                    document.getElementById(commissionId).closest('tr').remove();
+                    alert('Group deleted successfully');
+                    location.reload();
                 } else {
-                    toastr.error('Delete Failed: ' + data.message);
+                    alert('An error occurred: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                toastr.error('Delete Failed: ' + error.message);
+                alert('An error occurred: ' + error);
             });
         }
     });
 });
 
-document.getElementById('addNewCommissionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    const formData = new FormData(form);
-    const groupId = formData.get('group_id');
-    const url = `{{ route('budget.AddNewComission', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}`.replace('__GROUP_ID__', groupId);
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Create a new table row
-
-
-            // Close the modal
-            const modal = document.getElementById('addNewCostModal');
-            const modalInstance = bootstrap.Modal.getInstance(modal);
-            modalInstance.hide();
-
-            // Reset the form
-            form.reset();
-            toastr.success('Added successfully!');
-            setTimeout(function() {
-                location.reload();
-            }, 500);
-        } else {
-            toastr.error(data.message);
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const commissionId = this.dataset.id;
+        if (confirm('Are you sure you want to delete this commission?')) {
+            fetch(`/project/{{ $project->project_id }}/commission/${commissionId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Commission deleted successfully');
+                    location.reload();
+                } else {
+                    alert('An error occurred: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error);
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        toastr.error('An error occurred while adding the commission.');
     });
-});
-
-document.getElementById('addNewCostModal').addEventListener('show.bs.modal', function () {
-    const selectGroup = document.getElementById('selectGroup');
-    const form = document.getElementById('addNewCommissionForm');
-    const projectId = "{{ $id }}"; // Ensure this is correctly set in your Blade template
-
-    // Set the base URL for the route
-    const baseUrl = "{{ route('budget.AddNewComission', ['project_id' => '__PROJECT_ID__', 'group_id' => '__GROUP_ID__']) }}";
-
-    // Update the form action URL when the group selection changes
-    selectGroup.addEventListener('change', function () {
-        const groupId = selectGroup.value;
-        form.action = baseUrl.replace('__GROUP_ID__', groupId).replace('__PROJECT_ID__', projectId);
-    });
-
-    // Set the initial action URL when the modal is first opened
-    const initialGroupId = selectGroup.value;
-    form.action = baseUrl.replace('__GROUP_ID__', initialGroupId).replace('__PROJECT_ID__', projectId);
 });
 </script>
 @endsection

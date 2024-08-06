@@ -18,7 +18,9 @@ use App\Http\Controllers\MyXteamController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RecognitionController;
+use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
+use App\Http\Controllers\DisciplinaryTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -193,6 +195,8 @@ Route::group(['prefix' => '/project'], function () {
     Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
     Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
     Route::delete('/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
+    Route::get('/project/{id}/budget/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
+
     //List of Commission
     Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
     Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
@@ -200,6 +204,7 @@ Route::group(['prefix' => '/project'], function () {
     Route::delete('/{project_id}/commission/{cost_commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
     Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
     Route::post('/{project_id}/commission/{group_id}/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.AddNewComission');
+    Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
 
 });
 
@@ -250,6 +255,7 @@ Route::group(['prefix' => '/project'], function () {
 // recognition
 Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
     Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
+    Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
     Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
     Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
     Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
@@ -257,6 +263,16 @@ Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], funct
     Route::get('/{recognition_id}', [RecognitionController::class, 'get'])->name('recognition.get');
 });
 
+// disciplinary
+Route::group(['prefix' => '/disciplinary', 'middleware' => 'isSuperAdmin'], function () {
+    Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
+    Route::get('/type', [DisciplinaryTypeController::class, 'getView'])->name('disciplinarytype.index');
+    Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
+    Route::post('/addType', [DisciplinaryController::class, 'addType'])->name('disciplinary.addType');
+    Route::post('/import', [DisciplinaryController::class, 'import'])->name('disciplinary.import');
+    Route::post('/update', [DisciplinaryController::class, 'update'])->name('disciplinary.update');
+    Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
+});
 
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
