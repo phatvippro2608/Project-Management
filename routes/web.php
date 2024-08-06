@@ -82,9 +82,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
         Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
-        Route::put('/add-employees', 'App\Http\Controllers\TeamDetailsController@add');
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
-        Route::delete('/delete-employees', 'App\Http\Controllers\TeamDetailsController@delete');
+        Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
 
 
