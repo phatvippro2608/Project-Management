@@ -1,7 +1,7 @@
 @extends('auth.main')
 
 @section('contents')
-    <div class="container mt-5">
+    <div class="container-fluid">
         <h1 class="mb-4">Project List</h1>
 
         @if(session('success'))
@@ -28,6 +28,7 @@
                             <th>#</th>
                             <th scope="col">Project Name</th>
                             <th scope="col">Customer</th>
+                            <th scope="col">Team Memebers</th>
                             <th>Tags</th>
                             <th scope="col">StartDate</th>
                             <th scope="col">EndDate</th>
@@ -41,6 +42,16 @@
                                 <td>{{ $project->project_id }}</td>
                                 <td>{{ $project->project_name }}</td>
                                 <td>{{ $project->customer_info }}</td>
+                                <td>
+                                    @foreach($project->team_members as $employee)
+                                        @php
+                                            $photoPath = asset($employee->photo);
+                                            $defaultPhoto = asset('assets/img/avt.png');
+                                            $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                        @endphp
+                                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
+                                    @endforeach
+                                </td>
                                 <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>
                                 <td>{{ $project->project_date_start }}</td>
                                 <td>{{ $project->project_date_end }}</td>

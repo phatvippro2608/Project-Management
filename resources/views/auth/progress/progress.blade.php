@@ -223,6 +223,7 @@
             url: '{{ route('task.create') }}',
             data: data,
             success: function(response) {
+                console.log(response);
                 if(response.success) {
                     toastr.success(response.message);
                     setTimeout(function() {

@@ -12,6 +12,7 @@ class RecognitionModel extends Model
     protected $table = 'recognitions';
     protected $primaryKey = 'recognition_id';
     protected $fillable = [
+        'employee_id',
         'recognition_id',
         'recognition_type_id',
         'recognition_date',
@@ -19,7 +20,7 @@ class RecognitionModel extends Model
         'description'
     ];
 
-    public function getRecognitions()
+    public static function getRecognitions()
     {
         try {
             // Lấy dữ liệu với left join các bảng liên quan và phân trang
