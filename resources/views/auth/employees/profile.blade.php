@@ -86,6 +86,11 @@
                                 <h5 class="card-title">Profile Details</h5>
 
                                 <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Username</div>
+                                    <div class="col-lg-9 col-md-8">{{$data->username}}</div>
+                                </div>
+
+                                <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Full Name</div>
                                     <div
                                         class="col-lg-9 col-md-8">{{$data->first_name  . ' ' . $data->last_name }}</div>
@@ -155,6 +160,14 @@
 {{--                                            </div>--}}
 {{--                                        </div>--}}
 {{--                                    </div>--}}
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Username</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="" type="text" class="form-control" id="username"
+                                               value="{{$data->username}}">
+                                    </div>
                                 </div>
 
                                 <div class="row mb-3">
@@ -275,6 +288,7 @@
                 data: {
                     'employee_id': "{{$employ_detail['employee_id']}}",
                     '_token': "{{ csrf_token() }}",
+                    'username': $('#username').val(),
                     'first_name': $('#first_name').val(),
                     'last_name': $('#last_name').val(),
                     'position_name': $('#position_name').val(),

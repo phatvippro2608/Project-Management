@@ -17,7 +17,7 @@ class TeamController extends Controller
     }
 
     function add(Request $request){
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
         $data = [
@@ -26,8 +26,14 @@ class TeamController extends Controller
             'status' => $request->status,
             'created_by' => $employee_id,
         ];
-        if(DB::table('team')->insert($data)){
-            return AccountController::status('Added a new team', 200);
+        if($team_id=DB::table('teams')->insertGetId($data)){
+            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_position_id'=>1])){
+                return AccountController::status('Added a new team', 200);
+            }else{
+                DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->delete();
+                DB::table('teams')->where('team_id', $team_id)->delete();
+                return AccountController::status('Failed to add a team', 500);
+            }
         }else{
             return AccountController::status('Failed to add a team', 500);
         }

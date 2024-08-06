@@ -15,8 +15,8 @@
     <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header">
-                    Import Employee
+                <div class="card-header py-0">
+                    <div class="card-title my-3 p-0">Import Employee</div>
                 </div>
                 <div class="card-body pt-3">
                     <div class="row">
@@ -59,40 +59,60 @@
                     </button>
                 </div>
                 <div class="modal-body bg-white p-0">
-                    <div class="row">
-                        <div class="col-6 ps-4">
-                            <div class="card mt-2">
-                                <div class="card-body">
-                                    <h5 class="card-title">Successful List</h5>
-                                    <table id="successfulTable" class="table">
-                                        <thead class="table-light">
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                        </thead>
-                                        <tbody class="tableData">
-
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <ul class="nav nav-tabs d-flex" role="tablist">
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link w-100 active"
+                                    id="success-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#success-justified"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls=""
+                                    aria-selected="true"
+                            >
+                                Successful
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill" role="presentation">
+                            <button class="nav-link d-flex align-items-center justify-content-center w-100"
+                                    id="profile-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#error-justified"
+                                    type="button" role="tab"
+                                    aria-controls=""
+                                    aria-selected="false"
+                                    tabindex="-1"
+                            >
+                                Error
+                                <span class="badge text-bg-danger ms-2">3</span>
+                                <span class="badge text-bg-success ms-2">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="success-justified" role="tabpanel" aria-labelledby="success-tab">
+                            <div class="table-responsive p-2">
+                                <table id="successfulTable" class="table table-borderless table-hover">
+                                    <thead class="table-light">
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    </thead>
+                                    <tbody class="tableData"></tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="card mt-2">
-                                <div class="card-body">
-                                    <h5 class="card-title">Error List</h5>
-                                    <table id="errorTable" class="table">
-                                        <thead class="table-light">
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Eror</th>
-                                        </thead>
-                                        <tbody class="tableData">
-
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="tab-pane fade" id="error-justified" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="table-responsive p-2">
+                                <table id="errorTable" class="table table-borderless table-hover">
+                                    <thead class="table-light">
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Error</th>
+                                    </thead>
+                                    <tbody class="tableData"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

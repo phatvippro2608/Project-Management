@@ -296,7 +296,7 @@
             <div class="col-6">
                 <div class="card mb-0 shadow-none">
                     <div class="card-header fw-semibold text-white border-4 rounded-end-4 rounded-start-0" style="background: var(--clr-1)">Medical CheckUp</div>
-                    <div class="card-body p-3 table-overflow">
+                    <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
                             <thead class="table-light">
                             <tr>
@@ -328,11 +328,11 @@
             <div class="col">
                 <div class="card mb-0 shadow-none">
                     <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Certificates</div>
-                    <div class="card-body p-3 table-overflow">
+                    <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
                             <thead class="table-light">
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">No.</th>
                                 <th scope="col">File Name</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Expiry Date</th>

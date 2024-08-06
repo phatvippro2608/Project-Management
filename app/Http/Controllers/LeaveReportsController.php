@@ -35,7 +35,7 @@ class LeaveReportsController extends Controller
     public function approveLeaveApplication($id)
     {
         $leaveApplication = LeaveApplicationModel::findOrFail($id);
-        $leaveApplication->leave_status = 'approved';
+        $leaveApplication->leave_status = 'Approved';
         $leaveApplication->apply_date = Carbon::now();
         $leaveApplication->save();
 

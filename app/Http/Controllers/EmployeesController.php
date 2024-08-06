@@ -443,23 +443,16 @@ class EmployeesController extends Controller
                 DB::table('job_details')->insert(['employee_id' => $employee_id]);
 
                 // Insert account data
-                $username = explode('@', $email)[0];
+
                 $data_account = [
                     'email' => $email,
-                    'username' => $username,
+                    'username' => DB::table('employees')->where('employee_id', $employee_id)->value('employee_code'),
                     'password' => password_hash('123456', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
                     'employee_id' => $employee_id,
                 ];
-                if (AccountModel::where('username', $username)->exists()) {
-                    $errorRows[] = [
-                        'row' => $num_row,
-                        'data' => $item,
-                        'error' => 'Account with this email already exists',
-                    ];
-                    continue; // Skip this item and continue to the next one
-                }
+
                 DB::table('accounts')->insert($data_account);
 
                 DB::commit();
@@ -475,12 +468,6 @@ class EmployeesController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                $errorRows[] = [
-                    'row' => $num_row,
-                    'data' => $item,
-                    'error' => $e->getMessage(),
-                ];
-                \Log::error('Failed to process row ' . $num_row . ': ' . $e->getMessage());
                 continue;
             }
         }

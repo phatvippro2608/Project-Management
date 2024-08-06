@@ -1,92 +1,103 @@
 @extends('auth.main')
 
 @section('contents')
-    <div class="container-fluid">
-        <h1 class="mb-4">Project List</h1>
+    <div class="pagetitle">
+        <h1>Project List</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
+                <li class="breadcrumb-item active">Project List</li>
+            </ol>
+        </nav>
+    </div>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+        <i class="bi bi-plus-lg"></i>
+        Add
+    </button>
+    <button class="btn btn-primary mb-4">
+        <i class="bi bi-file-earmark-arrow-up"></i>
+        Import
+    </button>
+    <button class="btn btn-primary mb-4">
+        <i class="bi bi-file-earmark-arrow-down"></i>
+        Export
+    </button>
 
-        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">Add</button>
-        <button class="btn btn-primary mb-4">Import</button>
-        <button class="btn btn-primary mb-4">Export</button>
-        <button class="btn btn-primary mb-4">Filter</button>
-        <button class="btn btn-primary mb-4">Sort</button>
-        <button class="btn btn-primary mb-4">Search</button>
-
-        <!-- Table to display materials -->
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover mt-3">
-                        <thead class="text-center">
+    <!-- Table to display materials -->
+    <div class="card border rounded-4 p-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="projectListTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                    <tr>
+                        <th>No.</th>
+                        <th scope="col">Project Name</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Team Memebers</th>
+                        <th>Tags</th>
+                        <th scope="col">StartDate</th>
+                        <th scope="col">EndDate</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($projects as $project)
                         <tr>
-                            <th>#</th>
-                            <th scope="col">Project Name</th>
-                            <th scope="col">Customer</th>
-                            <th scope="col">Team Memebers</th>
-                            <th>Tags</th>
-                            <th scope="col">StartDate</th>
-                            <th scope="col">EndDate</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
+                            <td>{{ $project->project_id }}</td>
+                            <td>{{ $project->project_name }}</td>
+                            <td>{{ $project->customer_info }}</td>
+                            <td>
+                                @foreach($project->team_members as $employee)
+                                    @php
+                                        $photoPath = asset($employee->photo);
+                                        $defaultPhoto = asset('assets/img/avt.png');
+                                        $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                    @endphp
+                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
+                                @endforeach
+                            </td>
+                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>
+                            <td>{{ $project->project_date_start }}</td>
+                            <td>{{ $project->project_date_end }}</td>
+                            <td>
+                                <span class="badge rounded-pill
+                                    @switch($project->phase_id)
+                                        @case(1)
+                                            bg-primary
+                                            @break
+                                        @case(2)
+                                            bg-info
+                                            @break
+                                        @case(3)
+                                            bg-success
+                                            @break
+                                        @case(4)
+                                            bg-warning
+                                            @break
+                                        @case(5)
+                                            bg-danger
+                                            @break
+                                        @default
+                                            bg-secondary
+                                    @endswitch">
+                                    {{ $project->phase_name_eng }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($projects as $project)
-                            <tr>
-                                <td>{{ $project->project_id }}</td>
-                                <td>{{ $project->project_name }}</td>
-                                <td>{{ $project->customer_info }}</td>
-                                <td>
-                                    @foreach($project->team_members as $employee)
-                                        @php
-                                            $photoPath = asset($employee->photo);
-                                            $defaultPhoto = asset('assets/img/avt.png');
-                                            $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-                                        @endphp
-                                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile" class="rounded-circle object-fit-cover" width="36" height="36">
-                                    @endforeach
-                                </td>
-                                <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>
-                                <td>{{ $project->project_date_start }}</td>
-                                <td>{{ $project->project_date_end }}</td>
-                                <td>
-                                    <span class="badge rounded-pill
-                                        @switch($project->phase_id)
-                                            @case(1)
-                                                bg-primary
-                                                @break
-                                            @case(2)
-                                                bg-info
-                                                @break
-                                            @case(3)
-                                                bg-success
-                                                @break
-                                            @case(4)
-                                                bg-warning
-                                                @break
-                                            @case(5)
-                                                bg-danger
-                                                @break
-                                            @default
-                                                bg-secondary
-                                        @endswitch">
-                                        {{ $project->phase_name_eng }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -144,6 +155,16 @@
 
 @section('script')
     <script>
+        var table = $('#projectListTable').DataTable({
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
         document.getElementById('btnSubmitProject').addEventListener('click', function (event) {
             let form = document.getElementById('projectForm');
             let startDate = form.querySelector('#project_date_start').value;
