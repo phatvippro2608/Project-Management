@@ -443,38 +443,48 @@ public function exportCsv($id)
         'message' => 'Cost commission updated successfully.'
     ]);
 }
-public function addNewCommission(Request $request, $project_id, $group_id)
+public function addNewCommission(Request $request, $project_id)
 {
-    // Validate the request data
-    $validator = Validator::make($request->all(), [
-        'description' => 'required|string|max:255',
-        'amount' => 'required|numeric|min:0'
-    ]);
+    try {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'group_id' => 'required|integer',
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0'
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        // Create new commission entry
+        $CommissionCost = new CostComissionModel();
+        $CommissionCost->project_id = $project_id;
+        $CommissionCost->groupcommission_id = $request->input('group_id');
+        $CommissionCost->description = $request->input('description');
+        $CommissionCost->amount = $request->input('amount');
+
+        // Save and check if successful
+        if ($CommissionCost->save()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Commission added successfully!',
+                'commission' => $CommissionCost // Return the new commission data
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add commission.'
+            ]);
+        }
+    } catch (\Exception $e) {
+        Log::error('Error adding commission: ' . $e->getMessage());
         return response()->json([
             'success' => false,
-            'message' => $validator->errors()->first()
-        ]);
-    }
-
-    // Create new commission entry
-    $CommissionCost = new CostComissionModel();
-    $CommissionCost->project_id = $project_id; // Assuming this needs to be set
-    $CommissionCost->groupcommission_id = $group_id;
-    $CommissionCost->description = $request->input('description');
-    $CommissionCost->amount = $request->input('amount');
-
-    if ($CommissionCost->save()) {
-        return response()->json([
-            'success' => true,
-            'message' => 'Commission added successfully!',
-            'commission' => $CommissionCost // Return the new commission data
-        ]);
-    } else {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to add commission.'
+            'message' => 'Server error. Please try again later.'
         ]);
     }
 }
@@ -527,5 +537,38 @@ public function cost_exportCsv($id)
 
         return $response;
     }
+    public function addNewGroup(Request $request, $project_id)
+{
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        'newGroupName' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => $validator->errors()->first()
+        ]);
+    }
+
+    // Create new group entry
+    $group = new GroupCommissionModel();
+    $group->project_id = $project_id;
+    $group->groupcommission_name = $request->input('newGroupName');
+
+    if ($group->save()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Group added successfully!',
+            'group' => $group // Return the new group data
+        ]);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to add group.'
+        ]);
+    }
+}
+    
 }
 
