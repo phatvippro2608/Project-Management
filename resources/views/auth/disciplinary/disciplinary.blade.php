@@ -64,7 +64,6 @@
                             <th scope="col">{{ $disciplinary->disciplinary_date }}</th>
                             <td align="center">
                                 <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-primary text-white" onclick="editDisciplinary(this)"><i class="bi bi-pencil-square"></i></button>
-                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     @endforeach
