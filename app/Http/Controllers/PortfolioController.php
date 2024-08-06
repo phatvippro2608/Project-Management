@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Composer\XdebugHandler\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PortfolioController extends Controller
 {
@@ -73,7 +74,38 @@ class PortfolioController extends Controller
             ->get();
 
         $status = 2;
-        
+
+        $inProject = DB::table('employees')
+            ->join('team_details', 'team_details.employee_id', '=', 'employees.employee_id')
+            ->join('project_teams', 'project_teams.team_id', '=', 'team_details.team_id')
+            ->join('projects', 'projects.project_id', '=', 'project_teams.project_id')
+            ->where('employees.employee_code', $id)
+            ->select('projects.project_date_start', 'projects.project_date_end')
+            ->get();
+
+        $currentTime = Carbon::now()->format('Y-m-d');
+        foreach ($inProject as $key => $value) {
+            $projectStartDate = Carbon::parse($value->project_date_start)->format('Y-m-d');
+            $projectEndDate = Carbon::parse ($value->project_date_end)->format('Y-m-d');
+            if ($currentTime >= $projectStartDate && $currentTime <= $projectEndDate) {
+                $status = 1;
+                break;
+            }
+        }
+
+        $inLeave = DB::table('employees')
+            ->join('leave_applications', 'leave_applications.employee_id', '=', 'employees.employee_id')
+            ->where('employees.employee_code', $id)
+            ->get();
+
+        foreach ($inLeave as $key => $value) {
+            $projectStartDate = Carbon::parse($value->start_date)->format('Y-m-d');
+            $projectEndDate = Carbon::parse ($value->end_date)->format('Y-m-d');
+            if ($value->leave_status == "approve" && $currentTime >= $projectStartDate && $currentTime <= $projectEndDate) {
+                $status = 3;
+                break;
+            }
+        }
 
         return view(
             'auth.portfolio.portfolioHasId',
@@ -93,6 +125,4 @@ class PortfolioController extends Controller
             ]
         );
     }
-
-
 }

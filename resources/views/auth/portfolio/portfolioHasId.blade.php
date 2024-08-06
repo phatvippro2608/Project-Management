@@ -395,19 +395,20 @@
 
             $('#content').addClass('active');
             content();
-            $('.nav-link').click(function() {
+            $('.card .nav-link').click(function() {
                 $('.nav-link').removeClass('active');
                 $('.row.content, .card, .bank-content').removeClass('active');
                 $(this).addClass('active');
                 var target = $(this).data('target');
                 $(target).addClass('active');
             });
-        });
-        $('#table--project').on('click', 'tr', function() {
-            var url = $(this).data('href');
-            if (url) {
-                window.location.href = url;
-            }
+
+            $('#table--project').on('click', 'tr', function() {
+                var url = $(this).data('href');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
         });
     </script>
 @endsection
