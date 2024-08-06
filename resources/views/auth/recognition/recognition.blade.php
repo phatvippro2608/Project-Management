@@ -39,8 +39,8 @@
             </button>
         </div>
         <div class="card-body">
-            <table id="recognitionTable" class="display">
-                <thead>
+            <table id="recognitionTable" class="table table-hover table-borderless display">
+                <thead class="table-light">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Employee Code</th>
@@ -207,6 +207,7 @@
         dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
         buttons: [{
             extend: 'csv',
+            text: '<i class="bi bi-filetype-csv me-2"></i>CSV',
             className: 'btn btn-primary',
             exportOptions: {
                 columns: ':not(:last-child)'
@@ -217,21 +218,24 @@
         },
         {
             extend: 'excelHtml5',
-            className: 'btn btn-primary',
+            text: '<i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel',
+            className: 'btn btn-success',
             exportOptions: {
                 columns: ':not(:last-child)'
             },
         },
         {
             extend: 'pdf',
-            className: 'btn btn-primary',
+            text: '<i class="bi bi-filetype-pdf me-2"></i>PDF',
+            className: 'btn btn-danger',
             exportOptions: {
                 columns: ':not(:last-child)'
             }
         },
         {
             extend: 'print',
-            className: 'btn btn-primary',
+            text: '<i class="bi bi-printer me-2"></i>Print',
+            className: 'btn btn-secondary',
             exportOptions: {
                 columns: ':not(:last-child)'
             }

@@ -45,7 +45,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="materialsTable" class="table table-borderless table-hover">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
@@ -71,19 +71,19 @@
                                     <td>{{ number_format($material->vat, 2, ',', '.') }}%</td>
                                     <td>
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
                                         |
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                         |
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none detail-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-info shadow-none detail-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-info-circle"></i>
                                         </button>
