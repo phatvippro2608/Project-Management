@@ -537,32 +537,28 @@ public function cost_exportCsv($id)
 
         return $response;
     }
-    public function addNewGroup(Request $request, $project_id)
+    public function addNewCommissionGroup(Request $request, $project_id)
 {
     // Validate the request data
-    $validator = Validator::make($request->all(), [
-        'newGroupName' => 'required|string|max:255',
+    $request->validate([
+        'groupcommission_name' => 'required|string|max:255',
     ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'message' => $validator->errors()->first()
-        ]);
-    }
+    // Insert the new group into the database and get the inserted ID
+    $insertedId = DB::table('project_group_cost_commission')->insertGetId([
+        'groupcommission_name' => $request->input('groupcommission_name'),
+    ]);
 
-    // Create new group entry
-    $group = new GroupCommissionModel();
-    $group->project_id = $project_id;
-    $group->groupcommission_name = $request->input('newGroupName');
-
-    if ($group->save()) {
+    // Check if the insertion was successful
+    if ($insertedId) {
+        // Return a success response with the new group ID
         return response()->json([
             'success' => true,
             'message' => 'Group added successfully!',
-            'group' => $group // Return the new group data
+            'group_id' => $insertedId // Return the new group ID
         ]);
     } else {
+        // Return an error response if the insertion failed
         return response()->json([
             'success' => false,
             'message' => 'Failed to add group.'

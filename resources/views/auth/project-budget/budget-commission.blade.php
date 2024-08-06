@@ -187,14 +187,10 @@
                         <label for="newGroupName" class="form-label">Name</label>
                         <input type="text" class="form-control" id="newGroupName" name="groupcommission_name" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="newGroupNote" class="form-label">Note</label>
-                        <textarea class="form-control" id="newGroupNote" name="note" rows="3"></textarea>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
                 </div>
             </form>
         </div>
@@ -232,6 +228,14 @@ document.getElementById('editCommissionForm').addEventListener('submit', functio
         alert('An error occurred: ' + error);
     });
 });
+
+$(document).ready(function() {
+        $('#openAddGroupModal').on('click', function(event) {
+            event.preventDefault();
+            $('#addNewCostModal').modal('hide');
+            $('#addNewGroupModal').modal('show');
+        });
+    });
 
 document.getElementById('editNameGroupCommissionForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -330,6 +334,12 @@ document.querySelectorAll('.delete-btn').forEach(button => {
         }
     });
 });
+$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
 $('#addNewCommissionForm').on('submit', function(event) {
     event.preventDefault();
 
