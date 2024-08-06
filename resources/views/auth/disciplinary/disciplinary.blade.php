@@ -74,14 +74,9 @@
                             <th scope="col" style="text-align: left !important;">{{ $disciplinary->last_name }} {{ $disciplinary->first_name }}</th>
                             <th scope="col" style="text-align: left !important;">{{ $disciplinary->disciplinary_type_name }}</th>
                             <th scope="col">{{ $disciplinary->disciplinary_date }}</th>
-                            <td class="text-center">
-                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn p-1 text-primary" onclick="editDisciplinary(this)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                |
-                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)" >
-                                    <i class="bi bi-trash"></i>
-                                </button>
+
+                            <td align="center">
+                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-primary text-white" onclick="editDisciplinary(this)"><i class="bi bi-pencil-square"></i></button>
                             </td>
                         </tr>
                     @endforeach
