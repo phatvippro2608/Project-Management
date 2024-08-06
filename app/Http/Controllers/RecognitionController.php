@@ -50,6 +50,7 @@ class RecognitionController extends Controller
 
     public function update()
     {
+//        return request();
         try {
             $validated = request()->validate([
                 'recognition_id' => 'required|string',

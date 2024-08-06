@@ -1,9 +1,9 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>
-        tr td:last-child{
-            text-align: center;
+    <style>       
+        table th, table td {
+            text-align: center !important; 
         }
     </style>
     <div class="pagetitle">
@@ -16,7 +16,7 @@
         </nav>
     </div>
     <div class="row gx-3 my-3">
-        <div class="col-md-6 d-flex m-0">
+        <div class="col-md-8 d-flex m-0">
             <form id="searchForm" class="d-flex align-items-center">
                 @csrf
                 <div class="form-group me-2">
@@ -28,13 +28,15 @@
                     <select class="form-control" id="employee" name="employee_id" required>
                         <option value="" selected disabled>Select Employee</option>
                         @foreach ($employees as $employee)
-                            <option value="{{ $employee->id_employee }}">{{ $employee->last_name }}
+                            <option value="{{ $employee->employee_id }}">{{ $employee->last_name }}
                                 {{ $employee->first_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
+                <button style="margin-left: 10px" type="button" class="btn btn-primary" onclick="location.reload();"><i
+                        class="bi bi-arrow-clockwise me-2"></i>Refresh</button>
             </form>
 
         </div>
@@ -44,19 +46,19 @@
             <div class="card-title my-3 p-0">Leave Report</div>
         </div>
         <div class="card-body">
-            <table id="leavereportsTable" class="table table-borderless table-hover align-middle">
+            <table id="leavereportsTable" class="table table-borderless table-hover">
                 <thead>
-                <tr>
-                    <th>Employee_Code</th>
-                    <th>Employee</th>
-                    <th>Leave Type</th>
-                    <th>Apply Date</th>
-                    <th>Duration</th>
-                    <th>Start Leave</th>
-                    <th>End Leave</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>Employee_Code</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Apply Date</th>
+                        <th>Duration</th>
+                        <th>Start Leave</th>
+                        <th>End Leave</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
                 <tbody>
 
@@ -70,8 +72,10 @@
     <script>
         $(document).ready(function() {
             var table = $('#leavereportsTable').DataTable({
-                language: { search: "" },
-                initComplete: function (settings, json) {
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
@@ -93,10 +97,10 @@
                                 ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + applyDate.getDate()).slice(-2);
 
-                            var statusClass = report.leave_status === 'approved' ?
+                            var statusClass = report.leave_status === 'Approved' ?
                                 'text-success' : 'text-danger';
-                            var statusText = report.leave_status === 'approved' ?
-                                '<strong>approved</strong>' : '<strong>not approved</strong>';
+                            var statusText = report.leave_status === 'Approved' ?
+                                '<strong>Approved</strong>' : '<strong>Not approved</strong>';
 
                             table.row.add([
                                 report.employee.employee_code,
@@ -110,7 +114,7 @@
                                 '<span class="' + statusClass + '">' + statusText +
                                 '</span>',
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn" data-id="' +
-                                report.id +
+                                report.leave_application_id +
                                 '"><i class="bi bi-check-circle"></i></button>'
                             ]).draw(false);
                         });
@@ -138,11 +142,11 @@
                                 ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
                                 ('0' + applyDate.getDate()).slice(-2);
 
-                            var statusClass = report.leave_status === 'approved' ?
+                            var statusClass = report.leave_status === 'Approved' ?
                                 'text-success' : 'text-danger';
-                            var statusText = report.leave_status === 'approved' ?
-                                '<strong>approved</strong>' :
-                                '<strong>not approved</strong>';
+                            var statusText = report.leave_status === 'Approved' ?
+                                '<strong>Approved</strong>' :
+                                '<strong>Not approved</strong>';
 
                             table.row.add([
                                 report.employee.employee_code,
@@ -156,7 +160,7 @@
                                 '<span class="' + statusClass + '">' +
                                 statusText + '</span>',
                                 '<button class="btn p-0 btn-primary border-0 bg-transparent text-success shadow-none accept-btn text-center" data-id="' +
-                                report.id +
+                                report.leave_application_id +
                                 '"><i class="bi bi-check-circle"></i></button>'
                             ]).draw(false);
                         });
@@ -200,7 +204,7 @@
 
                                     row.find('td').eq(3).html(formattedDate);
                                     row.find('td').eq(7).html(
-                                        '<span class="text-success"><strong>approved</strong></span>'
+                                        '<span class="text-success"><strong>Approved</strong></span>'
                                     );
                                     toastr.success(response.message,
                                         "Approved successfully");
