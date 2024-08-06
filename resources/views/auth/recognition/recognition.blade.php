@@ -24,7 +24,7 @@
 </div>
 
 <div class="section recognition">
-    <div class="card">
+    <div class="card border rounded-4 p-2">
         <div class="card-header">
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">Add recognition type</button>
@@ -32,15 +32,15 @@
             <button class="btn btn-secondary mb-4" id="toggleHiddenRows">Show/Hide Hidden Rows</button>
         </div>
         <div class="card-body">
-            <table id="recognitionTable" class="display">
-                <thead>
+            <table id="recognitionTable" class="table table-hover table-borderless display">
+                <thead class="table-light">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Employee Code</th>
                     <th scope="col">Employee Name</th>
                     <th scope="col">Recognition</th>
                     <th scope="col">Recognition Date</th>
-                    <th scope="col">Actions</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,6 +53,7 @@
                         <th scope="col">{{ $recognition->recognition_date }}</th>
                         <td>
                             <button data-recognition="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="editRecognitionModal(this)"><i class="bi bi-pencil-square"></i></button>
+
                         </td>
                     </tr>
                 @endforeach
@@ -239,10 +240,18 @@
 @section('script')
 <script>
     var table = $('#recognitionTable').DataTable({
+        language: { search: "" },
+        initComplete: function (settings, json) {
+            $('.dt-search').addClass('input-group');
+            $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+        },
         responsive: true,
         dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
         buttons: [{
             extend: 'csv',
+            text: '<i class="bi bi-filetype-csv me-2"></i>CSV',
             className: 'btn btn-primary',
             exportOptions: {
                 columns: ':not(:last-child)'
@@ -251,34 +260,34 @@
                 return "\uFEFF" + csv;
             }
         },
-            {
-                extend: 'excelHtml5',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                },
+        {
+            extend: 'excelHtml5',
+            text: '<i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel',
+            className: 'btn btn-success',
+            exportOptions: {
+                columns: ':not(:last-child)'
             },
-            {
-                extend: 'pdf',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                }
-            },
-            {
-                extend: 'print',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                }
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="bi bi-filetype-pdf me-2"></i>PDF',
+            className: 'btn btn-danger',
+            exportOptions: {
+                columns: ':not(:last-child)'
             }
+        },
+        {
+            extend: 'print',
+            text: '<i class="bi bi-printer me-2"></i>Print',
+            className: 'btn btn-secondary',
+            exportOptions: {
+                columns: ':not(:last-child)'
+            }
+        }
         ],
         lengthMenu: [10, 25, 50, 100, -1],
         pageLength: 10
     });
-    $('.dt-search').addClass('d-flex align-items-center');
-    $('.dt-search label').addClass('d-flex align-items-center');
-    $('.dt-search input').addClass('form-control ml-2');
 
     function editRecognitionModal(button) {
         var recognition_id = button.getAttribute('data-recognition');

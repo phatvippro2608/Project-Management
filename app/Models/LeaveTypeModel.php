@@ -10,7 +10,7 @@ class LeaveTypeModel extends Model
     use HasFactory;
 
     protected $table = 'leave_types';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'leave_type_id';
 
     protected $fillable = [
         'leave_type',
