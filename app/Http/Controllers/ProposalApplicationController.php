@@ -8,6 +8,9 @@ use App\Models\ProposalFileModel;
 use App\Models\ProposalTypesModel; // Add this line
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ProposalApplicationController extends Controller
 {
@@ -16,12 +19,11 @@ class ProposalApplicationController extends Controller
         $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
 
         $model_proposal = new ProposalApplicationModel();
-        $model_leaveapp = new LeaveApplicationModel();
+//        $model_leaveapp = new LeaveApplicationModel();
         $data = $model_proposal->getListProposal();
         $proposal_types = $model_proposal->getProposalTypes();
         $employee_name = $model_proposal->getEmployeeName();
-        // dd($employee_name);
-        $employee_name = $model_leaveapp->getEmployeeName();
+//        dd($data);
         return view(
             'auth.proposal.proposal-application',
             compact('data', 'employee_name', 'proposal_types')
@@ -177,5 +179,84 @@ class ProposalApplicationController extends Controller
             'success' => true,
             'message' => 'Proposal application approved successfully'
         ]);
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $permission = $request->query('permission');
+        $employee_id = $request->query('employee_id');
+        $inputFileName = public_path('excel-example/proposal_application-export.xlsx');
+
+        $inputFileType = IOFactory::identify($inputFileName);
+
+        $objReader = IOFactory::createReader($inputFileType);
+
+        $excel = $objReader->load($inputFileName);
+
+        $excel->setActiveSheetIndex(0);
+        $excel->getDefaultStyle()->getFont()->setName('Times New Roman');
+
+        $stt = 1;
+        $cell = $excel->getActiveSheet();
+        $list_proposal = [];
+        if ($permission == 3){
+            $department_id = DB::table('job_details')
+                ->where('employee_id', $employee_id)
+                ->pluck('department_id')
+                ->first();
+
+            $list_proposal = DB::table('proposal_applications')
+                ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
+                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')
+                ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
+                ->where('departments.department_id', $department_id)
+                ->get();
+        }else if ($permission == 4){
+            $list_proposal = DB::table('proposal_applications')
+                ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
+                ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')
+                ->get();
+        }
+//        dd($list_proposal);
+
+
+        $num_row = 3;
+        foreach ($list_proposal as $row) {
+            $cell->setCellValue('A' . $num_row, $stt++);
+            $cell->setCellValue('B' . $num_row, $row->first_name . ' ' . $row->last_name);
+            $cell->setCellValue('C' . $num_row, $row->name);
+            $cell->setCellValue('D' . $num_row, $row->proposal_description);
+            if($row->progress == '0'){
+                $cell->setCellValue('E' . $num_row, 'Not approve');
+                $cell->setCellValue('F' . $num_row, 'Not approve');
+            }
+            if($row->progress == '1'){
+                $cell->setCellValue('E' . $num_row, 'Approve');
+                $cell->setCellValue('F' . $num_row, 'Not approve');
+            }
+            if($row->progress == '2'){
+                $cell->setCellValue('E' . $num_row, 'Approve');
+                $cell->setCellValue('F' . $num_row, 'Approve');
+            }
+
+
+
+
+            $borderStyle = $cell->getStyle('A'.$num_row.':F' . $num_row)->getBorders();
+            $borderStyle->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $cell->getStyle('A'.$num_row.':F' . $num_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $num_row++;
+        }
+        foreach (range('A', 'F') as $columnID) {
+            $excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = "Proposal-Application-Report" . '.xlsx';
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $writer->save('php://output');
     }
 }

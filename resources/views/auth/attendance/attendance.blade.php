@@ -46,7 +46,7 @@
 <div class="card border rounded-4 p-2">
     <div class="card-header">
         <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-primary text-white"><i class="bi bi-plus-lg"></i> Add Attendance</a>
-        <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-primary text-white"><i class="bi bi-file-earmark-fill"></i> Attendance Report</a>
+        <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}" class="btn btn-primary text-white"><i class="bi bi-file-earmark"></i> Attendance Report</a>
     </div>
     <div class="card-body">
         <table id="attendanceTable" class="display">
@@ -59,7 +59,7 @@
                     <th scope="col">Sign In</th>
                     <th scope="col">Sign Out</th>
                     <th scope="col">Working</th>
-                    <th scope="col">Actions</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,10 +81,16 @@
                     <td>{{ $data->sign_in }}</td>
                     <td>{{ $data->sign_out }}</td>
                     <td>{{ $working }}</td>
-                    <td>
-                        <button data-attendance="{{ $data->attendance_id }}" class="btn btn-primary" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>
-                        <button data-attendance="{{ $data->attendance_id }}" class="btn btn-danger" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
+                    <td class="text-center">
+                        <button data-attendance="{{ $data->attendance_id }}" class="btn p-1 text-primary" onclick="viewAttendanceByID(this)">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        |
+                        <button data-attendance="{{ $data->attendance_id }}" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)" >
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </td>
+
                 </tr>
                 @endforeach
             </tbody>
@@ -164,32 +170,46 @@
 
 <script type="text/javascript">
     var table = $('#attendanceTable').DataTable({
+        language: { search: "" },
+        initComplete: function (settings, json) {
+            $('.dt-search').addClass('input-group');
+            $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+        },
         responsive: true,
         dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
         buttons: [{
-                extend: 'csv',
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':not(:last-child)'
-                }
+            extend: 'csv',
+            text: '<i class="bi bi-filetype-csv me-2"></i>CSV',
+            className: 'btn btn-primary',
+            exportOptions: {
+                columns: ':not(:last-child)'
             },
+            customize: function (csv) {
+                return "\uFEFF" + csv;
+            }
+        },
             {
                 extend: 'excelHtml5',
-                className: 'btn btn-primary',
+                text: '<i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel',
+                className: 'btn btn-success',
                 exportOptions: {
                     columns: ':not(:last-child)'
                 },
             },
             {
                 extend: 'pdf',
-                className: 'btn btn-primary',
+                text: '<i class="bi bi-filetype-pdf me-2"></i>PDF',
+                className: 'btn btn-danger',
                 exportOptions: {
                     columns: ':not(:last-child)'
                 }
             },
             {
                 extend: 'print',
-                className: 'btn btn-primary',
+                text: '<i class="bi bi-printer me-2"></i>Print',
+                className: 'btn btn-secondary',
                 exportOptions: {
                     columns: ':not(:last-child)'
                 }
@@ -198,9 +218,6 @@
         lengthMenu: [10, 25, 50, 100, -1],
         pageLength: 10
     });
-    $('.dt-search').addClass('d-flex align-items-center');
-    $('.dt-search label').addClass('d-flex align-items-center');
-    $('.dt-search input').addClass('form-control ml-2');
 </script>
 <script>
     function displayDropdown(e) {

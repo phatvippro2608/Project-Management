@@ -11,6 +11,20 @@ class LeaveApplicationController extends Controller
 {
     function getView()
     {
+//        $data = \Illuminate\Support\Facades\DB::table('accounts')
+//            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+//            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+//            ->where(
+//                'account_id',
+//                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+//            )
+//            ->first();
+//
+//        dd($data);
+
+
+
+
         $model = new LeaveApplicationModel();
         $employee_name = $model->getEmployeeName();
         $leave_type = $model->getLeaveTypes();
