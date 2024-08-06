@@ -26,10 +26,21 @@
 <div class="section recognition">
     <div class="card border rounded-4 p-2">
         <div class="card-header">
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">Add</button>
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">Add recognition type</button>
-            <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">Import recognition</button>
-            <button class="btn btn-secondary mb-4" id="toggleHiddenRows">Show/Hide Hidden Rows</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">
+                <i class="bi bi-plus-lg"></i>Add
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">
+                <i class="bi bi-plus-lg"></i>
+                Add recognition type
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+                Import recognition
+            </button>
+            <button class="btn btn-secondary" id="toggleHiddenRows" onclick="toggleShow()">
+                <i class="bi bi-eye-slash me-2"></i>
+                Show/Hide Hidden Rows
+            </button>
         </div>
         <div class="card-body">
             <table id="recognitionTable" class="table table-hover table-borderless display">
@@ -51,9 +62,8 @@
                         <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
                         <th scope="col">{{ $recognition->recognition_type_name }}</th>
                         <th scope="col">{{ $recognition->recognition_date }}</th>
-                        <td>
-                            <button data-recognition="{{ $recognition->recognition_id }}" class="btn btn-primary text-white" onclick="editRecognitionModal(this)"><i class="bi bi-pencil-square"></i></button>
-
+                        <td class="text-center">
+                            <button data-recognition="{{ $recognition->recognition_id }}" class="btn text-primary fw-bold" onclick="editRecognitionModal(this)"><i class="bi bi-pencil-square"></i></button>
                         </td>
                     </tr>
                 @endforeach
@@ -485,5 +495,15 @@
             }
         });
     });
+    function toggleShow(){
+        const toggleHiddenRows = document.querySelector('#toggleHiddenRows i')
+        if(toggleHiddenRows.classList.contains('bi-eye-slash')){
+            toggleHiddenRows.classList.remove('bi-eye-slash')
+            toggleHiddenRows.classList.add('bi-eye')
+        }else{
+            toggleHiddenRows.classList.remove('bi-eye')
+            toggleHiddenRows.classList.add('bi-eye-slash')
+        }
+    }
 </script>
 @endsection
