@@ -91,6 +91,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
+        
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
