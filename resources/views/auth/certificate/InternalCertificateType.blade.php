@@ -152,10 +152,10 @@
                 "autoWidth": true,
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50, 75, 100],
-                "language": {
-                    "search": "Filter:",
-                    "lengthMenu": "Show _MENU_ entries"
-                }
+                // "language": {
+                //     "search": "Filter:",
+                //     "lengthMenu": "Show _MENU_ entries"
+                // }
             });
         });
         function deleteCertificate(e) {
