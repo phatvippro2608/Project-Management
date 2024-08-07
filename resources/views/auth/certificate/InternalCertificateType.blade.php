@@ -82,6 +82,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
+                        @csrf
                         <div class="mb-3">
                             <label for="companyName" class="form-label">Company Name</label>
                             <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
@@ -109,6 +110,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
+                        @csrf
                         <!-- Company Select -->
                         <div class="mb-3">
                             <label for="companySelect" class="form-label">Select Company</label>
@@ -157,7 +159,7 @@
             });
         });
         function deleteCertificate(e) {
-            console.log(123);
+            
         }
     </script>
 @endsection
