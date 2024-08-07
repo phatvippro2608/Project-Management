@@ -643,6 +643,11 @@ $token = 'position';
                         <i class="bi bi-circle"></i><span>Tests</span>
                     </a>
                 </li>
+                <li>
+                    <a class="nav-sub-link" href="">
+                        <i class="bi bi-circle"></i><span>My progress</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nav-item">
