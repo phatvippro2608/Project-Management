@@ -101,6 +101,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
     Route::group(['prefix' => '/job-info', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\JobInfoController@getView');
+        Route::post('/get', 'App\Http\Controllers\JobInfoController@getJob');
         Route::post('/add', 'App\Http\Controllers\JobInfoController@add');
         Route::post('/update', 'App\Http\Controllers\JobInfoController@update');
         Route::post('/delete', 'App\Http\Controllers\JobInfoController@delete');
