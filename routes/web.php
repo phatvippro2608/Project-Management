@@ -90,8 +90,23 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
 
+    Route::group(['prefix' => '/lms'], function () {
+        Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
+    });
 
-
+    Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\CertificateTypeController@getView');
+        Route::post('/add', 'App\Http\Controllers\CertificateTypeController@add');
+        Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
+        Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
+    });
+    Route::group(['prefix' => '/job-info', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\JobInfoController@getView');
+        Route::post('/get', 'App\Http\Controllers\JobInfoController@getJob');
+        Route::post('/add', 'App\Http\Controllers\JobInfoController@add');
+        Route::post('/update', 'App\Http\Controllers\JobInfoController@update');
+        Route::post('/delete', 'App\Http\Controllers\JobInfoController@delete');
+    });
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');

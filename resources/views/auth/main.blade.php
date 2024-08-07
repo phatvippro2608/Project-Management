@@ -375,6 +375,16 @@ $token = 'position';
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Certificate Types</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\JobInfoController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Job info</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
@@ -631,28 +641,12 @@ $token = 'position';
 
         <li class="nav-heading">Education</li>
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#performance-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-mortarboard"></i><span>Education</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link " href="/lms">
+                <i class="bi bi-mortarboard"></i>
+                <span>LMS</span>
             </a>
-            <ul id="performance-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="">
-                        <i class="bi bi-circle"></i><span>Workshops</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="">
-                        <i class="bi bi-circle"></i><span>Guidelines</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="">
-                        <i class="bi bi-circle"></i><span>Tests</span>
-                    </a>
-                </li>
-            </ul>
         </li>
+
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
                href="#">
