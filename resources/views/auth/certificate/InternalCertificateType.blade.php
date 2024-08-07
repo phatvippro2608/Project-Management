@@ -35,16 +35,16 @@
                     <tbody>
                         @foreach ($certificates as $item)
                             <tr class="">
-                                <th class="text-center" scope="row">{{ $item->certificate_internal_id }}</th>
+                                <th class="text-center" scope="row">{{ $item->certificate_type_id }}</th>
                                 <td>
                                     {{ $item->certificate_body_name }} @if ($item->certificate_body_Acronym)
                                         ({{ ' ' . $item->certificate_body_Acronym }})
                                     @endif
                                 </td>
                                 <td>
-                                    {{ $item->certificate_internal_name }}
-                                    @if ($item->certificate_internal_acronym)
-                                        ({{ ' ' . $item->certificate_internal_acronym }})
+                                    {{ $item->certificate_type_name }}
+                                    @if ($item->certificate_type_acronym)
+                                        ({{ ' ' . $item->certificate_type_acronym }})
                                     @endif
                                 </td>
                                 <td class="text-center">
@@ -52,7 +52,8 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
                                     |
-                                    <button data-disciplinary="1" class="btn p-1 text-danger" onclick="deleteCertificate(this)">
+                                    <button data-disciplinary="1" class="btn p-1 text-danger"
+                                        onclick="deleteCertificate(this)">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
@@ -66,7 +67,8 @@
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
                         Add Company
                     </button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCertificateModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addCertificateModal">
                         Add Certificates
                     </button>
                 </div>
@@ -101,7 +103,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addCertificateModal" tabindex="-1" aria-labelledby="addCertificateModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addCertificateModal" tabindex="-1" aria-labelledby="addCertificateModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -125,12 +128,14 @@
                         <!-- Certificate Name -->
                         <div class="mb-3">
                             <label for="certificateName" class="form-label">Certificate Name</label>
-                            <input type="text" class="form-control" id="certificateName" placeholder="Enter certificate name">
+                            <input type="text" class="form-control" id="certificateName"
+                                placeholder="Enter certificate name">
                         </div>
                         <!-- Certificate Acronym -->
                         <div class="mb-3">
                             <label for="certificateAcronym" class="form-label">Certificate Acronym</label>
-                            <input type="text" class="form-control" id="certificateAcronym" placeholder="Enter certificate acronym">
+                            <input type="text" class="form-control" id="certificateAcronym"
+                                placeholder="Enter certificate acronym">
                         </div>
                     </form>
                 </div>
@@ -158,8 +163,9 @@
                 // }
             });
         });
+
         function deleteCertificate(e) {
-            
+
         }
     </script>
 @endsection

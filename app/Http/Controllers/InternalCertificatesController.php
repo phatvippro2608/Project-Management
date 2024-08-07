@@ -14,6 +14,7 @@ class InternalCertificatesController extends Controller
             ->join('certificates', 'certificates.employee_id', '=', 'employees.employee_id')
             ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_types.certificate_body_id')
+            ->where('certificate_bodys.certificate_body_name', '=', 'Ventech')
             ->where('employees.fired', '=', 'false')
             ->get();
         // dd($employess);
@@ -24,8 +25,8 @@ class InternalCertificatesController extends Controller
 
     public function getViewType()
     {
-        $certificates = DB::table('certificate_internals')
-            ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_internals.certificate_body_id')
+        $certificates = DB::table('certificate_types')
+            ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_types.certificate_body_id')
             ->get();
         return view('auth.certificate.InternalCertificateType', [
             'certificates' => $certificates
