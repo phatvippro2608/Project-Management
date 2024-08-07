@@ -420,6 +420,12 @@ $token = 'position';
                 <span>Log Out</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link fs-5 fw-bold " href="{{route('quiz.index')}}">
+                <i class="bi bi-question-diamond-fill"></i>
+                <span>Quiz</span>
+            </a>
+        </li>
     </ul>
 
 </aside>

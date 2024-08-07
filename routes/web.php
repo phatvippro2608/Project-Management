@@ -4,6 +4,7 @@ use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\ProposalTypesController;
+use App\Http\Controllers\QuizController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
 
@@ -299,6 +300,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
+
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+    });
 });
 
 
