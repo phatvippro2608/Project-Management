@@ -45,7 +45,7 @@ class EmployeeModel extends Model
         ];
     }
     public function getTypeCertificate(){
-        return DB::table('certificate_types')->get();
+        return DB::table('certificate_types')->where('status','show')->get();
     }
     public static function getMedicalCheckUp(){
         return DB::table('medical_checkup')->get();
