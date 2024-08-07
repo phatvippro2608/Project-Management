@@ -375,6 +375,11 @@ $token = 'position';
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Certificate Types</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)

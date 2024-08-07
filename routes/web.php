@@ -90,6 +90,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
 
 
+    Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\CertificateTypeController@getView');
+        Route::post('/add', 'App\Http\Controllers\CertificateTypeController@add');
+        Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
+        Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
+    });
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
