@@ -9,7 +9,7 @@ class LeaveReportsModel extends Model
 {
     use HasFactory;
     protected $table = 'leave_applications';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'leave_application_id';
     protected $fillable = [
         'employee_id',
         'pin',
