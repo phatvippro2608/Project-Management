@@ -96,7 +96,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
         Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
     });
-
+    Route::group(['prefix' => '/job-info', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\JobInfoController@getView');
+        Route::post('/add', 'App\Http\Controllers\JobInfoController@add');
+        Route::post('/update', 'App\Http\Controllers\JobInfoController@update');
+        Route::post('/delete', 'App\Http\Controllers\JobInfoController@delete');
+    });
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');

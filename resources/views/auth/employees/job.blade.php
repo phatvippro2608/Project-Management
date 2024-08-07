@@ -20,20 +20,31 @@
         }
     </style>
     <div class="pagetitle">
-        <h1>Certificate Types</h1>
+        <h1>Job Info</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                 <li class="breadcrumb-item active"><a
-                        href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">Certificate Types</a></li>
+                        href="{{action('App\Http\Controllers\JobInfoController@getView')}}">Job Info</a></li>
             </ol>
         </nav>
     </div>
-    <div class="row">
+    <div class="row mb-3">
+        <div class="col-lg-4 col-md-12">
+            <select class="form-select selectedJob" aria-label="Default select example">
+                <option selected value="0">Open this select menu</option>
+                <option value="job_countries">One</option>
+                <option value="job_categories">Two</option>
+                <option value="3">Three</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="row asdasd d-flex d-none">
         <div class="col-lg-4 col-md-12">
             <div class="card border rounded-4 p-2">
                 <div class="card-header py-0">
-                    <div class="card-title my-3 p-0">Add Certificate Type</div>
+                    <div class="card-title my-3 p-0 titleAdd"></div>
                 </div>
                 <div class="card-body">
                     <form id="certificateTypeForm" >
@@ -61,21 +72,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($certificate_types as $index => $certificate_type)
-                                    <tr>
-                                        <td class="text-center">{{$index+1}}</td>
-                                        <td>{{$certificate_type->certificate_type_name}}</td>
-                                        <td class="text-center">
-                                            <button data-certificate="{{ $certificate_type->certificate_type_name }}" data-id="{{ $certificate_type->certificate_type_id }}" class="btn p-1 text-primary at1">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            |
-                                            <button data-id="{{ $certificate_type->certificate_type_id }}" class="btn p-1 text-danger at2">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                            @endforeach
+
                         </tbody>
                     </table>
                 </div>
@@ -162,6 +159,16 @@
         let _add = '{{action('App\Http\Controllers\CertificateTypeController@add')}}';
         let _update = '{{action('App\Http\Controllers\CertificateTypeController@update')}}';
         let _delete = '{{action('App\Http\Controllers\CertificateTypeController@delete')}}';
+
+        $( ".selectedJob" ).on( "change", function() {
+            let seletedValue = $(this).find("option:selected").val();
+            if(seletedValue.localeCompare("0") === 0 ){
+                $('.asdasd').addClass('d-none')
+            }else{
+                $('.titleAdd').text($(this).find("option:selected").text())
+                $('.asdasd').removeClass('d-none')
+            }
+        } );
 
         $('.btn-add').click(function () {
             let certificate_type_name = $('.certificate_type_name').val();
