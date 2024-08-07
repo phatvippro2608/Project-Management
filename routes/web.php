@@ -95,6 +95,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         });
     });
 
+    Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\CertificateTypeController@getView');
+        Route::post('/add', 'App\Http\Controllers\CertificateTypeController@add');
+        Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
+        Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
+    });
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
@@ -195,6 +201,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
     Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
+
     Route::group(['prefix' => '/project'], function () {
         //show details and update project
         Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
@@ -220,6 +227,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
         Route::post('/{project_id}/commission/{group_id}/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.AddNewComission');
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
+
 
     });
 

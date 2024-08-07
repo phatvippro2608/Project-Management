@@ -63,8 +63,9 @@
                                     data-name="{{ $data->description }}"
                                     data-amount="{{ $data->amount }}"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#editCommissionModal">
-                                <i class="bi bi-pencil-square"></i>
+                                    data-bs-target="#editCommissionModal"
+                                    onclick="showCommission('{{ $data->commission_id }}', '{{ $data->description }}', '{{ $data->amount }}')">
+                                    <i class="bi bi-pencil-square"></i>
                             </button>
                             <button type="button"
                                     class="btn btn-danger btn-sm delete-btn"
@@ -142,7 +143,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="addNewCostModalLabel">Add New Cost</h5>
             </div>
-            <form id="addNewCommissionForm" method="POST" action="#">
+            <form id="addNewCommissionForm" method="POST" action="{{ route('budget.AddNewComission', ['project_id' => $id]) }}">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -161,10 +162,35 @@
                         <label for="newCostAmount" class="form-label">Amount</label>
                         <input type="number" class="form-control" id="newCostAmount" name="amount" required>
                     </div>
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-link p-0" id="openAddGroupModal">or Add New Group Commission</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add New Group Modal -->
+<div class="modal fade" id="addNewGroupModal" tabindex="-1" role="dialog" aria-labelledby="addNewGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Commission Group</h5>
+            </div>
+            <form id="addNewGroupForm" method="POST" action="{{ route('budget.addNewCommissionGroup', ['project_id' => $id]) }}">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newGroupName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="newGroupName" name="groupcommission_name" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
                 </div>
             </form>
         </div>
@@ -202,6 +228,14 @@ document.getElementById('editCommissionForm').addEventListener('submit', functio
         alert('An error occurred: ' + error);
     });
 });
+
+$(document).ready(function() {
+        $('#openAddGroupModal').on('click', function(event) {
+            event.preventDefault();
+            $('#addNewCostModal').modal('hide');
+            $('#addNewGroupModal').modal('show');
+        });
+    });
 
 document.getElementById('editNameGroupCommissionForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -244,7 +278,11 @@ function showEditModal(groupId, groupName) {
     document.getElementById('groupId').value = groupId;
     document.getElementById('groupName').value = groupName;
 }
-
+function showCommission(id, name, amount) {
+    document.getElementById('editCommissionId').value = id;
+    document.getElementById('editCommissionDescription').value = name;
+    document.getElementById('editCommissionAmount').value = amount;
+}
 document.querySelectorAll('.delete-group-btn').forEach(button => {
     button.addEventListener('click', function() {
         const groupId = this.dataset.id;
@@ -296,5 +334,68 @@ document.querySelectorAll('.delete-btn').forEach(button => {
         }
     });
 });
+$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+$('#addNewCommissionForm').on('submit', function(event) {
+    event.preventDefault();
+
+    var form = $(this);
+    var url = form.attr('action');
+    var formData = form.serialize();
+
+    console.log('Form Data:', formData); // Log form data for debugging
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            if (response.success) {
+                toastr.success(response.message);
+                $('#addNewCostModal').modal('hide');
+                location.reload();
+            } else {
+                toastr.error('Failed to add commission: ' + response.message);
+            }
+        },
+        error: function(xhr) {
+            toastr.error('Request failed: ' + xhr.status + ' ' + xhr.statusText);
+        }
+    });
+});
+document.getElementById('addNewGroupForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var form = event.target;
+    var formData = new FormData(form);
+    var url = form.action;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Group added successfully');
+            // Optionally add the new group to the select dropdown or refresh the page
+            location.reload();
+        } else {
+            alert('An error occurred: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('An error occurred: ' + error);
+    });
+});
+
 </script>
 @endsection

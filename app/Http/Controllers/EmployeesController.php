@@ -571,12 +571,21 @@ class EmployeesController extends Controller
         $id_employee = $request->id;
         $item = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
-            ->join('job_details','job_details.employee_id','=','employees.employee_id')
-            ->where('fired','false')
+            ->where('fired', 'false')
             ->where('employees.employee_id', $id_employee)
             ->orderBy('employees.employee_code')
             ->first();
 
+        $itemArray = (array)$item;
+        $jobdetail = DB::table('job_details')
+            ->where('employee_id', $id_employee)
+            ->first();
+        if ($jobdetail) {
+            $jobdetailsArray = (array)$jobdetail;
+            $itemArray = array_merge($itemArray, $jobdetailsArray);
+        }
+
+        $item = (object)$itemArray;
         if ($item) {
             // Augment the employee data with additional information
             $item->medical = EmployeesController::getMedicalInfo($id_employee);
