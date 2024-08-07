@@ -89,6 +89,11 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
 
+    Route::group(['prefix' => '/edu'], function () {
+        Route::get('edu',function () {
+            return view('auth.edu.edu');
+        });
+    });
 
 
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
