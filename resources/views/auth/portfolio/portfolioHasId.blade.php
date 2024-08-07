@@ -176,7 +176,7 @@
     </div>
 
     <div class="row content" id="content">
-        {{-- <div class="card mb-4">
+        <div class="card mb-4">
             <div class="card-header">
                 <h5>Bank Information</h5>
             </div>
@@ -186,9 +186,9 @@
                 <p>IFSC Code: ICI24504</p>
                 <p>PAN No: TC000Y56</p>
             </div>
-        </div> --}}
+        </div>
 
-        {{-- <div class="card mb-4">
+        <div class="card mb-4">
             <div class="card-header">
                 <h5>Personal Information</h5>
             </div>
@@ -198,7 +198,7 @@
                 <p>Nationality: Indian</p>
                 <p>Marital status: Married</p>
             </div>
-        </div> --}}
+        </div>
 
         <div class="card mb-4">
             <div class="card-header">

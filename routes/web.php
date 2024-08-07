@@ -24,6 +24,7 @@ use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\DisciplinaryTypeController;
+use App\Http\Controllers\InternalCertificatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -290,6 +291,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
+    Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
+    Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
 });
 
 

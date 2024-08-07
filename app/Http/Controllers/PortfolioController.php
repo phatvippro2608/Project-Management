@@ -86,7 +86,7 @@ class PortfolioController extends Controller
         $currentTime = Carbon::now()->format('Y-m-d');
         foreach ($inProject as $key => $value) {
             $projectStartDate = Carbon::parse($value->project_date_start)->format('Y-m-d');
-            $projectEndDate = Carbon::parse ($value->project_date_end)->format('Y-m-d');
+            $projectEndDate = Carbon::parse($value->project_date_end)->format('Y-m-d');
             if ($currentTime >= $projectStartDate && $currentTime <= $projectEndDate) {
                 $status = 1;
                 break;
@@ -100,13 +100,22 @@ class PortfolioController extends Controller
 
         foreach ($inLeave as $key => $value) {
             $projectStartDate = Carbon::parse($value->start_date)->format('Y-m-d');
-            $projectEndDate = Carbon::parse ($value->end_date)->format('Y-m-d');
+            $projectEndDate = Carbon::parse($value->end_date)->format('Y-m-d');
             if ($value->leave_status == "approve" && $currentTime >= $projectStartDate && $currentTime <= $projectEndDate) {
                 $status = 3;
                 break;
             }
         }
 
+        $inQuit = DB::table('employees')
+            ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
+            ->where('fired', 'true')
+            ->where('employees.employee_code', $id)
+            ->first();
+        if ($inQuit) {
+            $status = 4;
+        }
+        
         return view(
             'auth.portfolio.portfolioHasId',
             [
