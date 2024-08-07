@@ -14,21 +14,21 @@
 
 @section('contents')
 <style>
-    #disciplinaryTable th {
+    #recognitionTypeTable th {
         text-align: center !important;
     }
 
-    #disciplinaryTable td:nth-child(3),
-    #disciplinaryTable td:nth-child(4) {
+    #recognitionTypeTable td:nth-child(3),
+    #recognitionTypeTable td:nth-child(4) {
         text-align: left !important;
     }
 </style>
 <div class="pagetitle">
-    <h1>Disciplinary</h1>
+    <h1>Recognition Types</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
-            <li class="breadcrumb-item active">Disciplinary</li>
+            <li class="breadcrumb-item active">Recognition Types</li>
         </ol>
     </nav>
 </div>
@@ -36,16 +36,16 @@
     <div class="col-lg-4 col-md-12">
         <div class="card border rounded-4 p-2">
             <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Add Disciplinary</div>
+                <div class="card-title my-3 p-0">Add Recognition</div>
             </div>
             <div class="card-body">
-                <form id="disciplinaryTypeForm">
-                    <label for="input_add_disciplinary_type" class="mt-3">Disciplinary name</label>
-                    <input type="text" name="disciplinary_type_name" id="input_add_disciplinary_type" class="form-control">
+                <form id="recognitionTypeForm">
+                    <label for="input_add_recognition_type" class="mt-3">Recognition name</label>
+                    <input type="text" name="recognition_type_name" id="input_add_recognition_type" class="form-control">
                 </form>
             </div>
             <div class="card-footer">
-                <input type="submit" value="Save" class="btn btn-primary" id="btnDisciplinaryTypeSubmit">
+                <input type="submit" value="Save" class="btn btn-primary" id="btnRecognitionTypeSubmit">
 {{--                <input type="submit" value="Cancel" class="btn btn-danger">--}}
             </div>
         </div>
@@ -53,10 +53,14 @@
     <div class="col-lg-8 col-md-12">
         <div class="card border rounded-4 p-2">
             <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Add Disciplinary</div>
+                <div class="card-title my-3 p-0">Recognition Types</div>
+                <button class="btn btn-secondary mb-2" id="toggleHiddenRows" onclick="toggleShow()">
+                    <i class="bi bi-eye-slash me-2"></i>
+                    Show/Hide Hidden Rows
+                </button>
             </div>
             <div class="card-body">
-                <table id="disciplinaryTypeTable" class="table-hover table-borderless display">
+                <table id="recognitionTypeTable" class="table-hover table-borderless display">
                     <thead class="table-light">
                     <tr>
                         <th scope="col">ID</th>
@@ -65,18 +69,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($disciplinary_types as $disciplinary_type)
-                        <tr class="{{ $disciplinary_type->disciplinary_type_hidden ? 'hidden-row' : '' }}">
-                            <th scope="col">{{ $disciplinary_type->disciplinary_type_id }}</th>
-                            <th scope="col">{{ $disciplinary_type->disciplinary_type_name }}</th>
+                    @foreach($recognition_types as $recognition_type)
+                        <tr class="{{ $recognition_type->recognition_type_hidden ? 'hidden-row' : '' }}">
+                            <th scope="col">{{ $recognition_type->recognition_type_id }}</th>
+                            <th scope="col">{{ $recognition_type->recognition_type_name }}</th>
                             <td class="text-center">
-                                <button data-disciplinary="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-primary" onclick="editDisciplinary(this)">
+                                <button data-recognition="{{ $recognition_type->drecognition_type_id }}" class="btn p-1 text-primary" onclick="editRecognitionType(this)">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-                                |
-                                <button data-disciplinary="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)" >
-                                    <i class="bi bi-trash"></i>
-                                </button>
+{{--                                <button data-recognition="{{ $recognition_type->recognition_type_id }}" class="btn p-1 text-danger" onclick="deleteRecognitionType(this)" >--}}
+{{--                                    <i class="bi bi-trash"></i>--}}
+{{--                                </button>--}}
                             </td>
                         </tr>
                     @endforeach
@@ -90,7 +93,7 @@
 
 @section('script')
     <script>
-        var table = $('#disciplinaryTypeTable').DataTable({
+        var table = $('#recognitionTypeTable').DataTable({
             language: { search: "" },
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
@@ -140,11 +143,11 @@
             pageLength: 10
         });
 
-        document.getElementById('btnDisciplinaryTypeSubmit').addEventListener('click', function (event) {
-            let form = document.getElementById('disciplinaryTypeForm');
+        document.getElementById('btnRecognitionTypeSubmit').addEventListener('click', function (event) {
+            let form = document.getElementById('recognitionTypeForm');
             let formData = new FormData(form);
 
-            fetch('{{ route('disciplinary.addType') }}', {
+            fetch('{{ route('recognition.addType') }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -173,5 +176,26 @@
                     toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
                 });
         });
+
+        document.getElementById('toggleHiddenRows').addEventListener('click', function() {
+            var tableRows = document.querySelectorAll('#recognitionTypeTable tbody tr');
+            tableRows.forEach(function(row) {
+                if (row.classList.contains('hidden-row')) {
+                    row.classList.toggle('d-none');
+                }
+            });
+
+        });
+
+        function toggleShow(){
+            const toggleHiddenRows = document.querySelector('#toggleHiddenRows i')
+            if(toggleHiddenRows.classList.contains('bi-eye-slash')){
+                toggleHiddenRows.classList.remove('bi-eye-slash')
+                toggleHiddenRows.classList.add('bi-eye')
+            }else{
+                toggleHiddenRows.classList.remove('bi-eye')
+                toggleHiddenRows.classList.add('bi-eye-slash')
+            }
+        }
     </script>
 @endsection

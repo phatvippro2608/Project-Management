@@ -10,7 +10,7 @@ class HolidaysModel extends Model
     use HasFactory;
 
     protected $table = 'holidays';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'holiday_id';
 
     protected $fillable = [
         'name',

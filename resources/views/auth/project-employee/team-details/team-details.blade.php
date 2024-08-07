@@ -36,7 +36,7 @@
         </nav>
     </div>
 
-    <a href="{{action('App\Http\Controllers\TeamController@getView')}}" class="btn btn-primary my-3 btn-add me-2">
+    <a href="{{action('App\Http\Controllers\TeamController@getView')}}" class="btn btn-primary my-3 me-2">
         <div class="d-flex align-items-center">
                 <i class="bi bi-reply-fill pe-2"></i>
                 Back
@@ -98,7 +98,7 @@
                                 {{$status[$item->status]}}
                             </td>
                             <td class="text-center">
-                                {{$item->position_name}}
+                                @if(!empty($item->position_name)){{$item->position_name}}@else {{"Member"}} @endif
                             </td>
 {{--                            <td>--}}
 {{--                                <div>--}}
@@ -138,11 +138,12 @@
                                         <th class="text-center">Employee Code</th>
                                         <th class="text-center">Full Name</th>
                                         <th class="text-center">Email</th>
+                                        <th class="text-center">Position</th>
                                         <th class="text-center" data-orderable="false"><input type="checkbox" name="" id="" class="custom-checkbox-lg check-all"></th>
                                     </tr>
                                     </thead>
                                     <tbody class="account-list">
-                                    @foreach($employees as $item)
+                                    @foreach($all_employees as $item)
                                         <tr class="account-item">
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center">
@@ -158,8 +159,16 @@
                                             <td class="text-left">
                                                 {{$item->email}}
                                             </td>
+                                            <td class="text-left">
+                                                <select class="form-select position" data="{{$item->employee_id}}">
+                                                    <option value="">Member</option>
+                                                    @foreach($team_positions as $position)
+                                                        <option value="{{$position->team_position_id}}" @if($item->team_position_id==$position->team_position_id) selected @endif>{{$position->position_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
                                             <td class="text-center">
-                                                <input type="checkbox" name="" id="" class="custom-checkbox-lg check-item">
+                                                <input type="checkbox" class="custom-checkbox-lg check-item" data="{{$item->employee_id}}" @if($item->isAtTeam) checked @endif>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -169,9 +178,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-upload at1">Update</button>
-                </div>
+{{--                <div class="modal-footer">--}}
+{{--                    <button type="button" class="btn btn-primary btn-upload reload">Reload</button>--}}
+{{--                    <button type="button" class="btn btn-primary btn-upload at1">Update</button>--}}
+{{--                </div>--}}
             </div>
         </div>
     </div>
@@ -180,6 +190,9 @@
     <script>
         var table = $('#teamListTable').DataTable({
             language: { search: "" },
+            order:
+        [1,'asc']
+            ,
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
 
@@ -226,85 +239,71 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 300);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed");
                         }
                     }
                 });
             });
         });
-        {{--$('.at2').click(function () {--}}
-        {{--    $('.md1 .modal-title').text('Update Team');--}}
-        {{--    var data = JSON.parse($(this).attr('data'));--}}
-        {{--    $('.name1').val(data.team_name);--}}
-        {{--    $('.name2').val(data.status);--}}
-        {{--    $('.name3').val(data.team_description);--}}
-        {{--    $('.at1').text('Update');--}}
-        {{--    $('.md1').modal('show');--}}
 
-        {{--    $('.at1').click(function () {--}}
-        {{--        if ($('.name1').val().trim() === '') {--}}
-        {{--            alert('Please enter a team name.');--}}
-        {{--            return;--}}
-        {{--        }--}}
+        $('.check-item').change(function (){
+            let employee_id = $(this).attr('data');
+            let position_id = $('select.form-select.position[data="' + employee_id + '"]').val();
+            $.ajax({
+                url: `{{action('App\Http\Controllers\TeamDetailsController@update')}}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'employee_id': employee_id,
+                    'team_id': {{$teams->team_id}},
+                    'position_id': position_id,
+                    'checked': $(this).prop('checked')?1:0
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Successfully");
+                    } else {
+                        toastr.error(result.message, "Failed");
+                    }
+                }
+            });
+        })
 
-        {{--        $.ajax({--}}
-        {{--            url: `{{action('App\Http\Controllers\TeamController@update')}}`,--}}
-        {{--            type: "POST",--}}
-        {{--            headers: {--}}
-        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--            },--}}
-        {{--            data: {--}}
-        {{--                'team_id' : data.team_id,--}}
-        {{--                'team_name': $('.name1').val(),--}}
-        {{--                'status': $('.name2').val(),--}}
-        {{--                'team_description': $('.name3').val(),--}}
-        {{--            },--}}
-        {{--            success: function (result) {--}}
-        {{--                result = JSON.parse(result);--}}
-        {{--                if (result.status === 200) {--}}
-        {{--                    toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                    setTimeout(function () {--}}
-        {{--                        window.location.reload();--}}
-        {{--                    }, 300);--}}
-        {{--                } else {--}}
-        {{--                    toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-        {{--});--}}
+        $('.md1').on('hidden.bs.modal', function () {
+            window.location.reload();
+        });
 
-        {{--$('.at3').click(function () {--}}
-        {{--    if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {--}}
-        {{--        return;--}}
-        {{--    }--}}
-        {{--    var id = $(this).attr('data');--}}
-        {{--    $.ajax({--}}
-        {{--        url: `{{action('App\Http\Controllers\TeamController@delete')}}`,--}}
-        {{--        type: "DELETE",--}}
-        {{--        headers: {--}}
-        {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--        },--}}
-        {{--        data: {--}}
-        {{--            'team_id': id,--}}
-        {{--        },--}}
-        {{--        success: function (result) {--}}
-        {{--            result = JSON.parse(result);--}}
-        {{--            if (result.status === 200) {--}}
-        {{--                toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                setTimeout(function () {--}}
-        {{--                    window.location.reload();--}}
-        {{--                }, 300);--}}
-        {{--            } else {--}}
-        {{--                toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--})--}}
+        $('.position').change(function (){
+            let employee_id = $(this).attr('data');
+            let position_id = $(this).val();
+            $.ajax({
+                url: `{{action('App\Http\Controllers\TeamDetailsController@updatePosition')}}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'employee_id': employee_id,
+                    'team_id': {{$teams->team_id}},
+                    'position_id': position_id,
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Successfully");
+                    } else {
+                        toastr.error(result.message, "Failed");
+                    }
+                }
+            });
+        })
     </script>
 @endsection

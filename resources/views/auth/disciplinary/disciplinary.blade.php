@@ -35,16 +35,28 @@
     </div>
 
     <div class="section disciplinary">
-        <div class="card">
+        <div class="card border rounded-4 p-2">
             <div class="card-header">
-                <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addDisciplinaryModal">Add</button>
-                <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addDisciplinaryTypeModal">Add disciplinary type</button>
-                <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#importDisciplinaryModal">Import disciplinary</button>
-                <button class="btn btn-secondary mb-4" id="toggleHiddenRows">Show/Hide Hidden Rows</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDisciplinaryModal">
+                    <i class="bi bi-plus-lg"></i>
+                    Add
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDisciplinaryTypeModal">
+                    <i class="bi bi-plus-lg"></i>
+                    Add disciplinary type
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importDisciplinaryModal">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    Import disciplinary
+                </button>
+                <button class="btn btn-secondary" id="toggleHiddenRows" onclick="toggleShow()">
+                    <i class="bi bi-eye-slash me-2"></i>
+                    Show/Hide Hidden Rows
+                </button>
             </div>
             <div class="card-body">
-                <table id="disciplinaryTable" class="display">
-                    <thead>
+                <table id="disciplinaryTable" class="table table-hover table-borderless display">
+                    <thead class="table-light">
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Employee Code</th>
@@ -62,9 +74,9 @@
                             <th scope="col" style="text-align: left !important;">{{ $disciplinary->last_name }} {{ $disciplinary->first_name }}</th>
                             <th scope="col" style="text-align: left !important;">{{ $disciplinary->disciplinary_type_name }}</th>
                             <th scope="col">{{ $disciplinary->disciplinary_date }}</th>
+
                             <td align="center">
                                 <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-primary text-white" onclick="editDisciplinary(this)"><i class="bi bi-pencil-square"></i></button>
-                                <button data-disciplinary="{{ $disciplinary->disciplinary_id }}" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)" ><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     @endforeach
@@ -253,9 +265,18 @@
     <script>
         var table = $('#disciplinaryTable').DataTable({
             responsive: true,
+            language: { search: "" },
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
             dom: '<"d-flex justify-content-between align-items-center mt-2 mb-2"<"mr-auto"l><"d-flex justify-content-center mt-2 mb-2"B><"ml-auto mt-2 mb-2"f>>rtip',
-            buttons: [{
+            buttons: [
+            {
                 extend: 'csv',
+                text: '<i class="bi bi-filetype-csv me-2"></i>CSV',
                 className: 'btn btn-primary',
                 exportOptions: {
                     columns: ':not(:last-child)'
@@ -264,34 +285,33 @@
                     return "\uFEFF" + csv;
                 }
             },
-                {
-                    extend: 'excelHtml5',
-                    className: 'btn btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    },
+            {
+                extend: 'excelHtml5',
+                text: '<i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel',
+                className: 'btn btn-success',
+                exportOptions: {
+                    columns: ':not(:last-child)'
                 },
-                {
-                    extend: 'pdf',
-                    className: 'btn btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
-                },
-                {
-                    extend: 'print',
-                    className: 'btn btn-primary',
-                    exportOptions: {
-                        columns: ':not(:last-child)'
-                    }
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="bi bi-filetype-pdf me-2"></i>PDF',
+                className: 'btn btn-danger',
+                exportOptions: {
+                    columns: ':not(:last-child)'
                 }
-            ],
+            },
+            {
+                extend: 'print',
+                text: '<i class="bi bi-printer me-2"></i>Print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            }],
             lengthMenu: [10, 25, 50, 100, -1],
             pageLength: 10
         });
-        $('.dt-search').addClass('d-flex align-items-center');
-        $('.dt-search label').addClass('d-flex align-items-center');
-        $('.dt-search input').addClass('form-control ml-2');
 
         document.getElementById('btnDisciplinarySubmit').addEventListener('click', function (event) {
             const form = document.getElementById('disciplinaryForm');
@@ -521,6 +541,18 @@
                     row.classList.toggle('d-none');
                 }
             });
+
         });
+
+        function toggleShow(){
+            const toggleHiddenRows = document.querySelector('#toggleHiddenRows i')
+            if(toggleHiddenRows.classList.contains('bi-eye-slash')){
+                toggleHiddenRows.classList.remove('bi-eye-slash')
+                toggleHiddenRows.classList.add('bi-eye')
+            }else{
+                toggleHiddenRows.classList.remove('bi-eye')
+                toggleHiddenRows.classList.add('bi-eye-slash')
+            }
+        }
     </script>
 @endsection

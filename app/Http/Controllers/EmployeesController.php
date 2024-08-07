@@ -443,23 +443,16 @@ class EmployeesController extends Controller
                 DB::table('job_details')->insert(['employee_id' => $employee_id]);
 
                 // Insert account data
-                $username = explode('@', $email)[0];
+
                 $data_account = [
                     'email' => $email,
-                    'username' => $username,
+                    'username' => DB::table('employees')->where('employee_id', $employee_id)->value('employee_code'),
                     'password' => password_hash('123456', PASSWORD_BCRYPT),
                     'status' => 1,
                     'permission' => 0,
                     'employee_id' => $employee_id,
                 ];
-                if (AccountModel::where('username', $username)->exists()) {
-                    $errorRows[] = [
-                        'row' => $num_row,
-                        'data' => $item,
-                        'error' => 'Account with this email already exists',
-                    ];
-                    continue; // Skip this item and continue to the next one
-                }
+
                 DB::table('accounts')->insert($data_account);
 
                 DB::commit();
@@ -475,12 +468,6 @@ class EmployeesController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                $errorRows[] = [
-                    'row' => $num_row,
-                    'data' => $item,
-                    'error' => $e->getMessage(),
-                ];
-                \Log::error('Failed to process row ' . $num_row . ': ' . $e->getMessage());
                 continue;
             }
         }
@@ -584,12 +571,21 @@ class EmployeesController extends Controller
         $id_employee = $request->id;
         $item = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
-            ->join('job_details','job_details.employee_id','=','employees.employee_id')
-            ->where('fired','false')
+            ->where('fired', 'false')
             ->where('employees.employee_id', $id_employee)
             ->orderBy('employees.employee_code')
             ->first();
 
+        $itemArray = (array)$item;
+        $jobdetail = DB::table('job_details')
+            ->where('employee_id', $id_employee)
+            ->first();
+        if ($jobdetail) {
+            $jobdetailsArray = (array)$jobdetail;
+            $itemArray = array_merge($itemArray, $jobdetailsArray);
+        }
+
+        $item = (object)$itemArray;
         if ($item) {
             // Augment the employee data with additional information
             $item->medical = EmployeesController::getMedicalInfo($id_employee);

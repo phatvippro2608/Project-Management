@@ -375,6 +375,11 @@ $token = 'position';
                             <i class="bi bi-circle"></i><span>Inactive User</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
+                            <i class="bi bi-circle"></i><span>Certificate Types</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
@@ -476,32 +481,40 @@ $token = 'position';
                 <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="{{ route('holidays.index') }}">
-                        <i class="bi bi-circle"></i><span>Holiday</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
-                        <i class="bi bi-circle"></i><span>Leave Type</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
-                        <i class="bi bi-circle"></i><span>Leave Application</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
-                        <i class="bi bi-circle"></i><span>Earned Leave</span>
-                    </a>
-                </li>
+                @if(($data->permission) != 0)
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('holidays.index') }}">
+                            <i class="bi bi-circle"></i><span>Holiday</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
+                            <i class="bi bi-circle"></i><span>Leave Type</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
+                            <i class="bi bi-circle"></i><span>Leave Application</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
+                            <i class="bi bi-circle"></i><span>Earned Leave</span>
+                        </a>
+                    </li>
 
-                <li>
-                    <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
-                        <i class="bi bi-circle"></i><span>Leave Report</span>
-                    </a>
-                </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
+                            <i class="bi bi-circle"></i><span>Leave Report</span>
+                        </a>
+                    </li>
+                @else
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
+                            <i class="bi bi-circle"></i><span>Leave Application</span>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </li>
 
