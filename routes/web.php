@@ -85,9 +85,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
         Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
-        Route::put('/add-employees', 'App\Http\Controllers\TeamDetailsController@add');
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
-        Route::delete('/delete-employees', 'App\Http\Controllers\TeamDetailsController@delete');
+        Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
 
 
@@ -197,6 +196,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
     Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
+
     Route::group(['prefix' => '/project'], function () {
         //show details and update project
         Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
@@ -222,6 +222,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
         Route::post('/{project_id}/commission/{group_id}/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.AddNewComission');
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
+
 
     });
 

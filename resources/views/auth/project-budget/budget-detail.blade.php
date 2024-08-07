@@ -321,7 +321,7 @@
                     '{{ route('budget.delete', ['project_id' => '__PROJECT_ID__', 'cost_id' => '__COST_ID__']) }}'
                     .replace('__PROJECT_ID__', projectId)
                     .replace('__COST_ID__', costId);
-
+                console.log(costId);
                 if (confirm('Are you sure you want to delete this cost item?')) {
                     $.ajax({
                         url: url,

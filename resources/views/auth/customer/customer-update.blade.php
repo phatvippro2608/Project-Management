@@ -182,14 +182,33 @@
             }
 
             const icon = $('.btn-open-update i');
-            if (icon.hasClass('bi-pencil-fill')) {
+            if (
+                $('.name1').val()===`{{$customer['first_name']}}` &&
+                $('.name2').val()===`{{$customer['last_name']}}` &&
+                $('.name3').val()===`{{$customer['date_of_birth']}}` &&
+                $('.name4').val()===`{{$customer['phone_number']}}` &&
+                $('.name5').val()===`{{$customer['email']}}` &&
+
+                $('.name6').val()===`{{$customer['address']}}` &&
+                $('.name7').val()===`{{$customer['company_name']}}` &&
+                $('.name8').val()===`{{$customer['status']}}`
+            ) {
                 icon.removeClass('bi-pencil-fill').addClass('bi-floppy2');
             } else {
                 icon.removeClass('bi-floppy2').addClass('bi-pencil-fill');
             }
         });
-        $('.btn-save').click(function () {
-            if($('.btn-save').hasClass('bi-floppy2')){
+        $('.btn-open-update').click(function () {
+            if (
+                $('.name1').val()!==`{{$customer['first_name']}}` ||
+                $('.name2').val()!==`{{$customer['last_name']}}` ||
+                $('.name3').val()!==`{{$customer['date_of_birth']}}` ||
+                $('.name4').val()!==`{{$customer['phone_number']}}` ||
+                $('.name5').val()!==`{{$customer['email']}}` ||
+                $('.name6').val()!==`{{$customer['address']}}` ||
+                $('.name7').val()!==`{{$customer['company_name']}}` ||
+                $('.name8').val()!==`{{$customer['status']}}`
+            ) {
                 $.ajax({
                     url: `{{action('App\Http\Controllers\CustomerController@update')}}`,
                     type: "POST",

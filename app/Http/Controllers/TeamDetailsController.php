@@ -14,12 +14,12 @@ class TeamDetailsController extends Controller
         $employees = DB::table("employees")
             ->join('accounts', 'employees.employee_id', '=', 'accounts.employee_id')
             ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
-            ->join('team_position', 'team_details.team_position_id', '=', 'team_position.team_position_id')
+            ->leftjoin('team_positions', 'team_details.team_position_id', '=', 'team_positions.team_position_id')
             ->where("team_id", $team_id)->get();
 
 //        dd($employees);
         $sql = "SELECT
-                    employees.*,
+                    employees.*, accounts.*,team_details.team_position_id as team_position_id,
                     CASE
                         WHEN team_details.employee_id IS NOT NULL THEN 1
                         ELSE 0
@@ -34,28 +34,50 @@ class TeamDetailsController extends Controller
         $all_employees = DB::select($sql);
 //        dd($all_employees);
         $teams = DB::table("teams")->where("team_id", $team_id)->get();
-//        dd($id_team);
+        $team_positions = DB::table("team_positions")->get();
         return view('auth.project-employee.team-details.team-details', [
             'employees' => $employees,
             'all_employees' => $all_employees,
-            'teams' => $teams,
+            'teams' => $teams[0],
+            'team_positions' => $team_positions,
             'status' => $this->status,
         ]);
     }
 
-    function add()
+    function update(Request $request)
     {
-
+        $employee_id = $request->employee_id;
+        $team_id = $request->team_id;
+        $team_position_id = $request->input('position_id', null);
+        $checked = $request->checked;
+        if($checked==1){
+            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_position_id'=>$team_position_id])){
+                return AccountController::status('Successfully Updated',200);
+            }else{
+                return AccountController::status('Fail Updated', 500);
+            }
+        }
+        else {
+            if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->delete()){
+                return AccountController::status('Successfully Updated',200);
+            }else{
+                return AccountController::status('Fail Updated', 500);
+            }
+        }
     }
 
-    function update()
+    function updatePosition(Request $request)
     {
-
-    }
-
-    function delete()
-    {
-
+        $employee_id = $request->employee_id;
+        $team_id = $request->team_id;
+        $position_id = $request->input('position_id', null);
+        if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->exists()){
+            if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->update(['team_position_id'=>$position_id])){
+                return AccountController::status('Successfully Updated',200);
+            }else{
+                return AccountController::status('Fail Updated', 500);
+            }
+        }
     }
 
 }
