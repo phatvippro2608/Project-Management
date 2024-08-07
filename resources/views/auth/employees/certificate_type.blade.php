@@ -62,7 +62,6 @@
                         </thead>
                         <tbody>
                             @foreach($certificate_types as $index => $certificate_type)
-                                @if($certificate_type->status == "show")
                                     <tr>
                                         <td class="text-center">{{$index+1}}</td>
                                         <td>{{$certificate_type->certificate_type_name}}</td>
@@ -76,7 +75,6 @@
                                             </button>
                                         </td>
                                     </tr>
-                                @endif
                             @endforeach
                         </tbody>
                     </table>

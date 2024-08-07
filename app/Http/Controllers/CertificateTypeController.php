@@ -16,7 +16,7 @@ class CertificateTypeController extends Controller
     }
     public function add(Request $request) {
         $certificate_type_name = $request->input('certificate_type_name');
-        $sql = DB::table('certificate_types')->insert(['certificate_type_name' => $certificate_type_name]);
+        $sql = DB::table('certificate_types')->insert(['certificate_type_name' => $certificate_type_name,'status'=>'show']);
         if ($sql) {
             return response()->json(['status' => 200, 'message' => 'Action Success']);
         } else {
