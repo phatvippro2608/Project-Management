@@ -1,1 +1,0 @@
-@extends('auth.main-edu')

@@ -89,10 +89,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
 
-    Route::group(['prefix' => '/edu'], function () {
-        Route::get('edu',function () {
-            return view('auth.edu.edu');
-        });
+    Route::group(['prefix' => '/lms'], function () {
+        Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
