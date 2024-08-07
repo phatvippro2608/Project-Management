@@ -285,3 +285,5 @@ Route::group(['prefix' => '/disciplinary', 'middleware' => 'isSuperAdmin'], func
 Route::get('/portfolio', [PortfolioController::class, 'getView'])->name('portfolio');
 Route::get('/portfolio/{id}', [PortfolioController::class, 'getViewHasId'])->name('portfolio.id');
 
+//education
+Route::get('/education/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('education.course');

@@ -629,6 +629,11 @@ $token = 'position';
             </a>
             <ul id="performance-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
+                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\CourseController@getViewCourse') }}">
+                        <i class="bi bi-circle"></i><span>Course</span>
+                    </a>
+                </li>
+                <li>
                     <a class="nav-sub-link" href="">
                         <i class="bi bi-circle"></i><span>Workshops</span>
                     </a>
