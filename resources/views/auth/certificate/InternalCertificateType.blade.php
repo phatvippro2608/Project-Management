@@ -2,6 +2,17 @@
 
 @section('head')
     <style>
+        .btn-close-custom {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .btn-close-custom:hover {
+            color: #ff6b6b;
+        }
+
         .modal-dialog {
             display: flex;
             align-items: center;
@@ -86,9 +97,11 @@
     <div class="modal fade" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header justify-content-between">
                     <h5 class="modal-title" id="addCompanyModalLabel">Add Company</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -115,9 +128,11 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header justify-content-between">
                     <h5 class="modal-title" id="addCertificateModalLabel">Add Certificate</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -164,9 +179,11 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header justify-content-between">
                     <h5 class="modal-title" id="editCertificateModalLabel">Edit Certificate</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="editCertificateForm">
@@ -242,7 +259,36 @@
             });
 
             $('#updateCertificateButton').on('click', function() {
-                // Add logic to handle updating certificate details
+                var data = {
+                    _token: $('input[name="_token"]').val(),
+                    certificate_id: $('#editCertificateId').val(),
+                    certificate_body_name: $('#editCompanySelect').find('option:selected').attr(
+                        'class'),
+                    certificate_body_Acronym: $('#editCompanyAcronym').val(),
+                    certificate_type_name: $('#editCertificateName').val(),
+                    certificate_type_acronym: $('#editCertificateAcronym').val()
+                };
+
+                $.ajax({
+                    url: '{{ route('certificate.type.update') }}',
+                    method: 'POST',
+                    data: data,
+                    success: function(response) {
+                        Swal.fire(
+                            'Success!',
+                            'Certificate has been updated successfully.',
+                            'success'
+                        );
+                        // $('#editCertificateModal').modal('hide');
+                    },
+                    error: function(xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while updating the certificate.',
+                            'error'
+                        );
+                    }
+                });
             });
         });
 
@@ -275,7 +321,32 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log("Delete item with ID:", id);
+                    var data = {
+                        id: id
+                    };
+                    $.ajax({
+                        url: '{{ route('certificate.type.delete') }}',
+                        method: 'DELETE',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The certificate has been deleted.',
+                                'success'
+                            );
+                            row.remove();
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the certificate.',
+                                'error'
+                            );
+                        }
+                    });
                 }
             });
         }

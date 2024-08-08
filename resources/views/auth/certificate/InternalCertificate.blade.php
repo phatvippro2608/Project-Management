@@ -228,6 +228,21 @@
                         data: JSON.stringify(data),
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The certificate has been deleted.',
+                                'success'
+                            );
+                            row.remove();
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the certificate.',
+                                'error'
+                            );
                         }
                     });
                 }
