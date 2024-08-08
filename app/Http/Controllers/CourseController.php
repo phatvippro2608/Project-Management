@@ -23,7 +23,7 @@ class CourseController extends Controller
         ->where('course_id',$id)
         ->get();
         $getTypeName = DB::table('course_types')->get();
-        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName]);
+        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName, 'id' => $id]);
     }
     function getCourseSection($id)
     {
@@ -117,5 +117,17 @@ class CourseController extends Controller
         }
         $getTypeName = DB::table('course_types')->get();
         return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
+    }
+
+    function createSection(Request $request)
+    {
+        $course_id = $request->input('course_id');
+        $section_name = $request->input('section_name');
+        DB::table('courses_section')->insert([
+            'course_id' => $course_id,
+            'section_name' => $section_name,
+        ]);
+        $sections = DB::table('courses_section')->where('course_id',$course_id)->get();
+        return response()->json(['success' => true,'message' => 'Add new section success!', 'sections' => $sections]);
     }
 }

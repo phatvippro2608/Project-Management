@@ -133,9 +133,9 @@
         $('#new-section').append(
             `<div class="input-group">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control" placeholder="Section..." id="section_name">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-success" type="button"><i class="bi bi-check"></i></button>
+                        <button class="btn btn-outline-success" data-course_id="{{$id}}" type="button" onclick="createSection(this)"><i class="bi bi-check"></i></button>
                     </div>
                 </div>
             </div>`
@@ -176,5 +176,85 @@
             }
         });
     });
+
+    function createSection(e){
+        var course_id = e.getAttribute('data-course_id');
+        var section_name = $('#section_name').val();
+        $.ajax({
+            url: '{{ action('App\Http\Controllers\CourseController@createSection') }}',
+            type: 'post',
+            data: {
+                course_id: course_id,
+                section_name: section_name,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(data){
+                console.log(data);
+                if(data.success){
+                    toastr.success(data.message);
+                    $('#sidebar').empty();
+                    var temp=`<ul class="sidebar-nav" id="sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link fs-5" href="">
+                                <i class="bi bi-bookmark"></i><span>Description</span>
+                            </a>
+                        </li>`;
+                    data.sections.forEach(section => {
+                        temp+=`<li class="nav-item">
+                                <a class="nav-link collapsed fs-5" data-bs-target="#${section.courses_section_id}" data-bs-toggle="collapse" href="#">
+                                    <i class="bi bi-circle"></i><span>${section.section_name}</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="${section.courses_section_id}" class="nav-content collapse" data-bs-parent="#sidebar">
+                                    <li>
+                                        <a class="nav-sub-link fs-5" href="#">
+                                            <i class="bi bi-circle"></i><span>abc</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>`
+                    });
+                    temp+=`<li class="nav-item" id="new-section">
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-5" href="#" onclick="addsection(this)">
+                                <i class="bi bi-plus-square"></i><span>New section</span>
+                            </a>
+                        </li>
+                    </ul>`;
+                    $('#sidebar').append(temp);
+                }else{
+                    toastr.error(data.message);
+                }
+            }
+        });
+    }
+
+    // <li class="nav-item">
+    //             <a class="nav-link collapsed fs-5" data-bs-target="#b" data-bs-toggle="collapse" href="#">
+    //                 <i class="bi bi-circle"></i><span>Section 1</span><i class="bi bi-chevron-down ms-auto"></i>
+    //             </a>
+    //             <ul id="b" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+    //                 <li>
+    //                     <a class="nav-sub-link fs-5" href="#">
+    //                         <i class="bi bi-circle"></i><span>abc</span>
+    //                     </a>
+    //                 </li>
+    //             </ul>
+    //         </li>
+    // <ul class="sidebar-nav" id="sidebar-nav">
+    //         <li class="nav-item">
+    //             <a class="nav-link fs-5" href="">
+    //                 <i class="bi bi-bookmark"></i><span>Description</span>
+    //             </a>
+    //         </li>
+    //         <li class="nav-item" id="new-section">
+
+    //         </li>
+    //         <li class="nav-item">
+    //             <a class="nav-link fs-5" href="#" onclick="addsection(this)">
+    //                 <i class="bi bi-plus-square"></i><span>New section</span>
+    //             </a>
+    //         </li>
+    //     </ul>
 </script>
 @endsection
