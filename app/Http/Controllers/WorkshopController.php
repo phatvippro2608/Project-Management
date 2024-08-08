@@ -79,4 +79,29 @@ class WorkshopController extends Controller
     {
         $image->storeAs($folder, $name.'.'.$image->getClientOriginalExtension(), $disk);
     }
+
+    public function live($workshop_id)
+    {
+        $workshop = WorkshopModel::findOrFail($workshop_id);
+
+        if($workshop->live_technology == 'youtube'){
+            // Parse youtube_video_id từ live_url
+            $url = $workshop->live_url;
+            parse_str(parse_url($url, PHP_URL_QUERY), $query);
+            $youtube_video_id = $query['v'];
+            // Thêm youtube_video_id vào đối tượng workshop để truyền vào view
+            $workshop->youtube_video_id = $youtube_video_id;
+            return view('auth.lms.live', ['workshop' => $workshop, 'youtube_video_id' => $youtube_video_id]);
+        } else if($workshop->live_technology == 'zoom')
+            return redirect()->away('https://www.google.com/search?q=zoom');
+        else if($workshop->live_technology == 'team')
+            return redirect()->away('https://www.google.com/search?q=team');
+        else
+            return redirect()->away('https://www.google.com/');
+    }
+
+    public function chats()
+    {
+        return $this->hasMany(WorkshopChatController::class);
+    }
 }

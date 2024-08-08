@@ -97,6 +97,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
         Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
         Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
+        Route::get('/live/{workshop_id}', [WorkshopController::class, 'live'])->name('lms.live');
         Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('education.course');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
     });
