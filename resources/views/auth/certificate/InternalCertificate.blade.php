@@ -188,6 +188,17 @@
 
         function downloadCertificate(event) {
             event.preventDefault();
+            var pdfUrl = $(event.target).closest('tr').data('pdf-url');
+
+            if (pdfUrl) {
+                // Tạo một liên kết tạm thời
+                var link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = pdfUrl.split('/').pop(); // Đặt tên file từ URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }
 
         function editCertificate(event) {
