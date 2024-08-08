@@ -11,14 +11,22 @@ class CourseController extends Controller
 {
     function getViewCourses()
     {
-        $courses = CourseModel::all();
+
+        $courses=DB::table('courses')
+        ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+        ->select('courses.*','course_types.type_name')
+        ->get();
         $getTypeName = DB::table('course_types')->get();
-        
+
         return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName]);
     }
-    function getViewCourseSection()
+    function getCourseView($id)
     {
-        return view('auth.lms.course_section');
+        $course=DB::table('courses')
+        ->where('course_id',$id)
+        ->get();
+        $getTypeName = DB::table('course_types')->get();
+        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName]);
     }
     function getCourseSection($id)
     {
@@ -34,9 +42,11 @@ class CourseController extends Controller
             return response()->json(['success' => false, 'message' => 'Course name is required!']);
         }
         $description = $request->input('course_description');
+        $course_type=$request->input('course_type');
         $course = new CourseModel([
             'course_name' => $course_name,
             'description' => $description,
+            'course_type_id' => $course_type,
         ]);
         $course->save();
 
@@ -57,8 +67,13 @@ class CourseController extends Controller
 
     function getCourse($id)
     {
-        $course = CourseModel::find($id);
-        return response()->json(['success' => true, 'course' => $course]);
+        $course=DB::table('courses')
+        ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+        ->select('courses.*','course_types.type_name')
+        ->where('course_id',$id)
+        ->get();
+        $getTypeName = DB::table('course_types')->get();
+        return response()->json(['success' => true, 'course' => $course, 'getTypeName' => $getTypeName]);
     }
 
     function updateCourse(Request $request)
@@ -72,9 +87,11 @@ class CourseController extends Controller
             return response()->json(['success' => false, 'message' => 'Course name is required!']);
         }
         $description = $request->input('course_description');
+        $course_type=$request->input('course_type');
         $course = CourseModel::find($course_id);
         $course->course_name = $course_name;
         $course->description = $description;
+        $course->course_type_id = $course_type;
         $course->save();
 
         if ($request->hasFile('course_img')) {
@@ -89,8 +106,20 @@ class CourseController extends Controller
             $course->course_image = $course_image;
             $course->save();
         }
-        $courses = CourseModel::all();
-        return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses]);
+        if($request->input('type')=="single")
+        {
+            $courses=DB::table('courses')
+            ->select('courses.*')
+            ->where('course_id',$course_id)
+            ->get();
+        }else{
+            $courses=DB::table('courses')
+            ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+            ->select('courses.*','course_types.type_name')
+            ->get();
+        }
+        $getTypeName = DB::table('course_types')->get();
+        return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
     }
     //fill courses by type
     public function getCourseByType(Request $request)
