@@ -1,4 +1,4 @@
-@extends('auth.main-lms')
+@extends('auth.quiz.main-quiz')
 @section('contents')
     <div class="pagetitle">
         <h1>Quiz</h1>
@@ -10,7 +10,6 @@
             </ol>
         </nav>
     </div>
-
     <div class="row">
         <div class="col-md-4">
             <div class="card">
@@ -27,7 +26,7 @@
                     }
                 @endphp
                 <div class="card-body text-center mt-3">
-                    <img src="{{ $imageUrl }}" alt="Ảnh thí sinh" class="img-fluid mb-3">
+                    <img src="{{ $imageUrl }}" alt="Ảnh thí sinh" class="img-fluid mb-3 rounded-circle" style="height: 200px">
                     <p><strong>Employee Code: </strong> {{$data->employee_code}}</p>
                     <p><strong>Full name: </strong>{{$data->last_name.' '.$data->first_name}}</p>
                     <p><strong>Department: </strong>{{$data->department_name}}</p>
@@ -36,8 +35,9 @@
 
             @if($data->permission == 5 || $data->permission == 2)
                 <div class="card mt-4">
-                    <div class="card-body text-center  p-3">
+                    <div class="card-body text-center p-3 d-flex justify-content-around">
                         <a href="{{ route('create-quiz.index') }}" class="btn btn-success">Create exam</a>
+                        <a href="{{ route('question-bank.index') }}" class="btn btn-success">Question bank</a>
                     </div>
                 </div>
             @endif

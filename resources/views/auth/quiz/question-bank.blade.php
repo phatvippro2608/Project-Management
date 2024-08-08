@@ -1,4 +1,4 @@
-@extends('auth.main-lms')
+@extends('auth.quiz.main-quiz')
 @section('contents')
     <div class="pagetitle">
         <h1>Create Quiz</h1>
@@ -6,7 +6,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="">Home</a></li>
                 <li class="breadcrumb-item"><a href="">Quiz</a></li>
-                <li class="breadcrumb-item active">Create Quiz</li>
+                <li class="breadcrumb-item active">Question bank</li>
             </ol>
         </nav>
     </div>
@@ -38,6 +38,7 @@
             <div class="col-md-12">
                 <label for="courseSelect">Chọn khóa học</label>
                 <select class="form-control" id="courseSelect">
+                    <option value="">No select</option>
                     @foreach($courses as $item)
                         <option value="{{$item->course_id}}">{{$item->course_name}}</option>
                     @endforeach
@@ -48,7 +49,6 @@
             <thead class="table-light">
             <tr>
                 <th>STT</th>
-                <th>Tên khóa học</th>
                 <th>Câu hỏi</th>
                 <th>Đáp án A</th>
                 <th>Đáp án B</th>
@@ -58,7 +58,8 @@
                 <th>Hành động</th>
             </tr>
             </thead>
-            <tbody >
+            <tbody>
+
             </tbody>
         </table>
     </div>
@@ -191,7 +192,7 @@
             e.preventDefault();
             var formData = new FormData(this);
             $.ajax({
-                url: '{{ route('create-quiz.add') }}',
+                url: '{{ route('question-bank.add') }}',
                 method: 'POST',
                 data: formData,
                 contentType: false,
@@ -217,5 +218,57 @@
                 }
             });
         });
+
+        $('#courseSelect').on("change", function () {
+            let course_id = $("#courseSelect option:selected").val();
+            let tableBody = $("#questionsTable tbody");
+
+            if (course_id === "") {
+                // Nếu không có khóa học nào được chọn, làm trống bảng và thoát khỏi hàm
+                tableBody.empty();
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('question-bank.list', ':id') }}'.replace(':id', course_id),
+                method: 'GET',
+                success: function(response) {
+                    const data = response.question_list;
+                    let tableBody = $("#questionsTable tbody");
+                    tableBody.empty();  // Clear existing data
+
+                    data.forEach((question, index) => {
+                        let row =
+                            `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${question.question}</td>
+                                    <td>${question.question_a}</td>
+                                    <td>${question.question_b}</td>
+                                    <td>${question.question_c}</td>
+                                    <td>${question.question_d}</td>
+                                    <td>${question.correct}</td>
+                                    <td>
+                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                            data-id="${question.id}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                            data-id="${question.id}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        tableBody.append(row);
+                    });
+                },
+                error: function(xhr) {
+                    toastr.error(xhr.responseJSON.message, "Error");
+                }
+            });
+        });
+
+
     </script>
 @endsection
