@@ -365,6 +365,13 @@ $token = 'position';
         </li>
 
         <li class="nav-item position-relative">
+            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">
+                <i class="bi bi-folder"></i>
+                <span class="me-4">Courses</span>
+            </a>
+        </li>
+
+        <li class="nav-item position-relative">
             <a class="nav-link fs-5 fw-bold" href="#">
                 <i class="bi bi-chat-dots-fill"></i>
                 <span class="me-4">Messages</span>
