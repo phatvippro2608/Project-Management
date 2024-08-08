@@ -358,13 +358,20 @@ $token = 'position';
         </li>
 
         <li class="nav-item position-relative">
+            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\WorkshopController@getViewDashboard') }}">
+                <i class="bi bi-person-video2"></i>
+                <span class="me-4">Workshops</span>
+            </a>
+        </li>
+
+        <li class="nav-item position-relative">
             <a class="nav-link fs-5 fw-bold" href="#">
                 <i class="bi bi-chat-dots-fill"></i>
                 <span class="me-4">Messages</span>
             </a>
-
             <span class="badge bg-primary  position-absolute top-50 translate-middle end-0 fs-6">3</span>
         </li>
+
         <li class="nav-item">
             <a class="nav-link fs-5 fw-bold " href="#">
                 <i class="bi bi-bell-fill"></i>
