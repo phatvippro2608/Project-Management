@@ -263,9 +263,15 @@
                 <h5>Experience</h5>
             </div>
             <div class="card-body p-3">
-                <p><strong>...</strong><br>...</p>
-                <p><strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)</p>
-                <p><strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)</p>
+                <p>
+                    <strong>...</strong><br>...
+                </p>
+                <p>
+                    <strong>Web Designer at Ron-tech</strong><br>Jan 2013 - Present (6 years 2 months)
+                </p>
+                <p>
+                    <strong>Web Designer at Dalt Technology</strong><br>Jan 2013 - Present (6 years 2 months)
+                </p>
             </div>
         </div>
 
@@ -274,12 +280,16 @@
                 <h5>Education Information</h5>
             </div>
             <div class="card-body p-3">
-                <p><strong>...</strong><br>
+                <p>
+                    <strong>...</strong><br>
                     ...<br>
-                    ...</p>
-                <p><strong>International College of Arts and Science (PG)</strong><br>
+                    ...
+                </p>
+                <p>
+                    <strong>International College of Arts and Science (PG)</strong><br>
                     MSc Computer Science<br>
-                    2000 - 2003</p>
+                    2000 - 2003
+                </p>
             </div>
         </div>
     </div>
@@ -395,19 +405,21 @@
 
             $('#content').addClass('active');
             content();
-            $('.nav-link').click(function() {
+
+            $('.card .nav-link').click(function() {
                 $('.nav-link').removeClass('active');
                 $('.row.content, .card, .bank-content').removeClass('active');
                 $(this).addClass('active');
                 var target = $(this).data('target');
                 $(target).addClass('active');
             });
-        });
-        $('#table--project').on('click', 'tr', function() {
-            var url = $(this).data('href');
-            if (url) {
-                window.location.href = url;
-            }
+
+            $('#table--project').on('click', 'tr', function() {
+                var url = $(this).data('href');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
         });
     </script>
 @endsection
