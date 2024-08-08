@@ -311,9 +311,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
-//    Route::group(['prefix' => '/quiz'], function () {
-//        Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
-//    });
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+    });
 
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');

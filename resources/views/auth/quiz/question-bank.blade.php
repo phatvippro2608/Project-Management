@@ -45,23 +45,25 @@
                 </select>
             </div>
         </div>
-        <table id="questionsTable" class="table table-hover table-borderless">
-            <thead class="table-light">
-            <tr>
-                <th>STT</th>
-                <th>Câu hỏi</th>
-                <th>Đáp án A</th>
-                <th>Đáp án B</th>
-                <th>Đáp án C</th>
-                <th>Đáp án D</th>
-                <th>Đáp án đúng</th>
-                <th>Hành động</th>
-            </tr>
-            </thead>
-            <tbody>
+        <div class="table-responsive">
+            <table id="questionsTable" class="table table-hover table-borderless">
+                <thead class="table-light">
+                <tr>
+                    <th>STT</th>
+                    <th>Câu hỏi</th>
+                    <th>Đáp án A</th>
+                    <th>Đáp án B</th>
+                    <th>Đáp án C</th>
+                    <th>Đáp án D</th>
+                    <th>Đáp án đúng</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal Thêm câu hỏi -->
