@@ -24,6 +24,7 @@ use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\DisciplinaryTypeController;
+use App\Http\Controllers\InternalCertificatesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +92,11 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
+        Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
+        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
+        Route::post('/course', 'App\Http\Controllers\CourseController@create');
+        Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
+        Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
@@ -99,7 +105,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
         Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
     });
-
+    Route::group(['prefix' => '/job-info', 'middleware' => 'isAdmin'], function () {
+        Route::get('/', 'App\Http\Controllers\JobInfoController@getView');
+        Route::post('/get', 'App\Http\Controllers\JobInfoController@getJob');
+        Route::post('/add', 'App\Http\Controllers\JobInfoController@add');
+        Route::post('/update', 'App\Http\Controllers\JobInfoController@update');
+        Route::post('/delete', 'App\Http\Controllers\JobInfoController@delete');
+    });
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
@@ -299,11 +311,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
+    Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
+    Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
 });
-
-
-//education
-Route::get('/lms/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('lms.course');
-Route::post('/lms/course', 'App\Http\Controllers\CourseController@create');
-Route::get('/lms/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
-Route::post('/lms/course/update', 'App\Http\Controllers\CourseController@updateCourse');

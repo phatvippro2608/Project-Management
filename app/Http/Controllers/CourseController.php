@@ -8,7 +8,7 @@ use App\Models\CourseModel;
 
 class CourseController extends Controller
 {
-    function getViewCourse()
+    function getViewCourses()
     {
         $courses = CourseModel::all();
         return view('auth.lms.course', ['courses' => $courses]);
