@@ -47,6 +47,14 @@
         .modal-body {
             overflow-y: auto;
         }
+
+        .separator {
+            display: inline-block;
+            width: 1px;
+            height: 24px;
+            background-color: #ddd;
+            margin: 0 8px;
+        }
     </style>
 @endsection
 
@@ -90,20 +98,15 @@
                             {{-- <td>{{ $item->certificate_body_name }}</td> --}}
                             <td>{{ $item->certificate_type_name }}</td>
                             <td class="text-center">
-                                <div class="btn-group action-btns" role="group">
-                                    <button data-disciplinary="1" class="btn btn-success btn-sm"
-                                        onclick="downloadCertificate(event)">
-                                        <i class="bi bi-download"></i>
-                                    </button>
-                                    <button data-disciplinary="1" class="btn btn-primary btn-sm"
-                                        onclick="editCertificate(event)">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button data-disciplinary="1" class="btn btn-danger btn-sm"
-                                        onclick="deleteCertificate(event)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
+                                <button data-disciplinary="1" class="btn p-1 text-primary"
+                                    onclick="downloadCertificate(event)">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                                |
+                                <button data-disciplinary="1" class="btn p-1 text-danger"
+                                    onclick="deleteCertificate(event)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -202,10 +205,6 @@
             }
         }
 
-        function editCertificate(event) {
-            event.preventDefault();
-        }
-
         function deleteCertificate(event) {
             event.preventDefault();
             var row = $(event.target).closest('tr');
@@ -219,15 +218,12 @@
                 certificate: row.find('td').eq(5).text(),
             };
             $.ajax({
-                url: '/delete-certificate/' + id,
+                url: '/certificate',
                 type: 'DELETE',
-                data: data,
-                success: function(result) {
-                    // Xóa hàng khỏi bảng sau khi xóa thành công
-                    row.remove();
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
         }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class InternalCertificatesController extends Controller
 {
@@ -21,6 +23,18 @@ class InternalCertificatesController extends Controller
         return view('auth.certificate.InternalCertificate', [
             'employees' => $employees
         ]);
+    }
+
+    public function deleteViewUser(Request $request)
+    {
+        $data = $request->json()->all();
+        $id = $data['id'];
+        $deleted = DB::table('certificates')->where('certificate_id', $id)->delete();
+        if ($deleted) {
+            return Response::json(['success' => 'Employee deleted successfully.']);
+        } else {
+            return Response::json(['error' => 'Employee not found.'], 404);
+        }
     }
 
     public function getViewType()

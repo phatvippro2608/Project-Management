@@ -309,6 +309,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
 
     Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
+    Route::delete('certificate',[InternalCertificatesController::class,'deleteViewUser'])->name('certificate.user.delete');
     Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
 });
 
