@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.main-lms')
 
 @section('head')
 <script src="{{asset('assets/js/tinymce/tinymce.min.js')}}"></script>
