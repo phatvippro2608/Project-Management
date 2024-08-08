@@ -20,13 +20,24 @@
         </ol>
     </nav>
 </div>
-<div class="section educaiton">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
-        <i class="bi bi-plus me-1"></i>Add course
-    </button>
+<div class="section education">
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
+            <i class="bi bi-plus me-1"></i>Add course
+        </button>
+        <div class="d-flex ms-auto">
+            <input type="text" id="searchInput" class="form-control me-2" style="max-width: 300px;" placeholder="Search Courses">
+            <select id="courseTypeFilter" class="form-select" style="max-width: 200px;">
+                <option value="">All Types</option>
+                <option value="type1">Type 1</option>
+                <option value="type2">Type 2</option>
+                <option value="type3">Type 3</option>
+            </select>
+        </div>
+    </div>
     <div class="row mt-2" id="course_handel">
         @foreach($courses as $course)
-        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 course-card" data-type="{{ $course->type }}">
             <div class="card shadow bg-white border-none rounded-4">
                 <div class="card-header m-2 p-0 text-primary">
                     <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
@@ -96,7 +107,7 @@
                         <input type="text" name="course_name" id="course_name_e" class="form-control">
                     </div>
                     <div class="form-group mt-3">
-                        <label for="course_description"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
+                        <label for="course_description_e"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
                         <textarea name="course_description" id="course_description_e" class="form-control"></textarea>
                     </div>
                 </div>
@@ -177,51 +188,17 @@
         },
         plugins_exclude: 'print media'
     });
-    $('#formAddCourse').submit(function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        if (tinymce.get('course_description').getContent() == '') {
-            return;
-        }
-        formData.append('course_description', tinymce.get('course_description').getContent());
-        $.ajax({
-            url: '{{ action('App\Http\Controllers\CourseController@create') }}',
-            type: 'post',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(data) {
-                if (data.success) {
-                    toastr.success(data.message);
-                    $('#modalAddCourse').modal('hide');
-                    //clear course_handel
-                    $('#course_handel').empty();
-                    //append new course
-                    data.courses.forEach(course => {
-                        // Remove HTML tags and limit to 30 characters
-                        let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
 
-                        $('#course_handel').append(
-                            `<div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
-                                <div class="card shadow bg-white border-none rounded-4">
-                                <div class="card-header m-2 p-0 text-primary">
-                                    <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1">${course.course_name}</h5>
-                                </div>
-                                <div class="card-body m-3 p-0">
-                                    ${plainDescription}
-                                </div>
-                            </div>
-                        </div>`
-                        );
-                    });
-                } else {
-                    toastr.error(data.message);
-                }
+    // Filter courses by type
+    $('#courseTypeFilter').change(function() {
+        var selectedType = $(this).val();
+        $('.course-card').each(function() {
+            if (selectedType === '' || $(this).data('type') === selectedType) {
+                $(this).show();
+            } else {
+                $(this).hide();
             }
         });
-
     });
-    $('#formEditCourse').submit(function(e) {});
 </script>
 @endsection

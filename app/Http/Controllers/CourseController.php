@@ -51,4 +51,5 @@ class CourseController extends Controller
         $courses = CourseModel::all();
         return response()->json(['success' => true,'message' => 'Add new course success!', 'courses' => $courses]);
     }
+    
 }
