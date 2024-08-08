@@ -138,7 +138,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             var table = $('#certificateTable').DataTable({
@@ -205,25 +205,31 @@
             }
         }
 
-        function deleteCertificate(event) {
-            event.preventDefault();
-            var row = $(event.target).closest('tr');
-            var id = row.data('id');
-            var data = {
-                id: id,
-                employee_code: row.find('td').eq(1).text(),
-                photo: row.find('td').eq(2).find('img').attr('src'),
-                full_name: row.find('td').eq(3).text(),
-                en_name: row.find('td').eq(4).text(),
-                certificate: row.find('td').eq(5).text(),
-            };
-            $.ajax({
-                url: '/certificate',
-                type: 'DELETE',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        function deleteCertificate(button) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var row = $(button.target).closest('tr');
+                    var id = row.data('id');
+                    var data = {
+                        id: id
+                    };
+                    $.ajax({
+                        url: '/certificate',
+                        type: 'DELETE',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
                 }
             });
         }

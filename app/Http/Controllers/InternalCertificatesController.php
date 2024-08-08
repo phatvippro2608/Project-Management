@@ -42,8 +42,10 @@ class InternalCertificatesController extends Controller
         $certificates = DB::table('certificate_types')
             ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_types.certificate_body_id')
             ->get();
+        $companies = DB::table('certificate_bodys')->orderBy('certificate_body_name')->get();
         return view('auth.certificate.InternalCertificateType', [
-            'certificates' => $certificates
+            'certificates' => $certificates,
+            'companies' => $companies
         ]);
     }
 }

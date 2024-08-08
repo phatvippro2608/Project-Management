@@ -126,11 +126,18 @@
                         <div class="mb-3">
                             <label for="companySelect" class="form-label">Select Company</label>
                             <select id="companySelect" class="form-select">
-                                <option value="">Choose a company</option>
-                                <option value="1">Company A</option>
-                                <option value="2">Company B</option>
-                                <option value="3">Company C</option>
+                                @foreach ($companies as $company)
+                                    <option data-acronym ="{{ $company->certificate_body_Acronym }}"
+                                        class="{{ $company->certificate_body_id }}"
+                                        @if ($company->certificate_body_name == 'Other') selected @endif>
+                                        {{ $company->certificate_body_name }}
+                                    </option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="companyAcronymCertificate" class="form-label">Company Acronym</label>
+                            <input type="text" class="form-control" id="companyAcronymCertificate" disabled>
                         </div>
                         <!-- Certificate Name -->
                         <div class="mb-3">
@@ -166,9 +173,15 @@
                         @csrf
                         <input type="hidden" id="editCertificateId">
                         <div class="mb-3">
-                            <label for="editCompanyName" class="form-label">Company Name</label>
-                            <input type="text" class="form-control" id="editCompanyName"
-                                placeholder="Enter company name">
+                            <label for="editCompanySelect" class="form-label">Select Company</label>
+                            <select id="editCompanySelect" class="form-select">
+                                @foreach ($companies as $company)
+                                    <option data-acronym="{{ $company->certificate_body_Acronym }}"
+                                        class="{{ $company->certificate_body_id }}">
+                                        {{ $company->certificate_body_name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="editCompanyAcronym" class="form-label">Company Acronym</label>
@@ -193,6 +206,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('#certificateTable').DataTable({
@@ -205,28 +219,65 @@
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50, 75, 100]
             });
+
+            $('#editCompanySelect').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var dataAcronym = selectedOption.data('acronym');
+                $('#editCompanyAcronym').val(dataAcronym);
+            });
+
+            $('#companySelect').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var dataAcronym = selectedOption.data('acronym');
+                console.log(dataAcronym)
+                $('#companyAcronymCertificate').val(dataAcronym);
+            });
+
+            $('#saveCompanyButton').on('click', function() {
+                // Add logic to handle saving new company details
+            });
+
+            $('#saveCertificateButton').on('click', function() {
+                // Add logic to handle saving new certificate details
+            });
+
+            $('#updateCertificateButton').on('click', function() {
+                // Add logic to handle updating certificate details
+            });
         });
 
         function editCertificate(button) {
-
             var row = $(button).closest('tr');
-            var id = row.data('id');
-            var companyName = row.data('company-name');
-            var companyAcronym = row.data('company-acronym');
-            var certificateName = row.data('certificate-name');
-            var certificateAcronym = row.data('certificate-acronym');
-
+            var id = row.find('td').eq(0).text().trim();
+            var companyId = row.find('td').eq(1).text().trim();
+            var companyAcronym = row.find('td').eq(2).text().trim();
+            var certificateName = row.find('td').eq(3).text().trim();
+            var certificateAcronym = row.find('td').eq(4).text().trim();
             $('#editCertificateId').val(id);
-            $('#editCompanyName').val(companyName);
+            $('#editCompanySelect').val(companyId).change();
             $('#editCompanyAcronym').val(companyAcronym);
             $('#editCertificateName').val(certificateName);
             $('#editCertificateAcronym').val(certificateAcronym);
-
             $('#editCertificateModal').modal('show');
         }
 
-        function deleteCertificate(e) {
+        function deleteCertificate(button) {
+            var row = $(button).closest('tr');
+            var id = row.find('td').eq(0).text().trim();
 
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("Delete item with ID:", id);
+                }
+            });
         }
     </script>
 @endsection
