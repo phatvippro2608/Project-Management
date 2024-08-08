@@ -1,36 +1,34 @@
 @extends('auth.main-lms')
 @section('contents')
-    <div class="container mt-4">
-        <div class="pagetitle">
-            <h1>Create Quiz</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="">Home</a></li>
-                    <li class="breadcrumb-item"><a href="">Quiz</a></li>
-                    <li class="breadcrumb-item active">Create Quiz</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="row gx-3 my-3">
-            <div class="col-md-6 m-0">
-                <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                    <div class="d-flex align-items-center at1">
-                        <i class="bi bi-file-earmark-plus pe-2"></i>
-                        Add question
-                    </div>
+    <div class="pagetitle">
+        <h1>Create Quiz</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="">Home</a></li>
+                <li class="breadcrumb-item"><a href="">Quiz</a></li>
+                <li class="breadcrumb-item active">Create Quiz</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+                <div class="d-flex align-items-center at1">
+                    <i class="bi bi-file-earmark-plus pe-2"></i>
+                    Add question
                 </div>
-                <div class="btn btn-success mx-2">
-                    <div class="d-flex align-items-center at2 text-white btnExcel">
-                        <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
-                        Import
-                    </div>
+            </div>
+            <div class="btn btn-success mx-2">
+                <div class="d-flex align-items-center at2 text-white btnExcel">
+                    <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
+                    Import
                 </div>
-                <div class="btn btn-success mx-2">
-                    <a href="" class="d-flex align-items-center at2 text-white">
-                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                        Export
-                    </a>
-                </div>
+            </div>
+            <div class="btn btn-success mx-2">
+                <a href="" class="d-flex align-items-center at2 text-white">
+                    <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                    Export
+                </a>
             </div>
         </div>
     </div>
