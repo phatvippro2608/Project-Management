@@ -25,6 +25,10 @@ use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\DisciplinaryTypeController;
+use App\Http\Controllers\CreateQuizController;
+use App\Http\Controllers\TestQuizController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -226,8 +230,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
         Route::post('/{project_id}/commission/{group_id}/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.AddNewComission');
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-
-
     });
 
     Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
@@ -304,6 +306,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
     });
+
+    Route::group(['prefix' => '/quiz', 'middleware' => 'isSuperAdmin'], function () {
+        Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
+    });
+
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+    });
+    
 });
-
-
