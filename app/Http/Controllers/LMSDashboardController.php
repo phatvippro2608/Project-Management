@@ -17,14 +17,21 @@ class LMSDashboardController extends Controller
         $employee = DB::selectOne($sql_get_employee_id);
         $course_c = DB::table('courses')->count();
         $employee_id = $employee->employee_id;
+        $certificate_c = 0;
+        $allCourse = DB::table('courses')->get();
         $data = DB::table('courses_employees')
             ->join('employees', 'courses_employees.employee_id', '=', 'employees.employee_id')
             ->join('courses', 'courses_employees.course_id', '=', 'courses.course_id')
             ->select('employees.first_name', 'employees.last_name', 'courses.course_id', 'courses.course_name','courses_employees.start_date', 'courses_employees.end_date', 'courses_employees.progress')
             ->where('courses_employees.employee_id', $employee_id)
             ->get();
+        $certificate_c = $data->where('progress', 100)->count();
         $count = $data->count();
-        return view('auth.lms.lms-dashboard', ['employee' => $employee, 'data' => $data, 'count'=>$count, 'course_c' => $course_c]);
+        return view('auth.lms.lms-dashboard', ['employee' => $employee, 'data' => $data, 
+        'count' => $count, 'course_c' => $course_c, 
+        'certificate_c' => $certificate_c,
+        'allCourse' => $allCourse
+        ]);
     }
     
 }
