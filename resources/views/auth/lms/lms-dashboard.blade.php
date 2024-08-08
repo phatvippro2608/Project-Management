@@ -1,4 +1,4 @@
-@extends('auth.main-edu')
+@extends('auth.main-lms')
 
 @section('head')
 @endsection
