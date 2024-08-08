@@ -159,6 +159,8 @@
     <script>
         var table = $('#teamListTable').DataTable({
             language: { search: "" },
+            lengthMenu: [10, 30, 50, 100],
+            pageLength: {{env('ITEM_PER_PAGE')}},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">

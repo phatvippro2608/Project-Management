@@ -1,3 +1,7 @@
+<?php
+    use App\Http\Controllers\AccountController;
+    ?>
+
 @extends('auth.main')
 
 @section('contents')
@@ -38,6 +42,7 @@
                                 <th class="text-center">Full Name</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Username</th>
+                                <th class="text-center">Permission</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Last Updated</th>
                             </tr>
@@ -73,6 +78,9 @@
                                         </td>
                                         <td class="text-center">
                                             {{$item->username}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{AccountController::getPermissionName($item->permission)}}
                                         </td>
                                         <td class="text-center">
                                             @if($status[$item->status] == 'Offine')
@@ -152,8 +160,8 @@
                                 Permission
                             </label>
                             <select class="form-select name5" aria-label="Default">
-                                @foreach($permission as $key => $val)
-                                    <option value="{{$key}}">{{$val}}</option>
+                                @foreach($permission as $item)
+                                    <option value="{{$item->permission_num}}">{{$item->permission_name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -187,6 +195,8 @@
 
         var table = $('#accountsTable').DataTable({
             language: { search: "" },
+            lengthMenu: [10, 30, 50, 100],
+            pageLength: {{env('ITEM_PER_PAGE')}},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
@@ -212,7 +222,6 @@
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add Account');
             $('.md1 .passName').text('Password');
-            $('.name5').val(0);
             $('.md1').modal('show');
 
             $('.at2').click(function () {
