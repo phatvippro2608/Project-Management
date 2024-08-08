@@ -655,12 +655,12 @@ $token = 'position';
             </a>
             <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{ route('certificate.user') }}">
                         <i class="bi bi-circle"></i><span>Internal Certificates</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-sub-link" href="">
+                    <a class="nav-sub-link" href="{{ route('certificate.type') }}">
                         <i class="bi bi-circle"></i><span>Internal Certificates Types</span>
                     </a>
                 </li>
