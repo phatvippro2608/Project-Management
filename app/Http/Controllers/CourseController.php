@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CourseModel;
 use Illuminate\Support\Facades\DB;
+
 class CourseController extends Controller
 {
     function getViewCourses()
     {
+
         $courses=DB::table('courses')
         ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
         ->select('courses.*','course_types.type_name')
         ->get();
         $getTypeName = DB::table('course_types')->get();
+
         return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName]);
     }
     function getCourseView($id)
@@ -118,4 +121,29 @@ class CourseController extends Controller
         $getTypeName = DB::table('course_types')->get();
         return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
     }
+    //fill courses by type
+    public function getCourseByType(Request $request)
+{
+    $search = $request->input('search', '');
+    $typeFilter = $request->input('courseType', '');
+
+    try {
+        $query = CourseModel::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('course_name', 'like', "%{$search}%");
+            })
+            ->when($typeFilter, function ($query, $typeFilter) {
+                return $query->whereHas('type', function ($query) use ($typeFilter) {
+                    $query->where('type_name', $typeFilter);
+                });
+            });
+
+        $courses = $query->get();
+        $getDataByType = DB::table('course_types')->get();
+
+        return response()->json(['success' => true, 'data' => $courses, 'types' => $getDataByType]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+    }
+}
 }
