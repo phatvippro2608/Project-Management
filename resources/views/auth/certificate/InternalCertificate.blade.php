@@ -77,7 +77,8 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $item)
-                        <tr data-pdf-url="{{ asset('uploads/1/' . $item->certificate) }}">
+                        <tr id="row-{{ $item->certificate_id }}" data-id="{{ $item->certificate_id }}"
+                            data-pdf-url="{{ asset('uploads/1/' . $item->certificate) }}">
                             <td class="text-center">{{ $item->certificate_id }}</td>
                             <td>{{ $item->employee_code }}</td>
                             <td>
@@ -207,6 +208,28 @@
 
         function deleteCertificate(event) {
             event.preventDefault();
+            var row = $(event.target).closest('tr');
+            var id = row.data('id');
+            var data = {
+                id: id,
+                employee_code: row.find('td').eq(1).text(),
+                photo: row.find('td').eq(2).find('img').attr('src'),
+                full_name: row.find('td').eq(3).text(),
+                en_name: row.find('td').eq(4).text(),
+                certificate: row.find('td').eq(5).text(),
+            };
+            $.ajax({
+                url: '/delete-certificate/' + id,
+                type: 'DELETE',
+                data: data,
+                success: function(result) {
+                    // Xóa hàng khỏi bảng sau khi xóa thành công
+                    row.remove();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
         }
     </script>
 @endsection
