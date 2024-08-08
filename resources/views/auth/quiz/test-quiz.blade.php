@@ -1,4 +1,5 @@
-@extends('auth.main-edu')
+@extends('auth.main-lms')
+
 
 @section('head')
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">

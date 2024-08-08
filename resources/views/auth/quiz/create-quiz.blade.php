@@ -1,111 +1,144 @@
-@extends('auth.main-edu')
-
-@section('head')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-@endsection
-
+@extends('auth.main-lms')
 @section('contents')
     <div class="container mt-4">
         <div class="pagetitle">
-            <h1 class="mb-4">Create Quiz</h1>
+            <h1>Create Quiz</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../lms">Home</a></li>
-                    <li class="breadcrumb-item"><a href="./">Quiz</a></li>
+                    <li class="breadcrumb-item"><a href="">Home</a></li>
+                    <li class="breadcrumb-item"><a href="">Quiz</a></li>
                     <li class="breadcrumb-item active">Create Quiz</li>
                 </ol>
             </nav>
         </div>
+        <div class="row gx-3 my-3">
+            <div class="col-md-6 m-0">
+                <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+                    <div class="d-flex align-items-center at1">
+                        <i class="bi bi-file-earmark-plus pe-2"></i>
+                        Add question
+                    </div>
+                </div>
+                <div class="btn btn-success mx-2">
+                    <div class="d-flex align-items-center at2 text-white btnExcel">
+                        <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
+                        Import
+                    </div>
+                </div>
+                <div class="btn btn-success mx-2">
+                    <a href="" class="d-flex align-items-center at2 text-white">
+                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        Export
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
+        <h3 class="text-left mb-4">Question list</h3>
         <div class="row mb-4">
             <div class="col-md-12">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addQuestionModal">Add question</button>
-                <button class="btn btn-secondary" data-toggle="modal" data-target="#uploadExcelModal">Import
-                    question</button>
-                <button class="btn btn-success" id="export_excel">Export question</button>
+                <label for="courseSelect">Chọn khóa học</label>
+                <select class="form-control" id="courseSelect">
+
+                </select>
             </div>
         </div>
-        <div class="card p-2 rounded-4 border">
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <label for="courseSelect">Chọn khóa học</label>
-                    <select class="form-control" id="courseSelect">
+        <table id="questionsTable" class="table table-hover table-borderless">
+            <thead class="table-light">
+            <tr>
+                <th>STT</th>
+                <th>Tên khóa học</th>
+                <th>Câu hỏi</th>
+                <th>Đáp án A</th>
+                <th>Đáp án B</th>
+                <th>Đáp án C</th>
+                <th>Đáp án D</th>
+                <th>Đáp án đúng</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody >
+            </tbody>
+        </table>
+    </div>
+{{--    <div class="card p-2 rounded-4 border">--}}
+{{--        <div class="row mb-4">--}}
+{{--            <div class="col-md-12">--}}
+{{--                <label for="courseSelect">Chọn khóa học</label>--}}
+{{--                <select class="form-control" id="courseSelect">--}}
 
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table id="questionsTable" class="display">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên khóa học</th>
-                                <th>Câu hỏi</th>
-                                <th>Đáp án A</th>
-                                <th>Đáp án B</th>
-                                <th>Đáp án C</th>
-                                <th>Đáp án D</th>
-                                <th>Đáp án đúng</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+{{--                </select>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--        <div class="row">--}}
+{{--            <div class="col-md-12">--}}
+{{--                <table id="questionsTable" class="display">--}}
+{{--                    <thead>--}}
+{{--                    <tr>--}}
+{{--                        <th>STT</th>--}}
+{{--                        <th>Tên khóa học</th>--}}
+{{--                        <th>Câu hỏi</th>--}}
+{{--                        <th>Đáp án A</th>--}}
+{{--                        <th>Đáp án B</th>--}}
+{{--                        <th>Đáp án C</th>--}}
+{{--                        <th>Đáp án D</th>--}}
+{{--                        <th>Đáp án đúng</th>--}}
+{{--                        <th>Hành động</th>--}}
+{{--                    </tr>--}}
+{{--                    </thead>--}}
+{{--                    <tbody>--}}
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+{{--                    </tbody>--}}
+{{--                </table>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     </div>
 
     <!-- Modal Thêm câu hỏi -->
-    <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="addQuestionModal">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addQuestionModalLabel">Thêm câu hỏi</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title">Add Question</h4>
                 </div>
                 <div class="modal-body">
                     <form id="addQuestionForm" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
-                            <label for="course_name">Tên khóa học</label>
+                        <div class="mb-3">
+                            <label for="course_name" class="form-label">Tên khóa học</label>
                             <select class="form-control" id="course_name" name="course_name" required>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="question">Câu hỏi</label>
+                        <div class="mb-3">
+                            <label for="question" class="form-label">Câu hỏi</label>
                             <textarea class="form-control" id="question" name="question" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="question_img">Hình ảnh</label>
+                        <div class="mb-3">
+                            <label for="question_img" class="form-label">Hình ảnh</label>
                             <input type="file" class="form-control" id="question_img" name="question_img"
-                                accept="image/*">
+                                   accept="image/*">
                         </div>
-                        <div class="form-group">
-                            <label for="answer_a">Đáp án A</label>
-                            <input type="text" class="form-control" id="answer_a" name="answer_a" required>
+                        <div class="mb-3">
+                            <label for="answer_a" class="form-label">Đáp án A</label>
+                            <textarea type="text" class="form-control" id="answer_a" name="answer_a" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="answer_b">Đáp án B</label>
-                            <input type="text" class="form-control" id="answer_b" name="answer_b" required>
+                        <div class="mb-3">
+                            <label for="answer_b" class="form-label">Đáp án B</label>
+                            <textarea type="text" class="form-control" id="answer_b" name="answer_b" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="answer_c">Đáp án C</label>
-                            <input type="text" class="form-control" id="answer_c" name="answer_c" required>
+                        <div class="mb-3">
+                            <label for="answer_c" class="form-label">Đáp án C</label>
+                            <textarea type="text" class="form-control" id="answer_c" name="answer_c" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="answer_d">Đáp án D</label>
-                            <input type="text" class="form-control" id="answer_d" name="answer_d" required>
+                        <div class="mb-3">
+                            <label for="answer_d" class="form-label">Đáp án D</label>
+                            <textarea type="text" class="form-control" id="answer_d" name="answer_d" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="correct_answer">Đáp án đúng</label>
+                        <div class="mb-3">
+                            <label for="correct_answer" class="form-label">Đáp án đúng</label>
                             <select class="form-control" id="correct_answer" name="correct_answer" required>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -116,52 +149,73 @@
                         <button type="submit" class="btn btn-primary">Thêm câu hỏi</button>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Modal Thêm bằng Excel -->
-    <div class="modal fade" id="uploadExcelModal" tabindex="-1" role="dialog" aria-labelledby="uploadExcelModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade md2">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="uploadExcelModalLabel">Tải lên file Excel</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h4 class="modal-title text-bold"></h4>
                 </div>
                 <div class="modal-body">
-                    <form id="uploadExcelForm" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label for="excelFile">Chọn file Excel</label>
-                            <input type="file" class="form-control" id="excelFile" name="excelFile"
-                                accept=".xls,.xlsx" required>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="">Chọn file (*.xlsx) hoặc tải về
+                                <a target="_blank" href="">
+                                    File mẫu
+                                </a>
+                            </label>
+                            <input accept=".xlsx" name="file-excel" type="file" class="form-control">
+                            <br>
                         </div>
-                        <button type="submit" class="btn btn-primary">Tải lên</button>
-                    </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary luuTT">Tải lên</button>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
 @section('script')
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="{{ asset('assets/js/datatables.js') }}"></script>
-    <script src="{{ asset('assets/js/filepond.min.js') }}"></script>
-    <script src="{{ asset('assets/js/filepond-plugin-image-preview.min.js') }}"></script>
-    <script src="{{ asset('assets/js/filepond-plugin-image-overlay.min.js') }}"></script>
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
-    </script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         var table = $('#questionsTable').DataTable();
+
+        $('.btnExcel').click(function(){
+            $('.md2 .modal-title').text('Import question');
+            $('.md2').modal('show');
+            $('.luuTT').click(function(){
+                var fileInput = $('input[name="file-excel"]')[0].files[0];
+
+                var formData = new FormData();
+                formData.append('file-excel', fileInput);
+                $.ajax({
+                    url: '',
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (result.status === 200) {
+                            toastr.success(result.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 750);
+                        } else {
+                            toastr.error(result.message);
+                        }
+                    },
+                    error: function (error) {
+                        toastr.error("Thêm thất bại");
+                    }
+                });
+            })
+        })
     </script>
 @endsection

@@ -315,14 +315,11 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
     });
 
-    Route::group(['prefix' => '/quiz', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
     });
 
-    Route::group(['prefix' => '/quiz'], function () {
-        Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
-    });
-    
     Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
     Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
 
