@@ -53,7 +53,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
     Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
-    Route::group(['prefix' => '/account', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/account', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
