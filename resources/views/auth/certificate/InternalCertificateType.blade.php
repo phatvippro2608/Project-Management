@@ -260,11 +260,8 @@
 
             $('#updateCertificateButton').on('click', function() {
                 var data = {
-                    _token: $('input[name="_token"]').val(),
-                    certificate_id: $('#editCertificateId').val(),
-                    certificate_body_name: $('#editCompanySelect').find('option:selected').attr(
-                        'class'),
-                    certificate_body_Acronym: $('#editCompanyAcronym').val(),
+                    certificate_type_id: $('#editCertificateId').val(),
+                    certificate_body_id: $('#editCompanySelect').find('option:selected').attr('class'),
                     certificate_type_name: $('#editCertificateName').val(),
                     certificate_type_acronym: $('#editCertificateAcronym').val()
                 };
@@ -273,23 +270,38 @@
                     url: '{{ route('certificate.type.update') }}',
                     method: 'POST',
                     data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(response) {
                         Swal.fire(
                             'Success!',
                             'Certificate has been updated successfully.',
                             'success'
-                        );
-                        // $('#editCertificateModal').modal('hide');
+                        ).then(() => {
+                            $('#editCertificateModal').modal('hide');
+                            window.location.reload()
+                        });
                     },
                     error: function(xhr) {
+                        var errors = xhr.responseJSON.errors;
+                        var errorMessage = '';
+                        if (errors) {
+                            for (var field in errors) {
+                                errorMessage += errors[field].join('<br>');
+                            }
+                        } else {
+                            errorMessage = 'An unknown error occurred.';
+                        }
                         Swal.fire(
                             'Error!',
-                            'An error occurred while updating the certificate.',
+                            errorMessage,
                             'error'
                         );
                     }
                 });
             });
+
         });
 
         function editCertificate(button) {

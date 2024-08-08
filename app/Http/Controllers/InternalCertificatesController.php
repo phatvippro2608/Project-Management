@@ -63,24 +63,22 @@ class InternalCertificatesController extends Controller
     public function updateCertificateType(Request $request)
     {
         $request->validate([
-            'certificate_id' => 'required|exists:certificates,id',
-            'certificate_body_name' => 'required|exists:companies,certificate_body_id',
-            'certificate_body_Acronym' => 'required|string',
+            'certificate_type_id' => 'required|integer|exists:certificate_types,certificate_type_id',
+            'certificate_body_id' => 'required|integer|exists:certificate_bodys,certificate_body_id',
             'certificate_type_name' => 'required|string|max:255',
-            'certificate_type_acronym' => 'required|string|max:255',
+            'certificate_type_acronym' => 'nullable|string|max:255',
         ]);
 
         try {
-            $certificate = DB::table('certificates')->where('certificate_id', $request->input('certificate_id'))->first();
+            $certificate = DB::table('certificate_types')->where('certificate_type_id', $request->input('certificate_type_id'))->first();
 
             if (!$certificate) {
                 return response()->json(['message' => 'Certificate not found.'], 404);
             }
 
             // Cập nhật chứng chỉ
-            DB::table('certificates')->where('certificate_id', $request->input('certificate_id'))->update([
-                'certificate_body_name' => $request->input('certificate_body_name'),
-                'certificate_body_Acronym' => $request->input('certificate_body_Acronym'),
+            DB::table('certificate_types')->where('certificate_type_id', $request->input('certificate_type_id'))->update([
+                'certificate_body_id' => $request->input('certificate_body_id'),
                 'certificate_type_name' => $request->input('certificate_type_name'),
                 'certificate_type_acronym' => $request->input('certificate_type_acronym'),
                 'updated_at' => now()
@@ -91,5 +89,6 @@ class InternalCertificatesController extends Controller
             return response()->json(['message' => 'An error occurred while updating the certificate.'], 500);
         }
     }
+
 
 }
