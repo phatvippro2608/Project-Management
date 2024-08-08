@@ -25,6 +25,7 @@ use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\DisciplinaryTypeController;
 use App\Http\Controllers\InternalCertificatesController;
+use App\Http\Controllers\WorkshopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +93,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
-        Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
+        Route::get('workshops', [WorkshopController::class, 'index'])->name('workshop.index');
+        Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
+        Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
+        Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
         Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('education.course');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
     });
