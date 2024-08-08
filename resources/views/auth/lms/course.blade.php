@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.main-lms')
 
 @section('head')
 <script src="{{asset('assets/js/tinymce/tinymce.min.js')}}"></script>
@@ -8,6 +8,18 @@
 <style>
     .tox-promotion {
         display: none !important;
+    }
+    .card {
+        height: 350px;
+    }
+    .card img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .card-body {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 <div class="pagetitle">
@@ -35,15 +47,18 @@
             </select>
         </div>
     </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectCourse">
+        <i class="bi bi-pencil me-1"></i>Edit course
+    </button>
     <div class="row mt-2" id="course_handel">
         @foreach($courses as $course)
         <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 course-card" data-type="{{ $course->type }}">
             <div class="card shadow bg-white border-none rounded-4">
                 <div class="card-header m-2 p-0 text-primary">
-                    <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
+                    <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
                     <h5 class="mt-2 mb-1">{{ \Illuminate\Support\Str::limit($course->course_name, 30) }}</h5>
                 </div>
-                <div class="card-body m-3 p-0">
+                <div class="card-body">
                     {!! \Illuminate\Support\Str::limit(strip_tags($course->description), 30) !!}
                 </div>
             </div>
@@ -85,6 +100,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalSelectCourse" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formSelectCourse">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Select course to edit</h5>
+                </div>
+                <div class="modal-body row">
+                    <select name="" id="select_data" class="form-control">
+                        @foreach($courses as $course)
+                        <option value="{{$course->course_id}}">{{$course->course_name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Select</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -92,6 +130,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Edit course</h5>
+                    <input type="text" id="course_id" name="course_id" hidden>
                 </div>
                 <div class="modal-body row">
                     <div class="d-flex justify-content-between">
@@ -188,17 +227,50 @@
         },
         plugins_exclude: 'print media'
     });
+    $('#formAddCourse').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        if (tinymce.get('course_description').getContent() == '') {
+            return;
+        }
+        formData.append('course_description', tinymce.get('course_description').getContent());
+        $.ajax({
+            url: '{{ action('App\Http\Controllers\CourseController@create') }}',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.success) {
+                    toastr.success(data.message);
+                    $('#modalAddCourse').modal('hide');
+                    //clear course_handel
+                    $('#course_handel').empty();
+                    //append new course
+                    data.courses.forEach(course => {
+                        // Remove HTML tags and limit to 30 characters
+                        let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
 
-    // Filter courses by type
-    $('#courseTypeFilter').change(function() {
-        var selectedType = $(this).val();
-        $('.course-card').each(function() {
-            if (selectedType === '' || $(this).data('type') === selectedType) {
-                $(this).show();
-            } else {
-                $(this).hide();
+                        $('#course_handel').append(
+                            `<div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
+                                <div class="card shadow bg-white border-none rounded-4">
+                                <div class="card-header m-2 p-0 text-primary">
+                                    <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
+                                    <h5 class="mt-2 mb-1">${course.course_name}</h5>
+                                </div>
+                                <div class="card-body m-3 p-0">
+                                    ${plainDescription}
+                                </div>
+                            </div>
+                        </div>`
+                        );
+                    });
+                } else {
+                    toastr.error(data.message);
+                }
             }
         });
     });
+    $('#formEditCourse').submit(function(e) {});
 </script>
 @endsection
