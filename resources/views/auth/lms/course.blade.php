@@ -33,24 +33,43 @@
     </nav>
 </div>
 <div class="section educaiton">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
-        <i class="bi bi-plus me-1"></i>Add course
-    </button>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectCourse">
-        <i class="bi bi-pencil me-1"></i>Edit course
-    </button>
+    <div class="d-flex justify-content-between">
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
+                <i class="bi bi-plus me-1"></i>Add course
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectCourse">
+                <i class="bi bi-pencil me-1"></i>Edit course
+            </button>
+        </div>
+        <div>
+            <div class="d-flex">
+                <input type="text" id="courseNameFilter" onkeyup="search()" class="form-control me-1" style="width: 50vh;" placeholder="Search by name">
+                <select id="courseTypeFilter" class="form-select" onchange="search()" style="max-width: 200px;">
+                    <option noselect value="">-Fill by Type-</option>
+                    @foreach($getTypeName as $type)
+                        <option value="{{$type->type_name}}">{{$type->type_name}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+    
     <div class="row mt-2" id="course_handel">
         @foreach($courses as $course)
         <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
+            <a href="{{url('/lms/course')}}/{{$course->course_id}}/view">
             <div class="card shadow bg-white border-none rounded-4">
                 <div class="card-header m-2 p-0 text-primary">
                     <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
-                    <h5 class="mt-2 mb-1">{{ \Illuminate\Support\Str::limit($course->course_name, 30) }}</h5>
+                    <h5 class="mt-2 mb-1 course_name">{{ \Illuminate\Support\Str::limit($course->course_name, 30) }}</h5>
+                    <p class="text-secondary course_type">{{$course->type_name}}</p>
                 </div>
                 <div class="card-body">
                     {!! \Illuminate\Support\Str::limit(strip_tags($course->description), 30) !!}
                 </div>
             </div>
+            </a>
         </div>
         @endforeach
     </div>
@@ -72,9 +91,19 @@
                         </label>
                     </div>
                     <img id="bg_img" src="" class="img-fluid mt-1" alt="">
-                    <div class="form-group mt-3">
-                        <label for="course_name"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
-                        <input type="text" name="course_name" id="course_name" class="form-control" required>
+                    <div class="form-group mt-3 row">
+                        <div class="col-6">
+                            <label for="course_name"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
+                            <input type="text" name="course_name" id="course_name" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="course_type"><strong><i class="bi bi-bookmark me-1"></i>Course type</strong></label>
+                            <select name="course_type" id="course_type" class="form-select" required>
+                                @foreach($getTypeName as $type)
+                                    <option value="{{$type->course_type_id}}">{{$type->type_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>                        
                     </div>
                     <div class="form-group mt-3">
                         <label for="course_description"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
@@ -130,9 +159,19 @@
                         </label>
                     </div>
                     <img id="bg_img_e" src="" class="img-fluid mt-1" alt="">
-                    <div class="form-group mt-3">
-                        <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
-                        <input type="text" name="course_name" id="course_name_e" class="form-control">
+                    <div class="form-group mt-3 row">
+                        <div class="col-6">
+                            <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
+                            <input type="text" name="course_name" id="course_name_e" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label for="course_type_e"><strong><i class="bi bi-bookmark me-1"></i>Course type</strong></label>
+                            <select name="course_type" id="course_type_e" class="form-select">
+                                @foreach($getTypeName as $type)
+                                    <option value="{{$type->course_type_id}}">{{$type->type_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group mt-3">
                         <label for="course_description"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
@@ -244,7 +283,8 @@
                                 <div class="card shadow bg-white border-none rounded-4">
                                 <div class="card-header m-2 p-0 text-primary">
                                     <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1">${planinName}</h5>
+                                    <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                    <p class="text-secondary course_type">${course.type_name}</p>
                                 </div>
                                 <div class="card-body">
                                     ${plainDescription}
@@ -267,10 +307,21 @@
             url: '{{ url('lms/course/') }}/'+course_id,
             type: 'get',
             success: function(data) {
-                $('#course_id').val(data.course.course_id);
-                $('#course_name_e').val(data.course.course_name);
-                tinymce.get('course_description_e').setContent(data.course.description);
-                $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + data.course.course_image);
+                console.log(data);
+                $('#course_type_e').empty();
+                data.getTypeName.forEach(type => {
+                    $('#course_type_e').append(
+                        `<option value="${type.course_type_id}">${type.type_name}</option>`
+                    );
+                });
+                data.course.forEach(course => {
+                    $('#course_id').val(course.course_id);
+                    $('#course_name_e').val(course.course_name);
+                    tinymce.get('course_description_e').setContent(course.description);
+                    $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + course.course_image);
+                    $('#course_type_e').val(course.course_type_id);
+                });
+                
                 $('#modalSelectCourse').modal('hide');
                 $('#modalEditCourse').modal('show');
             }
@@ -299,12 +350,10 @@
                     $('#course_handel').empty();
                     data.courses.forEach(course => {
                         let planinName = course.course_name.substring(0, 30);
-                        //chỉ add '...' khi độ dài chuỗi lớn hơn 30
                         if(course.course_name.length > 30){
                             planinName += '...';
                         }
                         let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
-                        //chỉ add '...' khi độ dài chuỗi lớn hơn 30
                         if(course.description.replace(/<\/?[^>]+(>|$)/g, "").length > 30){
                             plainDescription += '...';
                         }
@@ -314,7 +363,8 @@
                                 <div class="card shadow bg-white border-none rounded-4">
                                 <div class="card-header m-2 p-0 text-primary">
                                     <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1">${planinName}</h5>
+                                    <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                    <p class="text-secondary course_type">${course.type_name}</p>
                                 </div>
                                 <div class="card-body">
                                     ${plainDescription}
@@ -329,5 +379,17 @@
             }
         });
     });
+
+    function search(){
+        var courseName = $('#courseNameFilter').val();
+        var courseType = $('#courseTypeFilter').val();
+        $('.card').parent().parent().hide();
+        $('.card').filter(function(){
+            var courseNameFilter = $(this).find('.course_name').text().toLowerCase().indexOf(courseName.toLowerCase()) > -1;
+            var courseTypeFilter = $(this).find('.course_type').text().toLowerCase().indexOf(courseType.toLowerCase()) > -1;
+            return courseNameFilter && courseTypeFilter;
+        }).parent().parent().show();
+    }
+    
 </script>
 @endsection
