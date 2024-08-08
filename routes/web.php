@@ -313,3 +313,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 });
 
 
+//education
+Route::get('/lms/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('education.course');
+Route::post('/lms/course', 'App\Http\Controllers\CourseController@create');
