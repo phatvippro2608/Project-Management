@@ -4,6 +4,7 @@
 @endsection
 
 @section('contents')
+<<<<<<< Updated upstream
 <div class="pagetitle">
     <h1>Workshops</h1>
     <nav>
@@ -15,4 +16,7 @@
     </nav>
 </div>
 
+=======
+    <h1>Hello</h1>
+>>>>>>> Stashed changes
 @endsection
