@@ -93,7 +93,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
         Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
-
+        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('education.course');
+        Route::post('/course', 'App\Http\Controllers\CourseController@create');
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
@@ -311,8 +312,3 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
     Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
 });
-
-
-//education
-Route::get('/lms/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('education.course');
-Route::post('/lms/course', 'App\Http\Controllers\CourseController@create');
