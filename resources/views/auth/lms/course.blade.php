@@ -40,10 +40,10 @@
         <div class="d-flex ms-auto">
             <input type="text" id="searchInput" class="form-control me-2" style="max-width: 300px;" placeholder="Search Courses">
             <select id="courseTypeFilter" class="form-select" style="max-width: 200px;">
-                <option value="">All Types</option>
-                <option value="type1">Type 1</option>
-                <option value="type2">Type 2</option>
-                <option value="type3">Type 3</option>
+                <option noselect value="">Fill by Type</option>
+                @foreach($getTypeName as $type)
+                    <option value="{{$type->type_name}}">{{$type->type_name}}</option>
+                @endforeach
             </select>
         </div>
     </div>
@@ -272,5 +272,48 @@
         });
     });
     $('#formEditCourse').submit(function(e) {});
+
+    $(document).ready(function() {
+        function loadCourses() {
+            var search = $('#searchInput').val();
+            var typeFilter = $('#courseTypeFilter').val();
+            $.ajax({
+                url: '{{ route('lms.search') }}',
+                type: 'GET',
+                data: {
+                    search: search,
+                    courseType: typeFilter
+                },
+                success: function(data) {
+                    if (data.success) {
+                        var coursesHtml = '';
+                        data.data.forEach(function(course) {
+                            let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
+                            coursesHtml += `
+                                <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
+                                    <div class="card shadow bg-white border-none rounded-4">
+                                        <div class="card-header m-2 p-0 text-primary">
+                                            <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                            <h5 class="mt-2 mb-1">${course.course_name}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            ${plainDescription}
+                                        </div>
+                                    </div>
+                                </div>`;
+                        });
+                        $('#course_handel').html(coursesHtml);
+                    }
+                }
+            });
+        }
+
+        $('#searchInput, #courseTypeFilter').on('input change', function() {
+            loadCourses();
+        });
+
+        // Initialize the first load
+        loadCourses();
+    });
 </script>
 @endsection

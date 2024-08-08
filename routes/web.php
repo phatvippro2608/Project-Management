@@ -97,6 +97,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
+        Route::get('/courses/search', 'App\Http\Controllers\CourseController@getCourseByType')->name('lms.search');
+
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
