@@ -303,5 +303,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
 //education
-Route::get('/lms/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('education.course');
+Route::get('/lms/course', 'App\Http\Controllers\CourseController@getViewCourse')->name('lms.course');
 Route::post('/lms/course', 'App\Http\Controllers\CourseController@create');
+Route::get('/lms/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
+Route::post('/lms/course/update', 'App\Http\Controllers\CourseController@updateCourse');

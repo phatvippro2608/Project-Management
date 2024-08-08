@@ -9,6 +9,18 @@
     .tox-promotion {
         display: none !important;
     }
+    .card {
+        height: 350px;
+    }
+    .card img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .card-body {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 <div class="pagetitle">
     <h1>Course</h1>
@@ -24,15 +36,18 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
         <i class="bi bi-plus me-1"></i>Add course
     </button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectCourse">
+        <i class="bi bi-pencil me-1"></i>Edit course
+    </button>
     <div class="row mt-2" id="course_handel">
         @foreach($courses as $course)
         <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
             <div class="card shadow bg-white border-none rounded-4">
                 <div class="card-header m-2 p-0 text-primary">
-                    <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
+                    <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/'.$course->course_image)}}">
                     <h5 class="mt-2 mb-1">{{ \Illuminate\Support\Str::limit($course->course_name, 30) }}</h5>
                 </div>
-                <div class="card-body m-3 p-0">
+                <div class="card-body">
                     {!! \Illuminate\Support\Str::limit(strip_tags($course->description), 30) !!}
                 </div>
             </div>
@@ -74,6 +89,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalSelectCourse" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formSelectCourse">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Select course to edit</h5>
+                </div>
+                <div class="modal-body row">
+                    <select name="" id="select_data" class="form-control">
+                        @foreach($courses as $course)
+                        <option value="{{$course->course_id}}">{{$course->course_name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Select</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -81,6 +119,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Edit course</h5>
+                    <input type="text" id="course_id" name="course_id" hidden>
                 </div>
                 <div class="modal-body row">
                     <div class="d-flex justify-content-between">
@@ -192,23 +231,22 @@
             processData: false,
             success: function(data) {
                 if (data.success) {
+                    $('#formAddCourse').trigger('reset');
                     toastr.success(data.message);
                     $('#modalAddCourse').modal('hide');
-                    //clear course_handel
                     $('#course_handel').empty();
-                    //append new course
                     data.courses.forEach(course => {
-                        // Remove HTML tags and limit to 30 characters
-                        let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
+                        let planinName = course.course_name.substring(0, 30)+'...';
+                        let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30)+'...';
 
                         $('#course_handel').append(
                             `<div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
                                 <div class="card shadow bg-white border-none rounded-4">
                                 <div class="card-header m-2 p-0 text-primary">
-                                    <img class="border-none rounded-top-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1">${course.course_name}</h5>
+                                    <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
+                                    <h5 class="mt-2 mb-1">${planinName}</h5>
                                 </div>
-                                <div class="card-body m-3 p-0">
+                                <div class="card-body">
                                     ${plainDescription}
                                 </div>
                             </div>
@@ -222,6 +260,74 @@
         });
 
     });
-    $('#formEditCourse').submit(function(e) {});
+    $('#formSelectCourse').submit(function(e) {
+        e.preventDefault();
+        var course_id = $('#select_data').val();
+        $.ajax({
+            url: '{{ url('lms/course/') }}/'+course_id,
+            type: 'get',
+            success: function(data) {
+                $('#course_id').val(data.course.course_id);
+                $('#course_name_e').val(data.course.course_name);
+                tinymce.get('course_description_e').setContent(data.course.description);
+                $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + data.course.course_image);
+                $('#modalSelectCourse').modal('hide');
+                $('#modalEditCourse').modal('show');
+            }
+        });
+    });
+
+
+    $('#formEditCourse').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        if (tinymce.get('course_description_e').getContent() == '') {
+            return;
+        }
+        formData.append('course_description', tinymce.get('course_description_e').getContent());
+        $.ajax({
+            url: '{{ action('App\Http\Controllers\CourseController@updateCourse') }}',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.success) {
+                    $('#formEditCourse').trigger('reset');
+                    toastr.success(data.message);
+                    $('#modalEditCourse').modal('hide');
+                    $('#course_handel').empty();
+                    data.courses.forEach(course => {
+                        let planinName = course.course_name.substring(0, 30);
+                        //chỉ add '...' khi độ dài chuỗi lớn hơn 30
+                        if(course.course_name.length > 30){
+                            planinName += '...';
+                        }
+                        let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 30);
+                        //chỉ add '...' khi độ dài chuỗi lớn hơn 30
+                        if(course.description.replace(/<\/?[^>]+(>|$)/g, "").length > 30){
+                            plainDescription += '...';
+                        }
+
+                        $('#course_handel').append(
+                            `<div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
+                                <div class="card shadow bg-white border-none rounded-4">
+                                <div class="card-header m-2 p-0 text-primary">
+                                    <img class="border-none rounded-4" style="max-width: 100%" src="{{asset('uploads/course/')}}/${course.course_image}">
+                                    <h5 class="mt-2 mb-1">${planinName}</h5>
+                                </div>
+                                <div class="card-body">
+                                    ${plainDescription}
+                                </div>
+                            </div>
+                        </div>`
+                        );
+                    });
+                } else {
+                    toastr.error(data.message);
+                }
+            }
+        });
+    });
 </script>
 @endsection
