@@ -76,8 +76,14 @@ class QuizController extends Controller
 //        dd($id);
         $question = QuizModel::findOrFail($id);
 
-        $question->delete();
+        $directoryPath = public_path('question_bank_image/');
+        $filePath = $directoryPath . $question->question_image;
 
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $question->delete();
         return response()->json([
             'success' => true,
             'message' => 'Question deleted successfully'
@@ -95,29 +101,35 @@ class QuizController extends Controller
 
     function update(Request $request, $id)
     {
-        dd($request, $id);
+//        dd($request, $id);
         $validated = $request->validate([
             'question' => 'string',
-            'answer_a' => 'string',
-            'answer_b' => 'string',
-            'answer_c' => 'string',
-            'answer_d' => 'string',
-            'correct_answer' => 'string',
-            'course_name' => 'int'
+            'question_a' => 'string',
+            'question_b' => 'string',
+            'question_c' => 'string',
+            'question_d' => 'string',
+            'correct' => 'string',
+            'course_id' => 'int'
         ]);
 
         $model = new QuizModel();
         $imgOld = $model->getQuestionImg($id);
-        
+
         $imagePath = $imgOld;
-        if ($request->hasFile('question_img')) {
-            $file = $request->file('question_img');
+//        dd($request->hasFile('question_image'));
+        if ($request->hasFile('question_image')) {
+            $file = $request->file('question_image');
             $imagePath = time() . '_' . $file->getClientOriginalName();
+            // Move the uploaded file to the desired location
             $file->move(public_path('question_bank_image/'), $imagePath);
         }
 
+
+        // Find the question by ID and update the data
         $question = QuizModel::findOrFail($id);
         $question->update(array_merge($validated, ['question_image' => $imagePath]));
+
+        // Return a JSON response indicating success
         return response()->json([
             'success' => true,
             'question' => $question,

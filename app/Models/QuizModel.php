@@ -47,7 +47,8 @@ class QuizModel extends Model
     {
         return DB::table('question_bank')
             ->where('question_bank_id', $id)
-            ->pluck('question_image');
+            ->value('question_image');
+
     }
 
 

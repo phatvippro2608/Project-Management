@@ -5,6 +5,10 @@
             border: none;
             outline: none;
         }
+
+        #questionsTable th {
+            text-align: left !important;
+        }
     </style>
     <div class="pagetitle">
         <h1>Create Quiz</h1>
@@ -57,7 +61,7 @@
                 <tr>
                     <th>No</th>
                     <th>Question</th>
-                    <th>Anser A</th>
+                    <th>Answer A</th>
                     <th>Answer B</th>
                     <th>Answer C</th>
                     <th>Answer D</th>
@@ -74,7 +78,7 @@
 
     <!-- Modal Thêm câu hỏi -->
     <div class="modal fade" id="addQuestionModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Add Question</h4>
@@ -137,7 +141,7 @@
     </div>
 
     <div class="modal fade" id="editQuestionModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Edit Question</h4>
@@ -148,7 +152,7 @@
                         <input type="text" hidden id="question_bank_id" name="question_bank_id">
                         <div class="mb-3">
                             <label for="course_name" class="form-label">Course name</label>
-                            <select class="form-control" id="course_name" name="course_name" required>
+                            <select class="form-control" id="course_name" name="course_id" required>
                                 @foreach($courses as $item)
                                     <option value="{{$item->course_id}}">{{$item->course_name}}</option>
                                 @endforeach
@@ -162,39 +166,39 @@
                             <div class="row">
                                 <div class="col-4">
                                     <label for="">
-                                        <a target="_blank" href="" id="preview_img">Image Question</a>
+                                        <a target="_blank" href="" id="preview_img"></a>
                                     </label>
                                 </div>
                                 <div class="col-8">
                                     <label for="question_img" class="form-label">Image</label>
-                                    <input type="file" class="form-control" id="question_img" name="question_img"
+                                    <input type="file" class="form-control" id="question_img" name="question_image"
                                            accept="image/*">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="answer_a" class="form-label">Answer A</label>
-                            <textarea type="text" class="form-control" id="answer_a" name="answer_a"
+                            <textarea type="text" class="form-control" id="answer_a" name="question_a"
                                       required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_b" class="form-label">Answer B</label>
-                            <textarea type="text" class="form-control" id="answer_b" name="answer_b"
+                            <textarea type="text" class="form-control" id="answer_b" name="question_b"
                                       required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_c" class="form-label">Answer C</label>
-                            <textarea type="text" class="form-control" id="answer_c" name="answer_c"
+                            <textarea type="text" class="form-control" id="answer_c" name="question_c"
                                       required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_d" class="form-label">Answer D</label>
-                            <textarea type="text" class="form-control" id="answer_d" name="answer_d"
+                            <textarea type="text" class="form-control" id="answer_d" name="question_d"
                                       required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="correct_answer" class="form-label">Correct</label>
-                            <select class="form-control" id="correct_answer" name="correct_answer" required>
+                            <select class="form-control" id="correct_answer" name="correct" required>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="C">C</option>
@@ -304,54 +308,57 @@
             });
         });
 
-        $('#courseSelect').on("change", function () {
-            let course_id = $("#courseSelect option:selected").val();
-            let tableBody = $("#questionsTable tbody");
+        $(document).ready(function() {
+            let questionsTable = $('#questionsTable').DataTable(); // Khởi tạo DataTables
 
-            if (course_id === "") {
-                // Nếu không có khóa học nào được chọn, làm trống bảng và thoát khỏi hàm
-                tableBody.empty();
-                return;
-            }
+            $('#courseSelect').on("change", function() {
+                let course_id = $("#courseSelect option:selected").val();
+                let tableBody = $("#questionsTable tbody");
 
-
-            $.ajax({
-                url: '{{ route('question-bank.list', ':id') }}'.replace(':id', course_id),
-                method: 'GET',
-                success: function (response) {
-                    const data = response.question_list;
-                    let tableBody = $("#questionsTable tbody");
-                    tableBody.empty();  // Clear existing data
-
-                    data.forEach((question, index) => {
-                        let row =
-                            `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td> <textarea readonly>${question.question}</textarea></td>
-                                    <td> <textarea readonly>${question.question_a}</textarea></td>
-                                    <td> <textarea readonly>${question.question_b}</textarea></td>
-                                    <td> <textarea readonly>${question.question_c}</textarea></td>
-                                    <td> <textarea readonly>${question.question_d}</textarea></td>
-                                    <td>${question.correct}</td>
-                                    <td>
-                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                            data-id="${question.question_bank_id}">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                            data-id="${question.question_bank_id}">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-                        tableBody.append(row);
-                    });
-                },
-                error: function (xhr) {
-                    toastr.error(xhr.responseJSON.message, "Error");
+                if (course_id === "") {
+                    tableBody.empty();
+                    questionsTable.clear().draw(); // Xóa dữ liệu trong DataTables
+                    return;
                 }
+
+                $.ajax({
+                    url: '{{ route('question-bank.list', ':id') }}'.replace(':id', course_id),
+                    method: 'GET',
+                    success: function(response) {
+                        const data = response.question_list;
+                        tableBody.empty();  // Clear existing data
+                        questionsTable.clear(); // Clear DataTables data
+
+                        data.forEach((question, index) => {
+                            let row =
+                                `
+                            <tr>
+                                <td class="text-start">${index + 1}</td>
+                                <td> <textarea readonly>${question.question}</textarea></td>
+                                <td> <textarea readonly>${question.question_a}</textarea></td>
+                                <td> <textarea readonly>${question.question_b}</textarea></td>
+                                <td> <textarea readonly>${question.question_c}</textarea></td>
+                                <td> <textarea readonly>${question.question_d}</textarea></td>
+                                <td>${question.correct}</td>
+                                <td>
+                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                        data-id="${question.question_bank_id}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                        data-id="${question.question_bank_id}">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                            questionsTable.row.add($(row)).draw(false); // Add row to DataTables and draw
+                        });
+                    },
+                    error: function(xhr) {
+                        toastr.error(xhr.responseJSON.message, "Error");
+                    }
+                });
             });
         });
 
@@ -408,7 +415,14 @@
                     $('#question_bank_id').val(data.question_bank_id);
                     $('#course_name').val(data.course_id);
                     $('#question').val(data.question);
-                    var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;
+                    {{--var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;--}}
+
+                    if (data.question_image) {
+                        var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;
+                        $('#preview_img').attr('href', imagePath).text('Click to preview image question');
+                    } else {
+                        $('#preview_img').removeAttr('href').text('No Image Available');
+                    }
                     $('#preview_img').attr('href', imagePath)
                     $('#answer_a').val(data.question_a);
                     $('#answer_b').val(data.question_b);
@@ -428,11 +442,13 @@
             var question_id = $(this).data('id'); // Lấy ID từ form
             var url = "{{ route('question-bank.update', ':id') }}";
             url = url.replace(':id', question_id);
-
+            var formData = new FormData(this);
             $.ajax({
                 url: url,
                 method: 'POST',
-                data: $(this).serialize(),
+                data: formData,
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     if (response.success) {
                         $('#editQuestionModal').modal('hide');
