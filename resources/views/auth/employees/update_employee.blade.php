@@ -10,18 +10,23 @@
             </ol>
         </nav>
     </div>
+    @php
+        $employee_id = $item->employee_id;
+        $employment_contract = json_decode($item->employment_contract);
+        @endphp
+
     <div class="card mb-0 shadow-none">
         <div class="card-header bg-light fw-semibold">Personal Details</div>
         <div class="card-body p-3">
             <div class="row gx-3">
                 <div class="col-lg-6">
                     <div class="row mb-3">
-                        <input type="hidden" class="employee_id" value="{{ optional($item)->employee_id ? optional($item)->employee_id : '' }}">
+                        <input type="hidden" class="employee_id" value="{{ $item->employee_id }}">
                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control employee_code" name=""
                                    @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif
-                                   value="{{ optional($item)->employee_code }}">
+                                   value="{{ $item->employee_code }}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -151,28 +156,28 @@
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_number" name="" value="{{ optional(optional($item)->passport)->passport_number ?? '' }}">
+                        <input type="text" class="form-control passport_number" name="" value="{{$item->passport->first()->passport_number ?? ''}}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Passport Place of Issue</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_place_issue" name="" value="{{ optional(optional($item)->passport)->passport_place_issue ?? '' }}">
+                        <input type="text" class="form-control passport_place_issue" name="" value="{{ $item->passport->first()->passport_place_issue ?? '' }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Issue</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_issue_date" name="" value="{{ optional(optional($item)->passport)->passport_issue_date ?? '' }}">
+                        <input type="date" class="form-control passport_issue_date" name="" value="{{ $item->passport->first()->passport_issue_date ?? '' }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Expiry</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_expiry_date" name="" value="{{ optional(optional($item)->passport)->passport_expiry_date ?? '' }}">
+                        <input type="date" class="form-control passport_expiry_date" name="" value="{{ $item->passport->first()->passport_expiry_date ?? '' }}">
                     </div>
                 </div>
 
@@ -226,8 +231,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_title" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTitles'] as $itemJob)
-                                <option value="{{ optional($itemJob)->job_title_id }}" @if(optional($itemJob)->job_title_id == optional($item)->job_title_id) selected @endif>
-                                    {{ optional($itemJob)->job_title ?? '' }}
+                                <option value="{{ $itemJob->job_title_id }}" @if($itemJob->job_title_id == optional($item)->job_title_id ?? '') selected @endif>
+                                    {{ $itemJob->job_title ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -238,8 +243,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_category" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCategories'] as $itemJob)
-                                <option value="{{ optional($itemJob)->job_category_id }}" @if(optional($itemJob)->job_category_id == optional($item)->job_category_id) selected @endif>
-                                    {{ optional($itemJob)->job_category_name ?? '' }}
+                                <option value="{{ $itemJob->job_category_id }}" @if($itemJob->job_category_id == optional($item)->job_category_id) selected @endif>
+                                    {{ $itemJob->job_category_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -250,8 +255,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_position" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobPositions'] as $itemJob)
-                                <option value="{{ optional($itemJob)->position_id }}" @if(optional($itemJob)->position_id == optional($item)->job_position_id) selected @endif>
-                                    {{ optional($itemJob)->position_name ?? '' }}
+                                <option value="{{ $itemJob->position_id }}" @if($itemJob->position_id == optional($item)->job_position_id) selected @endif>
+                                    {{ $itemJob->position_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -262,8 +267,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_team" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTeams'] as $itemJob)
-                                <option value="{{ optional($itemJob)->team_id }}" @if(optional($itemJob)->team_id == optional($item)->job_team_id) selected @endif>
-                                    {{ optional($itemJob)->team_name ?? '' }}
+                                <option value="{{ $itemJob->team_id }}" @if($itemJob->team_id == optional($item)->job_team_id) selected @endif>
+                                    {{ $itemJob->team_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -274,8 +279,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_level" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobLevels'] as $itemJob)
-                                <option value="{{ optional($itemJob)->id_level }}" @if(optional($itemJob)->id_level == optional($item)->job_level_id) selected @endif>
-                                    {{ optional($itemJob)->level_name ?? '' }}
+                                <option value="{{ $itemJob->level_id }}" @if($itemJob->level_id == optional($item)->job_level_id) selected @endif>
+                                    {{ $itemJob->level_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -304,8 +309,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_type_contract" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTypeContract'] as $itemJob)
-                                <option value="{{ optional($itemJob)->type_contract_id }}" @if(optional($itemJob)->type_contract_id == optional($item)->job_type_contract_id) selected @endif>
-                                    {{ optional($itemJob)->type_contract_name ?? '' }}
+                                <option value="{{ $itemJob->type_contract_id }}" @if($itemJob->type_contract_id == optional($item)->job_type_contract_id) selected @endif>
+                                    {{ $itemJob->type_contract_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -316,8 +321,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_country" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCountry'] as $itemJob)
-                                <option value="{{ optional($itemJob)->country_id }}" @if(optional($itemJob)->country_id == optional($item)->job_country_id) selected @endif>
-                                    {{ optional($itemJob)->country_name ?? '' }}
+                                <option value="{{ $itemJob->country_id }}" @if($itemJob->country_id == optional($item)->job_country_id) selected @endif>
+                                    {{ $itemJob->country_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -328,8 +333,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_location" aria-label="Default select example">
                             @foreach($jobdetails['jobLocation'] as $itemJob)
-                                <option value="{{ optional($itemJob)->location_id }}" @if(optional($itemJob)->location_id == optional($item)->job_location_id) selected @endif>
-                                    {{ optional($itemJob)->location_name ?? '' }}
+                                <option value="{{ $itemJob->location_id }}" @if($itemJob->location_id == optional($item)->job_location_id) selected @endif>
+                                    {{ $itemJob->location_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -416,6 +421,7 @@
                                         <a href="{{ asset('/uploads/' . optional($item)->employee_id . '/' . optional($row)->medical_checkup_file) }}">
                                             {{ optional($row)->medical_checkup_file }}
                                         </a>
+
                                     </td>
                                     <td>
                                         {{ optional($row)->medical_checkup_issue_date }}
@@ -523,9 +529,81 @@
                 </div>
             </div>
         </div>
+        <div class="card-header bg-light fw-semibold">Employment Contract</div>
+        <div class="card-body p-3 table-overflow">
+            <table class="table table-hover table-borderless">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Employment Contract</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                </tr>
+                </thead>
+                <tbody class="employment_contract_list">
+                    @if($employment_contract)
+                        @foreach($employment_contract as $index => $row)
+                            <tr>
+                                <td>
+                                    {{ $loop->index + 1 }}
+                                </td>
+                                <td>
+                                    {{ optional($row)->employment_contract }}
+                                    <button class="btn btn-primary btn-preview-file" data_employment_contract="{{ asset('/uploads/' . $employee_id . '/' . optional($row)->employment_contract) }}">
+                                        Preview
+                                    </button>
+                                </td>
+                                <td>
+                                    {{ optional($row)->start_date }}
+                                </td>
+                                <td>
+                                    {{ optional($row)->end_date }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="row g-4">
+                <div class="col-2" style="width: 139px;">
+                    <span class="fw-bold">File upload</span>
+                </div>
+                <div class="col-4 text-center upload-section border rounded-4 p-3">
+                    <input id="employment_contract_file" class="form-control visually-hidden employment_contract_file" type="file">
+                    <div file-input-target="employment_contract_file" class="file-selector">
+                        <i class="bi bi-file-earmark fs-1"></i>
+                    </div>
+                    <button class="btn btn-primary mt-3 btn_upload_employment_contract"><i class="bi bi-file-earmark-arrow-up me-3"></i>Upload</button>
+                </div>
+                <div class="col-4">
+                    <label for="employment_contract_start_date">Start Date</label>
+                    <input class="form-control employment_contract_start_date mb-3" type="date" id="employment_contract_start_date">
+                    <label for="employment_contract_end_date">End Date</label>
+                    <input class="form-control employment_contract_end_date" type="date" id="">
+                </div>
+            </div>
+        </div>
         <div class="card mb-0 shadow-none">
             <div class="card-header text-end">
                 <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-preview" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <embed class="preview-panel" src="" width="100%" height="700px" type="application/pdf">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -561,10 +639,18 @@
         let _upload_personal_profile = "{{action('App\Http\Controllers\UploadFileController@uploadPersonalProfile')}}";
         let _upload_medical_checkup = "{{action('App\Http\Controllers\UploadFileController@uploadMedicalCheckUp')}}";
         let _upload_certificate = "{{action('App\Http\Controllers\UploadFileController@uploadCertificate')}}";
+        let _upload_employment_contract = "{{action('App\Http\Controllers\UploadFileController@uploadEmploymentContract')}}";
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
 
         let defaultImage = "{{ asset('assets/img/avt.png') }}";
+
+        $('.btn-preview-file').click(function () {
+            let source = $(this).attr('data_employment_contract');
+            $('.modal-preview').modal('show');
+            $('.preview-panel').attr('src', source);
+        })
+
         $.ajax({
             url: _check_file_exists,
             method: 'POST',
@@ -618,7 +704,42 @@
                 }
             });
         })
-
+        $('.btn_upload_employment_contract').click(function () {
+            event.preventDefault();
+            let file = $('.employment_contract_file')[0].files[0];
+            if(!file){
+                toastr.error('Please choose file!','Error');
+                return;
+            }
+            let formData = new FormData();
+            formData.append('employment_contract_file', file);
+            formData.append('employee_code', $(".employee_code").val());
+            formData.append('start_date', $('.employment_contract_start_date').val());
+            formData.append('end_date', $('.employment_contract_end_date').val());
+            $.ajax({
+                url: _upload_employment_contract,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Thao tác thành công");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error(result.message, "Thao tác thất bại");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error("An error occurred during the upload process", "Thao tác thất bại");
+                }
+            });
+        })
         $('.btn_upload_personal_profile').click(function () {
             event.preventDefault();
             let files = $('.personal')[0].files;

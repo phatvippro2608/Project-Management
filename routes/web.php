@@ -198,6 +198,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
     Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
+    Route::post('/upload_employment_contract', 'App\Http\Controllers\UploadFileController@uploadEmploymentContract');
 
 
     Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');

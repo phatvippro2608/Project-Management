@@ -358,6 +358,28 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-0 shadow-none">
+                    <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Employment Contract</div>
+                    <div class="card-body p-3">
+                        <table class="table table-hover table-borderless">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Employment Contract</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                            </tr>
+                            </thead>
+                            <tbody class="employment_contract_list">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')
