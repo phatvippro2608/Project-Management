@@ -43,5 +43,12 @@ class QuizModel extends Model
             ->first();
     }
 
+    function getQuestionImg($id)
+    {
+        return DB::table('question_bank')
+            ->where('question_bank_id', $id)
+            ->pluck('question_image');
+    }
+
 
 }

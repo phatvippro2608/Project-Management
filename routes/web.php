@@ -328,18 +328,18 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
-
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
-    });
-
-    Route::group(['prefix' => '/quiz'], function () {
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
         Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
         Route::post('/question-bank/add', [QuizController::class, 'addQuestion'])->name('question-bank.add');
         Route::get('/question-bank/list/{id}', [QuizController::class, 'getQuestionList'])->name('question-bank.list');
+        Route::delete('/question-bank/{id}', [QuizController::class, 'destroy'])->name('question-bank.destroy');
+        Route::get('/question-bank/{id}/edit', [QuizController::class, 'edit'])->name('question-bank.edit');
+        Route::post('/question-bank/{id}/update', [QuizController::class, 'update'])->name('question-bank.update');
+
 
     });
 

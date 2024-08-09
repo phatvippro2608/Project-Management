@@ -12,7 +12,7 @@ class QuizController extends Controller
     function getView()
     {
         $model = new QuizModel();
-
+//        dd($model->getInfo());
         return view('auth.quiz.quiz',
             ['data'=>$model->getInfo()]);
     }
@@ -68,6 +68,59 @@ class QuizController extends Controller
             ->get();
         return response()->json([
             'question_list' => $question_list,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+//        dd($id);
+        $question = QuizModel::findOrFail($id);
+
+        $question->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Question deleted successfully'
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $question = QuizModel::findOrFail($id);
+
+        return response()->json([
+            'question' => $question,
+        ]);
+    }
+
+    function update(Request $request, $id)
+    {
+        dd($request, $id);
+        $validated = $request->validate([
+            'question' => 'string',
+            'answer_a' => 'string',
+            'answer_b' => 'string',
+            'answer_c' => 'string',
+            'answer_d' => 'string',
+            'correct_answer' => 'string',
+            'course_name' => 'int'
+        ]);
+
+        $model = new QuizModel();
+        $imgOld = $model->getQuestionImg($id);
+        
+        $imagePath = $imgOld;
+        if ($request->hasFile('question_img')) {
+            $file = $request->file('question_img');
+            $imagePath = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('question_bank_image/'), $imagePath);
+        }
+
+        $question = QuizModel::findOrFail($id);
+        $question->update(array_merge($validated, ['question_image' => $imagePath]));
+        return response()->json([
+            'success' => true,
+            'question' => $question,
         ]);
     }
 }
