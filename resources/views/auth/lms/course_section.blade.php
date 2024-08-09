@@ -5,36 +5,34 @@
 @endsection
 
 @section('contents')
-    <style>
-        .tox-promotion {
-            display: none !important;
-        }
-    </style>
-    <div class="pagetitle">
-        <h1>Course</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="/lms">LMS</a></li>
-                <li class="breadcrumb-item"><a href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">Course</li>
-                <li class="breadcrumb-item active">View Course</li>
-            </ol>
-        </nav>
-    </div>
-    <div class="section educaiton">
-        <div class="card rounded-4">
-            @foreach ($course as $c)
-                <div class="card-header rounded-4">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="text-primary" id="v_course_name">{{ $c->course_name }}</h3>
-                        <button id="btn_edit" class="btn btn-info text-white" data-bs-toggle="modal"
-                            data-bs-target="#modalEditCourse"><i class="bi bi-pencil-square me-1"></i>Edit</button>
-                    </div>
-                </div>
-                <div class="card-body" id="v_course_description">
-                    {!! $c->description !!}
-                </div>
+
+<style>
+    .tox-promotion {
+        display: none !important;
+    }
+</style>
+<div class="pagetitle">
+    <h1>Course</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Education</a></li>
+            <li class="breadcrumb-item"><a href="#">Course</a></li>
+            @foreach($course as $c)
+            <li class="breadcrumb-item active">{{ $c->course_name }}</li>
             @endforeach
+        </ol>
+    </nav>
+</div>
+<div class="section educaiton">
+    <div class="card rounded-4">
+        @foreach($course as $c)
+        <div class="card-header rounded-4">
+            <div class="d-flex justify-content-between">
+                <h3 class="text-primary" id="v_course_name">{{$c->course_name}}</h3>
+                <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalEditCourse"><i class="bi bi-pencil-square me-1"></i>Edit</button>
+            </div>
+
         </div>
     </div>
     <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
@@ -305,27 +303,32 @@
             });
         }
 
-        function loadSectionDetail(id) {
-            $.ajax({
-                url: '{{ route('course.getSection') }}',
-                type: 'post',
-                data: {
-                    id: id,
-                    type: 1,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(data) {
-                    console.log(data);
-                    if (data.success) {
-                        data.sections.forEach(section => {
-                            $('#v_course_name').html(section.section_name);
-                            $('#v_course_description').html(section.detail);
-                            $('#btn_edit').attr('data-bs-target', '#modalEditSection');
-                            $('#section_id').val(section.courses_section_id);
-                            $('#section_name').val(section.section_name);
-                            tinymce.get('section_description_e').setContent(section.detail != null ? section.detail : '');
-                        });
-                    }
+        formData.append('course_description', tinymce.get('course_description_e').getContent());
+        $.ajax({
+            url: '{{ action('App\Http\Controllers\CourseController@updateCourse') }}',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    toastr.success(data.message);
+                    $('#modalEditCourse').modal('hide');
+                    data.courses.forEach(course => {
+                        $('#course_id').val(course.course_id);
+                        $('#course_name_e').val(course.course_name);
+                        tinymce.get('course_description_e').setContent(course.description);
+                        $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + course.course_image);
+                        $('#course_type_e').val(course.course_type_id);
+                        $('#v_course_name').html(course.course_name);
+                        $('#v_course_description').html(course.description);
+                        $('#course_type_e').val(course.course_type_id);
+                    });
+
+                } else {
+                    toastr.error(data.message);
+
                 }
             });
         };
@@ -363,5 +366,7 @@
                 }
             });
         });
-    </script>
+
+    });
+</script>
 @endsection
