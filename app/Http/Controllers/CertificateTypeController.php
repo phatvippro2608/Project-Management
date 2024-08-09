@@ -27,6 +27,10 @@ class CertificateTypeController extends Controller
 
     public function update(Request $request){
         $certificate_type_id = $request->certificate_type_id;
+        $old_certificate_type_name = DB::table('certificate_types')->where('certificate_type_id',$certificate_type_id)->select('certificate_type_name')->first();
+        if ($old_certificate_type_name && $old_certificate_type_name->certificate_type_name === $request->input('certificate_type_name')) {
+            return response()->json(['status' => 200, 'message' => 'Action Success']);
+        }
         $updated = DB::table('certificate_types')->where('certificate_type_id',$certificate_type_id)->update(['certificate_type_name' => $request->certificate_type_name]);
         if ($updated) {
             return response()->json(['status' => 200, 'message' => 'Action Success']);

@@ -199,7 +199,7 @@ class ProposalApplicationController extends Controller
         $stt = 1;
         $cell = $excel->getActiveSheet();
         $list_proposal = [];
-        if ($permission == 3){
+        if ($permission == 9){
             $department_id = DB::table('job_details')
                 ->where('employee_id', $employee_id)
                 ->pluck('department_id')
@@ -212,7 +212,7 @@ class ProposalApplicationController extends Controller
                 ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
                 ->where('departments.department_id', $department_id)
                 ->get();
-        }else if ($permission == 4){
+        }else if ($permission == 10){
             $list_proposal = DB::table('proposal_applications')
                 ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
                 ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')

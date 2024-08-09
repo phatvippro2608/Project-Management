@@ -1,9 +1,10 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>       
-        table th, table td {
-            text-align: center !important; 
+    <style>
+        table th,
+        table td {
+            text-align: center !important;
         }
     </style>
     <div class="pagetitle">
@@ -16,7 +17,7 @@
         </nav>
     </div>
     <div class="row gx-3 my-3">
-        <div class="col-md-8 d-flex m-0">
+        <div class="col-md-9 d-flex m-0">
             <form id="searchForm" class="d-flex align-items-center">
                 @csrf
                 <div class="form-group me-2">
@@ -37,6 +38,9 @@
                 <button type="submit" class="btn btn-success"><i class="bi bi-search me-2"></i>Search</button>
                 <button style="margin-left: 10px" type="button" class="btn btn-primary" onclick="location.reload();"><i
                         class="bi bi-arrow-clockwise me-2"></i>Refresh</button>
+                <button style="margin-left: 10px" class="btn btn-success" id="exportExcelButton">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export
+                </button>
             </form>
 
         </div>
@@ -220,6 +224,13 @@
                     }
                 });
             });
+
+
+            $('#exportExcelButton').on('click', function() {
+                window.location.href = '{{ route('leave-report.export') }}';
+            });
+
+
         });
     </script>
 @endsection

@@ -117,25 +117,25 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control first_name" name="">
+                                                <input type="text" class="form-control first_name" name="" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control last_name" name="">
+                                                <input type="text" class="form-control last_name" name="" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control en_name" name="">
+                                                <input type="text" class="form-control en_name" name="" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control phone_number" name="">
+                                                <input type="number" class="form-control phone_number" name="" required>
                                             </div>
                                         </div>
                                     </div>
@@ -198,9 +198,9 @@
                                             </div>
                                         </fieldset>
                                         <div class="row mb-3">
-                                            <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
+                                            <label for="inputDate" class="col-sm-4 col-form-label" >Date of Birth</label>
                                             <div class="col-sm-8">
-                                                <input type="date" class="form-control date_of_birth" name="">
+                                                <input type="date" class="form-control date_of_birth" name="" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -240,7 +240,13 @@
             },
             responsive: true
         });
-
+        function validateNameInput(input) {
+            const regex = /^[a-zA-Z\s]+$/;
+            if (!regex.test(input.val())) {
+                return false;
+            }
+            return true;
+        }
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
         let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
@@ -252,58 +258,105 @@
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
+        function validateForm() {
+            const firstName = $('.first_name');
+            const lastName = $('.last_name');
+            const enName = $('.en_name');
+            const phoneNumber = $('.phone_number');
+            const dateOfBirth = $('.date_of_birth');
+            let countError = 0;
+            if (!validateNameInput(firstName)) {
+                toastr.error('Name should not contain numbers or special characters.', 'Please enter the first name again!');
+                countError++;
+            }
 
+            if (!validateNameInput(lastName)) {
+                toastr.error('Name should not contain numbers or special characters.', 'Please enter the last name again!');
+                countError++;
+            }
+
+            if (!validateNameInput(enName)) {
+                toastr.error('Name should not contain numbers or special characters.', 'Please enter the English name again!');
+                countError++;
+            }
+
+            if(phoneNumber.val().length === 0){
+                toastr.error('Please enter phone number!', 'Please enter phone number!');
+                countError++;
+            }
+            const dob = new Date(dateOfBirth.val());
+            const today = new Date();
+
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            if(dateOfBirth.val().length === 0){
+                toastr.error('Please enter date of birth!', 'Please enter date of birth!');
+                countError++;
+            }else{
+                if (age < 18) {
+                    toastr.error('User is younger than 18.', 'Please choose a valid date of birth!');
+                    countError++;
+                }
+            }
+
+            return countError === 0;
+        }
         $('.at1').click(function () {
             $('.md1').modal('show');
 
             $('.btn-add').click(function () {
-                // Collect form data
-                let data = {
-                    'employee_code': $('.md1 .employee_code').val(),
-                    'first_name': $('.md1 .first_name').val(),
-                    'last_name': $('.md1 .last_name').val(),
-                    'en_name': $('.md1 .en_name').val(),
-                    'gender': $('.md1 input[name="gender"]:checked').val(),
-                    'marital_status': $('.md1 input[name="marital_status"]:checked').val(),
-                    'military_service': $('.md1 input[name="military_service"]:checked').val(),
-                    'date_of_birth': $('.md1 .date_of_birth').val(),
-                    'national': $('.md1 .national :checked').val(),
-                    'phone_number': $('.md1 .phone_number').val(),
-                };
+                if(validateForm()){
+                    let data = {
+                        'employee_code': $('.md1 .employee_code').val(),
+                        'first_name': $('.md1 .first_name').val(),
+                        'last_name': $('.md1 .last_name').val(),
+                        'en_name': $('.md1 .en_name').val(),
+                        'gender': $('.md1 input[name="gender"]:checked').val(),
+                        'marital_status': $('.md1 input[name="marital_status"]:checked').val(),
+                        'military_service': $('.md1 input[name="military_service"]:checked').val(),
+                        'date_of_birth': $('.md1 .date_of_birth').val(),
+                        'national': $('.md1 .national :checked').val(),
+                        'phone_number': $('.md1 .phone_number').val(),
+                    };
 
-                $.ajax({
-                    url: _put,
-                    type: 'PUT',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: data,
+                    $.ajax({
+                        url: _put,
+                        type: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: data,
 
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                        success: function (result) {
+                            result = JSON.parse(result);
+                            if (result.status === 200) {
+                                toastr.success(result.message, "Thao tác thành công");
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
+                            } else {
+                                toastr.error(result.message, "Thao tác thất bại");
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
         });
 
-        $('.at4').click(function () {
+        $(document).on('click', '.at4', function () {
             var id = $(this).attr('data');
-            if (confirm("Do you want to remove this employee?")){
+            if (confirm("Do you want to remove this employee?")) {
                 $.ajax({
                     url: _delete,
                     type: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    data: {'id':id},
+                    data: {'id': id},
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
@@ -317,7 +370,7 @@
                     }
                 });
             }
-        })
+        });
 
         function populateCountrySelect(selectElementId, countrySelete) {
             $(document).ready(function() {

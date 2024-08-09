@@ -93,7 +93,7 @@ class ProposalApplicationModel extends Model
                 ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')
                 ->where('employees.employee_id', $employee_id)
                 ->get();
-        } else if ($permission == 3) {
+        } else if ($permission == 9) {
             $department_id = DB::table('employees')
                 ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
                 ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
@@ -106,7 +106,7 @@ class ProposalApplicationModel extends Model
                 ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
                 ->where('departments.department_id', $department_id)
                 ->get();
-        } else if ($permission == 4) {
+        } else if ($permission == 10) {
             $list_proposal = DB::table('proposal_applications')
                 ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
                 ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')

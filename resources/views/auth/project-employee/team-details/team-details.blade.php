@@ -190,6 +190,11 @@
     <script>
         var table = $('#teamListTable').DataTable({
             language: { search: "" },
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
             order:
         [1,'asc']
             ,
@@ -201,6 +206,11 @@
         });
         var table2 = $('#eListTable').DataTable({
             language: { search: "" },
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: -1,
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
@@ -210,9 +220,6 @@
             responsive: true
         });
 
-        $('.check-all').change(function (){
-            $('.check-item').prop('checked',  $('.check-all').prop('checked'))
-        })
 
 
         $('.btn-add').click(function () {
@@ -250,10 +257,15 @@
                 });
             });
         });
+        $('.check-all').change(function () {
+            $('.check-item').prop('checked', $('.check-all').prop('checked')).trigger('change');
+        });
 
         $('.check-item').change(function (){
             let employee_id = $(this).attr('data');
             let position_id = $('select.form-select.position[data="' + employee_id + '"]').val();
+            console.log(employee_id)
+            console.log(position_id)
             $.ajax({
                 url: `{{action('App\Http\Controllers\TeamDetailsController@update')}}`,
                 type: "POST",

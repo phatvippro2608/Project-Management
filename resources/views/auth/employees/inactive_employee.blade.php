@@ -18,7 +18,7 @@
                 <table id="employeesTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                     <tr>
-                        <th>Employee Code</th>
+                        <th class="text-start">Employee Code</th>
                         <th class="text-center">Photo</th>
                         <th>Full Name</th>
                         <th>English Name</th>
@@ -30,13 +30,17 @@
                     <tbody id="inactiveEmployeesTableBody">
                         @foreach($data as $index => $item)
                             <tr>
-                                <td><a href="{{action('App\Http\Controllers\EmployeesController@updateView',$item->employee_id)}}">{{$item->employee_code ?? ''}}</a></td>
-                                <td><img src="@if( $item->photo ) {{asset('') . $item->photo}} @else {{asset('assets/img/avt.png')}} @endif" alt="" width="75" height="75"></td>
+                                <td class="text-start"><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee',$item->employee_id)}}">{{$item->employee_code ?? ''}}</a></td>
+                                <td class="text-center"><img src="@if( $item->photo ) {{asset('') . $item->photo}} @else {{asset('assets/img/avt.png')}} @endif" alt="" width="75" height="75"></td>
                                 <td>{{$item->last_name . ' ' . $item->first_name ?? ''}}</td>
                                 <td>{{$item->en_name ?? ''}}</td>
                                 <td>{{$item->gender == '0' ? 'Nam' : 'Nữ'}}</td>
                                 <td>{{$item->phone ?? ''}}</td>
-                                <td>This is action</td>
+                                <td>
+                                    <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$item->employee_id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

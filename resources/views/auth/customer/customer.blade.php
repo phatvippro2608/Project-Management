@@ -236,7 +236,10 @@
     <script>
         var table = $('#customerTable').DataTable({
             language: { search: "" },
-            lengthMenu: [10, 30, 50, 100],
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
             pageLength: {{env('ITEM_PER_PAGE')}},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
