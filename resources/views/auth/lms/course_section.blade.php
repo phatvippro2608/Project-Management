@@ -16,8 +16,10 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
             <li class="breadcrumb-item"><a href="#">Education</a></li>
-            <li class="breadcrumb-item">Course</li>
-            <li class="breadcrumb-item active">????</li>
+            <li class="breadcrumb-item"><a href="#">Course</a></li>
+            @foreach($course as $c)
+            <li class="breadcrumb-item active">{{ $c->course_name }}</li>
+            @endforeach
         </ol>
     </nav>
 </div>
@@ -169,7 +171,7 @@
                         $('#v_course_description').html(course.description);
                         $('#course_type_e').val(course.course_type_id);
                     });
-                    
+
                 } else {
                     toastr.error(data.message);
                 }
