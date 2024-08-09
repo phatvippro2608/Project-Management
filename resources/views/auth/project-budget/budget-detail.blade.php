@@ -31,7 +31,7 @@
                     data-bs-target="#chooseGroupModal">Add New Cost</button>
                 <a href="{{ route('budget.edit', $id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
                 <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
-            </div>
+                </div>
         </div>
 
         <h5>LIST OF EXPENSES</h5>
@@ -62,113 +62,14 @@
                 <div id="pieChart" class="container-fluid"></div>
             </div>
         </div>
+        
+        <select class="form-select" id="selectGroup">
+        @foreach($dataCostGroup as $group)
+            <option value="{{$group->project_cost_group_id}}">{{$group->project_cost_group_id}} - {{$group->project_cost_group_name}}</option>
+        @endforeach
 
-        <table id="cost" class="table table-bordered">
-            <thead>
-                <tr class="table-dark">
-                    <th style="width: 15%;" scope="row">DESCRIPTION</th>
-                    <th>LABOR QTY</th>
-                    <th style="width: 3%;">LABOR UNIT</th>
-                    <th style="width: 3%;">BUDGET QTY</th>
-                    <th style="width: 2%;">BUDGET UNIT</th>
-                    <th>LABOR COST</th>
-                    <th>MISC. COST</th>
-                    <th>OT BUDGET</th>
-                    <th>PER DIEM PAY</th>
-                    <th>SUBTOTAL</th>
-                    <th>REMARK</th>
-                    <th>ACTION</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $costOfLabor = 0;
-                    $costOfTravel = 0;
-                    $costOfRenting = 0;
-                    $costOfOther = 0;
-                    $costOfBackOffice = 0;
-                    $costOfCommission = 0;
-                @endphp
-                @foreach ($dataCostGroup as $costGroup)
-                    @php
-                        $total = 0;
-                    @endphp
-                    <tr class="table-warning">
-                        <th colspan="11">{{ $costGroup->project_cost_group_name }}</th>
-                        <td class="text-center align-middle">
-                            <button type="button" class="btn btn-info btn-sm w-auto rename-btn"
-                                data-id="{{ $costGroup->project_cost_group_id }}"
-                                data-name="{{ $costGroup->project_cost_group_name }}" data-bs-toggle="modal"
-                                data-bs-target="#renameModal"><i class="bi bi-pencil-square"></i></button>
-                            <button type="button" class="btn btn-danger btn-sm delete-group-btn"
-                                data-id="{{ $costGroup->project_cost_group_id }}"
-                                data-name="{{ $costGroup->project_cost_group_name }}"><i class="bi bi-trash3"></i></button>
-                        </td>
-                    </tr>
-                    @foreach ($dataCost as $cost)
-                        @if ($cost->project_id == $id && $cost->project_cost_group_id == $costGroup->project_cost_group_id)
-                            @php
-                                $costValue =
-                                    $cost->project_cost_labor_qty *
-                                    $cost->project_cost_budget_qty *
-                                    ($cost->project_cost_labor_cost +
-                                        $cost->project_cost_misc_cost +
-                                        $cost->project_cost_ot_budget +
-                                        $cost->project_cost_perdiempay);
-                                $total += $costValue;
-                                switch ($cost->project_cost_group_id) {
-                                    case 1:
-                                        $costOfLabor = $total;
-                                        break;
-                                    case 2:
-                                        $costOfTravel = $total;
-                                        break;
-                                    case 3:
-                                        $costOfRenting = $total;
-                                        break;
-                                    case 4:
-                                        $costOfOther = $total;
-                                        break;
-                                    case 5:
-                                        $costOfBackOffice = $total;
-                                        break;
-                                    case 6:
-                                        $costOfCommission = $total;
-                                        break;
-                                }
-                            @endphp
-                            <tr>
-                                <td style="width: 15%;">{{ $cost->project_cost_description }}</td>
-                                <td style="width: 3%;">{{ $cost->project_cost_labor_qty }}</td>
-                                <td>{{ $cost->project_cost_labor_unit }}</td>
-                                <td style="width: 3%;">{{ $cost->project_cost_budget_qty }}</td>
-                                <td style="width: 2%;">{{ $cost->project_budget_unit }}</td>
-                                <td>{{ $cost->project_cost_labor_cost }}</td>
-                                <td>{{ $cost->project_cost_misc_cost }}</td>
-                                <td>{{ $cost->project_cost_ot_budget }}</td>
-                                <td>{{ $cost->project_cost_perdiempay }}</td>
-                                <td>{{ number_format($costValue, 0, ',', '.') }} VND</td>
-                                <td>{{ $cost->project_cost_remaks }}</td>
-                                <td class="text-center align-middle"><button type="button"
-                                        class="btn btn-danger btn-sm delete-btn" data-id="{{ $cost->project_cost_id }}"><i
-                                            class="bi bi-trash3"></i></button></td>
-                            </tr>
-                        @endif
-                    @endforeach
-                    @php
-                        $sumOfTotal += $total;
-                    @endphp
-                    <tr class="table-primary">
-                        <td>SUBTOTAL</td>
-                        <td colspan="8"></td>
-                        <td colspan="3"><b>{{ number_format($total, 0, ',', '.') }} VND</b></td>
-                    </tr>
-                    <tr>
-                        <td colspan="12"></td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        </select>
+        
     </section>
 
     <!-- Choose Group Modal -->
@@ -233,33 +134,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Rename Modal -->
-    <div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="renameModalLabel">Rename Cost Group</h5>
-                </div>
-                <form id="renameForm" method="POST" action="{{ route('budget.renameCostGroup') }}">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="costGroupName">Cost Group Name</label>
-                            <input type="text" class="form-control" id="costGroupName" name="costGroupName" required>
-                            <input type="hidden" id="costGroupId" name="costGroupId">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var sumOfTotal = {{ $sumOfTotal }};
@@ -269,8 +143,7 @@
                 .NumberFormat().format(allTotal) + ' VND</span>';
 
             new ApexCharts(document.querySelector("#pieChart"), {
-                series: [{{ $costOfLabor }}, {{ $costOfTravel }}, {{ $costOfRenting }},
-                    {{ $costOfOther }}, {{ $costOfBackOffice }}, {{ $costOfCommission }}
+                series: [0,0,0,0,0,0
                 ],
                 chart: {
                     height: 350,
@@ -362,8 +235,7 @@
             var costGroupName = $(this).data('name');
             var projectId = '{{ $id }}';
 
-            if (confirm('Are you sure you want to delete the cost group "' + costGroupName +
-                    '"? It also removes the costs within this group!!!')) {
+            if (confirm('Are you sure you want to delete the cost group "' + costGroupName + '"? It also removes the costs within this group!!!')) {
                 var url =
                     '{{ route('budget.deleteCostGroup', ['project_id' => '__PROJECT_ID__', 'cost_group_id' => '__GROUP_ID__']) }}'
                     .replace('__PROJECT_ID__', projectId)
