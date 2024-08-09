@@ -257,7 +257,6 @@
                         }else{
                             $('.no-error').text('0');
                             $('.have-error').addClass('d-none');
-
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
