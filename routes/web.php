@@ -113,6 +113,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
         Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
         Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
+        Route::post('/course/join', 'App\Http\Controllers\CourseController@joinCourse');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
