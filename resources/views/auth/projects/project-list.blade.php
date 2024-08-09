@@ -92,7 +92,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary">Details and Cost</a>
+                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
                             </td>
                         </tr>
                     @endforeach

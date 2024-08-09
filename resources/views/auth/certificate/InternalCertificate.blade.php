@@ -60,7 +60,7 @@
             </ol>
         </nav>
     </div>
-    <div class="card">
+    <div class="card rounded-4 p-2 border">
         <div class="card-body p-3">
             <table class="table table-hover table-striped" id="certificateTable">
                 <thead>
@@ -138,13 +138,16 @@
     <script>
         $(document).ready(function() {
             var table = $('#certificateTable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": true,
-                "responsive": true
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
             });
 
             $('#certificateTable tbody').on('click', 'tr', function() {
