@@ -1,10 +1,11 @@
-@extends('auth.main-lms')
+@extends('auth.main')
 
 @section('head')
-<script src="{{asset('assets/js/tinymce/tinymce.min.js')}}"></script>
+
 @endsection
 
 @section('contents')
+
 <style>
     .tox-promotion {
         display: none !important;
@@ -393,3 +394,4 @@
     
 </script>
 @endsection
+

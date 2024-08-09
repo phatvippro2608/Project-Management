@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CourseModel;
 use Illuminate\Support\Facades\DB;
+
 class CourseController extends Controller
 {
     function getViewCourses()
     {
+
         $courses=DB::table('courses')
         ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
         ->select('courses.*','course_types.type_name')
         ->get();
         $getTypeName = DB::table('course_types')->get();
+
         return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName]);
     }
     function getCourseView($id)
