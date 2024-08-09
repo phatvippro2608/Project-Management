@@ -650,7 +650,7 @@ $token = 'position';
 
             <li class="nav-heading">Education</li>
             <li class="nav-item">
-                <a class="nav-link " href="/lms">
+                <a class="nav-link " href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
                     <i class="bi bi-mortarboard"></i>
                     <span>LMS</span>
                 </a>
