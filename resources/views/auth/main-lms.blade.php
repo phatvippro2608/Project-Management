@@ -33,7 +33,6 @@ $token = 'position';
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.esc.js') }}"></script>
 
@@ -439,6 +438,12 @@ $token = 'position';
             <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Log Out</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fs-5 fw-bold " href="{{route('quiz.index')}}">
+                <i class="bi bi-question-diamond-fill"></i>
+                <span>Quiz</span>
             </a>
         </li>
     </ul>
