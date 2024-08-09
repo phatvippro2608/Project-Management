@@ -54,9 +54,8 @@
                                        id="image"
                                        name="image"
                                        data-max-files="1"
-                                       data-pdf-preview-height="320"
-                                       data-pdf-component-extra-params="toolbar=0&navpanes=0&scrollbar=0&view=fitH">
-                                <button class="btn btn-primary mx-auto" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                                       accept="image/png, image/jpeg, image/gif">
+                                <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                             </form>
                         </div>
                     </div>
@@ -917,6 +916,7 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         FilePond.registerPlugin(
             FilePondPluginImagePreview,
+            FilePondPluginFileValidateType
         );
 
         FilePond.create(
@@ -947,6 +947,20 @@
                 },
             }
         );
+
+        const filePond = document.querySelector("#image")
+        const filepondUpload = document.querySelector('.filepond-upload')
+        filePond.addEventListener('FilePond:processfile', e => {
+            if (e.returnValue) {
+                filepondUpload.classList.remove('d-none')
+            }
+        });
+
+        filePond.addEventListener('FilePond:removefile',e=>{
+            if (e.returnValue) {
+                filepondUpload.classList.add('d-none')
+            }
+        })
 
     </script>
     <script src="{{asset('assets/js/upload.js')}}"></script>
