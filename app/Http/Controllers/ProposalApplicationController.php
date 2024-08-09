@@ -164,11 +164,11 @@ class ProposalApplicationController extends Controller
 
     public function approve($id,$permission)
     {
-        if($permission == 3){
+        if($permission == 9){
             $proposalApp = ProposalApplicationModel::findOrFail($id);
             $proposalApp->progress = 1;
             $proposalApp->save();
-        }elseif($permission == 4){
+        }elseif($permission == 10){
             $proposalApp = ProposalApplicationModel::findOrFail($id);
             $proposalApp->progress = 2;
             $proposalApp->save();

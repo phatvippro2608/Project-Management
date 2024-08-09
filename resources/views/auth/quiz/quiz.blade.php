@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            @if($data->permission == 5 || $data->permission == 2)
+            @if($data->permission == 11)
                 <div class="card mt-4">
                     <div class="card-body text-center p-3 d-flex justify-content-around">
                         <a href="{{ route('create-quiz.index') }}" class="btn btn-success">Create exam</a>

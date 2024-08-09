@@ -51,6 +51,7 @@ $token = 'position';
     <script src="{{asset('assets/js/filepond.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-file-validate-type.min.js')}}"></script>
 
     <script type="text/javascript"
             src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
@@ -498,37 +499,36 @@ $token = 'position';
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
 
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('holidays.index') }}">
-                            <i class="bi bi-circle"></i><span>Holiday</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
-                            <i class="bi bi-circle"></i><span>Leave Type</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
-                            <i class="bi bi-circle"></i><span>Leave Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
-                            <i class="bi bi-circle"></i><span>Earned Leave</span>
-                        </a>
-                    </li>
+                    @if($data->permission === 1 || $data->permission === 2)
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('holidays.index') }}">
+                                <i class="bi bi-circle"></i><span>Holiday</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
+                                <i class="bi bi-circle"></i><span>Leave Type</span>
+                            </a>
+                        </li>
+                    @elseif($data->permission === 4)
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
+                                <i class="bi bi-circle"></i><span>Leave Report</span>
+                            </a>
+                        </li>
+                    @else
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
+                                <i class="bi bi-circle"></i><span>Leave Application</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
+                                <i class="bi bi-circle"></i><span>Earned Leave</span>
+                            </a>
+                        </li>
+                    @endif
 
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
-                            <i class="bi bi-circle"></i><span>Leave Report</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
-                            <i class="bi bi-circle"></i><span>Leave Application</span>
-                        </a>
-                    </li>
                 </ul>
             </li>
 
