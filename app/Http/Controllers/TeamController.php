@@ -41,7 +41,7 @@ class TeamController extends Controller
 
     function update(Request $request)
     {
-        $id_account = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
         $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
         $data = [
@@ -50,7 +50,7 @@ class TeamController extends Controller
             'status' => $request->status,
             'created_by' => $employee_id,
         ];
-        if(DB::table('team')->where('team_id', $request->team_id)->update($data)){
+        if(DB::table('teams')->where('team_id', $request->team_id)->update($data)){
             return AccountController::status('Updated a team', 200);
         }else{
             return AccountController::status('Failed to update', 500);
@@ -58,9 +58,12 @@ class TeamController extends Controller
     }
 
     function delete(Request $request){
-        if(DB::table('teams')->where('team_id', $request->team_id)->delete()){
+        try{
+            DB::table('team_details')->where('team_id', $request->team_id)->delete();
+            DB::table('project_teams')->where('team_id', $request->team_id)->delete();
+            DB::table('teams')->where('team_id', $request->team_id)->delete();
             return AccountController::status('Deleted a team', 200);
-        }else{
+        }catch (\Exception $exception){
             return AccountController::status('Failed to delete', 500);
         }
     }

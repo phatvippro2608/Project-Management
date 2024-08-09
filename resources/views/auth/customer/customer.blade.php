@@ -147,7 +147,7 @@
                                     <label for="">
                                         Phone number
                                     </label>
-                                    <input type="text" class="form-control name8">
+                                    <input type="number" class="form-control name8">
                                 </div>
                             </div>
 
@@ -248,15 +248,59 @@
             },
             responsive: true
         });
+        function validateForm() {
+            let isValid = true;
+
+            const nameRegex = /^[a-zA-Z\s]+$/;
+            const firstName = $('.name1').val();
+            const lastName = $('.name2').val();
+            if (!nameRegex.test(firstName)) {
+                toastr.error("First Name cannot contain numbers or special characters", "Failed Action");
+                isValid = false;
+            }
+            if (!nameRegex.test(lastName)) {
+                toastr.error("Last Name cannot contain numbers or special characters", "Failed Action");
+                isValid = false;
+            }
+
+            const dob = new Date($('.name4').val());
+            const age = (new Date().getFullYear()) - dob.getFullYear();
+            if (isNaN(dob.getTime()) || age < 18) {
+                toastr.error("Date of Birth must indicate an age of 18 years or older", "Failed Action");
+                isValid = false;
+            }
+
+            const phoneNumber = $('.name8').val();
+            const phoneRegex = /^[0-9]+$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                toastr.error("Phone Number can only contain numbers", "Failed Action");
+                isValid = false;
+            }
+
+            const email = $('.name3').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                toastr.error("Invalid email format", "Failed Action");
+                isValid = false;
+            }
+
+            const contractDate = new Date($('.name22').val());
+            const contractEndDay = new Date($('.name23').val());
+            if (isNaN(contractDate.getTime()) || isNaN(contractEndDay.getTime()) || contractDate > contractEndDay) {
+                toastr.error("Contract Date must be less than or equal to Contract End Day", "Failed Action");
+                isValid = false;
+            }
+
+            return isValid;
+        }
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add New Customer');
             $('.md1').modal('show');
 
             $('.at1').click(function () {
-                // if ($('.name1').val().trim() === '') {
-                //     alert('Please enter a team name.');
-                //     return;
-                // }
+                if (!validateForm()) {
+                    return;
+                }
 
                 $.ajax({
                     url: `{{action('App\Http\Controllers\CustomerController@add')}}`,
