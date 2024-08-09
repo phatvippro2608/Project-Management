@@ -27,9 +27,6 @@ class ProfileController extends Controller
         try {
             $data = new ProfileModel();
             $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-            if(DB::table('accounts')->where('username', $request->username)->exists()){
-                return json_encode((object)["status" => 400, "message" => "This username already exists"]);
-            }
             $data->username = $request->username;
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
