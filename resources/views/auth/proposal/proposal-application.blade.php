@@ -36,7 +36,7 @@
                     Add Proposal Applicaiton
                 </div>
             </div>
-            @if ($data['permission'] == 12)
+            @if ($data['permission'] == 9)
                 <div class="btn btn-success mx-2 btn-export">
                     <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
                                                                     'employee_id' => $data['employee_current']->employee_id
@@ -46,7 +46,7 @@
                         Export
                     </a>
                 </div>
-            @elseif($data['permission'] == 13)
+            @elseif($data['permission'] == 10)
                 <div class="btn btn-success mx-2 btn-export">
                     <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
                                                                     'employee_id' => $data['employee_current']->employee_id])}}" class="d-flex align-items-center text-white">
@@ -81,12 +81,13 @@
                                     @else
                                         <option value="">No Employee Found</option>
                                     @endif
-                                @elseif($data['permission'] == 12)
+
+                                @elseif($data['permission'] == 9)
                                     @foreach ($data['employee_of_depart'] as $item)
                                         <option value="{{ $item->employee_id }}">{{ $item->first_name }}
                                             {{ $item->last_name }}</option>
                                     @endforeach
-                                @elseif($data['permission'] == 13)
+                                @elseif($data['permission'] == 10)
                                     @foreach ($employee_name as $item)
                                         <option value="{{ $item->employee_id }}">{{ $item->first_name }}
                                             {{ $item->last_name }}</option>
@@ -185,10 +186,10 @@
                     <th>Proposal Name Type</th>
                     <th>Description</th>
                     <th class='w-25 '>Progress</th>
-                    @if ($data['permission'] == 12)
+                    @if ($data['permission'] == 9)
                         <th class="text-center">Direct Department</th>
                     @endif
-                    @if ($data['permission'] == 13)
+                    @if ($data['permission'] == 10)
                         <th class="text-center">Direct Manager</th>
                     @endif
                     <th>Action</th>
@@ -224,7 +225,7 @@
                                 @endif
                             </div>
                         </td>
-                        @if ($data['permission'] == 12)
+                        @if ($data['permission'] == 9)
                             <td class="text-center">
                                 @if ($item->progress == 0)
                                     <button
@@ -253,7 +254,7 @@
                             </td>
                         @endif
 
-                        @if ($data['permission'] == 13)
+                        @if ($data['permission'] == 10)
                             <td class="text-center">
                                 @if ($item->progress == 0)
                                     <button
