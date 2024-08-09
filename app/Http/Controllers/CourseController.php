@@ -11,7 +11,6 @@ class CourseController extends Controller
 {
     function getViewCourses()
     {
-
         $courses=DB::table('courses')
         ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
         ->select('courses.*','course_types.type_name')
@@ -28,9 +27,21 @@ class CourseController extends Controller
         $getTypeName = DB::table('course_types')->get();
         return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName, 'id' => $id]);
     }
-    function getCourseSection($id)
+    function getCourseSection(Request $requet)
     {
-        return null;
+        $id = $requet->input('id');
+        $type = $requet->input('type');
+        if($type==null){
+            $sections=DB::table('courses_section')
+            ->select('courses_section_id','section_name')
+            ->where('course_id',$id)
+            ->get();
+        }else{
+            $sections=DB::table('courses_section')
+            ->where('courses_section_id',$id)
+            ->get();
+        }
+        return response()->json(['success' => true, 'sections' => $sections]);
     }
     function create(Request $request)
     {
@@ -132,5 +143,19 @@ class CourseController extends Controller
         ]);
         $sections = DB::table('courses_section')->where('course_id',$course_id)->get();
         return response()->json(['success' => true,'message' => 'Add new section success!', 'sections' => $sections]);
+    }
+    function updateSection(Request $request)
+    {
+        $section_id = $request->input('section_id');
+        $section_name = $request->input('section_name');
+        $section_detail = $request->input('section_description');
+        DB::table('courses_section')
+        ->where('courses_section_id',$section_id)
+        ->update([
+            'section_name' => $section_name,
+            'detail' => $section_detail,
+        ]);
+        $sections = DB::table('courses_section')->where('courses_section_id',$section_id)->get();
+        return response()->json(['success' => true,'message' => 'Update section success!', 'sections' => $sections]);
     }
 }
