@@ -225,6 +225,11 @@ class EmployeesController extends Controller
         return json_encode($data_medical);
     }
 
+    static function getEmploymentContract($employee_id){
+        $data_employment_contract = DB::table('employment_contract')->where('employee_id',$employee_id)->get();
+        return json_encode($data_employment_contract);
+    }
+
     static function getCertificateInfo($employee_id)
     {
         $data_certificates = DB::table('certificates')
@@ -591,8 +596,11 @@ class EmployeesController extends Controller
             $item->medical = EmployeesController::getMedicalInfo($employee_id);
             $item->certificates = EmployeesController::getCertificateInfo($employee_id);
             $item->passport = EmployeesController::getPassportInfo($employee_id);
+            $item->employment_contract = EmployeesController::getEmploymentContract($employee_id);
             $item->email = DB::table('accounts')->where('employee_id', $employee_id)->value('email');
         }
+//        dd($item);
+
         return view('auth.employees.update_employee',[
             'item' => $item,
             'jobdetails' => $jobdetails,
