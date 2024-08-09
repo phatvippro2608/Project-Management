@@ -17,21 +17,23 @@
             <li class="breadcrumb-item"><a href="#">Home</a></li>
             <li class="breadcrumb-item"><a href="#">Education</a></li>
             <li class="breadcrumb-item">Course</li>
-            <li class="breadcrumb-item">?</li>
+            <li class="breadcrumb-item active">????</li>
         </ol>
     </nav>
 </div>
 <div class="section educaiton">
     <div class="card rounded-4">
+        @foreach($course as $c)
         <div class="card-header rounded-4">
             <div class="d-flex justify-content-between">
-                <h3 class="text-primary">123</h3>
-                <button class="btn btn-info text-white"><i class="bi bi-pencil-square me-1"></i>Edit</button>
+                <h3 class="text-primary" id="v_course_name">{{$c->course_name}}</h3>
+                <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalEditCourse"><i class="bi bi-pencil-square me-1"></i>Edit</button>
             </div>
         </div>
-        <div class="card-body">
-            abc
+        <div class="card-body" id="v_course_description">
+            {!!$c->description!!}
         </div>
+        @endforeach
     </div>
 </div>
 <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
@@ -39,8 +41,11 @@
         <div class="modal-content">
             <form id="formEditCourse" method="post" enctype="multipart/form-data">
                 @csrf
+                @foreach($course as $c)
                 <div class="modal-header">
                     <h5 class="modal-title">Edit course</h5>
+                    <input type="text" id="course_id" name="course_id" value="{{$c->course_id}}" hidden>
+                    <input type="text" name="type" value="single" hidden>
                 </div>
                 <div class="modal-body row">
                     <div class="d-flex justify-content-between">
@@ -50,16 +55,27 @@
                             <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
                         </label>
                     </div>
-                    <img id="bg_img_e" src="" class="img-fluid mt-1" alt="">
-                    <div class="form-group mt-3">
-                        <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
-                        <input type="text" name="course_name" id="course_name_e" class="form-control">
+                    <img id="bg_img_e" src="{{asset('uploads/course/')}}/{{$c->course_image}}" class="img-fluid mt-1" alt="">
+                    <div class="form-group mt-3 row">
+                        <div class="col-6">
+                            <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course name</strong></label>
+                            <input type="text" name="course_name" id="course_name_e" class="form-control" value="{{$c->course_name}}">
+                        </div>
+                        <div class="col-6">
+                            <label for="course_type_e"><strong><i class="bi bi-bookmark me-1"></i>Course type</strong></label>
+                            <select name="course_type" id="course_type_e" class="form-select">
+                                @foreach($getTypeName as $type)
+                                    <option value="{{$type->course_type_id}}" @if($type->course_type_id == $c->course_type_id) selected @endif>{{$type->type_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group mt-3">
                         <label for="course_description"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
                         <textarea name="course_description" id="course_description_e" class="form-control"></textarea>
                     </div>
                 </div>
+                @endforeach
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Change</button>
@@ -79,6 +95,13 @@
     });
     tinymce.init({
         selector: 'textarea#course_description_e',
+        setup: function (editor) {
+            editor.on('init', function () {
+                @foreach($course as $c)
+                editor.setContent(`{!!$c->description!!}`);
+                @endforeach
+            });
+        },
         height: 300,
         plugins: [
             'advlist', 'autolink', 'link', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
@@ -98,17 +121,12 @@
         content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}',
         branding: false,
         images_upload_url: false,
-        images_upload_handler: function (blobInfo, success, failure) {
+        images_upload_handler: function(blobInfo, success, failure) {
             failure('Image uploading is disabled');
         },
         plugins_exclude: 'print media'
     });
-    $('#formEditCourse').submit(function(e) {
-        console.log($(this).serialize());
-        //log course_description
-        console.log(tinymce.get('course_description_e').getContent());
-        //log tên file ảnh
-    });
+
     function addsection(e) {
         e.innerHTML = '<i class="bi bi-pencil-square"></i><span>Reset</span>';
         $('#new-section').empty();
@@ -122,28 +140,41 @@
                 </div>
             </div>`
         );
-    }
-
-    tinymce.init({
-        selector: 'textarea#default',
-        height: 300,
-        plugins: [
-            'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-            'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-            'table', 'emoticons', 'template', 'codesample'
-        ],
-        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
-            'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-            'forecolor backcolor emoticons',
-        menu: {
-            favs: {
-                title: 'menu',
-                items: 'code visualaid | searchreplace | emoticons'
+    };
+    $('#formEditCourse').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        if (tinymce.get('course_description_e').getContent() == '') {
+            return;
+        }
+        formData.append('course_description', tinymce.get('course_description_e').getContent());
+        $.ajax({
+            url: '{{ action('App\Http\Controllers\CourseController@updateCourse') }}',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                console.log(data);
+                if (data.success) {
+                    toastr.success(data.message);
+                    $('#modalEditCourse').modal('hide');
+                    data.courses.forEach(course => {
+                        $('#course_id').val(course.course_id);
+                        $('#course_name_e').val(course.course_name);
+                        tinymce.get('course_description_e').setContent(course.description);
+                        $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + course.course_image);
+                        $('#course_type_e').val(course.course_type_id);
+                        $('#v_course_name').html(course.course_name);
+                        $('#v_course_description').html(course.description);
+                        $('#course_type_e').val(course.course_type_id);
+                    });
+                    
+                } else {
+                    toastr.error(data.message);
+                }
             }
-        },
-        menubar: 'favs file edit view insert format tools table',
-        content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}',
-        branding: false
+        });
     });
 </script>
 @endsection

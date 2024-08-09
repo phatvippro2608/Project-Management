@@ -50,7 +50,7 @@
         </nav>
     </div>
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         @if(\App\Http\Controllers\AccountController::permission() == 1)
             <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addWorkshopModal">Add Workshop</button>
         @endif
