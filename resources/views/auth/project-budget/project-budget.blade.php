@@ -5,7 +5,7 @@
         <h1>Project Budget</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active">Project Budget Summary</li>
             </ol>
         </nav>
@@ -14,7 +14,7 @@
     <section class="sectionBudget">
         <h3>Budget Estimates of Project</h3>
         <h5>Project Budget Summary</h5>
-        <div class="card">
+        <div class="card rounded-4 p-2 mt-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
@@ -24,7 +24,6 @@
                         <a href="{{ route('commission', ['id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
                     </div>
                 </div>
-                <hr>
                 <!-- Default Table -->
                 <table class="table">
                     <tbody>
@@ -50,9 +49,8 @@
                         </tr>
                     </tbody>
                 </table>
-                <hr>
-                <div class="card">
-                    <div class="card-body">
+                <div class="card shadow-none">
+                    <div class="card-body px-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title">PROJECT INFORMATION</h5>
                             <div class="d-flex ms-auto">
@@ -187,10 +185,10 @@
                 document.getElementById('project_description').textContent = formData.get('project_description');
                 document.getElementById('project_address').textContent = formData.get('project_address');
 
-                
+
                 document.getElementById('project_date_start').textContent = formData.get('project_date_start');
                 document.getElementById('project_date_end').textContent = formData.get('project_date_end');
-                
+
                 // Close the modal
                 const modal = document.getElementById('editProjectModal');
                 const modalInstance = bootstrap.Modal.getInstance(modal);

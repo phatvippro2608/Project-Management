@@ -44,7 +44,7 @@
     </div>
     <div class="btn btn-primary my-3 btn-add">
         <div class="d-flex align-items-center">
-            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+            <i class="bi bi-file-earmark-plus pe-2"></i>
             Add Customer
         </div>
     </div>
@@ -98,7 +98,8 @@
                                 {{$item->address}}
                             </td>
                             <td class="text-center">
-                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}" class="contract">
+                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}"
+                                   class="contract btn btn-primary p-1" style="font-size: 12px">
                                     Contract Detail
                                 </a>
                             </td>

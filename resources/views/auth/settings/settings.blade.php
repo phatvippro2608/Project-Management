@@ -38,7 +38,7 @@
     <form action="{{ route('setting.update') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="container mt-5">
-            <div class="content col-12 bg-light card p-4">
+            <div class="content bg-light card p-4 border rounded-4">
                 <div class="content--img text-center mb-4">
                     <div id="preview" class="rounded-circle mb-2">
                         @if (isset($options->option_img))
