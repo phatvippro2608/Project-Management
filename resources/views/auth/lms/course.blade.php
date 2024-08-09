@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.main-lms')
 
 @section('head')
     <script src="{{ asset('assets/js/tinymce/tinymce.min.js') }}"></script>
@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row mt-2" id="course_handel">
         @foreach($courses as $course)
         <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
@@ -104,7 +104,7 @@
                                     <option value="{{$type->course_type_id}}">{{$type->type_name}}</option>
                                 @endforeach
                             </select>
-                        </div>                        
+                        </div>
                     </div>
                     <div class="form-group mt-3">
                         <label for="course_description"><strong><i class="bi bi-card-text me-1"></i>Description</strong></label>
@@ -321,7 +321,7 @@
                     $('#bg_img_e').attr('src', '{{asset('uploads/course/')}}/' + course.course_image);
                     $('#course_type_e').val(course.course_type_id);
                 });
-                
+
                 $('#modalSelectCourse').modal('hide');
                 $('#modalEditCourse').modal('show');
             }
@@ -390,6 +390,6 @@
             return courseNameFilter && courseTypeFilter;
         }).parent().parent().show();
     }
-    
+
 </script>
 @endsection
