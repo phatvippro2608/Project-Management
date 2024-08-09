@@ -4,7 +4,7 @@ use App\StaticString;
 
 $token = 'position';
 ?>
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -38,24 +38,23 @@ $token = 'position';
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
 
-    <script src="{{asset('assets/js/datatables.js')}}"></script>
-    <script src="{{asset('assets/js/filepond.min.js')}}"></script>
-    <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
-    <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
+    <script src="{{ asset('assets/js/datatables.js') }}"></script>
+    <script src="{{ asset('assets/js/filepond.min.js') }}"></script>
+    <script src="{{ asset('assets/js/filepond-plugin-image-preview.min.js') }}"></script>
+    <script src="{{ asset('assets/js/filepond-plugin-image-overlay.min.js') }}"></script>
 
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
 
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
+        type="text/css" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -64,406 +63,401 @@ $token = 'position';
 </head>
 
 <body>
-<header id="header" class="header fixed-top d-flex align-items-center">
+    <header id="header" class="header fixed-top d-flex align-items-center">
 
-    <div class="d-flex align-items-center justify-content-between">
-        <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
-           class="d-flex align-items-center logo justify-content-center">
-            <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
-            <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
-        </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
+                class="d-flex align-items-center logo justify-content-center">
+                <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
+                <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div>
 
-    <nav class="header-nav ms-auto">
-        <ul class="d-flex align-items-center">
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
 
-            <li class="nav-item d-block d-lg-none">
-                <a class="nav-link fs-5 fw-bold nav-icon search-bar-toggle " href="#">
-                    <i class="bi bi-search"></i>
-                </a>
-            </li>
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link fs-5 fw-bold nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li>
 
-            <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
 
-                <a class="nav-link fs-5 fw-bold nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
-                </a>
+                    <a class="nav-link fs-5 fw-bold nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-primary badge-number">4</span>
+                    </a>
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                        <li class="dropdown-header">
+                            You have 4 new notifications
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                    <li class="notification-item">
-                        <i class="bi bi-exclamation-circle text-warning"></i>
-                        <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-x-circle text-danger"></i>
-                        <div>
-                            <h4>Atque rerum nesciunt</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>1 hr. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-check-circle text-success"></i>
-                        <div>
-                            <h4>Sit rerum fuga</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>2 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-info-circle text-primary"></i>
-                        <div>
-                            <h4>Dicta reprehenderit</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>4 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-
-                </ul>
-
-            </li>
-
-            <li class="nav-item dropdown">
-
-                <a class="nav-link fs-5 fw-bold nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">
+                        <li class="notification-item">
+                            <i class="bi bi-exclamation-circle text-warning"></i>
                             <div>
-                                <h4>Maria Hudson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <h4>Lorem Ipsum</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>30 min. ago</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-x-circle text-danger"></i>
+                            <div>
+                                <h4>Atque rerum nesciunt</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>1 hr. ago</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <div>
+                                <h4>Sit rerum fuga</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>2 hrs. ago</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-info-circle text-primary"></i>
+                            <div>
+                                <h4>Dicta reprehenderit</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
                                 <p>4 hrs. ago</p>
                             </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        </li>
 
-                    <li class="message-item">
-                        <a href="#">
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li class="dropdown-footer">
+                            <a href="#">Show all notifications</a>
+                        </li>
 
-                            <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""
-                                 class="rounded-circle">
-                            <div>
-                                <h4>Anna Nelson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>6 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                    </ul>
 
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>David Muldon</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>8 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                </li>
 
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
+                <li class="nav-item dropdown">
 
-                </ul>
+                    <a class="nav-link fs-5 fw-bold nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-chat-left-text"></i>
+                        <span class="badge bg-success badge-number">3</span>
+                    </a><!-- End Messages Icon -->
 
-            </li>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                        <li class="dropdown-header">
+                            You have 3 new messages
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-            @php
+                        <li class="message-item">
+                            <a href="#">
+                                <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">
+                                <div>
+                                    <h4>Maria Hudson</h4>
+                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                    <p>4 hrs. ago</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                $data = \Illuminate\Support\Facades\DB::table('accounts')
-                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                        <li class="message-item">
+                            <a href="#">
 
-                            ->where(
+                                <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""
+                                    class="rounded-circle">
+                                <div>
+                                    <h4>Anna Nelson</h4>
+                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                    <p>6 hrs. ago</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="message-item">
+                            <a href="#">
+                                <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">
+                                <div>
+                                    <h4>David Muldon</h4>
+                                    <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                    <p>8 hrs. ago</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="dropdown-footer">
+                            <a href="#">Show all messages</a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                @php
+
+                    $data = \Illuminate\Support\Facades\DB::table('accounts')
+                        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                        ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                        ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+
+                        ->where(
                             'accounts.account_id',
                             \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                            )
-                            ->first();
-                $info = \Illuminate\Support\Facades\DB::table('job_details')
-                            ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
-                            ->where(
-                                'job_details.employee_id', $data->employee_id
-                            )
-                            ->first();
-            @endphp
+                        )
+                        ->first();
+                    $info = \Illuminate\Support\Facades\DB::table('job_details')
+                        ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
+                        ->where('job_details.employee_id', $data->employee_id)
+                        ->first();
+                @endphp
 
-            <li class="nav-item dropdown pe-3">
-                <a class="nav-link fs-5 fw-bold nav-profile d-flex align-items-center pe-0" href="#"
-                   data-bs-toggle="dropdown">
-                    @php
-                        $photoPath = asset($data->photo);
-                        $defaultPhoto = asset('assets/img/avt.png');
-                        $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
-                    @endphp
+                <li class="nav-item dropdown pe-3">
+                    <a class="nav-link fs-5 fw-bold nav-profile d-flex align-items-center pe-0" href="#"
+                        data-bs-toggle="dropdown">
+                        @php
+                            $photoPath = asset($data->photo);
+                            $defaultPhoto = asset('assets/img/avt.png');
+                            $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
+                        @endphp
 
-                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
-                         class="rounded-circle object-fit-cover" width="36" height="36">
-                    <span class="d-none d-md-block dropdown-toggle ps-2">
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                            class="rounded-circle object-fit-cover" width="36" height="36">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">
                             {{ $data->last_name . ' ' . $data->first_name }}
                         </span>
 
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                    <li class="dropdown-header">
-                        <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
-                        <span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{ $data->last_name . ' ' . $data->first_name }}</h6>
+                            <span>
                                 @if ($info)
-                                {{ $info->position_name }}
-                            @endif
+                                    {{ $info->position_name }}
+                                @endif
                             </span>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id' => $data->employee_id]) }}">
+                            <a class="dropdown-item d-flex align-items-center"
+                                href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id' => $data->employee_id]) }}">
 
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-gear"></i>
+                                <span>Account Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="#">
-                            <i class="bi bi-question-circle"></i>
-                            <span>Need Help?</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <i class="bi bi-question-circle"></i>
+                                <span>Need Help?</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-                    <li>
+                        <li>
 
-                        <a class="dropdown-item d-flex align-items-center"
-                           href="{{ action('App\Http\Controllers\LoginController@logOut') }}">
+                            <a class="dropdown-item d-flex align-items-center"
+                                href="{{ action('App\Http\Controllers\LoginController@logOut') }}">
 
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a>
-                    </li>
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
 
-                </ul>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+    </header>
+
+
+    <aside id="sidebar" class="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center">
+            <img class="rounded-circle" src="{{ asset('assets/img/avt.png') }}" style="width: 80px" />
+        </div>
+        <div class="account-info d-flex justify-content-center align-items-center mt-3 flex-column">
+            <span class="full-name h4 fw-bold fs-3">
+                Nguyễn Văn A
+            </span>
+            <span class="gmail">
+                <small class="text-muted">
+                    nguyenvana@gmail.com
+                </small>
+            </span>
+            <span class="active">
+                <small class="text-muted">
+                    Active 8 seconds ago
+                </small>
+            </span>
+        </div>
+        <hr />
+        <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold "
+                    href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
             </li>
+
+            <li class="nav-item position-relative">
+                <a class="nav-link fs-5 fw-bold"
+                    href="{{ action('App\Http\Controllers\WorkshopController@index') }}">
+                    <i class="bi bi-person-video2"></i>
+                    <span class="me-4">Workshops</span>
+                </a>
+            </li>
+
+            <li class="nav-item position-relative">
+                <a class="nav-link fs-5 fw-bold"
+                    href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">
+                    <i class="bi bi-folder"></i>
+                    <span class="me-4">Courses</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('quiz.index') }}">
+                    <i class="bi bi-question-diamond-fill"></i>
+                    <span>Quiz</span>
+                </a>
+            </li>
+
+            <li class="nav-item position-relative">
+                <a class="nav-link fs-5 fw-bold" href="#">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span class="me-4">Messages</span>
+                </a>
+                <span class="badge bg-primary  position-absolute top-50 translate-middle end-0 fs-6">3</span>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="#">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="#">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Friends</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="#">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="#">
+                    <i class="bi bi-clipboard2-fill"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
+                    <i class="bi bi-handbag-fill"></i>
+                    <span>My Cart</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
+                    <i class="bi bi-clipboard-heart-fill"></i>
+                    <span>Coupons</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
+                    <i class="bi bi-vinyl-fill"></i>
+                    <span>Forums</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Log Out</span>
+                </a>
+            </li>
+
         </ul>
-    </nav>
 
-</header>
+    </aside>
 
-
-<aside id="sidebar" class="sidebar">
-    <div class="w-100 d-flex justify-content-center align-items-center">
-        <img class="rounded-circle" src="{{asset('assets/img/avt.png')}}" style="width: 80px"/>
-    </div>
-    <div class="account-info d-flex justify-content-center align-items-center mt-3 flex-column">
-        <span class="full-name h4 fw-bold fs-3">
-            Nguyễn Văn A
-        </span>
-        <span class="gmail">
-            <small class="text-muted">
-                nguyenvana@gmail.com
-            </small>
-        </span>
-        <span class="active">
-            <small class="text-muted">
-                Active 8 seconds ago
-            </small>
-        </span>
-    </div>
-    <hr/>
-    <ul class="sidebar-nav" id="sidebar-nav">
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold "
-               href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
-                <i class="bi bi-grid"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-
-        <li class="nav-item position-relative">
-            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\WorkshopController@index') }}">
-                <i class="bi bi-person-video2"></i>
-                <span class="me-4">Workshops</span>
-            </a>
-        </li>
-
-        <li class="nav-item position-relative">
-            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">
-                <i class="bi bi-folder"></i>
-                <span class="me-4">Courses</span>
-            </a>
-        </li>
-
-        <li class="nav-item position-relative">
-            <a class="nav-link fs-5 fw-bold" href="/lms/quiz">
-                <i class="bi bi-folder"></i>
-                <span class="me-4">Quiz</span>
-            </a>
-        </li>
-
-        <li class="nav-item position-relative">
-            <a class="nav-link fs-5 fw-bold" href="#">
-                <i class="bi bi-chat-dots-fill"></i>
-                <span class="me-4">Messages</span>
-            </a>
-            <span class="badge bg-primary  position-absolute top-50 translate-middle end-0 fs-6">3</span>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="#">
-                <i class="bi bi-bell-fill"></i>
-                <span>Notifications</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="#">
-                <i class="bi bi-people-fill"></i>
-                <span>Friends</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="#">
-                <i class="bi bi-person-lines-fill"></i>
-                <span>Profile</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="#">
-                <i class="bi bi-clipboard2-fill"></i>
-                <span>Support</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                <i class="bi bi-gear-fill"></i>
-                <span>Settings</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                <i class="bi bi-handbag-fill"></i>
-                <span>My Cart</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                <i class="bi bi-clipboard-heart-fill"></i>
-                <span>Coupons</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                <i class="bi bi-vinyl-fill"></i>
-                <span>Forums</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Log Out</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link fs-5 fw-bold " href="{{route('quiz.index')}}">
-                <i class="bi bi-question-diamond-fill"></i>
-                <span>Quiz</span>
-            </a>
-        </li>
-    </ul>
-
-</aside>
-
-<main id="main" class="main">
-    @yield('contents')
-</main>
+    <main id="main" class="main">
+        @yield('contents')
+    </main>
 
 
-{{-- <footer id="footer" class="footer"> --}}
-{{-- <div class="copyright"> --}}
-{{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
-{{-- </div> --}}
-{{-- </footer> --}}
+    {{-- <footer id="footer" class="footer"> --}}
+    {{-- <div class="copyright"> --}}
+    {{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
+    {{-- </div> --}}
+    {{-- </footer> --}}
 
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-        class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
