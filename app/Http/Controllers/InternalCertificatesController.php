@@ -42,6 +42,7 @@ class InternalCertificatesController extends Controller
     {
         $certificates = DB::table('certificate_types')
             ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_types.certificate_body_id')
+            ->where('certificate_body_name', '=', 'Ventech')
             ->get();
         $companies = DB::table('certificate_bodys')->orderBy('certificate_body_name')->get();
         return view('auth.certificate.InternalCertificateType', [
@@ -49,6 +50,7 @@ class InternalCertificatesController extends Controller
             'companies' => $companies
         ]);
     }
+
     public function deleteType(Request $request)
     {
         $data = $request->json()->all();
@@ -60,11 +62,12 @@ class InternalCertificatesController extends Controller
             return response()->json(['message' => 'An error occurred while deleting the certificate type.'], 500);
         }
     }
+
     public function updateCertificateType(Request $request)
     {
         $request->validate([
             'certificate_type_id' => 'required|integer|exists:certificate_types,certificate_type_id',
-            'certificate_body_id' => 'required|integer|exists:certificate_bodys,certificate_body_id',
+            // 'certificate_body_id' => 'required|integer|exists:certificate_bodys,certificate_body_id',
             'certificate_type_name' => 'required|string|max:255',
             'certificate_type_acronym' => 'nullable|string|max:255',
         ]);
@@ -78,7 +81,7 @@ class InternalCertificatesController extends Controller
 
             // Cập nhật chứng chỉ
             DB::table('certificate_types')->where('certificate_type_id', $request->input('certificate_type_id'))->update([
-                'certificate_body_id' => $request->input('certificate_body_id'),
+                // 'certificate_body_id' => $request->input('certificate_body_id'),
                 'certificate_type_name' => $request->input('certificate_type_name'),
                 'certificate_type_acronym' => $request->input('certificate_type_acronym'),
                 'updated_at' => now()
@@ -90,5 +93,29 @@ class InternalCertificatesController extends Controller
         }
     }
 
-
+    public function addCertificateType(Request $request)
+    {
+        $request->validate([
+            'certificate_type_name' => 'required|string|max:255',
+            'certificate_type_acronym' => 'nullable|string|max:50',
+        ]);
+        try {
+            $idTemp = 29;
+            DB::table('certificate_types')->insert([
+                'certificate_body_id' => $idTemp,
+                'certificate_type_name' => $request->input('certificate_type_name'),
+                'certificate_type_acronym' => $request->input('certificate_type_acronym'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            return response()->json([
+                'message' => 'Certificate type added successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while adding the certificate type.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -83,43 +83,10 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-auto d-flex gap-2">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
-                        Add Company
-                    </button>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addCertificateModal">
                         Add Certificates
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="addCompanyModal" tabindex="-1" aria-labelledby="addCompanyModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header justify-content-between">
-                    <h5 class="modal-title" id="addCompanyModalLabel">Add Company</h5>
-                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        @csrf
-                        <div class="mb-3">
-                            <label for="companyName" class="form-label">Company Name</label>
-                            <input type="text" class="form-control" id="companyName" placeholder="Enter company name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="companyAcronym" class="form-label">Company Acronym</label>
-                            <input type="text" class="form-control" id="companyAcronym"
-                                placeholder="Enter company acronym">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveCompanyButton">Save changes</button>
                 </div>
             </div>
         </div>
@@ -138,7 +105,7 @@
                     <form>
                         @csrf
                         <!-- Company Select -->
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="companySelect" class="form-label">Select Company</label>
                             <select id="companySelect" class="form-select">
                                 @foreach ($companies as $company)
@@ -153,7 +120,7 @@
                         <div class="mb-3">
                             <label for="companyAcronymCertificate" class="form-label">Company Acronym</label>
                             <input type="text" class="form-control" id="companyAcronymCertificate" disabled>
-                        </div>
+                        </div> --}}
                         <!-- Certificate Name -->
                         <div class="mb-3">
                             <label for="certificateName" class="form-label">Certificate Name</label>
@@ -189,7 +156,7 @@
                     <form id="editCertificateForm">
                         @csrf
                         <input type="hidden" id="editCertificateId">
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="editCompanySelect" class="form-label">Select Company</label>
                             <select id="editCompanySelect" class="form-select">
                                 @foreach ($companies as $company)
@@ -203,7 +170,7 @@
                         <div class="mb-3">
                             <label for="editCompanyAcronym" class="form-label">Company Acronym</label>
                             <input type="text" class="form-control" id="editCompanyAcronym" disabled>
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                             <label for="editCertificateName" class="form-label">Certificate Name</label>
                             <input type="text" class="form-control" id="editCertificateName"
@@ -250,32 +217,46 @@
                 $('#companyAcronymCertificate').val(dataAcronym);
             });
 
-            $('#saveCompanyButton').on('click', function() {
+            $('#saveCertificateButton').on('click', function() {
                 var data = {
                     _token: $('input[name="_token"]').val(),
-                    certificate_body_name: $('#companyName').val(),
-                    certificate_body_Acronym: $('#companyAcronym').val()
+                    certificate_type_name: $('#certificateName').val(),
+                    certificate_type_acronym: $('#certificateAcronym').val()
                 }
                 $.ajax({
-                    url,
-                    method: "POST",
-                    data,
-
-                })
-            });
-
-            $('#saveCertificateButton').on('click', function() {
-                // Add logic to handle saving new certificate details
+                    url: '{{ route('certificate.type.add') }}', // Thay đổi thành route tương ứng của bạn
+                    method: 'POST',
+                    data: data,
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Certificate added successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            $('#addCertificateModal').modal('hide');
+                            window.location.reload()
+                        });
+                    },
+                    error: function(error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while adding the certificate.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
 
             $('#updateCertificateButton').on('click', function() {
                 var data = {
                     certificate_type_id: $('#editCertificateId').val(),
-                    certificate_body_id: $('#editCompanySelect').find('option:selected').attr('class'),
+                    // certificate_body_id: $('#editCompanySelect').find('option:selected').attr('class'),
                     certificate_type_name: $('#editCertificateName').val(),
                     certificate_type_acronym: $('#editCertificateAcronym').val()
                 };
-
+                //Đang set mặc định là ventech
                 $.ajax({
                     url: '{{ route('certificate.type.update') }}',
                     method: 'POST',
