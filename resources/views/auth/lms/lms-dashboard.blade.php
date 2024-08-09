@@ -1,6 +1,7 @@
 @extends('auth.main-lms')
 
 @section('head')
+<script src="https://cdn.datatables.net/2.1.3/css/dataTables.bootstrap4.css"></script>
 @endsection
 
 @section('contents')
@@ -86,9 +87,7 @@
                             Export
                         </a>
                     </div>
-                    <div class="col-md-6 ms-auto">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search Courses">
-                    </div>
+                    
                 </div>
                 <table id="CourseTable" class="table table-hover table-borderless">
                     <thead class="table-light">
@@ -125,9 +124,6 @@
             </div>
             <div class="tab-pane fade" id="course-completed" role="tabpanel" aria-labelledby="course-completed-tab">
                 <div class="card p-2 rounded-4 border">
-                <div class="col-md-6 ms-auto">
-                        <input type="text" id="completedCoursesSearch" class="form-control" placeholder="Search Courses">
-                    </div>
                     <div class="card-body">
                         <table id="coursesCompleted" class="table table-hover table-borderless">
                             <thead class="table-light">
@@ -166,9 +162,6 @@
             </div>
             <div class="tab-pane fade" id="course-not-completed" role="tabpanel" aria-labelledby="course-not-completed-tab">
                 <div class="card p-2 rounded-4 border">
-                <div class="col-md-6 ms-auto">
-                        <input type="text" id="notCompletedCoursesSearch" class="form-control" placeholder="Search Courses">
-                    </div>
                     <div class="card-body">
                         <table id="coursesNotCompleted" class="table table-hover table-borderless">
                             <thead class="table-light">
@@ -215,26 +208,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Search Functionality for Courses Completed
-        $('#completedCoursesSearch').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            $('#completed-courses-table tbody tr').each(function() {
-                let rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.indexOf(filter) > -1);
-            });
-        });
-
-        // Search Functionality for Courses Not Completed
-        $('#notCompletedCoursesSearch').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            console.log('Filtering completed courses with:', filter);
-
-            $('#not-completed-courses-table tbody tr').each(function() {
-                let rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.indexOf(filter) > -1);
-            });
-        });
-
         // Filter completed courses based on progress
         function filterCompletedCourses() {
             var rows = document.querySelectorAll('#completed-courses-table .course-row');
@@ -269,75 +242,9 @@
         $('#course-not-completed-tab').on('shown.bs.tab', function () {
             filterNotCompletedCourses();
         });
-
-        // Sorting Function
-        function sortTable(table, column, order) {
-            let rows = table.find('tbody tr').get();
-
-            rows.sort(function(a, b) {
-                let keyA = $(a).children('td').eq(column).text().toUpperCase();
-                let keyB = $(b).children('td').eq(column).text().toUpperCase();
-
-                // Convert to numbers if the column is 'progress'
-                if (column === 2) { // Index of 'Progress'
-                    keyA = parseInt(keyA);
-                    keyB = parseInt(keyB);
-                }
-                // Convert to dates if the column is 'Start To' or 'From'
-                else if (column === 3 || column === 4) { // Index of 'Start To' and 'From'
-                    keyA = new Date(keyA);
-                    keyB = new Date(keyB);
-                }
-
-                if (order === 'asc') {
-                    return (keyA < keyB) ? -1 : (keyA > keyB) ? 1 : 0;
-                } else {
-                    return (keyA > keyB) ? -1 : (keyA < keyB) ? 1 : 0;
-                }
-            });
-
-            $.each(rows, function(index, row) {
-                table.children('tbody').append(row);
-            });
-        }
-
-        // Click Event for Sorting
-        $('.sortable').on('click', function() {
-            let table = $(this).closest('table');
-            let index = $(this).index();
-            let currentOrder = $(this).data('order') || 'asc';
-            let newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-
-            $(this).data('order', newOrder);
-            sortTable(table, index, newOrder);
-
-            // Toggle sorting indicator
-            $(this).find('i').removeClass('bi-sort bi-sort-up bi-sort-down');
-            $(this).find('i').addClass(newOrder === 'asc' ? 'bi-sort-up' : 'bi-sort-down');
-        });
-
-        // General search functionality for all tabs
-        $('#notCompletedCoursesSearch').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            $('#coursesNotCompleted tbody tr').each(function() {
-                let rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.indexOf(filter) > -1);
-            });
-        });
-        $('#completedCoursesSearch').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            $('#coursesCompleted tbody tr').each(function() {
-                let rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.indexOf(filter) > -1);
-            });
-        });
-        $('#searchInput').on('keyup', function() {
-            let filter = $(this).val().toLowerCase();
-            $('#CourseTable tbody tr').each(function() {
-                let rowText = $(this).text().toLowerCase();
-                $(this).toggle(rowText.indexOf(filter) > -1);
-            });
-        });
+        new DataTable('#CourseTable');
+        new DataTable('#coursesCompleted');
+        new DataTable('#coursesNotCompleted');
     });
 </script>
 @endsection
