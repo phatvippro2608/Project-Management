@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Log;
 
 class InternalCertificatesController extends Controller
 {
@@ -23,13 +26,96 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
+    public function deleteViewUser(Request $request)
+    {
+        $data = $request->json()->all();
+        $id = $data['id'];
+        $deleted = DB::table('certificates')->where('certificate_id', $id)->delete();
+        if ($deleted) {
+            return Response::json(['success' => 'Employee deleted successfully.']);
+        } else {
+            return Response::json(['error' => 'Employee not found.'], 404);
+        }
+    }
+
     public function getViewType()
     {
         $certificates = DB::table('certificate_types')
             ->join('certificate_bodys', 'certificate_bodys.certificate_body_id', '=', 'certificate_types.certificate_body_id')
+            ->where('certificate_body_name', '=', 'Ventech')
             ->get();
+        $companies = DB::table('certificate_bodys')->orderBy('certificate_body_name')->get();
         return view('auth.certificate.InternalCertificateType', [
-            'certificates' => $certificates
+            'certificates' => $certificates,
+            'companies' => $companies
         ]);
+    }
+
+    public function deleteType(Request $request)
+    {
+        $data = $request->json()->all();
+        $id = $data['id'];
+        try {
+            DB::table('certificate_types')->where('certificate_type_id', $id)->delete();
+            return response()->json(['message' => 'Certificate type deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while deleting the certificate type.'], 500);
+        }
+    }
+
+    public function updateCertificateType(Request $request)
+    {
+        $request->validate([
+            'certificate_type_id' => 'required|integer|exists:certificate_types,certificate_type_id',
+            // 'certificate_body_id' => 'required|integer|exists:certificate_bodys,certificate_body_id',
+            'certificate_type_name' => 'required|string|max:255',
+            'certificate_type_acronym' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $certificate = DB::table('certificate_types')->where('certificate_type_id', $request->input('certificate_type_id'))->first();
+
+            if (!$certificate) {
+                return response()->json(['message' => 'Certificate not found.'], 404);
+            }
+
+            // Cập nhật chứng chỉ
+            DB::table('certificate_types')->where('certificate_type_id', $request->input('certificate_type_id'))->update([
+                // 'certificate_body_id' => $request->input('certificate_body_id'),
+                'certificate_type_name' => $request->input('certificate_type_name'),
+                'certificate_type_acronym' => $request->input('certificate_type_acronym'),
+                'updated_at' => now()
+            ]);
+
+            return response()->json(['message' => 'Certificate updated successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while updating the certificate.'], 500);
+        }
+    }
+
+    public function addCertificateType(Request $request)
+    {
+        $request->validate([
+            'certificate_type_name' => 'required|string|max:255',
+            'certificate_type_acronym' => 'nullable|string|max:50',
+        ]);
+        try {
+            $idTemp = 29;
+            DB::table('certificate_types')->insert([
+                'certificate_body_id' => $idTemp,
+                'certificate_type_name' => $request->input('certificate_type_name'),
+                'certificate_type_acronym' => $request->input('certificate_type_acronym'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            return response()->json([
+                'message' => 'Certificate type added successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while adding the certificate type.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

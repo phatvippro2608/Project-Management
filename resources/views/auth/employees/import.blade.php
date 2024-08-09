@@ -84,8 +84,8 @@
                                     tabindex="-1"
                             >
                                 Error
-                                <span class="badge text-bg-danger ms-2">3</span>
-                                <span class="badge text-bg-success ms-2">0</span>
+                                <span class="badge text-bg-danger ms-2 have-error"></span>
+                                <span class="badge text-bg-success ms-2 no-error"></span>
                             </button>
                         </li>
                     </ul>
@@ -243,6 +243,8 @@
                             });
                         }
                         if (response.errorRows.length > 0) {
+                            $('.have-error').text(response.errorRows.length);
+                            $('.no-error').addClass('d-none');
                             response.errorRows.forEach(row => {
                                 let dataRow = '<tr>';
                                 dataRow += '<td>' + row.data.first_name + '</td>';
@@ -252,6 +254,9 @@
                                 dataRow += '</tr>';
                                 $('#errorTable .tableData').append(dataRow);
                             });
+                        }else{
+                            $('.no-error').text('0');
+                            $('.have-error').addClass('d-none');
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {

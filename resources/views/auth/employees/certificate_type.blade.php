@@ -190,14 +190,14 @@
         })
 
 
-        $('.at1').click(function () {
+        $(document).on('click', '.at1', function () {
             $('.md1').modal('show');
             let certificate_type_name = $(this).attr('data-certificate');
             $('.md1 .certificate_type_name').val(certificate_type_name);
             $('.btn-update').data('id', $(this).attr('data-id'));
         });
 
-        $('.btn-update').click(function () {
+        $(document).on('click', '.btn-update', function () {
             let certificate_type_name = $('.md1 .certificate_type_name').val();
             let certificate_type_id = $(this).data('id');
             let formData = new FormData();
@@ -214,8 +214,8 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    console.log(response)
-                    console.log(response.status)
+                    console.log(response);
+                    console.log(response.status);
                     if (response.status === 200) {
                         toastr.success(response.message, response.message);
                         setTimeout(function () {
@@ -228,8 +228,8 @@
             });
         });
 
-        $('.at2').click(function () {
-            if(confirm('Are you sure DELETE this certificate type?')){
+        $(document).on('click', '.at2', function () {
+            if (confirm('Are you sure DELETE this certificate type?')) {
                 let certificate_type_id = $(this).data('id');
                 let formData = new FormData();
                 formData.append('certificate_type_id', certificate_type_id);
@@ -243,8 +243,8 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        console.log(response)
-                        console.log(response.status)
+                        console.log(response);
+                        console.log(response.status);
                         if (response.status === 200) {
                             toastr.success(response.message, response.message);
                             setTimeout(function () {
@@ -256,7 +256,8 @@
                     }
                 });
             }
-        })
+        });
+
 
     </script>
 @endsection
