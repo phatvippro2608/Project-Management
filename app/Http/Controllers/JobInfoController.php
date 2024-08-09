@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class JobInfoController extends Controller
 {
@@ -44,8 +45,11 @@ class JobInfoController extends Controller
     {
         $job_table = $request->job;
         $job_name = $request->job_name;
-        $column = $this->getColumnsForTable($job_table)[1];
-        $add = DB::table($job_table)->insert([$column => $job_name]);
+        $column_name = $this->getColumnsForTable($job_table)[1];
+        if(DB::table($job_table)->where($column_name, $job_name)->where('status', 'show')->exists()){
+            return response()->json(['status' => 400, 'message' => 'Name is exist!']);
+        }
+        $add = DB::table($job_table)->insert([$column_name => $job_name, 'status' => 'show']);
         if ($add) {
             return response()->json(['status' => 200,'Action Successful']);
         }else{
@@ -60,6 +64,11 @@ class JobInfoController extends Controller
         $job_name = $request->job_name;
         $column_id = $this->getColumnsForTable($job_table)[0];
         $column_name = $this->getColumnsForTable($job_table)[1];
+        $old_name = DB::table($job_table)->where($column_id, $id_job_name)->value($column_name);
+        if($old_name ==  $job_name){
+            return response()->json(['status' => 200, 'message' => 'Action Success']);
+        }
+
         $updated = DB::table($job_table)->where($column_id,$id_job_name)->update([$column_name => $job_name]);
         if ($updated) {
             return response()->json(['status' => 200, 'message' => 'Action Success']);
