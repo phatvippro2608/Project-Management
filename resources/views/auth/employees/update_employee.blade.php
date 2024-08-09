@@ -704,6 +704,22 @@
                 }
             });
         })
+
+        $('.employment_contract_end_date').on('change', function() {
+            let startDate = $('.employment_contract_start_date').val();
+            let endDate = $(this).val();
+
+            if (startDate && endDate) {
+                let startDateObj = new Date(startDate);
+                let endDateObj = new Date(endDate);
+
+                if (endDateObj < startDateObj) {
+                    toastr.error('End date must be greater than or equal to start date.', 'Error');
+                    $(this).val(''); // Clear the end_date field
+                }
+            }
+        });
+
         $('.btn_upload_employment_contract').click(function () {
             event.preventDefault();
             let file = $('.employment_contract_file')[0].files[0];
