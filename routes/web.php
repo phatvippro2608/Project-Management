@@ -86,7 +86,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
+        ;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
@@ -321,6 +322,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
-    Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
-    Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
+    Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
+    Route::delete('certificate', [InternalCertificatesController::class, 'deleteViewUser'])->name('certificate.user.delete');
+    Route::get('certificateType', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
+    Route::delete('certificateType', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
+    Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
+    Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
 });
