@@ -54,7 +54,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
     Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
-    Route::group(['prefix' => '/account', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/account', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
@@ -93,12 +93,19 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
+        Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
+        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
         Route::get('workshops', [WorkshopController::class, 'index'])->name('workshop.index');
         Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
         Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
         Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
         Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('education.course');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
+        Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
+        Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
+        Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
+        Route::get('/courses/search', 'App\Http\Controllers\CourseController@getCourseByType')->name('lms.search');
+        Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
     Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {

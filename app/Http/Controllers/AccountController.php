@@ -17,25 +17,11 @@ use Illuminate\Support\Facades\Session;
 class AccountController extends Controller
 {
     private $status = [1 => 'Active', 2 => 'Offine', 3 => 'Locked'];
-    private $permission = [1 => 'Super Admin', 2 => '', 0 => 'User'];
+    private $permission = [1 => 'Super Admin', 2 => 'Admin', 0 => 'User'];
 
-    function getView(Request $request)
+    static function getAccountId()
     {
-        $perPage = (int) env('ITEM_PER_PAGE');
-        $keyword = $request->input('keyw', '');
-
-        $account = AccountModel::getAll($keyword);
-        $employees = EmployeeModel::all();
-
-        $keyword = trim($keyword);
-        $keyword = $this->removeVietnameseAccents($keyword);
-        $account = AccountModel::getAll($keyword);
-
-        $sql = "SELECT * from employees";
-        $employees = DB::select($sql);
-
-        $status = $this->status;
-        return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => $this->permission]);
+        return \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
     }
 
     static function permission()
@@ -43,6 +29,47 @@ class AccountController extends Controller
         return Session::get(StaticString::PERMISSION);
     }
 
+    static function permissionNum()
+    {
+        return Session::get(StaticString::PERMISSION);
+    }
+
+    static function permissionStr()
+    {
+        $permission_str = DB::table('permissions')->where('permission_num', self::permissionNum())->first()->permission_str;
+        return $permission_str;
+    }
+
+    static function getPermissionName($permission_num)
+    {
+        $permission_name = DB::table('permissions')->where('permission_num', $permission_num)->first()->permission_name;
+        return $permission_name;
+    }
+
+    static function getAllPermission()
+    {
+        if (self::permissionStr() == 'super' && DB::table('accounts')->where('permission', 1)->count() < 3)
+            $permission = DB::table('permissions')->where('permission_num', '>=', self::permissionNum())
+                ->orWhere('permission_num', 0)->get();
+        else if (self::permissionStr() == 'admin')
+            $permission = DB::table('permissions')->where('permission_num', '>', self::permissionNum())
+                ->orWhere('permission_num', 0)->get();
+        else
+            $permission = DB::table('permissions')->where('permission_str', '!=', 'super')->get();
+        return $permission;
+    }
+
+    function getView(Request $request)
+    {
+        $account = DB::table('accounts')->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('permission', '>=', self::permissionNum())->orWhere('permission', 0)->get();
+
+        $sql = "SELECT * from employees";
+        $employees = DB::select($sql);
+
+        $status = $this->status;
+        return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => self::getAllPermission()]);
+    }
 
 
     function position(Request $request)
@@ -71,7 +98,7 @@ class AccountController extends Controller
     {
         if (count($list)) {
             $tmp = array();
-            $data = (array) $data;
+            $data = (array)$data;
             foreach ($list as $key) {
                 $tmp[$key] = $data[$key];
             }
@@ -92,7 +119,7 @@ class AccountController extends Controller
 
     public static function status($message, $code)
     {
-        return json_encode((object) ["status" => $code, "message" => $message]);
+        return json_encode((object)["status" => $code, "message" => $message]);
     }
 
     function add(Request $request)
@@ -189,6 +216,7 @@ class AccountController extends Controller
         };
         return self::status('Failed to delete account', 500);
     }
+
     function demoView()
     {
         return view('auth.accounts.account_import_demo');
@@ -243,7 +271,7 @@ class AccountController extends Controller
     function loginHistory(Request $request)
     {
         $keyword = $request->input('keyw', '');
-        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $account_id = self::getAccountId();
         $permission = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::PERMISSION);
 
         if ($permission == 1) {
@@ -251,7 +279,7 @@ class AccountController extends Controller
                 $history = DB::table('login_history')->whereDate('created_at', $keyword)->orderBy('created_at', 'desc')->get();
             } else
                 $history = DB::table('login_history')->orderBy('created_at', 'desc')->get();
-        }else{
+        } else {
             $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
             $employee = DB::selectOne($sql_get_employee_id);
             if ($keyword != null) {
@@ -270,6 +298,18 @@ class AccountController extends Controller
             return self::status('All history has been deleted', 200);
         } catch (\Exception $exception) {
             return self::status('Failed to delete history', 500);
+        }
+    }
+
+    /**
+     * Recent project
+     */
+    static function setRecentProject($project_id)
+    {
+        try {
+            return DB::table('recent_project')->insert(['account_id' => self::getAccountId(), 'project_id' => $project_id]);
+        } catch (\Exception $e) {
+            return $e;
         }
     }
 }
