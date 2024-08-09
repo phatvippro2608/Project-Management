@@ -4,6 +4,7 @@ use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\ProposalTypesController;
+use App\Http\Controllers\QuizController;
 use App\StaticString;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,11 @@ use App\Http\Controllers\RecognitionController;
 use App\Http\Controllers\RecognitionTypeController;
 use App\Http\Controllers\DisciplinaryController;
 use App\Http\Controllers\DisciplinaryTypeController;
+use App\Http\Controllers\CreateQuizController;
+use App\Http\Controllers\TestQuizController;
 use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -106,7 +110,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
-        Route::get('/courses/search', 'App\Http\Controllers\CourseController@getCourseByType')->name('lms.search');
+        Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
+        Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
+        Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
@@ -248,8 +254,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
         Route::post('/{project_id}/commission/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
+
         Route::get('/{project_id}/commission/commision-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
-        
     });
 
     Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
@@ -322,10 +328,30 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
+
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+    });
+
+    Route::group(['prefix' => '/quiz'], function () {
+        Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+        Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
+
+        Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
+        Route::post('/question-bank/add', [QuizController::class, 'addQuestion'])->name('question-bank.add');
+        Route::get('/question-bank/list/{id}', [QuizController::class, 'getQuestionList'])->name('question-bank.list');
+
+    });
+
+    Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
+    Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
+
+
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
     Route::delete('certificate', [InternalCertificatesController::class, 'deleteViewUser'])->name('certificate.user.delete');
     Route::get('certificateType', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
     Route::delete('certificateType', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
+
 });

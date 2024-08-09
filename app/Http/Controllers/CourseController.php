@@ -11,7 +11,6 @@ class CourseController extends Controller
 {
     function getViewCourses()
     {
-
         $courses=DB::table('courses')
         ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
         ->select('courses.*','course_types.type_name')
@@ -26,11 +25,23 @@ class CourseController extends Controller
         ->where('course_id',$id)
         ->get();
         $getTypeName = DB::table('course_types')->get();
-        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName]);
+        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName, 'id' => $id]);
     }
-    function getCourseSection($id)
+    function getCourseSection(Request $requet)
     {
-        return null;
+        $id = $requet->input('id');
+        $type = $requet->input('type');
+        if($type==null){
+            $sections=DB::table('courses_section')
+            ->select('courses_section_id','section_name')
+            ->where('course_id',$id)
+            ->get();
+        }else{
+            $sections=DB::table('courses_section')
+            ->where('courses_section_id',$id)
+            ->get();
+        }
+        return response()->json(['success' => true, 'sections' => $sections]);
     }
     function create(Request $request)
     {
@@ -121,29 +132,30 @@ class CourseController extends Controller
         $getTypeName = DB::table('course_types')->get();
         return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
     }
-    //fill courses by type
-    public function getCourseByType(Request $request)
-{
-    $search = $request->input('search', '');
-    $typeFilter = $request->input('courseType', '');
 
-    try {
-        $query = CourseModel::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('course_name', 'like', "%{$search}%");
-            })
-            ->when($typeFilter, function ($query, $typeFilter) {
-                return $query->whereHas('type', function ($query) use ($typeFilter) {
-                    $query->where('type_name', $typeFilter);
-                });
-            });
-
-        $courses = $query->get();
-        $getDataByType = DB::table('course_types')->get();
-
-        return response()->json(['success' => true, 'data' => $courses, 'types' => $getDataByType]);
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+    function createSection(Request $request)
+    {
+        $course_id = $request->input('course_id');
+        $section_name = $request->input('section_name');
+        DB::table('courses_section')->insert([
+            'course_id' => $course_id,
+            'section_name' => $section_name,
+        ]);
+        $sections = DB::table('courses_section')->where('course_id',$course_id)->get();
+        return response()->json(['success' => true,'message' => 'Add new section success!', 'sections' => $sections]);
     }
-}
+    function updateSection(Request $request)
+    {
+        $section_id = $request->input('section_id');
+        $section_name = $request->input('section_name');
+        $section_detail = $request->input('section_description');
+        DB::table('courses_section')
+        ->where('courses_section_id',$section_id)
+        ->update([
+            'section_name' => $section_name,
+            'detail' => $section_detail,
+        ]);
+        $sections = DB::table('courses_section')->where('courses_section_id',$section_id)->get();
+        return response()->json(['success' => true,'message' => 'Update section success!', 'sections' => $sections]);
+    }
 }

@@ -1,7 +1,7 @@
 @extends('auth.main-lms')
 
 @section('head')
-
+    <script src="{{ asset('assets/js/tinymce/tinymce.min.js') }}"></script>
 @endsection
 
 @section('contents')
@@ -308,7 +308,6 @@
             url: '{{ url('lms/course/') }}/'+course_id,
             type: 'get',
             success: function(data) {
-                console.log(data);
                 $('#course_type_e').empty();
                 data.getTypeName.forEach(type => {
                     $('#course_type_e').append(
@@ -394,4 +393,3 @@
 
 </script>
 @endsection
-

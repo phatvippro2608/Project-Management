@@ -322,30 +322,6 @@ $token = 'position';
                     <i class="bi bi-bookmark"></i><span>Description</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed fs-5" data-bs-target="#b" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-circle"></i><span>Section 1</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="b" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link fs-5" href="#">
-                            <i class="bi bi-circle"></i><span>abc</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed fs-5" data-bs-target="#a" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-circle"></i><span>Section 2</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="a" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link fs-5" href="#">
-                            <i class="bi bi-circle"></i><span>xyz</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
             <li class="nav-item" id="new-section">
 
             </li>
