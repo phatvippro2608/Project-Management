@@ -117,7 +117,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
-        Route::get('/update/{id}', 'App\Http\Controllers\EmployeesController@updateView');
+        Route::get('/update/{employee_id}', 'App\Http\Controllers\EmployeesController@updateView');
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');

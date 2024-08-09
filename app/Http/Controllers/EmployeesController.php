@@ -568,17 +568,17 @@ class EmployeesController extends Controller
         $jobdetails = $item->getAllJobDetails();
         $type_certificate = $item->getTypeCertificate();
 
-        $id_employee = $request->id;
+        $employee_id = $request->employee_id;
+//        dd($employee_id);
         $item = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
-            ->where('fired', 'false')
-            ->where('employees.employee_id', $id_employee)
+            ->where('employees.employee_id', $employee_id)
             ->orderBy('employees.employee_code')
             ->first();
 
         $itemArray = (array)$item;
         $jobdetail = DB::table('job_details')
-            ->where('employee_id', $id_employee)
+            ->where('employee_id', $employee_id)
             ->first();
         if ($jobdetail) {
             $jobdetailsArray = (array)$jobdetail;
@@ -588,10 +588,10 @@ class EmployeesController extends Controller
         $item = (object)$itemArray;
         if ($item) {
             // Augment the employee data with additional information
-            $item->medical = EmployeesController::getMedicalInfo($id_employee);
-            $item->certificates = EmployeesController::getCertificateInfo($id_employee);
-            $item->passport = EmployeesController::getPassportInfo($id_employee);
-            $item->email = DB::table('accounts')->where('employee_id', $id_employee)->value('email');
+            $item->medical = EmployeesController::getMedicalInfo($employee_id);
+            $item->certificates = EmployeesController::getCertificateInfo($employee_id);
+            $item->passport = EmployeesController::getPassportInfo($employee_id);
+            $item->email = DB::table('accounts')->where('employee_id', $employee_id)->value('email');
         }
         return view('auth.employees.update_employee',[
             'item' => $item,
