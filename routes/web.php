@@ -106,7 +106,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
-        Route::get('/courses/search', 'App\Http\Controllers\CourseController@getCourseByType')->name('lms.search');
+        Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
+        Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
+        Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
