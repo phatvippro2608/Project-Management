@@ -51,6 +51,7 @@ $token = 'position';
     <script src="{{asset('assets/js/filepond.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
+    <script src="{{asset('assets/js/filepond-plugin-file-validate-type.min.js')}}"></script>
 
     <script type="text/javascript"
             src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
