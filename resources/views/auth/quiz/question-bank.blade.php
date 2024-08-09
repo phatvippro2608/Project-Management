@@ -36,7 +36,7 @@
         <h3 class="text-left mb-4">Question list</h3>
         <div class="row mb-4">
             <div class="col-md-12">
-                <label for="courseSelect">Chọn khóa học</label>
+                <label for="courseSelect">Select course</label>
                 <select class="form-control" id="courseSelect">
                     <option value="">No select</option>
                     @foreach($courses as $item)
@@ -49,14 +49,14 @@
             <table id="questionsTable" class="table table-hover table-borderless">
                 <thead class="table-light">
                 <tr>
-                    <th>STT</th>
-                    <th>Câu hỏi</th>
-                    <th>Đáp án A</th>
-                    <th>Đáp án B</th>
-                    <th>Đáp án C</th>
-                    <th>Đáp án D</th>
-                    <th>Đáp án đúng</th>
-                    <th>Hành động</th>
+                    <th>No</th>
+                    <th>Question</th>
+                    <th>Anser A</th>
+                    <th>Answer B</th>
+                    <th>Answer C</th>
+                    <th>Answer D</th>
+                    <th>Correct</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,7 +77,7 @@
                     <form id="addQuestionForm" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="course_name" class="form-label">Tên khóa học</label>
+                            <label for="course_name" class="form-label">Course name</label>
                             <select class="form-control" id="course_name" name="add_course_name" required>
                                 @foreach($courses as $item)
                                     <option value="{{$item->course_id}}">{{$item->course_name}}</option>
@@ -85,32 +85,32 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="question" class="form-label">Câu hỏi</label>
+                            <label for="question" class="form-label">Question</label>
                             <textarea class="form-control" id="question" name="add_question" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="question_img" class="form-label">Hình ảnh</label>
+                            <label for="question_img" class="form-label">Image</label>
                             <input type="file" class="form-control" id="question_img" name="add_question_img"
                                    accept="image/*">
                         </div>
                         <div class="mb-3">
-                            <label for="answer_a" class="form-label">Đáp án A</label>
+                            <label for="answer_a" class="form-label">Answer A</label>
                             <textarea type="text" class="form-control" id="answer_a" name="add_answer_a" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="answer_b" class="form-label">Đáp án B</label>
+                            <label for="answer_b" class="form-label">Answer B</label>
                             <textarea type="text" class="form-control" id="answer_b" name="add_answer_b" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="answer_c" class="form-label">Đáp án C</label>
+                            <label for="answer_c" class="form-label">Answer C</label>
                             <textarea type="text" class="form-control" id="answer_c" name="add_answer_c" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="answer_d" class="form-label">Đáp án D</label>
+                            <label for="answer_d" class="form-label">Answer D</label>
                             <textarea type="text" class="form-control" id="answer_d" name="add_answer_d" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="correct_answer" class="form-label">Đáp án đúng</label>
+                            <label for="correct_answer" class="form-label">Correct</label>
                             <select class="form-control" id="correct_answer" name="add_correct_answer" required>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -118,7 +118,7 @@
                                 <option value="D">D</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Thêm câu hỏi</button>
+                        <button type="submit" class="btn btn-primary">Add question</button>
                     </form>
                 </div>
 
@@ -135,9 +135,9 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="">Chọn file (*.xlsx) hoặc tải về
+                            <label for="">Select file (*.xlsx) or download
                                 <a target="_blank" href="">
-                                    File mẫu
+                                    Example file
                                 </a>
                             </label>
                             <input accept=".xlsx" name="file-excel" type="file" class="form-control">
@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary luuTT">Tải lên</button>
+                    <button type="submit" class="btn btn-primary luuTT">Upload</button>
                 </div>
             </div>
         </div>

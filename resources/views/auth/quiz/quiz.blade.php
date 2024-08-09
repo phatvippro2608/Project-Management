@@ -14,7 +14,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    Thông tin nhân viên
+                     Information
                 </div>
                 @php
                     $imageUrl = asset('assets/img/avt.png');
@@ -46,25 +46,25 @@
         <div class="col-md-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    Lịch thi ngày Thứ Năm, 08/08/2024
+                    Exam schedule on Thursday, August 8, 2024
                 </div>
                 <div class="card-body p-3">
                     <div class="alert alert-danger text-center">
-                        Hiện tại không có bài thi.
+                        There are currently no exams.
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-info" onclick="location.reload();">Tải lại trang</button>
+                        <button class="btn btn-info" onclick="location.reload();">Reload</button>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    Kết quả thi
+                    Result
                 </div>
                 <div class="card-body p-4">
                     <div class="alert alert-danger text-center">
-                        Không có dữ liệu.
+                        No data available.
                     </div>
                 </div>
             </div>
