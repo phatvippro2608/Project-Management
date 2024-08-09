@@ -119,7 +119,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="saveCompanyButton">Save changes</button>
                 </div>
             </div>
         </div>
@@ -170,7 +170,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="saveCertificateButton">Save changes</button>
                 </div>
             </div>
         </div>
@@ -251,7 +251,17 @@
             });
 
             $('#saveCompanyButton').on('click', function() {
-                // Add logic to handle saving new company details
+                var data = {
+                    _token: $('input[name="_token"]').val(),
+                    certificate_body_name: $('#companyName').val(),
+                    certificate_body_Acronym: $('#companyAcronym').val()
+                }
+                $.ajax({
+                    url,
+                    method: "POST",
+                    data,
+
+                })
             });
 
             $('#saveCertificateButton').on('click', function() {
