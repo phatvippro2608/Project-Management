@@ -599,7 +599,7 @@ class EmployeesController extends Controller
             $item->employment_contract = EmployeesController::getEmploymentContract($employee_id);
             $item->email = DB::table('accounts')->where('employee_id', $employee_id)->value('email');
         }
-//        dd($item);
+//        dd($jobdetails);
 
         return view('auth.employees.update_employee',[
             'item' => $item,

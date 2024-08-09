@@ -21,12 +21,12 @@
             <div class="row gx-3">
                 <div class="col-lg-6">
                     <div class="row mb-3">
-                        <input type="hidden" class="employee_id" value="{{ optional($item)->employee_id ? optional($item)->employee_id : '' }}">
+                        <input type="hidden" class="employee_id" value="{{ $item->employee_id }}">
                         <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control employee_code" name=""
                                    @if(\App\Http\Controllers\AccountController::permission() != '1') disabled @endif
-                                   value="{{ optional($item)->employee_code }}">
+                                   value="{{ $item->employee_code }}">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -156,28 +156,28 @@
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_number" name="" value="{{ optional(optional($item)->passport)->passport_number ?? '' }}">
+                        <input type="text" class="form-control passport_number" name="" value="{{$item->passport->first()->passport_number ?? ''}}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label">Passport Place of Issue</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control passport_place_issue" name="" value="{{ optional(optional($item)->passport)->passport_place_issue ?? '' }}">
+                        <input type="text" class="form-control passport_place_issue" name="" value="{{ $item->passport->first()->passport_place_issue ?? '' }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Issue</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_issue_date" name="" value="{{ optional(optional($item)->passport)->passport_issue_date ?? '' }}">
+                        <input type="date" class="form-control passport_issue_date" name="" value="{{ $item->passport->first()->passport_issue_date ?? '' }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Passport Date of Expiry</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control passport_expiry_date" name="" value="{{ optional(optional($item)->passport)->passport_expiry_date ?? '' }}">
+                        <input type="date" class="form-control passport_expiry_date" name="" value="{{ $item->passport->first()->passport_expiry_date ?? '' }}">
                     </div>
                 </div>
 
@@ -231,8 +231,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_title" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTitles'] as $itemJob)
-                                <option value="{{ optional($itemJob)->job_title_id }}" @if(optional($itemJob)->job_title_id == optional($item)->job_title_id) selected @endif>
-                                    {{ optional($itemJob)->job_title ?? '' }}
+                                <option value="{{ $itemJob->job_title_id }}" @if($itemJob->job_title_id == optional($item)->job_title_id ?? '') selected @endif>
+                                    {{ $itemJob->job_title ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -243,8 +243,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_category" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCategories'] as $itemJob)
-                                <option value="{{ optional($itemJob)->job_category_id }}" @if(optional($itemJob)->job_category_id == optional($item)->job_category_id) selected @endif>
-                                    {{ optional($itemJob)->job_category_name ?? '' }}
+                                <option value="{{ $itemJob->job_category_id }}" @if($itemJob->job_category_id == optional($item)->job_category_id) selected @endif>
+                                    {{ $itemJob->job_category_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -255,8 +255,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_position" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobPositions'] as $itemJob)
-                                <option value="{{ optional($itemJob)->position_id }}" @if(optional($itemJob)->position_id == optional($item)->job_position_id) selected @endif>
-                                    {{ optional($itemJob)->position_name ?? '' }}
+                                <option value="{{ $itemJob->position_id }}" @if($itemJob->position_id == optional($item)->job_position_id) selected @endif>
+                                    {{ $itemJob->position_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -267,8 +267,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_team" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTeams'] as $itemJob)
-                                <option value="{{ optional($itemJob)->team_id }}" @if(optional($itemJob)->team_id == optional($item)->job_team_id) selected @endif>
-                                    {{ optional($itemJob)->team_name ?? '' }}
+                                <option value="{{ $itemJob->team_id }}" @if($itemJob->team_id == optional($item)->job_team_id) selected @endif>
+                                    {{ $itemJob->team_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -279,8 +279,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_level" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobLevels'] as $itemJob)
-                                <option value="{{ optional($itemJob)->id_level }}" @if(optional($itemJob)->id_level == optional($item)->job_level_id) selected @endif>
-                                    {{ optional($itemJob)->level_name ?? '' }}
+                                <option value="{{ $itemJob->level_id }}" @if($itemJob->level_id == optional($item)->job_level_id) selected @endif>
+                                    {{ $itemJob->level_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -309,8 +309,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_type_contract" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobTypeContract'] as $itemJob)
-                                <option value="{{ optional($itemJob)->type_contract_id }}" @if(optional($itemJob)->type_contract_id == optional($item)->job_type_contract_id) selected @endif>
-                                    {{ optional($itemJob)->type_contract_name ?? '' }}
+                                <option value="{{ $itemJob->type_contract_id }}" @if($itemJob->type_contract_id == optional($item)->job_type_contract_id) selected @endif>
+                                    {{ $itemJob->type_contract_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -321,8 +321,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_country" aria-label="Default select example" name="">
                             @foreach($jobdetails['jobCountry'] as $itemJob)
-                                <option value="{{ optional($itemJob)->country_id }}" @if(optional($itemJob)->country_id == optional($item)->job_country_id) selected @endif>
-                                    {{ optional($itemJob)->country_name ?? '' }}
+                                <option value="{{ $itemJob->country_id }}" @if($itemJob->country_id == optional($item)->job_country_id) selected @endif>
+                                    {{ $itemJob->country_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
@@ -333,8 +333,8 @@
                     <div class="col-sm-8">
                         <select class="form-select job_location" aria-label="Default select example">
                             @foreach($jobdetails['jobLocation'] as $itemJob)
-                                <option value="{{ optional($itemJob)->location_id }}" @if(optional($itemJob)->location_id == optional($item)->job_location_id) selected @endif>
-                                    {{ optional($itemJob)->location_name ?? '' }}
+                                <option value="{{ $itemJob->location_id }}" @if($itemJob->location_id == optional($item)->job_location_id) selected @endif>
+                                    {{ $itemJob->location_name ?? '' }}
                                 </option>
                             @endforeach
                         </select>
