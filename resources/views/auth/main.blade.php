@@ -1,5 +1,8 @@
 <?php
+
 use App\StaticString;
+use App\Http\Controllers\AccountController;
+
 $token = 'position';
 ?>
     <!DOCTYPE html>
@@ -49,11 +52,12 @@ $token = 'position';
     <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
     <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
 
-    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
+    <script type="text/javascript"
+            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
     </script>
 
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css" />
+          type="text/css"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -326,68 +330,81 @@ $token = 'position';
 
 
 <aside id="sidebar" class="sidebar">
-
+    @php
+        $data = \Illuminate\Support\Facades\DB::table('accounts')
+            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+            ->where(
+                'account_id',
+                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+            )
+            ->first();
+    @endphp
     <ul class="sidebar-nav" id="sidebar-nav">
-        <li class="nav-item">
-            <a class="nav-link "
-               href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
-                <i class="bi bi-grid"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Deparments</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="#">
-                        <i class="bi bi-circle"></i><span>Designation</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        @if (in_array(\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION), [1, 2]))
-            <li class="nav-heading">HR Manager</li>
+        @if (!in_array(AccountController::permissionStr(), []))
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-people"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link "
+                   href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
                 </a>
-                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-building"></i><span>Organization</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Employees</span>
+                           href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Deparments</span>
                         </a>
                     </li>
                     <li>
-                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
-                            <i class="bi bi-circle"></i><span>Inactive User</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
-                            <i class="bi bi-circle"></i><span>Certificate Types</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{action('App\Http\Controllers\JobInfoController@getView')}}">
-                            <i class="bi bi-circle"></i><span>Job info</span>
+                        <a class="nav-sub-link" href="#">
+                            <i class="bi bi-circle"></i><span>Designation</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            @if (\Illuminate\Support\Facades\Session::get(StaticString::PERMISSION) == 1)
+
+
+            <li class="nav-heading">HR Manager</li>
+            @if (!in_array(AccountController::permissionStr(), ['employee']))
+                <li class="nav-item">
+
+                    <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
+                       href="#">
+                        <i class="bi bi-people"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a class="nav-sub-link"
+                               href="{{ action('App\Http\Controllers\EmployeesController@getView') }}">
+                                <i class="bi bi-circle"></i><span>Employees</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link"
+                               href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
+                                <i class="bi bi-circle"></i><span>Inactive User</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link"
+                               href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
+                                <i class="bi bi-circle"></i><span>Certificate Types</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link" href="{{action('App\Http\Controllers\JobInfoController@getView')}}">
+                                <i class="bi bi-circle"></i><span>Job info</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
                        href="#">
@@ -413,80 +430,74 @@ $token = 'position';
                     </ul>
                 </li>
             @endif
-        @endif
 
-        @php
-            $data = \Illuminate\Support\Facades\DB::table('accounts')
-                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
-                ->where(
-                    'account_id',
-                    \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-                )
-                ->first();
-        @endphp
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Recognition</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\RecognitionTypeController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Recognitions Types</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Disciplinaries</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\DisciplinaryTypeController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Disciplinarie Types</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-person-fill-x"></i><span>Recognitions & Disciplinaries</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Recognition</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\RecognitionTypeController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Recognitions Types</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Disciplinaries</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ action('App\Http\Controllers\DisciplinaryTypeController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Disciplinarie Types</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-calendar-check"></i><span>Attendance</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Attendance List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
+                            <i class="bi bi-circle"></i><span>Add Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="#">
+                            <i class="bi bi-circle"></i><span>Attendance Report</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#attendance-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-calendar-check"></i><span>Attendance</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="attendance-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Attendance List</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
-                        <i class="bi bi-circle"></i><span>Add Attendance</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="#">
-                        <i class="bi bi-circle"></i><span>Attendance Report</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                @if(($data->permission) != 0)
                     <li>
                         <a class="nav-sub-link" href="{{ route('holidays.index') }}">
                             <i class="bi bi-circle"></i><span>Holiday</span>
@@ -513,217 +524,218 @@ $token = 'position';
                             <i class="bi bi-circle"></i><span>Leave Report</span>
                         </a>
                     </li>
-                @else
                     <li>
                         <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
                             <i class="bi bi-circle"></i><span>Leave Application</span>
                         </a>
                     </li>
-                @endif
-            </ul>
-        </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-person-fill-x"></i><span>KPI</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="kpi-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="">
-                        <i class="bi bi-circle"></i><span>KPI</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                <i class="bi bi-people"></i><span>Team List</span>
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-person-fill-x"></i><span>KPI</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="kpi-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link" href="">
+                            <i class="bi bi-circle"></i><span>KPI</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-heading">Customer Manager</li>
-        <li class="nav-item">
-            <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
-                 href="">
-                <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
-            </div>
-            <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Customers</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="#">
-                        <i class="bi bi-circle"></i><span>Customer Accounts</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="#">
-                        <i class="bi bi-circle"></i><span>Customer Support</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                    <i class="bi bi-people"></i><span>Team List</span>
+                </a>
+            </li>
 
-        <li class="nav-heading">Project Management</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
+            <li class="nav-heading">Customer Manager</li>
+            <li class="nav-item">
+                <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
+                     href="">
+                    <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+                </div>
+                <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Customers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="#">
+                            <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="#">
+                            <i class="bi bi-circle"></i><span>Customer Support</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-                        <i class="bi bi-circle"></i><span>Projects</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
-                        <i class="bi bi-circle"></i><span>Project Manager</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Task List</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Field Visit</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-heading">Project Management</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
 
-        <li class="nav-heading">myXteam Manager</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
+                            <i class="bi bi-circle"></i><span>Project Manager</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Task List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>Field Visit</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-                        <i class="bi bi-circle"></i><span>Teams</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-heading">myXteam Manager</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
 
-        <li class="nav-heading">Warehouse Management</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                        <i class="bi bi-circle"></i><span>Material Management</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+                            <i class="bi bi-circle"></i><span>Teams</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-heading">Education</li>
-        <li class="nav-item">
-            <a class="nav-link " href="{{action('App\Http\Controllers\LMSDashboardController@getView')}}">
-                <i class="bi bi-mortarboard"></i>
-                <span>LMS</span>
-            </a>
-        </li>
+            <li class="nav-heading">Warehouse Management</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
+                            <i class="bi bi-circle"></i><span>Material Management</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="{{ route('certificate.user') }}">
-                        <i class="bi bi-circle"></i><span>Internal Certificates</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ route('certificate.type') }}">
-                        <i class="bi bi-circle"></i><span>Internal Certificates Types</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-heading">Education</li>
+            <li class="nav-item">
+                <a class="nav-link " href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>LMS</span>
+                </a>
+            </li>
 
-        <li class="nav-heading">Pages</li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#proposal-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-gear-wide-connected"></i><span>Proposal</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link" href="{{route('proposal-application.index')}}">
-                        <i class="bi bi-circle"></i><span>Proposal Application</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-sub-link" href="{{ route('proposal-types.index') }}">
-                        <i class="bi bi-circle"></i><span>Proposal Types</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('certificate.user') }}">
+                            <i class="bi bi-circle"></i><span>Internal Certificates</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('certificate.type') }}">
+                            <i class="bi bi-circle"></i><span>Internal Certificates Types</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link " href="{{ route('portfolio') }}">
-                <i class="bi bi-folder-fill"></i>
-                <span>Portfolio</span>
-            </a>
-        </li>
+            <li class="nav-heading">Pages</li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#proposal-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-gear-wide-connected"></i><span>Proposal</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link" href="{{route('proposal-application.index')}}">
+                            <i class="bi bi-circle"></i><span>Proposal Application</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('proposal-types.index') }}">
+                            <i class="bi bi-circle"></i><span>Proposal Types</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
-               href="#">
-                <i class="bi bi-gear-wide-connected"></i><span>Utilities</span><i
-                    class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-sub-link"
-                       href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
-                        <i class="bi bi-circle"></i><span>Activity Log</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('portfolio') }}">
+                    <i class="bi bi-folder-fill"></i>
+                    <span>Portfolio</span>
+                </a>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link " href="#">
-                <i class="bi bi-clipboard2-fill"></i>
-                <span>Notice</span>
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-gear-wide-connected"></i><span>Utilities</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a class="nav-sub-link"
+                           href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
+                            <i class="bi bi-circle"></i><span>Activity Log</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link " href="{{ route('settings.view') }}">
-                <i class="bi bi-gear-fill"></i>
-                <span>Settings</span>
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">
+                    <i class="bi bi-clipboard2-fill"></i>
+                    <span>Notice</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('settings.view') }}">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+
+        @endif
     </ul>
 
 </aside>

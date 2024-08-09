@@ -350,14 +350,14 @@ $token = 'position';
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
             <a class="nav-link fs-5 fw-bold "
-               href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
+               href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li class="nav-item position-relative">
-            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\WorkshopController@getViewDashboard') }}">
+            <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\WorkshopController@index') }}">
                 <i class="bi bi-person-video2"></i>
                 <span class="me-4">Workshops</span>
             </a>
@@ -367,6 +367,13 @@ $token = 'position';
             <a class="nav-link fs-5 fw-bold" href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">
                 <i class="bi bi-folder"></i>
                 <span class="me-4">Courses</span>
+            </a>
+        </li>
+
+        <li class="nav-item position-relative">
+            <a class="nav-link fs-5 fw-bold" href="/lms/quiz">
+                <i class="bi bi-folder"></i>
+                <span class="me-4">Quiz</span>
             </a>
         </li>
 

@@ -79,6 +79,7 @@ class ProjectBudgetController extends Controller
 
 public function showProjectDetail($id)
 {
+    AccountController::setRecentProject($id);
     $data = DB::table('projects')->where('project_id', $id)->first();
     $prj = ProjectModel::find($id);
     if ($prj){
@@ -469,11 +470,7 @@ public function addNewCommission(Request $request, $project_id)
 
         // Save and check if successful
         if ($CommissionCost->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Commission added successfully!',
-                'commission' => $CommissionCost // Return the new commission data
-            ]);
+            return response()->json(['success' => true]);
         } else {
             return response()->json([
                 'success' => false,
@@ -511,20 +508,20 @@ public function cost_exportCsv($id)
 
             // Add CSV headers
             fputcsv($handle, [
-                'Description', 'Labor Qty', 'Labor Unit', 'Budget Qty', 'Budget Unit', 'Labor Cost', 
+                'Description', 'Labor Qty', 'Labor Unit', 'Budget Qty', 'Budget Unit', 'Labor Cost',
                 'Misc. Cost', 'OT Budget', 'Per Diem Pay', 'Subtotal', 'Remark'
             ]);
 
             // Add CSV rows
             foreach ($costs as $cost) {
-                $subtotal = $cost->project_cost_labor_qty * $cost->project_cost_budget_qty * 
-                    ($cost->project_cost_labor_cost + $cost->project_cost_misc_cost + 
+                $subtotal = $cost->project_cost_labor_qty * $cost->project_cost_budget_qty *
+                    ($cost->project_cost_labor_cost + $cost->project_cost_misc_cost +
                     $cost->project_cost_ot_budget + $cost->project_cost_perdiempay);
 
                 fputcsv($handle, [
-                    $cost->project_cost_description, $cost->project_cost_labor_qty, $cost->project_cost_labor_unit, 
-                    $cost->project_cost_budget_qty, $cost->project_budget_unit, $cost->project_cost_labor_cost, 
-                    $cost->project_cost_misc_cost, $cost->project_cost_ot_budget, $cost->project_cost_perdiempay, 
+                    $cost->project_cost_description, $cost->project_cost_labor_qty, $cost->project_cost_labor_unit,
+                    $cost->project_cost_budget_qty, $cost->project_budget_unit, $cost->project_cost_labor_cost,
+                    $cost->project_cost_misc_cost, $cost->project_cost_ot_budget, $cost->project_cost_perdiempay,
                     $subtotal, $cost->project_cost_remaks
                 ]);
             }
@@ -565,6 +562,6 @@ public function cost_exportCsv($id)
         ]);
     }
 }
-    
+
 }
 

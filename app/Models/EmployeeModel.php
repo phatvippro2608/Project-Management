@@ -56,14 +56,14 @@ class EmployeeModel extends Model
     {
         $data = DB::table('employees')
             ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-            ->join('accounts', 'employees.employee_id', '=', 'accounts.employee_id')
+            ->where('employees.fired', 'false')
             ->select(
+                'employees.employee_id', // Ensure this is the common key
                 'employees.employee_code',
                 'employees.first_name',
                 'employees.last_name',
                 'employees.en_name',
                 'contacts.phone_number',
-                'accounts.email',
                 'employees.gender',
                 'employees.marital_status',
                 'employees.date_of_birth',
@@ -77,6 +77,31 @@ class EmployeeModel extends Model
                 'contacts.permanent_address'
             )
             ->get();
+
+        $accounts = DB::table('accounts')
+            ->whereIn('employee_id', function($query) {
+                $query->select('employee_id')
+                    ->from('employees')
+                    ->where('fired', false);
+            })
+            ->get();
+
+        $dataArray = $data->mapWithKeys(function ($item) {
+            return [$item->employee_id => (array) $item]; // Changed to 'employee_id'
+        })->toArray();
+
+        $accountsArray = $accounts->mapWithKeys(function ($item) {
+            return [$item->employee_id => (array) $item]; // Ensure you use 'employee_id'
+        })->toArray();
+
+        foreach ($dataArray as $employeeId => $employeeData) {
+            if (isset($accountsArray[$employeeId])) {
+                $dataArray[$employeeId] = array_merge($employeeData, $accountsArray[$employeeId]);
+            }
+        }
+
+        $data = (object) $dataArray;
+
         return $data;
     }
 

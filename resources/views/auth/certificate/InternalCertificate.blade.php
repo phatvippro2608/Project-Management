@@ -47,6 +47,14 @@
         .modal-body {
             overflow-y: auto;
         }
+
+        .separator {
+            display: inline-block;
+            width: 1px;
+            height: 24px;
+            background-color: #ddd;
+            margin: 0 8px;
+        }
     </style>
 @endsection
 
@@ -77,7 +85,8 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $item)
-                        <tr data-pdf-url="{{ asset('uploads/1/' . $item->certificate) }}">
+                        <tr id="row-{{ $item->certificate_id }}" data-id="{{ $item->certificate_id }}"
+                            data-pdf-url="{{ asset('uploads/1/' . $item->certificate) }}">
                             <td class="text-center">{{ $item->certificate_id }}</td>
                             <td>{{ $item->employee_code }}</td>
                             <td>
@@ -89,20 +98,15 @@
                             {{-- <td>{{ $item->certificate_body_name }}</td> --}}
                             <td>{{ $item->certificate_type_name }}</td>
                             <td class="text-center">
-                                <div class="btn-group action-btns" role="group">
-                                    <button data-disciplinary="1" class="btn btn-success btn-sm"
-                                        onclick="downloadCertificate(event)">
-                                        <i class="bi bi-download"></i>
-                                    </button>
-                                    <button data-disciplinary="1" class="btn btn-primary btn-sm"
-                                        onclick="editCertificate(event)">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button data-disciplinary="1" class="btn btn-danger btn-sm"
-                                        onclick="deleteCertificate(event)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
+                                <button data-disciplinary="1" class="btn p-1 text-primary"
+                                    onclick="downloadCertificate(event)">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                                |
+                                <button data-disciplinary="1" class="btn p-1 text-danger"
+                                    onclick="deleteCertificate(event)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -134,7 +138,7 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             var table = $('#certificateTable').DataTable({
@@ -188,14 +192,61 @@
 
         function downloadCertificate(event) {
             event.preventDefault();
+            var pdfUrl = $(event.target).closest('tr').data('pdf-url');
+
+            if (pdfUrl) {
+                // Tạo một liên kết tạm thời
+                var link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = pdfUrl.split('/').pop(); // Đặt tên file từ URL
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }
 
-        function editCertificate(event) {
-            event.preventDefault();
-        }
-
-        function deleteCertificate(event) {
-            event.preventDefault();
+        function deleteCertificate(button) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var row = $(button.target).closest('tr');
+                    var id = row.data('id');
+                    var data = {
+                        id: id
+                    };
+                    $.ajax({
+                        url: '/certificate',
+                        type: 'DELETE',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                'The certificate has been deleted.',
+                                'success'
+                            );
+                            row.remove();
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the certificate.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection

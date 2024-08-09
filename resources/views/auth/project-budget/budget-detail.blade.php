@@ -31,7 +31,7 @@
                     data-bs-target="#chooseGroupModal">Add New Cost</button>
                 <a href="{{ route('budget.edit', $id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
                 <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
-                </div>
+            </div>
         </div>
 
         <h5>LIST OF EXPENSES</h5>
@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <table class="table table-bordered">
+        <table id="cost" class="table table-bordered">
             <thead>
                 <tr class="table-dark">
                     <th style="width: 15%;" scope="row">DESCRIPTION</th>
@@ -150,8 +150,8 @@
                                 <td>{{ number_format($costValue, 0, ',', '.') }} VND</td>
                                 <td>{{ $cost->project_cost_remaks }}</td>
                                 <td class="text-center align-middle"><button type="button"
-                                        class="btn btn-danger btn-sm delete-btn"
-                                        data-id="{{ $cost->project_cost_id }}"><i class="bi bi-trash3"></i></button></td>
+                                        class="btn btn-danger btn-sm delete-btn" data-id="{{ $cost->project_cost_id }}"><i
+                                            class="bi bi-trash3"></i></button></td>
                             </tr>
                         @endif
                     @endforeach
@@ -163,7 +163,9 @@
                         <td colspan="8"></td>
                         <td colspan="3"><b>{{ number_format($total, 0, ',', '.') }} VND</b></td>
                     </tr>
-                    <tr><td colspan="12"></td></tr>
+                    <tr>
+                        <td colspan="12"></td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -360,7 +362,8 @@
             var costGroupName = $(this).data('name');
             var projectId = '{{ $id }}';
 
-            if (confirm('Are you sure you want to delete the cost group "' + costGroupName + '"? It also removes the costs within this group!!!')) {
+            if (confirm('Are you sure you want to delete the cost group "' + costGroupName +
+                    '"? It also removes the costs within this group!!!')) {
                 var url =
                     '{{ route('budget.deleteCostGroup', ['project_id' => '__PROJECT_ID__', 'cost_group_id' => '__GROUP_ID__']) }}'
                     .replace('__PROJECT_ID__', projectId)
