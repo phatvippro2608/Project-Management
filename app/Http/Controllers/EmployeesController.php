@@ -155,6 +155,7 @@ class EmployeesController extends Controller
             return json_encode((object)["status" => 200, "message" => "Action Success"]);
         } catch (\Exception $e) {
             DB::rollBack();
+//            dd($e);
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
     }
@@ -501,27 +502,26 @@ class EmployeesController extends Controller
         $data = new EmployeeModel();
         $data = $data->getAllEmployee();
         $num_row = 2;
-
         foreach ($data as $row) {
+//            dd($row);
             $cell->setCellValue('A' . $num_row, $stt++);
-            $cell->setCellValue('B' . $num_row, $row->employee_code);
-
-            $cell->setCellValue('C' . $num_row, $row->first_name);
-            $cell->setCellValue('D' . $num_row, $row->last_name);
-            $cell->setCellValue('E' . $num_row, $row->en_name);
-            $cell->setCellValue('F' . $num_row, $row->phone_number);
-            $cell->setCellValue('G' . $num_row, $row->email);
-            $cell->setCellValue('H' . $num_row, $row->gender == 0 ? 'Male' : 'Female');
-            $cell->setCellValue('I' . $num_row, $row->marital_status);
-            $cell->setCellValue('J' . $num_row, $row->date_of_birth);
-            $cell->setCellValue('K' . $num_row, $row->national);
-            $cell->setCellValue('L' . $num_row, $row->military_service);
-            $cell->setCellValue('M' . $num_row, $row->cic_number);
-            $cell->setCellValue('N' . $num_row, $row->cic_issue_date);
-            $cell->setCellValue('O' . $num_row, $row->cic_expiry_date);
-            $cell->setCellValue('P' . $num_row, $row->cic_place_issue);
-            $cell->setCellValue('Q' . $num_row, $row->current_residence);
-            $cell->setCellValue('R' . $num_row, $row->permanent_address);
+            $cell->setCellValue('B' . $num_row, $row['employee_code']);
+            $cell->setCellValue('C' . $num_row, $row['first_name']);
+            $cell->setCellValue('D' . $num_row, $row['last_name']);
+            $cell->setCellValue('E' . $num_row, $row['en_name']);
+            $cell->setCellValue('F' . $num_row, $row['phone_number']);
+            $cell->setCellValue('G' . $num_row, $row['email'] ?? '');
+            $cell->setCellValue('H' . $num_row, $row['gender'] == 0 ? 'Male' : 'Female');
+            $cell->setCellValue('I' . $num_row, $row['marital_status']);
+            $cell->setCellValue('J' . $num_row, $row['date_of_birth']);
+            $cell->setCellValue('K' . $num_row, $row['national']);
+            $cell->setCellValue('L' . $num_row, $row['military_service']);
+            $cell->setCellValue('M' . $num_row, $row['cic_number']);
+            $cell->setCellValue('N' . $num_row, $row['cic_issue_date']);
+            $cell->setCellValue('O' . $num_row, $row['cic_expiry_date']);
+            $cell->setCellValue('P' . $num_row, $row['cic_place_issue']);
+            $cell->setCellValue('Q' . $num_row, $row['current_residence']);
+            $cell->setCellValue('R' . $num_row, $row['permanent_address']);
             $borderStyle = $cell->getStyle('A'.$num_row.':R' . $num_row)->getBorders();
             $borderStyle->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
             $cell->getStyle('A'.$num_row.':R' . $num_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
