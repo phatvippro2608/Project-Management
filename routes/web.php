@@ -29,6 +29,7 @@ use App\Http\Controllers\CreateQuizController;
 use App\Http\Controllers\TestQuizController;
 use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\ProjectBudgetController;
 
 
 /*
@@ -257,6 +258,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
 
         Route::get('/{project_id}/commission/commision-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
+
+        Route::get('/{project_id}/report', [ProjectBudgetController::class, 'report'])->name('project.report');
     });
 
     Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {

@@ -67,4 +67,8 @@ class ProjectModel extends Model
             ->first();
     }
 
+    public function getReport()
+    {
+        return "Hello";
+    }
 }
