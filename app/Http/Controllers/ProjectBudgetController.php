@@ -18,19 +18,40 @@ class ProjectBudgetController extends Controller
 
     public function getView($id)
     {
-
-        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
+        $dataCost = DB::table('project_costs')
+        ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+        ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
+        ->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
         $dataCostGroupData = DB::table('project_cost_datagroup')->get();
-
-
+        $total=0;
+        $subtotal2=0;
+        $chart=[];
+        foreach($dataCostGroup as $group){
+            $subtotal1=0;
+            foreach ($dataCost as $data) {
+                if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id){
+                    $subtotal2 = $data->project_cost_labor_qty *
+                                $data->project_cost_budget_qty *
+                                ($data->project_cost_labor_cost +
+                                    $data->project_cost_misc_cost +
+                                    $data->project_cost_ot_budget +
+                                    $data->project_cost_perdiempay);
+                    $subtotal1 += $subtotal2;
+                }
+                }
+            $chart[$group->project_cost_group_name] = $subtotal1;
+            $total += $subtotal1;
+        }
         return view('auth.project-budget.budget-detail', [
             'dataCost' => $dataCost,
             'dataCostGroup' => $dataCostGroup,
             'dataCostGroupData' => $dataCostGroupData,
             'id' => $id,
-            'contingency_price' => $contingency_price
+            'contingency_price' => $contingency_price,
+            'total' => $total,
+            'chart' => $chart
         ]);
     }
 
@@ -111,24 +132,12 @@ public function showProjectDetail($id)
         'customer' => $customer
     ]);
 }
-
-
-
-    public function editBudget($id)
-    {
-        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
-        $dataCostGroup = DB::table('project_cost_group')->get();
-        $contingency_price = DB::table('projects')->where('project_id', $id)->first();
-        $dataCostGroupData = DB::table('project_cost_datagroup')->get();
-        return view('auth.project-budget.budget-edit', [
-            'dataCost' => $dataCost,
-            'dataCostGroup' => $dataCostGroup,
-            'dataCostGroupData' => $dataCostGroupData,
-            'id' => $id,
-            'contingency_price' => $contingency_price
-        ]);
+    public function viewCost($id, $group_id){
+        
     }
 
+
+    
 
     public function getBudgetData($id, $costGroupId, $costId)
     {
@@ -304,7 +313,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
         </div>';
         return response()->json(['success' => true, 'html' => $html]);
     } else {
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        return response()->json(['success' => false, 'message' => 'Failed to delete cost item.']);
     }
 }
 
