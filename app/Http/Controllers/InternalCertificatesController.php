@@ -118,4 +118,26 @@ class InternalCertificatesController extends Controller
             ], 500);
         }
     }
+
+    public function temp()
+    {
+        $teacher = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->where('permissions.permission_str', '=', 'teacher')
+            // ->where('employees.employee_id', '=', '191')
+            ->get();
+        $director = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('employment_contract', 'employment_contract.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            // ->where('employment_contract.end_date', '>', DB::raw('CURRENT_TIMESTAMP'))
+            // ->where('permissions.permission_name', '=', 'Director')
+            ->get();
+        dd($director);
+        return view('auth.certificate.certificate', [
+            'teacher' => $teacher,
+            'director' => $director
+        ]);
+    }
 }
