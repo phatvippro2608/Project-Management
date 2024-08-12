@@ -372,7 +372,7 @@
                         if (countdown < 0) {
                             clearInterval(timerInterval);
                             Swal.close();
-                            window.location.href = '/your-contract-page-url';
+                            window.location.href = `{{action('App\Http\Controllers\ContractController@getView')}}`;
                         }
                     }, 1000);
                 },
@@ -382,7 +382,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Handle the confirmation button click if needed
-                    window.location.href = '/your-contract-page-url';
+                    window.location.href = `{{action('App\Http\Controllers\ContractController@getView')}}`;
                 }
             });
         })

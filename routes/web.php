@@ -84,6 +84,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
         Route::get('/query', 'App\Http\Controllers\CustomerController@query');
     });
+    Route::group(['prefix' => '/contract'], function () {
+        Route::get('/', 'App\Http\Controllers\ContractController@getView');
+    });
 
 
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
@@ -366,7 +369,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
 
 
-    Route::get('contract', [ContractController::class, 'getView']);
+
 
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
