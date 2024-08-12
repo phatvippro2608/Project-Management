@@ -81,174 +81,149 @@ $token = 'position';
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+{{--            <li class="nav-item d-block d-lg-none">--}}
+{{--                <a class="nav-link nav-icon search-bar-toggle " href="#">--}}
+{{--                    <i class="bi bi-search"></i>--}}
+{{--                </a>--}}
+{{--            </li>--}}
+{{--            <li class="nav-item dropdown">--}}
+{{--                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">--}}
+{{--                    <i class="bi bi-bell"></i>--}}
+{{--                    <span class="badge bg-primary badge-number">4</span>--}}
+{{--                </a>--}}
 
-            <!-- Mục chuyển đổi ngôn ngữ -->
-            <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-globe"></i>
-                    <span>
-                    @if (App::getLocale() == 'en')
-                            English
-                        @else
-                            Tiếng Việt
-                        @endif
-                </span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li>
-                        @if (App::getLocale() == 'en')
-                            <a class="dropdown-item" href="{{ url('lang/vi') }}">Tiếng Việt</a>
-                        @else
-                            <a class="dropdown-item" href="{{ url('lang/en') }}">English</a>
-                        @endif
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item d-block d-lg-none">
-                <a class="nav-link nav-icon search-bar-toggle " href="#">
-                    <i class="bi bi-search"></i>
-                </a>
-            </li>
+{{--                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">--}}
+{{--                    <li class="dropdown-header">--}}
+{{--                        You have 4 new notifications--}}
+{{--                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-            <li class="nav-item dropdown">
+{{--                    <li class="notification-item">--}}
+{{--                        <i class="bi bi-exclamation-circle text-warning"></i>--}}
+{{--                        <div>--}}
+{{--                            <h4>Lorem Ipsum</h4>--}}
+{{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
+{{--                            <p>30 min. ago</p>--}}
+{{--                        </div>--}}
+{{--                    </li>--}}
 
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
-                </a>
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                    <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                    <li class="notification-item">--}}
+{{--                        <i class="bi bi-x-circle text-danger"></i>--}}
+{{--                        <div>--}}
+{{--                            <h4>Atque rerum nesciunt</h4>--}}
+{{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
+{{--                            <p>1 hr. ago</p>--}}
+{{--                        </div>--}}
+{{--                    </li>--}}
 
-                    <li class="notification-item">
-                        <i class="bi bi-exclamation-circle text-warning"></i>
-                        <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
-                        </div>
-                    </li>
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                    <li class="notification-item">--}}
+{{--                        <i class="bi bi-check-circle text-success"></i>--}}
+{{--                        <div>--}}
+{{--                            <h4>Sit rerum fuga</h4>--}}
+{{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
+{{--                            <p>2 hrs. ago</p>--}}
+{{--                        </div>--}}
+{{--                    </li>--}}
 
-                    <li class="notification-item">
-                        <i class="bi bi-x-circle text-danger"></i>
-                        <div>
-                            <h4>Atque rerum nesciunt</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>1 hr. ago</p>
-                        </div>
-                    </li>
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                    <li class="notification-item">--}}
+{{--                        <i class="bi bi-info-circle text-primary"></i>--}}
+{{--                        <div>--}}
+{{--                            <h4>Dicta reprehenderit</h4>--}}
+{{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
+{{--                            <p>4 hrs. ago</p>--}}
+{{--                        </div>--}}
+{{--                    </li>--}}
 
-                    <li class="notification-item">
-                        <i class="bi bi-check-circle text-success"></i>
-                        <div>
-                            <h4>Sit rerum fuga</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>2 hrs. ago</p>
-                        </div>
-                    </li>
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
+{{--                    <li class="dropdown-footer">--}}
+{{--                        <a href="#">Show all notifications</a>--}}
+{{--                    </li>--}}
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                </ul>--}}
 
-                    <li class="notification-item">
-                        <i class="bi bi-info-circle text-primary"></i>
-                        <div>
-                            <h4>Dicta reprehenderit</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>4 hrs. ago</p>
-                        </div>
-                    </li>
+{{--            </li>--}}
 
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
+{{--            <li class="nav-item dropdown">--}}
 
-                </ul>
+{{--                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">--}}
+{{--                    <i class="bi bi-chat-left-text"></i>--}}
+{{--                    <span class="badge bg-success badge-number">3</span>--}}
+{{--                </a><!-- End Messages Icon -->--}}
 
-            </li>
+{{--                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">--}}
+{{--                    <li class="dropdown-header">--}}
+{{--                        You have 3 new messages--}}
+{{--                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-            <li class="nav-item dropdown">
+{{--                    <li class="message-item">--}}
+{{--                        <a href="#">--}}
+{{--                            <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">--}}
+{{--                            <div>--}}
+{{--                                <h4>Maria Hudson</h4>--}}
+{{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
+{{--                                <p>4 hrs. ago</p>--}}
+{{--                            </div>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
+{{--                    <li class="message-item">--}}
+{{--                        <a href="#">--}}
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                            <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""--}}
+{{--                                 class="rounded-circle">--}}
+{{--                            <div>--}}
+{{--                                <h4>Anna Nelson</h4>--}}
+{{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
+{{--                                <p>6 hrs. ago</p>--}}
+{{--                            </div>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Maria Hudson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>4 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+{{--                    <li class="message-item">--}}
+{{--                        <a href="#">--}}
+{{--                            <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">--}}
+{{--                            <div>--}}
+{{--                                <h4>David Muldon</h4>--}}
+{{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
+{{--                                <p>8 hrs. ago</p>--}}
+{{--                            </div>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li>--}}
+{{--                        <hr class="dropdown-divider">--}}
+{{--                    </li>--}}
 
-                    <li class="message-item">
-                        <a href="#">
-
-                            <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""
-                                 class="rounded-circle">
-                            <div>
-                                <h4>Anna Nelson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>6 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>David Muldon</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>8 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul>
+{{--                    <li class="dropdown-footer">--}}
+{{--                        <a href="#">Show all messages</a>--}}
+{{--                    </li>--}}
+{{--                </ul>--}}
 
             {{--     Change language      --}}
             <li class="nav-item dropdown-center my-2">
