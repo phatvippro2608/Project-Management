@@ -50,7 +50,7 @@
                         <th scope="col">Project Name</th>
                         <th scope="col">Customer</th>
                         <th scope="col">Team Memebers</th>
-{{--                        <th>Tags</th>--}}
+                        {{--                        <th>Tags</th>--}}
                         <th scope="col">StartDate</th>
                         <th scope="col">EndDate</th>
                         <th scope="col">Status</th>
@@ -64,18 +64,27 @@
                             <td>{{ $project->project_name }}</td>
                             <td>{{ $project->customer_info }}</td>
                             <td>
-                                @foreach($project->team_members as $employee)
-                                    @php
-                                        $photoPath = asset($employee->photo);
-                                        $defaultPhoto = asset('assets/img/avt.png');
-                                        $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-                                    @endphp
-                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
-                                         class="@if($employee->team_position_id == 1){{"border-admin"}}@endif rounded-circle object-fit-cover"
-                                         width="36" height="36">
-                                @endforeach
+                                <div style="display: flex; align-items: center">
+                                    @foreach($project->team_members as $employee)
+                                        @php
+                                            $photoPath = asset($employee->photo);
+                                            $defaultPhoto = asset('assets/img/avt.png');
+                                            $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                        @endphp
+                                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                                             class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
+                                             width="36" height="36"
+                                             title="{{$employee->last_name." ".$employee->first_name}}"
+                                             style="cursor:pointer">
+                                    @endforeach
+                                    <div
+                                        class="d-flex align-items-center justify-content-center ms-1"
+                                        style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 2px dashed black; cursor: pointer">
+                                        <i class="bi bi-person-fill-add fs-4 "></i>
+                                    </div>
+                                </div>
                             </td>
-{{--                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>--}}
+                            {{--                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>--}}
                             <td>{{ $project->project_date_start }}</td>
                             <td>{{ $project->project_date_end }}</td>
                             <td>
@@ -103,8 +112,10 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
-                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
+                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}"
+                                   class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
+                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}"
+                                   class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
                             </td>
                         </tr>
                     @endforeach
@@ -170,14 +181,15 @@
                             <div class="col-md-6">
                                 <label for="select_contract" class="form-label">Contract</label>
                                 <div class="input-group">
-                                <select class="form-select contract_id"
-                                        name="contract_id"
-                                        aria-label="Example select with button addon">
-                                    <option selected>Choose...</option>
-                                    @foreach($contracts as $contract)
-                                        <option value="{{$contract->contract_id}}">{{$contract->contract_name}}</option>
-                                    @endforeach
-                                </select>
+                                    <select class="form-select contract_id"
+                                            name="contract_id"
+                                            aria-label="Example select with button addon">
+                                        <option selected>Choose...</option>
+                                        @foreach($contracts as $contract)
+                                            <option
+                                                value="{{$contract->contract_id}}">{{$contract->contract_name}}</option>
+                                        @endforeach
+                                    </select>
                                     <button class="btn btn-outline-secondary add-contract" type="button"><i
                                             class="bi bi-plus"></i></button>
                                 </div>
@@ -321,17 +333,17 @@
                     } else {
                         const errorRes = JSON.parse(data.message);
                         let strMes = "";
-                        if(errorRes.project_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_name}</div>`;
-                        if(errorRes.project_description) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_description}</div>`;
-                        if(errorRes.project_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_address}</div>`;
-                        if(errorRes.project_date_start) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_start}</div>`;
-                        if(errorRes.project_date_end) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_end}</div>`;
-                        if(errorRes.project_contact_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_name}</div>`;
-                        if(errorRes.project_contact_phone) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_phone}</div>`;
-                        if(errorRes.project_contact_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_address}</div>`;
-                        if(errorRes.project_contact_website) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_website}</div>`;
-                        if(errorRes.contract_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_id}</div>`;
-                        if(errorRes.select_team) strMes += `<div style="color: red; text-align: left;">-${errorRes.select_team}</div>`;
+                        if (errorRes.project_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_name}</div>`;
+                        if (errorRes.project_description) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_description}</div>`;
+                        if (errorRes.project_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_address}</div>`;
+                        if (errorRes.project_date_start) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_start}</div>`;
+                        if (errorRes.project_date_end) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_end}</div>`;
+                        if (errorRes.project_contact_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_name}</div>`;
+                        if (errorRes.project_contact_phone) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_phone}</div>`;
+                        if (errorRes.project_contact_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_address}</div>`;
+                        if (errorRes.project_contact_website) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_website}</div>`;
+                        if (errorRes.contract_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_id}</div>`;
+                        if (errorRes.select_team) strMes += `<div style="color: red; text-align: left;">-${errorRes.select_team}</div>`;
 
                         Swal.fire({
                             html: strMes,
@@ -354,7 +366,7 @@
                 });
         });
 
-        $('.add-contract').click(function (){
+        $('.add-contract').click(function () {
             let timerInterval;
             Swal.fire({
                 html: 'You will redirect to the contract page to add a new contract in <b>4</b> seconds.',
