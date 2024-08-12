@@ -365,11 +365,12 @@
                             </li>`;
                             data.sections.forEach(section => {
                                 temp += `
-                            <li class="nav-item">
-                                <button style="width: 100%;" class="nav-link fs-5" onclick="loadSectionDetail(${section.courses_section_id})">
-                                    <i class="bi bi-circle"></i><span class="text-start">${section.section_name}</span>
-                                </button>
-                            </li>`
+                                <li class="nav-item">
+                                    <button style="width: 100%;" class="nav-link fs-5" onclick="loadSectionDetail(${section.courses_section_id})">
+                                        <i class="bi ${section.course_employee_id ? 'bi-check-circle-fill' : 'bi-circle'}"></i>
+                                        <span class="text-start">${section.section_name}</span>
+                                    </button>
+                                </li>`;
                             });
                             temp += `<li class="nav-item" id="new-section">
                             </li>
@@ -395,7 +396,6 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(data) {
-                        console.log(data);
                         if (data.success) {
                             data.sections.forEach(section => {
                                 $('#v_course_name').html(section.section_name);
@@ -407,13 +407,13 @@
                                     .detail != null ?
                                     section.detail : '');
                             });
+                            loadSection();
                         }
                     }
                 });
             };
 
             $('#formEditSection').submit(function(e) {
-                console.log('submit');
                 e.preventDefault();
                 var formData = new FormData(this);
                 if (tinymce.get('section_description_e').getContent() == '') {
@@ -429,7 +429,6 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        console.log(data);
                         if (data.success) {
                             toastr.success(data.message);
                             $('#modalEditSection').modal('hide');
