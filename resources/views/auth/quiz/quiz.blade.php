@@ -61,7 +61,7 @@
                                         <div class="alert alert-success text-center">
                                             <p>You have a test available for the
                                                 course: {{ $course->course_name }}</p>
-                                            <a href="/exam-link" class="btn btn-primary">Start Exam</a>
+                                            <a href="{{route('test-quiz.index',['course_id' => $course->course_id, 'employee_id' => $employee_id])}}" class="btn btn-primary">Start Exam</a>
                                         </div>
                                     @endif
                                 @endforeach
@@ -77,7 +77,7 @@
                     </div>
                     <div class="card-footer d-flex align-items-center">
                         @if($data->permission == 11)
-                            <a href="{{ route('create-quiz.index') }}" class="btn btn-success mx-2">Create exam</a>
+                            <a href="{{ route('exams.index') }}" class="btn btn-success mx-2">Create exam</a>
                             <a href="{{ route('question-bank.index') }}" class="btn btn-success mx-2">Question
                                 bank</a>
                         @endif

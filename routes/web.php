@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EarnLeaveController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\ProposalTypesController;
@@ -377,7 +378,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
-    
+
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);

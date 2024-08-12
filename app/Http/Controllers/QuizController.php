@@ -34,6 +34,7 @@ class QuizController extends Controller
             ->where('courses_employees.progress', 100)
             ->select('courses.course_id', 'courses.course_name')
             ->paginate(3,['*'], 'completed_courses_page');
+//        dd($completed_courses);
 
         // Lấy kết quả thi của nhân viên
         $exam_results = DB::table('exam_results')
@@ -49,7 +50,8 @@ class QuizController extends Controller
             [
                 'data' => $model->getInfo(),
                 'completed_courses' => $completed_courses,
-                'exam_results' => $exam_results
+                'exam_results' => $exam_results,
+                'employee_id' =>$employee_id
             ]
         );
     }
