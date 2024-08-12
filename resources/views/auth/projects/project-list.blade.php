@@ -2,7 +2,7 @@
 
 @section('contents')
     <div class="pagetitle">
-        <h1>Project List</h1>
+        <h1>{{ __('messages.project_list') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
