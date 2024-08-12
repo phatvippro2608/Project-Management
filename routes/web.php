@@ -362,16 +362,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
     Route::get('contract', [ContractController::class, 'getView']);
+
+    Route::get('lang/{locale}', function ($locale) {
+        if (in_array($locale, ['en', 'vi'])) {
+            session(['locale' => $locale]);
+        }
+        return redirect()->back();
+    });
 });
 
-// Language - chuyển đổi ngôn ngữ
-Route::get('lang/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'vi'])) {
-        session(['locale' => $locale]);
-    }
-    return redirect()->back();
-});
 
-// Tạo liên kết chuyển đổi
-//<a href="{{ url('lang/en') }}">English</a>
-//<a href="{{ url('lang/vi') }}">Tiếng Việt</a>
