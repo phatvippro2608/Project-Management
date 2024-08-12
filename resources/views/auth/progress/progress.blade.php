@@ -48,10 +48,10 @@
     </nav>
 </div>
 <div class="section employees">
-    <div class="card">
+    <div class="card rounded-4 p-2">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTask"><i class="bi bi-plus me-1"></i>Create</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTask"><i class="bi bi-plus-lg me-1"></i>Create</button>
                 <div class="btn-group">
                     <button class="btn btn-primary" id="btnD">Day</button>
                     <button class="btn btn-primary" id="btnM">Month</button>
@@ -276,7 +276,7 @@
             },
         });
     };
-    
+
     function viewTask(id){
         $('#modalViewTask').modal('show');
         var task = tasks.find(task => task.id == id);
@@ -623,7 +623,7 @@
             app.options = options;
         });
     });
-    
+
     app.$mount('#timeline');
 </script>
 @endsection

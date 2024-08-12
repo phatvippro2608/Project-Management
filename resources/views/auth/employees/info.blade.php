@@ -265,8 +265,8 @@
             </div>
         </div>
         <div class="row g-0">
-            <div class="col-6">
-                <div class="card mb-0 shadow-none">
+            <div class="col-6 d-flex flex-column">
+                <div class="card mb-0 shadow-none flex-grow-1">
                     <div class="card-header fw-semibold text-white border-4 rounded-start-4 rounded-end-0" style="background: var(--clr-1)">Personal Profile</div>
                     <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
@@ -293,8 +293,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="card mb-0 shadow-none">
+            <div class="col-6 d-flex flex-column">
+                <div class="card mb-0 shadow-none flex-grow-1">
                     <div class="card-header fw-semibold text-white border-4 rounded-end-4 rounded-start-0" style="background: var(--clr-1)">Medical CheckUp</div>
                     <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
@@ -352,6 +352,28 @@
                                         </tr>
                                     @endforeach
                                 @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-0 shadow-none">
+                    <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Employment Contract</div>
+                    <div class="card-body p-3">
+                        <table class="table table-hover table-borderless">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Employment Contract</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                            </tr>
+                            </thead>
+                            <tbody class="employment_contract_list">
+
                             </tbody>
                         </table>
                     </div>

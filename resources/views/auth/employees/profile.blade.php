@@ -86,11 +86,6 @@
                                 <h5 class="card-title">Profile Details</h5>
 
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-4 label">Username</div>
-                                    <div class="col-lg-9 col-md-8">{{$data->username}}</div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-lg-3 col-md-4 label ">Full Name</div>
                                     <div
                                         class="col-lg-9 col-md-8">{{$data->first_name  . ' ' . $data->last_name }}</div>
@@ -141,32 +136,11 @@
                                             <input type="file"
                                                    id="image"
                                                    name="image"
-                                                   data-max-files="1">
-                                            <button class="btn btn-primary mx-auto" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                                                   data-max-files="1"
+                                                   accept="image/png, image/jpeg, image/gif"
+                                            >
+                                            <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                                         </form>
-                                    </div>
-{{--                                    <div class="col-md-8 col-lg-9">--}}
-{{--                                        <div class="row">--}}
-{{--                                            <div class="col-lg-2">--}}
-{{--                                                <img id="profileImage" src="{{$photoExists ? $photoPath : $defaultPhoto}}" alt="Profile">--}}
-{{--                                            </div>--}}
-{{--                                            <div class="col-lg">--}}
-{{--                                                --}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                        <div class="row">--}}
-{{--                                            <div class="col-md-2 mt-2 text-center">--}}
-{{--                                                <button class="btn btn-primary btn_photo rounded-4">Upload</button>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    </div>--}}
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Username</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="" type="text" class="form-control" id="username"
-                                               value="{{$data->username}}">
                                     </div>
                                 </div>
 
@@ -288,7 +262,6 @@
                 data: {
                     'employee_id': "{{$employ_detail['employee_id']}}",
                     '_token': "{{ csrf_token() }}",
-                    'username': $('#username').val(),
                     'first_name': $('#first_name').val(),
                     'last_name': $('#last_name').val(),
                     'position_name': $('#position_name').val(),
@@ -383,6 +356,7 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         FilePond.registerPlugin(
             FilePondPluginImagePreview,
+            FilePondPluginFileValidateType
         );
 
         FilePond.create(
@@ -411,7 +385,24 @@
                         },
                     }
                 },
+
             }
         );
+
+        const filePond = document.querySelector("#image")
+        const filepondUpload = document.querySelector('.filepond-upload')
+        filePond.addEventListener('FilePond:processfile', e => {
+            if (e.returnValue) {
+                filepondUpload.classList.remove('d-none')
+            }
+        });
+
+        filePond.addEventListener('FilePond:removefile',e=>{
+            if (e.returnValue) {
+                filepondUpload.classList.add('d-none')
+            }
+        })
+
+
     </script>
 @endsection

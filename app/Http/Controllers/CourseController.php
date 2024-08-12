@@ -11,7 +11,6 @@ class CourseController extends Controller
 {
     function getViewCourses()
     {
-
         $courses=DB::table('courses')
         ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
         ->select('courses.*','course_types.type_name')
@@ -22,47 +21,98 @@ class CourseController extends Controller
     }
     function getCourseView($id)
     {
+        $account_id = session()->get(\App\StaticString::ACCOUNT_ID);
+        $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = ?";
+        $employee = DB::selectOne($sql_get_employee_id, [$account_id]);
+        $employee_id = $employee->employee_id;
+        $isExist = DB::table('courses')
+            ->select('courses.*')
+            ->join('courses_employees', 'courses.course_id', '=', 'courses_employees.course_id')
+            ->where('courses.course_id', $id)
+            ->where('courses_employees.employee_id', $employee_id)
+            ->exists();
         $course=DB::table('courses')
-        ->where('course_id',$id)
-        ->get();
+            ->where('course_id',$id)
+            ->get();
         $getTypeName = DB::table('course_types')->get();
-        return view('auth.lms.course_section', ['course' => $course, 'getTypeName' => $getTypeName]);
+        if ($isExist) {
+            return view('auth.lms.course_section', ['show'=>true,'course' => $course, 'getTypeName' => $getTypeName, 'id' => $id]);
+        } else {
+            return view('auth.lms.course_section', ['show'=>false,'course' => $course,'id' => $id]);
+        }
+        
     }
-    function getCourseSection($id)
+    function getCourseSection(Request $requet)
     {
-        return null;
+        $id = $requet->input('id');
+        $type = $requet->input('type');
+        if($type==null){
+            $sections=DB::table('courses_section')
+            ->select('courses_section_id','section_name')
+            ->where('course_id',$id)
+            ->get();
+        }else{
+            $sections=DB::table('courses_section')
+            ->where('courses_section_id',$id)
+            ->get();
+        }
+        return response()->json(['success' => true, 'sections' => $sections]);
     }
+    function joinCourse(Request $request){
+        try {
+            $course_id = $request->input('course_id');
+            $account_id = $request->session()->get(\App\StaticString::ACCOUNT_ID);
+            $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = ?";
+            $employee = DB::selectOne($sql_get_employee_id, [$account_id]);
+            $employee_id = $employee->employee_id;
+            $date = date('Y-m-d');
+            DB::table('courses_employees')->insert([
+                'course_id' => $course_id,
+                'employee_id' => $employee_id,
+                'start_date' => $date,
+                'end_date' => null,
+            ]);
+            return response()->json(['success' => true, 'message' => 'Join course success!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while joining the course.\n'.$e->getMessage()]);
+        }
+    }
+
     function create(Request $request)
     {
-        $course_name = $request->input('course_name');
-        if (CourseModel::where('course_name', $course_name)->exists()) {
-            return response()->json(['success' => false, 'message' => 'Course name already exists!']);
-        }
-        if ($course_name == null) {
-            return response()->json(['success' => false, 'message' => 'Course name is required!']);
-        }
-        $description = $request->input('course_description');
-        $course_type=$request->input('course_type');
-        $course = new CourseModel([
-            'course_name' => $course_name,
-            'description' => $description,
-            'course_type_id' => $course_type,
-        ]);
-        $course->save();
+        try {
+            $course_name = $request->input('course_name');
+            if (CourseModel::where('course_name', $course_name)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Course name already exists!']);
+            }
+            if ($course_name == null) {
+                return response()->json(['success' => false, 'message' => 'Course name is required!']);
+            }
+            $description = $request->input('course_description');
+            $course_type=$request->input('course_type');
+            $course = new CourseModel([
+                'course_name' => $course_name,
+                'description' => $description,
+                'course_type_id' => $course_type,
+            ]);
+            $course->save();
 
-        if ($request->hasFile('course_img')) {
-            $file = $request->file('course_img');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/course/' . $course->course_id), $fileName);
-            $course_image = $course->course_id.'/'.$fileName;
-        } else {
-            $course_image = null;
-        }
+            if ($request->hasFile('course_img')) {
+                $file = $request->file('course_img');
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/course/' . $course->course_id), $fileName);
+                $course_image = $course->course_id.'/'.$fileName;
+            } else {
+                $course_image = null;
+            }
 
-        $course->course_image = $course_image;
-        $course->save();
-        $courses = CourseModel::all();
-        return response()->json(['success' => true,'message' => 'Add new course success!', 'courses' => $courses]);
+            $course->course_image = $course_image;
+            $course->save();
+            $courses = CourseModel::all();
+            return response()->json(['success' => true,'message' => 'Add new course success!', 'courses' => $courses]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating the course.\n'.$e->getMessage()]);
+        }
     }
 
     function getCourse($id)
@@ -78,72 +128,85 @@ class CourseController extends Controller
 
     function updateCourse(Request $request)
     {
-        $course_id = $request->input('course_id');
-        $course_name = $request->input('course_name');
-        if (CourseModel::where('course_name', $course_name)->whereNot('course_id',$course_id)->exists()) {
-            return response()->json(['success' => false, 'message' => 'Course name already exists!']);
-        }
-        if ($course_name == null) {
-            return response()->json(['success' => false, 'message' => 'Course name is required!']);
-        }
-        $description = $request->input('course_description');
-        $course_type=$request->input('course_type');
-        $course = CourseModel::find($course_id);
-        $course->course_name = $course_name;
-        $course->description = $description;
-        $course->course_type_id = $course_type;
-        $course->save();
-
-        if ($request->hasFile('course_img')) {
-            $old_image = public_path('uploads/course/' . $course->course_image);
-            if (file_exists($old_image)) {
-                unlink($old_image);
+        try {
+            $course_id = $request->input('course_id');
+            $course_name = $request->input('course_name');
+            if (CourseModel::where('course_name', $course_name)->whereNot('course_id',$course_id)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Course name already exists!']);
             }
-            $file = $request->file('course_img');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/course/' . $course->course_id), $fileName);
-            $course_image = $course->course_id.'/'.$fileName;
-            $course->course_image = $course_image;
+            if ($course_name == null) {
+                return response()->json(['success' => false, 'message' => 'Course name is required!']);
+            }
+            $description = $request->input('course_description');
+            $course_type=$request->input('course_type');
+            $course = CourseModel::find($course_id);
+            $course->course_name = $course_name;
+            $course->description = $description;
+            $course->course_type_id = $course_type;
             $course->save();
+
+            if ($request->hasFile('course_img')) {
+                $old_image = public_path('uploads/course/' . $course->course_image);
+                if (file_exists($old_image)) {
+                    unlink($old_image);
+                }
+                $file = $request->file('course_img');
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/course/' . $course->course_id), $fileName);
+                $course_image = $course->course_id.'/'.$fileName;
+                $course->course_image = $course_image;
+                $course->save();
+            }
+            if($request->input('type')=="single")
+            {
+                $courses=DB::table('courses')
+                ->select('courses.*')
+                ->where('course_id',$course_id)
+                ->get();
+            }else{
+                $courses=DB::table('courses')
+                ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+                ->select('courses.*','course_types.type_name')
+                ->get();
+            }
+            $getTypeName = DB::table('course_types')->get();
+            return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while updating the course.\n'.$e->getMessage()]);
         }
-        if($request->input('type')=="single")
-        {
-            $courses=DB::table('courses')
-            ->select('courses.*')
-            ->where('course_id',$course_id)
-            ->get();
-        }else{
-            $courses=DB::table('courses')
-            ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
-            ->select('courses.*','course_types.type_name')
-            ->get();
+    }
+
+    function createSection(Request $request)
+    {
+        try {
+            $course_id = $request->input('course_id');
+            $section_name = $request->input('section_name');
+            DB::table('courses_section')->insert([
+                'course_id' => $course_id,
+                'section_name' => $section_name,
+            ]);
+            $sections = DB::table('courses_section')->where('course_id',$course_id)->get();
+            return response()->json(['success' => true,'message' => 'Add new section success!', 'sections' => $sections]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating the section.\n'.$e->getMessage()]);
         }
-        $getTypeName = DB::table('course_types')->get();
-        return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
     }
-    //fill courses by type
-    public function getCourseByType(Request $request)
-{
-    $search = $request->input('search', '');
-    $typeFilter = $request->input('courseType', '');
-
-    try {
-        $query = CourseModel::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('course_name', 'like', "%{$search}%");
-            })
-            ->when($typeFilter, function ($query, $typeFilter) {
-                return $query->whereHas('type', function ($query) use ($typeFilter) {
-                    $query->where('type_name', $typeFilter);
-                });
-            });
-
-        $courses = $query->get();
-        $getDataByType = DB::table('course_types')->get();
-
-        return response()->json(['success' => true, 'data' => $courses, 'types' => $getDataByType]);
-    } catch (\Exception $e) {
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+    function updateSection(Request $request)
+    {
+        try {
+            $section_id = $request->input('section_id');
+            $section_name = $request->input('section_name');
+            $section_detail = $request->input('section_description');
+            DB::table('courses_section')
+                ->where('courses_section_id',$section_id)
+                ->update([
+                    'section_name' => $section_name,
+                    'detail' => $section_detail,
+                ]);
+            $sections = DB::table('courses_section')->where('courses_section_id',$section_id)->get();
+            return response()->json(['success' => true,'message' => 'Update section success!', 'sections' => $sections]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while updating the section.\n'.$e->getMessage()]);
+        }
     }
-}
 }

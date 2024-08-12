@@ -470,11 +470,7 @@ public function addNewCommission(Request $request, $project_id)
 
         // Save and check if successful
         if ($CommissionCost->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Commission added successfully!',
-                'commission' => $CommissionCost // Return the new commission data
-            ]);
+            return response()->json(['success' => true]);
         } else {
             return response()->json([
                 'success' => false,

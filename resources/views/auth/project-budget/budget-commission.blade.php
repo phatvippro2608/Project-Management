@@ -143,7 +143,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="addNewCostModalLabel">Add New Cost</h5>
             </div>
-            <form id="addNewCommissionForm" method="POST" action="{{ route('budget.AddNewComission', ['project_id' => $id]) }}">
+            <form id="addNewCommissionForm" method="POST" action="{{ route('budget.addNewCommission', ['project_id' => $id]) }}">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -178,224 +178,109 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Commission Group</h5>
+                <h5 class="modal-title" id="addNewGroupModalLabel">Add New Group Commission</h5>
             </div>
-            <form id="addNewGroupForm" method="POST" action="{{ route('budget.addNewCommissionGroup', ['project_id' => $id]) }}">
+            <form id="addNewGroupForm" method="POST" action="#">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="newGroupName" class="form-label">Name</label>
+                        <label for="newGroupName" class="form-label">Group Name</label>
                         <input type="text" class="form-control" id="newGroupName" name="groupcommission_name" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+@endsection
+
+@section('script')
 <script>
-document.getElementById('editCommissionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    $('#addNewCommissionForm').on('submit', function(e) {
+        e.preventDefault();
 
-    const form = event.target;
-    const formData = new FormData(form);
-    const commissionId = formData.get('commission_id');
-    const url = form.action.replace('__COMMISSION_ID__', commissionId);
-
-    fetch(url, {
-        method: 'POST', // POST with X-HTTP-Method-Override header for PUT
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'X-HTTP-Method-Override': 'PUT',
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Commission updated successfully');
-            location.reload();
-        } else {
-            alert('An error occurred: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('An error occurred: ' + error);
-    });
-});
-
-$(document).ready(function() {
-        $('#openAddGroupModal').on('click', function(event) {
-            event.preventDefault();
-            $('#addNewCostModal').modal('hide');
-            $('#addNewGroupModal').modal('show');
+        var form = $(this);
+        var formData = form.serialize();
+        var url = form.attr('action');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Add new commission successfull'); // Hiển thị thông báo thành công
+                    $('#addNewCostModal').modal('hide'); // Đóng modal
+                    // Thực hiện các hành động khác nếu cần thiết
+                } else {
+                    toastr.error('Failed to add commission: ' + (response.message || 'Unknown error')); // Hiển thị thông báo lỗi
+                }
+            },
+            error: function(xhr) {
+                toastr.error('Request failed: ' + xhr.status + ' ' + xhr.statusText); // Hiển thị thông báo lỗi
+            }
         });
     });
 
-document.getElementById('editNameGroupCommissionForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    function showEditModal(groupId, groupName) {
+        document.getElementById('groupId').value = groupId;
+        document.getElementById('groupName').value = groupName;
 
-    const form = event.target;
-    const formData = new FormData(form);
-    const groupId = formData.get('groupId');
-    const url = form.action.replace('__GROUP_ID__', groupId);
+        var form = document.getElementById('editNameGroupCommissionForm');
+        form.action = form.action.replace('__GROUP_ID__', groupId);
+    }
 
-    fetch(url, {
-        method: 'POST', // POST with X-HTTP-Method-Override header for PUT
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'X-HTTP-Method-Override': 'PUT',
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const groupElement = document.querySelector(`.group-name[data-id="${groupId}"]`);
-            if (groupElement) {
-                groupElement.innerText = formData.get('groupName');
-            } else {
-                console.error('Group name element not found');
-            }
-            alert('Group name updated successfully');
-            location.reload();
-        } else {
-            alert('An error occurred: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('An error occurred: ' + error);
-    });
-});
+    document.getElementById('editCommissionForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-function showEditModal(groupId, groupName) {
-    document.getElementById('groupId').value = groupId;
-    document.getElementById('groupName').value = groupName;
-}
-function showCommission(id, name, amount) {
-    document.getElementById('editCommissionId').value = id;
-    document.getElementById('editCommissionDescription').value = name;
-    document.getElementById('editCommissionAmount').value = amount;
-}
-document.querySelectorAll('.delete-group-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const groupId = this.dataset.id;
-        if (confirm('Are you sure you want to delete this group?')) {
-            fetch(`/project/{{ $project->project_id }}/commission/${groupId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        var form = this;
+        var commissionId = document.getElementById('editCommissionId').value;
+        var formData = new FormData(form);
+
+        var url = form.action.replace('__COMMISSION_ID__', commissionId);
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.includes('<html>')) {
+                        toastr.success('Commission update successfully!');
+                        $('#chooseGroupModal').modal('hide');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error('Failed to add new cost: ' + (response.message ||
+                            'Unknown error'));
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Error: ' + xhr.status + ' ' + xhr.statusText);
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Group deleted successfully');
-                    location.reload();
-                } else {
-                    alert('An error occurred: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error);
             });
-        }
-    });
-});
+        });
 
-document.querySelectorAll('.delete-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const commissionId = this.dataset.id;
-        if (confirm('Are you sure you want to delete this commission?')) {
-            fetch(`/project/{{ $project->project_id }}/commission/${commissionId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Commission deleted successfully');
-                    location.reload();
-                } else {
-                    alert('An error occurred: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error);
-            });
-        }
-    });
-});
-$.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    function showCommission(commissionId, description, amount) {
+        document.getElementById('editCommissionId').value = commissionId;
+        document.getElementById('editCommissionDescription').value = description;
+        document.getElementById('editCommissionAmount').value = amount;
 
-$('#addNewCommissionForm').on('submit', function(event) {
-    event.preventDefault();
-
-    var form = $(this);
-    var url = form.attr('action');
-    var formData = form.serialize();
-
-    console.log('Form Data:', formData); // Log form data for debugging
-
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: formData,
-        success: function(response) {
-            if (response.success) {
-                toastr.success(response.message);
-                $('#addNewCostModal').modal('hide');
-                location.reload();
-            } else {
-                toastr.error('Failed to add commission: ' + response.message);
-            }
-        },
-        error: function(xhr) {
-            toastr.error('Request failed: ' + xhr.status + ' ' + xhr.statusText);
-        }
-    });
-});
-document.getElementById('addNewGroupForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    var form = event.target;
-    var formData = new FormData(form);
-    var url = form.action;
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Group added successfully');
-            // Optionally add the new group to the select dropdown or refresh the page
-            location.reload();
-        } else {
-            alert('An error occurred: ' + data.message);
-        }
-    })
-    .catch(error => {
-        alert('An error occurred: ' + error);
-    });
-});
+        var form = document.getElementById('editCommissionForm');
+        form.action = form.action.replace('__COMMISSION_ID__', commissionId);
+    }
 
 </script>
 @endsection

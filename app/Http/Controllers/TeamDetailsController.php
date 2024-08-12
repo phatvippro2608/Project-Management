@@ -26,7 +26,7 @@ class TeamDetailsController extends Controller
                     END AS isAtTeam
                 FROM
                     employees
-                LEFT JOIN
+                JOIN
                     accounts ON accounts.employee_id = employees.employee_id
                 LEFT JOIN
                     team_details ON team_details.employee_id = employees.employee_id AND team_details.team_id = $team_id

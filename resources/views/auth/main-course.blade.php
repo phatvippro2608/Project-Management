@@ -54,6 +54,15 @@ $token = 'position';
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .nav-item {
+            transition: transform 0.3s ease;
+            background: none;
+        }
+        .nav-item:hover {
+            transform: translateX(15px);
+        }
+    </style>
 
     @yield('head')
 </head>
@@ -318,41 +327,31 @@ $token = 'position';
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
+                <a class="nav-link fs-5 fw-bold "
+                    href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item position-relative">
+                <a class="nav-link fs-5 fw-bold"
+                    href="{{ action('App\Http\Controllers\CourseController@getViewCourses') }}">
+                    <i class="bi bi-folder"></i>
+                    <span class="me-4">Courses</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link fs-5" href="">
                     <i class="bi bi-bookmark"></i><span>Description</span>
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed fs-5" data-bs-target="#b" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-circle"></i><span>Section 1</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="b" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link fs-5" href="#">
-                            <i class="bi bi-circle"></i><span>abc</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed fs-5" data-bs-target="#a" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-circle"></i><span>Section 2</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="a" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link fs-5" href="#">
-                            <i class="bi bi-circle"></i><span>xyz</span>
-                        </a>
-                    </li>
-                </ul>
             </li>
             <li class="nav-item" id="new-section">
 
             </li>
             <li class="nav-item">
-                <a class="nav-link fs-5" href="#" onclick="addsection(this)">
+                <button class="nav-link fs-5" href="#" onclick="addsection(this)">
                     <i class="bi bi-plus-square"></i><span>New section</span>
-                </a>
+                </button>
             </li>
         </ul>
     </aside>

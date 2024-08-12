@@ -30,46 +30,50 @@
             </ol>
         </nav>
     </div>
-    <div class="content col-12 m-auto">
-        <div class="card p-3">
-            <div class="card-body">
-                <table id="table" class="table table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center" data-field="employee_code">Employee Code</th>
-                            <th class="text-center" data-field="photo">Photo</th>
-                            <th data-field="full_name">Full Name</th>
-                            <th data-field="en_name">English Name</th>
-                            <th data-field="department">Department</th>
+    <div class="card p-2 border rounded-4">
+        <div class="card-body">
+            <table id="table" class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center" data-field="employee_code">Employee Code</th>
+                        <th class="text-center" data-field="photo">Photo</th>
+                        <th data-field="full_name">Full Name</th>
+                        <th data-field="en_name">English Name</th>
+                        <th data-field="department">Department</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($sql as $item)
+                        <tr data-href="{{ route('portfolio.id', ['id' => $item->employee_code]) }}">
+                            <td class="text-center">{{ $item->employee_id }}</td>
+                            <td class="text-center">{{ $item->employee_code }}</td>
+                            <td class="text-center">
+                                <img src="{{ $item->photoExists ? asset($item->photo) : asset('assets/img/avt.png') }}"
+                                    style="width: 50px; height: 50px; border-radius: 50%" alt="">
+                            </td>
+                            <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                            <td>{{ $item->en_name }}</td>
+                            <td>{{ $item->department_name }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($sql as $item)
-                            <tr data-href="{{ route('portfolio.id', ['id' => $item->employee_code]) }}">
-                                <td class="text-center">{{ $item->employee_id }}</td>
-                                <td class="text-center">{{ $item->employee_code }}</td>
-                                <td class="text-center">
-                                    <img src="{{ $item->photoExists ? asset($item->photo) : asset('assets/img/avt.png') }}"
-                                        style="width: 50px; height: 50px; border-radius: 50%" alt="">
-                                </td>
-                                <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
-                                <td>{{ $item->en_name }}</td>
-                                <td>{{ $item->department_name }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
     <script>
         $(document).ready(function() {
-            $('#table').DataTable({
-                "paging": true,
-                "searching": true,
-                "info": true,
-                "autoWidth": true
+            var table = $('#table').DataTable({
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
             });
 
             // Sự kiện click trên hàng
