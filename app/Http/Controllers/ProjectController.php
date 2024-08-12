@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -61,4 +63,54 @@ class ProjectController extends Controller
             return response()->json(['status' => 500, 'message' => 'Thêm dự án thất bại, vui lòng thử lại.', 'error' => $e->getMessage()]);
         }
     }
+
+    public function getAttachmentView(Request $request, $project_id){
+        $contracts_id = DB::table('projects')->where('project_id', $project_id)->value('contract_id');
+        $contract = DB::table('contracts')->where('contract_id', $contracts_id)->first();
+        $company = DB::table('customers')->where('customer_id', $contract->customer_id)->value('company_name');
+        $locations = DB::table('project_locations')->where('project_id', $project_id)->get();
+
+        return view('auth.projects.project-attachments',[
+            'project_id' => $project_id,
+            'contract' => $contract,
+            'company' => $company,
+            'locations' => $locations
+        ]);
+    }
+    public function getDateAttachments(Request $request, $project_id, $project_location_id) {
+        $dates = DB::table('projects')
+            ->where('project_id', $project_id)
+            ->select('project_date_start','project_date_end')
+            ->first();
+        $startDate = Carbon::parse($dates->project_date_start);
+        $endDate = Carbon::parse($dates->project_date_end);
+
+        $dateRange = [];
+
+        while ($startDate->lte($endDate)) {
+            $dateRange[] = $startDate->format('Y-m-d');
+            $startDate->addDay();
+        }
+
+        return json_encode($dateRange);
+    }
+
+    public function getFileAttachments(Request $request, $project_id, $project_location_id, $date){
+        $files = DB::table('task_files')
+            ->where('project_location_id', $project_location_id)
+            ->whereDate('date', $date)
+            ->get();
+
+        $images = DB::table('task_images')
+            ->where('project_location_id', $project_location_id)
+            ->whereDate('date', $date)
+            ->get();
+
+        return [
+            'files' => json_encode($files),
+            'images' => json_encode($images),
+        ];
+    }
+
+
 }

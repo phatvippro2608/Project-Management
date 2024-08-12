@@ -38,19 +38,19 @@
                     </div>
                 </div>
             </div>
-            <table id="employeesTable" class="table table-hover table-borderless">
-                <thead class="table-light">
-                    <tr>
-                        <th>Employee Code</th>
-                        <th class="text-center">Photo</th>
-                        <th>Full Name</th>
-                        <th>English Name</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="employeesTableBody">
+                <table id="employeesTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Employee Code</th>
+                            <th class="text-center">Photo</th>
+                            <th>Full Name</th>
+                            <th>English Name</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeesTableBody">
                         @foreach($data as $item)
                             @if($item->fired == "false")
                                 <tr>
