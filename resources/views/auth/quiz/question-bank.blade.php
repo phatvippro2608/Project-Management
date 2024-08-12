@@ -462,10 +462,8 @@
                         $('#editQuestionModal').modal('hide');
                         toastr.success(response.message, "Edit successful");
 
-                        // Tìm dòng cần chỉnh sửa trong bảng
                         var row = $('#questionsTable').find(`button[data-id='${question_id}']`).closest('tr');
 
-                        // Cập nhật nội dung của dòng
                         row.find('textarea').eq(0).val(response.question.question);
                         row.find('textarea').eq(1).val(response.question.question_a);
                         row.find('textarea').eq(2).val(response.question.question_b);
@@ -473,7 +471,7 @@
                         row.find('textarea').eq(4).val(response.question.question_d);
                         row.find('td').eq(6).text(response.question.correct);
 
-                        // Optional: highlight the updated row
+                        //Make color :))
                         row.addClass('table-success');
                         setTimeout(function () {
                             row.removeClass('table-success');
