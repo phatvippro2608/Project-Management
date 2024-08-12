@@ -14,6 +14,27 @@
     src: url('../fonts/GoogleSans-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'Alex Brush';
+  src: url('../fonts/Alex_Brush/AlexBrush-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lora';
+  src: url('../fonts/Lora/Lora-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Great Vibes';
+  src: url('../fonts/Great_Vibes/GreatVibes-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   /*font-family: "Open Sans", sans-serif;*/
   background: #f6f9ff;
