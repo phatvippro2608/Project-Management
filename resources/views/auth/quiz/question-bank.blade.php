@@ -383,8 +383,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route('question-bank.destroy', ':id') }}'.replace(':id',
-                            question_id),
+                        url: '{{ route('question-bank.destroy', ':id') }}'.replace(':id', question_id),
                         method: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'
@@ -392,12 +391,12 @@
                         success: function (response) {
                             if (response.success) {
                                 toastr.success(response.message, "Deleted successfully");
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 500);
+
+                                // Xóa dòng tương ứng trong bảng mà không cần tải lại trang
+                                var row = $('#questionsTable').find(`button[data-id='${question_id}']`).closest('tr');
+                                row.remove();
                             } else {
-                                toastr.error("Failed to delete the proposal application.",
-                                    "Operation Failed");
+                                toastr.error("Failed to delete the question.", "Operation Failed");
                             }
                         },
                         error: function (xhr) {
@@ -407,6 +406,7 @@
                 }
             });
         });
+
 
         $('#questionsTable').on('click', '.edit-btn', function () {
             var question_id = $(this).data('id');
@@ -445,7 +445,6 @@
             });
         });
 
-
         $('#editQuestionForm').submit(function (e) {
             e.preventDefault();
             var question_id = $(this).data('id'); // Lấy ID từ form
@@ -461,10 +460,24 @@
                 success: function (response) {
                     if (response.success) {
                         $('#editQuestionModal').modal('hide');
-                        toastr.success(response.response, "Edit successful");
+                        toastr.success(response.message, "Edit successful");
+
+                        // Tìm dòng cần chỉnh sửa trong bảng
+                        var row = $('#questionsTable').find(`button[data-id='${question_id}']`).closest('tr');
+
+                        // Cập nhật nội dung của dòng
+                        row.find('textarea').eq(0).val(response.question.question);
+                        row.find('textarea').eq(1).val(response.question.question_a);
+                        row.find('textarea').eq(2).val(response.question.question_b);
+                        row.find('textarea').eq(3).val(response.question.question_c);
+                        row.find('textarea').eq(4).val(response.question.question_d);
+                        row.find('td').eq(6).text(response.question.correct);
+
+                        // Optional: highlight the updated row
+                        row.addClass('table-success');
                         setTimeout(function () {
-                            location.reload()
-                        }, 500);
+                            row.removeClass('table-success');
+                        }, 2000);
                     }
                 },
                 error: function (xhr) {
@@ -472,6 +485,7 @@
                 }
             });
         });
+
 
         $('.btnExportExcel').click(function () {
             let course_name = $("#courseSelect option:selected").text();
