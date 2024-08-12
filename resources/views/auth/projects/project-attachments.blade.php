@@ -45,8 +45,8 @@
                 </select>
             </div>
             <div class="col-2">
-                <a href="" class="btn btn-info btn-lg"> < </a>
-                <a href="" class="btn btn-info btn-lg"> > </a>
+                <button href="" class="btn btn-info btn-lg btn-left"> < </button>
+                <button href="" class="btn btn-info btn-lg btn-right"> > </button>
             </div>
         </div>
     </div>
@@ -239,11 +239,42 @@
             if (initialLocationId) {
                 updateDates(initialLocationId);
             }
-            setInterval(1000);
+
             var initialAttachments = $('.date_select').val();
             if (initialAttachments) {
                 updateAttachments(initialAttachments);
             }
+            const dateSelect = $('.date_select');
+
+            $('.btn-left').on('click', function(event) {
+                event.preventDefault(); // Prevent the default anchor behavior
+
+                // Get the current selected index
+                let currentIndex = dateSelect.prop('selectedIndex');
+
+                // Decrement the index to move to the previous option
+                let newIndex = currentIndex - 1;
+
+                // Ensure the new index is within bounds
+                if (newIndex >= 0) {
+                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                }
+            });
+            // Handle click for the right button (next)
+            $('.btn-right').on('click', function(event) {
+                event.preventDefault(); // Prevent the default anchor behavior
+
+                // Get the current selected index
+                let currentIndex = dateSelect.prop('selectedIndex');
+
+                // Increment the index to move to the next option
+                let newIndex = currentIndex + 1;
+
+                // Ensure the new index is within bounds
+                if (newIndex < dateSelect.children('option').length) {
+                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                }
+            });
         });
 
 
