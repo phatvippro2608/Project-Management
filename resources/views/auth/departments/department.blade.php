@@ -1,18 +1,18 @@
 @extends('auth.main');
 @section('contents')
     <div class="pagetitle">
-        <h1>{{ __('messages.departments') }}</h1>
+        <h1>{{ __('messages.department') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Departments list</li>
+                <li class="breadcrumb-item active">{{ __('messages.department') }}</li>
             </ol>
         </nav>
-    </div>    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+    </div>
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
         <i class="bi bi-building-add me-3"></i>
         {{ __('messages.add_department') }}
     </button>
-
 
     <div class="modal fade" id="addDepartmentModal">
         <div class="modal-dialog">
@@ -26,11 +26,11 @@
                     <form id="addDepartmentForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="department_name" class="form-label">Department Name</label>
+                            <label for="department_name" class="form-label">{{ __('messages.department_name') }}</label>
                             <input type="text" class="form-control" id="department_name" name="department_name"
                                    required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Department</button>
+                        <button type="submit" class="btn btn-primary">{{ __('messages.add_department') }}</button>
                     </form>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                         @method('PUT')
                         <input type="hidden" id="editDepartmentId" name="department_id">
                         <div class="mb-3">
-                            <label for="edit_department_name" class="form-label">Department Name</label>
+                            <label for="edit_department_name" class="form-label">{{ __('messages.department_name') }}</label>
                             <input type="text" class="form-control" id="edit_department_name" name="department_name"
                                    required>
                         </div>
@@ -79,14 +79,17 @@
         </div>
     </div>
 
-    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
-{{--        <h3 class="text-left mb-4">Departments List</h3>--}}
+{{--    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">--}}
+    <div class="card p-2 border rounded-4">
+    <div class="card-header py-0">
+        <div class="card-title my-3 p-0">{{ __('messages.departments') }}</div>
+    </div>
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>{{ __('messages.department_name') }}</th>
-                <th>Action</th>
+                <th>{{ __('messages.action') }}</th>
             </tr>
             </thead>
             <tbody id="departmentsTableBody">
