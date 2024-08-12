@@ -28,7 +28,7 @@ class ProjectController extends Controller
                 ->join('employees', 'employees.employee_id', '=', 'team_details.employee_id')
                 ->where('team_id', $project->team_id)
                 ->orderBy('team_permission', 'asc')
-                ->limit(4)->get();
+                ->get();
         }
         $teams = DB::table('teams')->get();
         $contracts = DB::table('contracts')

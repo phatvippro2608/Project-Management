@@ -6,6 +6,10 @@
             margin-left: 5px;
             margin-top: 20px;
         }
+
+        tr{
+            border-bottom: 1px solid #F8F9FA;
+        }
     </style>
 @endsection
 @section('contents')
@@ -52,26 +56,37 @@
                 <table id="projectListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                     <tr>
+
                         <th class="text-center">#</th>
                         <th scope="col" class="text-center">{{ __('messages.project_name') }}</th>
                         <th scope="col" class="text-center">{{ __('messages.customer') }}</th>
                         <th scope="col" class="text-center">{{ __('messages.team_members') }}</th>
-                        {{--                        <th>Tags</th>--}}
-                        <th scope="col" class="text-center">{{ __('messages.datestart') }}</th>
-                        <th scope="col" class="text-center">{{ __('messages.dateend') }}</th>
+
                         <th scope="col" class="text-center">{{ __('messages.status') }}</th>
                         <th scope="col" class="text-center">{{ __('messages.action') }}</th>
+{{--                        <th scope="col">StartDate</th>--}}
+{{--                        <th scope="col">EndDate</th>--}}
                     </tr>
                     </thead>
                     <tbody>
+                    @php $d = 1@endphp
                     @foreach($projects as $project)
                         <tr>
-                            <td class="text-center">{{ $project->project_id }}</td>
-                            <td>{{ $project->project_name }}</td>
+
+                            <td class="text-center">{{ $d }}</td>
+                            @php $d++ @endphp
+                            <td>
+                                <span><b>{{ $project->project_name }}</b></span><br>
+                                <span>{{ \Carbon\Carbon::parse($project->project_date_start)->format('d M Y') }} - {{ \Carbon\Carbon::parse($project->project_date_end)->format('d M Y') }}</span>
+                            </td>
+
                             <td>{{ $project->customer_info }}</td>
                             <td>
                                 <div style="display: flex; align-items: center">
+                                    @php $i = 1 @endphp
                                     @foreach($project->team_members as $employee)
+                                        @php $i++ @endphp
+                                        @if($i>4) @break @endif
                                         @php
                                             $photoPath = asset($employee->photo);
                                             $defaultPhoto = asset('assets/img/avt.png');
@@ -83,16 +98,45 @@
                                              title="{{$employee->last_name." ".$employee->first_name}}"
                                              style="cursor:pointer">
                                     @endforeach
+                                    @if(count($project->team_members)>3)
+                                    <div
+                                        class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
+                                        style="width: 36px; height: 36px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
+                                        <i class="bi bi-plus position-absolute center" style="left: 1px;"></i>
+                                        <span class="position-absolute center" style="left:15px; ">{{count($project->team_members)-3}}</span>
+                                        <div class="more-em" style="">
+                                            @php $i=1 @endphp
+                                            @foreach($project->team_members as $employee)
+                                                @php $i++ @endphp
+                                                @if($i>4)
+                                                    @php
+                                                        $photoPath = asset($employee->photo);
+                                                        $defaultPhoto = asset('assets/img/avt.png');
+                                                        $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                                    @endphp
+                                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                                                         class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
+                                                         width="36" height="36"
+                                                         title="{{$employee->last_name." ".$employee->first_name}}"
+                                                         style="cursor:pointer">
+                                                @endif
+                                            @endforeach
+                                            <div class="arrow-f"></div>
+                                        </div>
+                                    </div>
+
+                                    @endif
                                     <div
                                         class="d-flex align-items-center justify-content-center ms-1"
-                                        style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 2px dashed black; cursor: pointer">
+                                        style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer">
                                         <i class="bi bi-person-fill-add fs-4 "></i>
                                     </div>
                                 </div>
                             </td>
-                            {{--                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>--}}
-                            <td class="text-center">{{ $project->project_date_start }}</td>
-                            <td class="text-center">{{ $project->project_date_end }}</td>
+
+{{--                            <td>{{ \Carbon\Carbon::parse($project->project_date_start)->format('d M Y') }}</td>--}}
+{{--                            <td>{{ \Carbon\Carbon::parse($project->project_date_end)->format('d M Y') }}</td>--}}
+
                             <td class="text-center">
                                 <span class="badge rounded-pill
                                     @switch($project->phase_id)
@@ -117,7 +161,7 @@
                                     {{ $project->phase_name_eng }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a href="{{ route('project.details', ['id' => $project->project_id]) }}"
                                    class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
                                 <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}"
