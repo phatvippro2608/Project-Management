@@ -92,8 +92,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
-        ;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
     });
@@ -332,6 +331,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+
+
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
@@ -351,12 +352,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/exam/{id}/edit', [ExamController::class, 'edit'])->name('exams.edit');
         Route::put('/exam/{id}/update', [ExamController::class, 'update'])->name('exams.update');
         Route::get('/exam/{id}/questions', [ExamController::class, 'getQuestionsByCourse'])->name('exams.questions');
-
-
     });
 
-    Route::get('certificate',[InternalCertificatesController::class,'getViewUser'])->name('certificate.user');
-    Route::get('certificateType',[InternalCertificatesController::class,'getViewType'])->name('certificate.type');
+    Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
+    Route::get('certificateType', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
 
 
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
@@ -365,5 +364,4 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::delete('certificateType', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
-
 });
