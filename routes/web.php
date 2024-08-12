@@ -347,6 +347,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+        Route::post('/save-answer', [TestQuizController::class, 'saveAnswer'])->name('test-quiz.saveAnswer');
+        Route::post('/submit-quiz', [TestQuizController::class, 'submitQuiz'])->name('submit-quiz');
+
+
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
         Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
