@@ -32,7 +32,6 @@ use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\ProjectBudgetController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
