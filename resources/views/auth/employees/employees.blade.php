@@ -36,7 +36,7 @@
 
     <div class="card p-2 rounded-4 border">
         <div class="card-header py-0">
-            <div class="card-title my-3 p-0">{{ __('messages.employees') }}</div>
+            <div class="card-title my-3 p-0">{{ __('messages.employee_list') }}</div>
         </div>
         <div class="card-body">
             <div class="row gx-3 my-3">
