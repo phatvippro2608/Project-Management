@@ -94,6 +94,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         ;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
+
+        Route::put('/add-from-project', 'App\Http\Controllers\TeamController@addFromProject');
     });
 
     Route::group(['prefix' => '/lms'], function () {

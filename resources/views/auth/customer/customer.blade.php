@@ -251,17 +251,20 @@
         function validateForm() {
             let isValid = true;
 
-            const nameRegex = /^[a-zA-Z\s]+$/;
+            const validCharRegex = /^[\p{L}\s]+$/u; // Matches letters (including those with diacritics), numbers, and spaces
             const firstName = $('.name1').val();
             const lastName = $('.name2').val();
-            if (!nameRegex.test(firstName)) {
-                toastr.error("First Name cannot contain numbers or special characters", "Failed Action");
+
+            if (!validCharRegex.test(firstName)) {
+                toastr.error("First Name contains special characters", "Failed Action");
                 isValid = false;
             }
-            if (!nameRegex.test(lastName)) {
-                toastr.error("Last Name cannot contain numbers or special characters", "Failed Action");
+
+            if (!validCharRegex.test(lastName)) {
+                toastr.error("Last Name contains special characters", "Failed Action");
                 isValid = false;
             }
+
 
             const dob = new Date($('.name4').val());
             const age = (new Date().getFullYear()) - dob.getFullYear();
@@ -326,85 +329,16 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 300);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed Action");
                         }
                     }
                 });
             });
         });
-        {{--$('.at2').click(function () {--}}
-        {{--    $('.md1 .modal-title').text('Update Team');--}}
-        {{--    var data = JSON.parse($(this).attr('data'));--}}
-        {{--    $('.name1').val(data.team_name);--}}
-        {{--    $('.name2').val(data.status);--}}
-        {{--    $('.name3').val(data.team_description);--}}
-        {{--    $('.md1').modal('show');--}}
-
-        {{--    $('.at1').click(function () {--}}
-        {{--        if ($('.name1').val().trim() === '') {--}}
-        {{--            alert('Please enter a team name.');--}}
-        {{--            return;--}}
-        {{--        }--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: `{{action('App\Http\Controllers\TeamController@update')}}`,--}}
-        {{--            type: "POST",--}}
-        {{--            headers: {--}}
-        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--            },--}}
-        {{--            data: {--}}
-        {{--                'id_team' : data.id_team,--}}
-        {{--                'team_name': $('.name1').val(),--}}
-        {{--                'status': $('.name2').val(),--}}
-        {{--                'team_description': $('.name3').val(),--}}
-        {{--            },--}}
-        {{--            success: function (result) {--}}
-        {{--                result = JSON.parse(result);--}}
-        {{--                if (result.status === 200) {--}}
-        {{--                    toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                    setTimeout(function () {--}}
-        {{--                        window.location.reload();--}}
-        {{--                    }, 300);--}}
-        {{--                } else {--}}
-        {{--                    toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-        {{--});--}}
-
-        {{--$('.at3').click(function () {--}}
-        {{--    if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {--}}
-        {{--        return;--}}
-        {{--    }--}}
-        {{--    var id = $(this).attr('data');--}}
-        {{--    $.ajax({--}}
-        {{--        url: `{{action('App\Http\Controllers\TeamController@delete')}}`,--}}
-        {{--        type: "DELETE",--}}
-        {{--        headers: {--}}
-        {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--        },--}}
-        {{--        data: {--}}
-        {{--            'id_team': id,--}}
-        {{--        },--}}
-        {{--        success: function (result) {--}}
-        {{--            result = JSON.parse(result);--}}
-        {{--            if (result.status === 200) {--}}
-        {{--                toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                setTimeout(function () {--}}
-        {{--                    window.location.reload();--}}
-        {{--                }, 300);--}}
-        {{--            } else {--}}
-        {{--                toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--})--}}
-
     </script>
 @endsection

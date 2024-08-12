@@ -1338,4 +1338,6 @@ div.dt-container div.dt-search{
     display: none;
 }
 
-
+.border-admin{
+    border: 3px solid red;
+}

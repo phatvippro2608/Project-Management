@@ -68,16 +68,25 @@ class TeamController extends Controller
         }
     }
 
-    function addEmployee()
+    function addFromProject(Request $request)
     {
-
+        try {
+            if($id=DB::table("teams")->insertGetId([
+                'team_name' => $request->team_name,
+                'created_by' => AccountController::getEmployeeId(),
+            ])){
+                DB::table('team_details')->insert([
+                    'team_id' => $id,
+                    'employee_id' => AccountController::getEmployeeId(),
+                    'team_position_id' => 1,
+                ]);
+                return AccountController::status($id, 200);
+            }
+            return AccountController::status('Failed to add a team', 500);
+        }catch (\Exception $exception){
+            return AccountController::status('Failed to add a team', 500);
+        }
     }
-    function updateEmployee()
-    {
 
-    }
 
-    function deleteEmployee(){
-
-    }
 }
