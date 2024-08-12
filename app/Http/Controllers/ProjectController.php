@@ -43,7 +43,7 @@ class ProjectController extends Controller
             'project_name' => 'required|string|max:255|min:5',
             'project_description' => 'required|string',
             'project_address' => 'required|string',
-            'project_date_start' => 'required|date',
+            'project_date_start' => 'required|date|before:project_date_end',
             'project_date_end' => 'required|date',
             'project_contact_name' => 'required|string',
             'project_contact_phone' => 'required|string',

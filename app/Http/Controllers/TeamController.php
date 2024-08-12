@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
-    private $status = [1 => 'Active', 2 => 'Offine', 3 => 'Locked'];
+    private $status = [1 => 'Active', 2 => 'Offline', 3 => 'Locked'];
 
     function getView()
     {
         $team = DB::table('teams')->join('employees', 'employees.employee_id', '=', 'teams.created_by')->get();
+//        dd($team);
         return view('auth.project-employee.team.team', ['team' => $team, 'status' => $this->status]);
     }
 
@@ -74,6 +75,7 @@ class TeamController extends Controller
             if($id=DB::table("teams")->insertGetId([
                 'team_name' => $request->team_name,
                 'created_by' => AccountController::getEmployeeId(),
+                'status' => 1,
             ])){
                 DB::table('team_details')->insert([
                     'team_id' => $id,
