@@ -109,6 +109,9 @@
                     </div>
                 </div>
                 <button class="btn btn-primary mt-3">Send Message</button>
+                <a href="{{ route('certificate') }}">
+                    <button class="btn btn-success mt-3" id="ButtonGetCettificate">Get Certificate</button>
+                </a>
             </div>
             <div class="col">
                 <ul class="list-group list-group-flush">
@@ -176,29 +179,6 @@
     </div>
 
     <div class="row content" id="content">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Bank Information</h5>
-            </div>
-            <div class="card-body p-3">
-                <p>Bank name: ICICI Bank</p>
-                <p>Bank account No: 159843014641</p>
-                <p>IFSC Code: ICI24504</p>
-                <p>PAN No: TC000Y56</p>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Personal Information</h5>
-            </div>
-            <div class="card-body p-3">
-                <p>Passport No.: 9876543210</p>
-                <p>Passport Exp Date: 9876543210</p>
-                <p>Nationality: Indian</p>
-                <p>Marital status: Married</p>
-            </div>
-        </div>
 
         <div class="card mb-4">
             <div class="card-header">
@@ -255,6 +235,30 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Bank Information</h5>
+            </div>
+            <div class="card-body p-3">
+                <p>Bank name: ICICI Bank</p>
+                <p>Bank account No: 159843014641</p>
+                <p>IFSC Code: ICI24504</p>
+                <p>PAN No: TC000Y56</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Personal Information</h5>
+            </div>
+            <div class="card-body p-3">
+                <p>Passport No.: 9876543210</p>
+                <p>Passport Exp Date: 9876543210</p>
+                <p>Nationality: Indian</p>
+                <p>Marital status: Married</p>
             </div>
         </div>
 
@@ -349,77 +353,83 @@
 
     <div class="bank-content" id="bank-content">
     </div>
+@endsection
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            function content() {
-                // Tạo hai thẻ div với lớp col-md-6
-                var $col1 = $('<div class="col-md-6"></div>');
-                var $col2 = $('<div class="col-md-6"></div>');
+@section('script')
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function content() {
+            // Tạo hai thẻ div với lớp col-md-6
+            var $col1 = $('<div class="col-md-6"></div>');
+            var $col2 = $('<div class="col-md-6"></div>');
 
-                // Thêm các thẻ div vào row
-                $('.content').prepend($col1).append($col2);
-                $col1.css('height', 'max-content');
-                $col2.css('height', 'max-content');
-                Array.from(document.querySelectorAll('.content .card')).forEach(element => {
-                    var height1 = $col1.outerHeight();
-                    var height2 = $col2.outerHeight();
-                    if (height1 > height2) {
-                        $col2.append(element);
-                    } else {
-                        $col1.append(element);
-                    }
-                });
-            }
-
-            // Khởi tạo DataTable
-            $('#recognitionsTable').DataTable({
-                "pagingType": "simple_numbers",
-                "pageLength": 10,
-                "lengthChange": false,
-                "searching": false,
-                "order": [
-                    [1, 'desc']
-                ]
-            });
-
-            $('#disciplinariesTable').DataTable({
-                "pagingType": "simple_numbers",
-                "pageLength": 10,
-                "lengthChange": false,
-                "searching": false,
-                "order": [
-                    [1, 'desc']
-                ]
-            });
-
-            $('#table--project').DataTable({
-                "order": [
-                    [3, 'desc']
-                ]
-            });
-
-            $('#content').addClass('active');
-            content();
-
-            $('.card .nav-link').click(function() {
-                $('.nav-link').removeClass('active');
-                $('.row.content, .card, .bank-content').removeClass('active');
-                $(this).addClass('active');
-                var target = $(this).data('target');
-                $(target).addClass('active');
-            });
-
-            $('#table--project').on('click', 'tr', function() {
-                var url = $(this).data('href');
-                if (url) {
-                    window.location.href = url;
+            // Thêm các thẻ div vào row
+            $('.content').prepend($col1).append($col2);
+            $col1.css('height', 'max-content');
+            $col2.css('height', 'max-content');
+            Array.from(document.querySelectorAll('.content .card')).forEach(element => {
+                var height1 = $col1.outerHeight();
+                var height2 = $col2.outerHeight();
+                if (height1 > height2) {
+                    $col2.append(element);
+                } else {
+                    $col1.append(element);
                 }
             });
+        }
+
+        // Khởi tạo DataTable
+        $('#recognitionsTable').DataTable({
+            "pagingType": "simple_numbers",
+            "pageLength": 10,
+            "lengthChange": false,
+            "searching": false,
+            "order": [
+                [1, 'desc']
+            ]
         });
-    </script>
+
+        $('#disciplinariesTable').DataTable({
+            "pagingType": "simple_numbers",
+            "pageLength": 10,
+            "lengthChange": false,
+            "searching": false,
+            "order": [
+                [1, 'desc']
+            ]
+        });
+
+        $('#table--project').DataTable({
+            "order": [
+                [3, 'desc']
+            ]
+        });
+
+        $('#content').addClass('active');
+        content();
+
+        $('.card .nav-link').click(function() {
+            $('.nav-link').removeClass('active');
+            $('.row.content, .card, .bank-content').removeClass('active');
+            $(this).addClass('active');
+            var target = $(this).data('target');
+            $(target).addClass('active');
+        });
+
+        $('#table--project').on('click', 'tr', function() {
+            var url = $(this).data('href');
+            if (url) {
+                window.location.href = url;
+            }
+        });
+
+        $('#ButtonGetCettificate').click(function() {
+
+        })
+    });
+</script>
 @endsection

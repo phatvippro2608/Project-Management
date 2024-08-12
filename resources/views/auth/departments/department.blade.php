@@ -1,99 +1,38 @@
 @extends('auth.main');
+
 @section('contents')
-    <div class="pagetitle">
-        <h1>Departments</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Departments list</li>
-            </ol>
-        </nav>
+<div class="pagetitle">
+    <h1>{{ __('messages.department') }}</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">{{ __('messages.department') }}</li>
+        </ol>
+    </nav>
+</div>
+
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+    <i class="bi bi-building-add me-3"></i>
+    {{ __('messages.add') }}
+</button>
+
+{{--    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">--}}
+    <div class="card p-2 border rounded-4">
+    <div class="card-header py-0">
+        <div class="card-title my-3 p-0">{{ __('messages.departments') }}</div>
     </div>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
-        <i class="bi bi-building-add me-3"></i>
-        Add Department
-    </button>
-
-    <div class="modal fade" id="addDepartmentModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Department</h4>
-                    @component('auth.component.btnCloseModal')@endcomponent
-                </div>
-
-                <div class="modal-body">
-                    <form id="addDepartmentForm">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="department_name" class="form-label">Department Name</label>
-                            <input type="text" class="form-control" id="department_name" name="department_name"
-                                   required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Department</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department</h5>
-                    @component('auth.component.btnCloseModal')@endcomponent
-                </div>
-                <div class="modal-body">
-                    <form id="editDepartmentForm">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" id="editDepartmentId" name="department_id">
-                        <div class="mb-3">
-                            <label for="edit_department_name" class="form-label">Department Name</label>
-                            <input type="text" class="form-control" id="edit_department_name" name="department_name"
-                                   required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Department added successfully!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
-        <h3 class="text-left mb-4">Departments List</h3>
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
-                <th>ID</th>
-                <th>Department Name</th>
-                <th>Action</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">{{ __('messages.department_name') }}</th>
+                <th class="text-center">{{ __('messages.action') }}</th>
             </tr>
             </thead>
             <tbody id="departmentsTableBody">
             @foreach ($departments as $department)
                 <tr>
-                    <td>{{ $department->department_id }}</td>
+                    <td class="text-center">{{ $department->department_id }}</td>
                     <td>{{ $department->department_name }}</td>
                     <td>
                         <button
@@ -113,6 +52,72 @@
             </tbody>
         </table>
     </div>
+
+
+<div class="modal fade" id="addDepartmentModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ __('messages.add_department') }}</h4>
+                @component('auth.component.btnCloseModal')@endcomponent
+            </div>
+
+            <div class="modal-body">
+                <form id="addDepartmentForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="department_name" class="form-label">{{ __('messages.department_name') }}</label>
+                        <input type="text" class="form-control" id="department_name" name="department_name"
+                               required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.add_department') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department</h5>
+                @component('auth.component.btnCloseModal')@endcomponent
+            </div>
+            <div class="modal-body">
+                <form id="editDepartmentForm">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="editDepartmentId" name="department_id">
+                    <div class="mb-3">
+                        <label for="edit_department_name" class="form-label">{{ __('messages.department_name') }}</label>
+                        <input type="text" class="form-control" id="edit_department_name" name="department_name"
+                               required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Department added successfully!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')

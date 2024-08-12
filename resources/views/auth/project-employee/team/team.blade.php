@@ -27,21 +27,24 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Team List</h1>
+        <h1>{{ __('messages.team') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Team List</li>
+                <li class="breadcrumb-item active">{{ __('messages.team') }}</li>
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary my-3 btn-add">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-            Add Team
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary me-2">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+                        {{ __('messages.add') }}
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
@@ -49,12 +52,12 @@
                     <thead class="table-light">
                         <tr>
                             <th class="text-center" style="width: 60px!important;">Action</th>
-                            <th class="text-center">Team name</th>
-                            <th class="text-center">Team Description</th>
+                            <th class="text-center">{{ __('messages.team_name') }}</th>
+                            <th class="text-center">{{ __('messages.team_description') }}</th>
                             <th class="text-center">Created by</th>
                             <th class="text-center">Created at</th>
                             <th class="text-center">Last update</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">{{ __('messages.status') }}</th>
                         </tr>
                     </thead>
                     <tbody class="account-list">
@@ -94,8 +97,8 @@
                                     {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
                                 </td>
                                 <td class="text-center">
-                                    @if($status[$item->status] == 'Offine')
-                                        <i class="bi bi-circle-fill account-status offine"></i>
+                                    @if($status[$item->status] == 'Offline')
+                                        <i class="bi bi-circle-fill account-status offline"></i>
                                     @elseif($status[$item->status] == 'Locked')
                                         <i class="bi bi-circle-fill account-status" style="color:red;"></i>
                                     @else
