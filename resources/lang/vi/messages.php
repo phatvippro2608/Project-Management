@@ -37,7 +37,7 @@ return [
     'leave_report' => 'Báo cáo nghỉ phép',
     'KPI' => 'KPI',
     'team' => 'Đội nhóm',
-    'team_list' => 'Danh sách đội ngũ',
+    'teams' => 'Danh sách đội ngũ',
     'customer_manager' => 'Quản lý khách hàng',
     'customer' => 'Khách hàng',
     'customers' => 'Danh sách khách hàng',

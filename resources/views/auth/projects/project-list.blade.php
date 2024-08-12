@@ -10,7 +10,7 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>{{ __('messages.project_list') }}</h1>
+        <h1>{{ __('messages.projects') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a
