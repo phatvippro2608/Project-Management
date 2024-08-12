@@ -228,7 +228,7 @@ $token = 'position';
             {{--     Change language      --}}
             <li class="nav-item dropdown-center my-2">
                 <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#" data-bs-toggle="dropdown">
-                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'vi')
+                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'en')
                         <img src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
                     @else
                         <img src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">

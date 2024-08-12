@@ -70,6 +70,7 @@ return [
     'overview' => 'Overview',
     'subtask' => 'Sub Task',
     'recent' => 'Recent',
+    'recent_project' => 'Recent Project',
     'todolist' => 'Todo List',
     'action' => 'Action',
 

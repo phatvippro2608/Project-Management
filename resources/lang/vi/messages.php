@@ -71,6 +71,7 @@ return [
     'overview' => 'Tổng quan',
     'subtask' => 'Công việc con',
     'recent' => 'Gần đây',
+    'recent_project' => 'Dự án gần đây',
     'todolist' => 'Danh sách việc cần làm',
     'action' => 'Thao tác',
 

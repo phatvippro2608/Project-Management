@@ -126,7 +126,7 @@
         </div>
         <div class="row gy-3">
             <div class="col-xl-8 col-lg-6">
-                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.subtask') }}</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.recent_project') }}</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">
