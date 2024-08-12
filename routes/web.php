@@ -30,7 +30,6 @@ use App\Http\Controllers\TestQuizController;
 use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
