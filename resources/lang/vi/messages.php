@@ -6,7 +6,10 @@ return [
     'welcome' => 'Chào mừng bạn đến với ứng dụng của chúng tôi',
     'dashboard' => 'Bảng điều khiển',
     'organization' => 'Tổ chức',
-    'departments' => 'Phòng ban',
+    'department' => 'Phòng ban',
+    'departments' => 'Danh sách phòng ban',
+    'add_department' => 'Thêm phòng ban',
+
     'designation' => 'Chức danh',
     'employees' => 'Nhân viên',
     'hr_manager' => 'Quản lý nhân sự',
@@ -32,6 +35,7 @@ return [
     'earned_leave' => 'Nghỉ phép có lương',
     'leave_report' => 'Báo cáo nghỉ phép',
     'KPI' => 'KPI',
+    'team' => 'Đội nhóm',
     'team_list' => 'Danh sách đội ngũ',
     'customer_manager' => 'Quản lý khách hàng',
     'customer' => 'Khách hàng',
@@ -40,6 +44,7 @@ return [
     'customer_support' => 'Hỗ trợ khách hàng',
     'project_management' => 'Quản lý dự án',
     'projects' => 'Dự án',
+    'task' => 'Công việc',
     'task_list' => 'Danh sách công việc',
     'field_visit' => 'Thăm hiện trường',
     'myxteam' => 'myXteam',
@@ -58,4 +63,9 @@ return [
     'activity_log' => 'Nhật ký hoạt động',
     'notice' => 'Thông báo',
     'settings' => 'Cài đặt',
+
+    'overview' => 'Tổng quan',
+    'subtask' => 'Công việc con',
+    'recent' => 'Gần đây',
+    'todolist' => 'Danh sách việc cần làm',
 ];

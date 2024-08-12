@@ -55,4 +55,9 @@ return [
     'utilities' => 'Utilities',
     'notice' => 'Notice',
     'settings' => 'Settings',
+
+    'overview' => 'Overview',
+    'subtask' => 'Sub Task',
+    'recent' => 'Recent',
+    'todolist' => 'Todo List',
 ];
