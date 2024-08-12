@@ -3,7 +3,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.51.0/apexcharts.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -54,23 +54,48 @@
         </table>
 
         <h5><b>Pie Chart Of Cost</b></h5>
-        <div>
-            <div class="col-4"></div>
-            <div class="col-8">
-                <div id="pieChart" class="container-fluid"></div>
+<div class="row">
+    <div class="col-md-6">
+        <div id="pieChart" class="container-fluid"></div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-2 border rounded-4">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Expense Statistics</div>
+            </div>
+            <div class="card-body">
+                <table id="total" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($chart as $key => $value)
+                            <tr>
+                                <td>{{ $key }}</td>
+                                <td>{{ number_format($value, 0, ',', '.') }} VND</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
+</div>
+
         <div class="row mb-3">
             <!-- Filter by Name -->
             <div class="col-md-3">
                 <select id="nameFilter" class="form-select">
                     <option value="">Filter by name</option>
-                    @foreach($dataCostGroup as $data)
+                    @foreach ($dataCostGroup as $data)
                         <option value="{{ $data->project_cost_group_name }}">{{ $data->project_cost_group_name }}</option>
                     @endforeach
                 </select>
             </div>
-        
+
             <!-- Start Date Filter -->
             <div class="col-md-3">
                 <div class="input-group">
@@ -80,7 +105,7 @@
                     <input type="text" class="form-control" id="start_date" placeholder="Start Date" readonly>
                 </div>
             </div>
-        
+
             <!-- End Date Filter -->
             <div class="col-md-3">
                 <div class="input-group">
@@ -90,45 +115,46 @@
                     <input type="text" class="form-control" id="end_date" placeholder="End Date" readonly>
                 </div>
             </div>
-        
+
             <!-- Filter and Reset Buttons -->
             <div class="col-md-3 d-flex align-items-center">
                 <button id="filter" class="btn btn-primary me-2">Filter</button>
                 <button id="reset" class="btn btn-warning">Reset</button>
             </div>
         </div>
-        
-        
+
+
         <div class="card p-2 border rounded-4">
             <div class="card-header py-0">
                 <div class="card-title my-3 p-0">Expenses Table</div>
             </div>
             <div class="card-body">
-                    <table id="costTable" class="table table-hover table-borderless">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-center" data-sort="id_source">#<i class="bi bi-sort"></i></th>
-                                <th data-sort="name">NAME<i class="bi bi-sort"></i></th>
-                                <th data-sort="description" style="width:15%">DESCRIPTION<i class="bi bi-sort"></i></th>
-                                <th data-sort="laborqty">LABOR QTY<i class="bi bi-sort"></i></th>
-                                <th data-sort="budgetqty">BUDGET QTY <i class="bi bi-sort"></i></th>
-                                <th data-sort="laborcost">LABOR COST <i class="bi bi-sort"></i></th>
-                                <th data-sort="misccost">MISC. COST<i class="bi bi-sort"></i></th>
-                                <th data-sort="otbudget">OT BUDGET<i class="bi bi-sort"></i></th>
-                                <th data-sort="perdiempay">PER DIEM PAY<i class="bi bi-sort"></i></th>
-                                <th data-sort="date">DATE<i class="bi bi-sort"></i></th>
-                                <th data-sort="subtotal">SUBTOTAL<i class="bi bi-sort"></i></th>
-                            </tr>
-                        </thead>
-                        @php
-                            $i = 1;
-                            $subtotal1 = 0;
-                        @endphp
+                <table id="costTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" data-sort="id_source">#<i class="bi bi-sort"></i></th>
+                            <th data-sort="name">NAME<i class="bi bi-sort"></i></th>
+                            <th data-sort="description" style="width:15%">DESCRIPTION<i class="bi bi-sort"></i></th>
+                            <th data-sort="laborqty">LABOR QTY<i class="bi bi-sort"></i></th>
+                            <th data-sort="budgetqty">BUDGET QTY <i class="bi bi-sort"></i></th>
+                            <th data-sort="laborcost">LABOR COST <i class="bi bi-sort"></i></th>
+                            <th data-sort="misccost">MISC. COST<i class="bi bi-sort"></i></th>
+                            <th data-sort="otbudget">OT BUDGET<i class="bi bi-sort"></i></th>
+                            <th data-sort="perdiempay">PER DIEM PAY<i class="bi bi-sort"></i></th>
+                            <th data-sort="date">DATE<i class="bi bi-sort"></i></th>
+                            <th data-sort="subtotal">SUBTOTAL<i class="bi bi-sort"></i></th>
+                        </tr>
+                    </thead>
+                    @php
+                        $i = 1;
+                        $subtotal1 = 0;
+                    @endphp
+                    <tbody>
                         <tr>
                             @foreach ($dataCost as $data)
-                            @php
-                                $subtotal = 0
-                            @endphp
+                                @php
+                                    $subtotal = 0;
+                                @endphp
                                 <td class="text-center" id="{{ $data->project_cost_id }}">{{ $i++ }}</td>
                                 <td>{{ $data->project_cost_group_name }}</td>
                                 <td>{{ $data->project_cost_description }}</td>
@@ -152,9 +178,9 @@
                                 <td style="text-align:right">{{ number_format($subtotal, 0, ',', '.') }} VND</td>
                         </tr>
                         @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
 
@@ -222,6 +248,8 @@
             </div>
         </div>
     </div>
+    
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
@@ -376,53 +404,55 @@
                 }
             });
         });
-        $(document).ready(function () {
-        // Initialize datepickers
-        $("#start_date").datepicker({
-            dateFormat: 'yy-mm-dd'
-        });
-        $("#end_date").datepicker({
-            dateFormat: 'yy-mm-dd'
-        });
-
-        function filterTable() {
-            var nameFilter = $('#nameFilter').val().toLowerCase();
-            var startDateFilter = $('#start_date').val();
-            var endDateFilter = $('#end_date').val();
-
-            $('#costTable tbody tr').each(function () {
-                var row = $(this);
-                var nameText = row.find('td:eq(1)').text().toLowerCase(); // Name column (second column)
-                var dateText = row.find('td:eq(9)').text(); // Date column (tenth column)
-
-                // Parse date string into a Date object
-                var dateObj = new Date(dateText);
-
-                var isNameMatch = !nameFilter || nameText.indexOf(nameFilter) > -1;
-                var isDateMatch = (!startDateFilter && !endDateFilter) ||
-                    (startDateFilter && endDateFilter && dateObj >= new Date(startDateFilter) && dateObj <= new Date(endDateFilter)) ||
-                    (startDateFilter && !endDateFilter && dateObj >= new Date(startDateFilter)) ||
-                    (!startDateFilter && endDateFilter && dateObj <= new Date(endDateFilter));
-
-                if (isNameMatch && isDateMatch) {
-                    row.show();
-                } else {
-                    row.hide();
-                }
+        $(document).ready(function() {
+            // Initialize datepickers
+            $("#start_date").datepicker({
+                dateFormat: 'yy-mm-dd'
             });
-        }
+            $("#end_date").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
 
-        $('#nameFilter, #start_date, #end_date').on('change', filterTable);
+            function filterTable() {
+                var nameFilter = $('#nameFilter').val().toLowerCase();
+                var startDateFilter = $('#start_date').val();
+                var endDateFilter = $('#end_date').val();
 
-        // Reset filters
-        $('#reset').on('click', function() {
-            $('#nameFilter').val('');
-            $('#start_date').val('');
-            $('#end_date').val('');
-            filterTable();
+                $('#costTable tbody tr').each(function() {
+                    var row = $(this);
+                    var nameText = row.find('td:eq(1)').text().toLowerCase(); // Name column (second column)
+                    var dateText = row.find('td:eq(9)').text(); // Date column (tenth column)
+
+                    // Parse date string into a Date object
+                    var dateObj = new Date(dateText);
+
+                    var isNameMatch = !nameFilter || nameText.indexOf(nameFilter) > -1;
+                    var isDateMatch = (!startDateFilter && !endDateFilter) ||
+                        (startDateFilter && endDateFilter && dateObj >= new Date(startDateFilter) &&
+                            dateObj <= new Date(endDateFilter)) ||
+                        (startDateFilter && !endDateFilter && dateObj >= new Date(startDateFilter)) ||
+                        (!startDateFilter && endDateFilter && dateObj <= new Date(endDateFilter));
+
+                    if (isNameMatch && isDateMatch) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+            }
+
+            $('#nameFilter, #start_date, #end_date').on('change', filterTable);
+
+            // Reset filters
+            $('#reset').on('click', function() {
+                $('#nameFilter').val('');
+                $('#start_date').val('');
+                $('#end_date').val('');
+                filterTable();
+            });
         });
-    });
-    new DataTable('#costTable');
+        new DataTable('#costTable');
+        new DataTable('#total');
 
     </script>
 @endsection
