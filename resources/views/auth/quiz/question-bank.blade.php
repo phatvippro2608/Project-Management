@@ -14,8 +14,8 @@
         <h1>Create Quiz</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="">Home</a></li>
-                <li class="breadcrumb-item"><a href="">Quiz</a></li>
+                <li class="breadcrumb-item"><a href="../../">Home</a></li>
+                <li class="breadcrumb-item"><a href="../quiz">Quiz</a></li>
                 <li class="breadcrumb-item active">Question bank</li>
             </ol>
         </nav>
