@@ -34,7 +34,7 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Customer List</h1>
+        <h1>{{ __('messages.customer') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -42,10 +42,10 @@
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary my-3 btn-add">
+    <div class="btn btn-primary mb-3 btn-add">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus pe-2"></i>
-            Add Customer
+            {{ __('messages.add') }}
         </div>
     </div>
     <div class="card border rounded-4 p-2">
@@ -55,11 +55,11 @@
                     <thead class="table-light">
                         <tr>
                             <th style="width: 112px"></th>
-                            <th class="text-center">Full name</th>
+                            <th class="text-center">{{ __('messages.full_name') }}</th>
                             <th class="text-center">Email</th>
-                            <th class="text-center">Company</th>
-                            <th class="text-center">Address</th>
-                            <th class="text-center">Contract</th>
+                            <th class="text-center">{{ __('messages.company') }}</th>
+                            <th class="text-center">{{ __('messages.address') }}</th>
+                            <th class="text-center">{{ __('messages.contract') }}</th>
                         </tr>
                     </thead>
                     <tbody class="account-list">

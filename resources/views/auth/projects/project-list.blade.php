@@ -9,35 +9,38 @@
     </style>
 @endsection
 @section('contents')
-    <div class="pagetitle">
-        <h1>{{ __('messages.projects') }}</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a
-                        href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
-                <li class="breadcrumb-item active">Project List</li>
-            </ol>
-        </nav>
-    </div>
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+<div class="pagetitle">
+    <h1>{{ __('messages.project') }}</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a
+                    href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
+            <li class="breadcrumb-item active">Project List</li>
+        </ol>
+    </nav>
+</div>
 
-    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-        <i class="bi bi-plus-lg"></i>
-        {{ __('messages.add') }}
-    </button>
-    <button class="btn btn-primary mb-4">
-        <i class="bi bi-file-earmark-arrow-up"></i>
-        {{ __('messages.import') }}
-    </button>
-    <button class="btn btn-primary mb-4">
-        <i class="bi bi-file-earmark-arrow-down"></i>
-        {{ __('messages.export') }}
-    </button>
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+<button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+    <i class="bi bi-plus-lg"></i>
+    {{ __('messages.add') }}
+</button>
+
+<button class="btn btn-primary mb-4">
+    <i class="bi bi-file-earmark-arrow-up"></i>
+    {{ __('messages.import') }}
+</button>
+
+<button class="btn btn-primary mb-4">
+    <i class="bi bi-file-earmark-arrow-down"></i>
+    {{ __('messages.export') }}
+</button>
 
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
@@ -50,14 +53,14 @@
                     <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
-                        <th scope="col" class="text-center">Project Name</th>
-                        <th scope="col" class="text-center">Customer</th>
-                        <th scope="col" class="text-center">Team Memebers</th>
+                        <th scope="col" class="text-center">{{ __('messages.project_name') }}</th>
+                        <th scope="col" class="text-center">{{ __('messages.customer') }}</th>
+                        <th scope="col" class="text-center">{{ __('messages.team_members') }}</th>
                         {{--                        <th>Tags</th>--}}
-                        <th scope="col" class="text-center">StartDate</th>
-                        <th scope="col" class="text-center">EndDate</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" class="text-center">{{ __('messages.datestart') }}</th>
+                        <th scope="col" class="text-center">{{ __('messages.dateend') }}</th>
+                        <th scope="col" class="text-center">{{ __('messages.status') }}</th>
+                        <th scope="col" class="text-center">{{ __('messages.action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
