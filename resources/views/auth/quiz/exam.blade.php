@@ -108,7 +108,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="duration" class="form-label">Time per question (seconds)</label>
-                                <input type="number" class="form-control" id="duration" name="time"  min="5" required>
+                                <input type="number" class="form-control" id="duration" name="time" min="5"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="total_questions" class="form-label">Number of questions</label>
@@ -170,7 +171,7 @@
                 if (isNaN(totalQuestions) || totalQuestions < 1) return;
 
                 if (totalQuestions > allQuestions.length) {
-                    alert(`Số lượng câu hỏi không được vượt quá ${allQuestions.length}`);
+                    alert(`The number of questions must not exceed ${allQuestions.length}`);
                     totalQuestionsInput.value = allQuestions.length;
                     return;
                 }
