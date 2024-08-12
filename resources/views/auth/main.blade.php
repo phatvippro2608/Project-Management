@@ -559,7 +559,7 @@ $token = 'position';
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>{{ __('messages.team_list') }}</span>
+                    <i class="bi bi-people"></i><span>{{ __('messages.teams') }}</span>
                 </a>
             </li>
 
