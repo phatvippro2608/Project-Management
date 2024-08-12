@@ -57,7 +57,7 @@
                     <input type="text" id="courseNameFilter" onkeyup="search()" class="form-control me-1"
                         style="width: 50vh;" placeholder="Search by name">
                     <select id="courseTypeFilter" class="form-select" onchange="search()" style="max-width: 200px;">
-                        <option noselect value="">-Fill by Type-</option>
+                        <option noselect value="">Type</option>
                         @foreach ($getTypeName as $type)
                             <option value="{{ $type->type_name }}">{{ $type->type_name }}</option>
                         @endforeach
@@ -161,8 +161,18 @@
             <div class="modal-content">
                 <form id="formEditCourse" method="post" enctype="multipart/form-data">
                     @csrf
-                    <div class="modal-header">
+                    <div class="modal-header d-flex justify-content-between">
                         <h5 class="modal-title">Edit course</h5>
+                        <div class="dropdown">
+                            <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                                <li><button class="dropdown-item" type="submit">Change</button></li>
+                                <li><a class="dropdown-item" onclick="deleteCourse()">Delete</a></li>
+                                <li><a class="dropdown-item" data-bs-dismiss="modal">Close</a></li>
+                            </ul>
+                        </div>
                         <input type="text" id="course_id" name="course_id" hidden>
                     </div>
                     <div class="modal-body row">
@@ -198,6 +208,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteCourse()">Delete</button>
                         <button type="submit" class="btn btn-primary">Change</button>
                     </div>
                 </form>
@@ -288,6 +299,7 @@
                         toastr.success(data.message);
                         $('#modalAddCourse').modal('hide');
                         $('#course_handel').empty();
+                        $('#select_data').empty();
                         data.courses.forEach(course => {
                             let planinName = course.course_name.substring(0, 30) + '...';
                             let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g,
@@ -295,18 +307,21 @@
 
                             $('#course_handel').append(
                                 `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
-                                <div class="card shadow bg-white border-none rounded-4">
-                                <div class="card-header m-2 p-0 text-primary">
-                                    <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
-                                    <p class="text-secondary course_type">${course.type_name}</p>
-                                </div>
-                                <div class="card-body">
-                                    ${plainDescription}
-                                </div>
-                            </div>
-                        </div>`
+                                    <div class="card shadow bg-white border-none rounded-4">
+                                        <div class="card-header m-2 p-0 text-primary">
+                                            <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                <p class="text-secondary course_type">${course.type_name}</p>
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            ${plainDescription}
+                                        </div>
+                                    </div>
+                                </div>`
                             );
+                            $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
                         });
                     } else {
                         toastr.error(data.message);
@@ -368,6 +383,7 @@
                         toastr.success(data.message);
                         $('#modalEditCourse').modal('hide');
                         $('#course_handel').empty();
+                        $('#select_data').empty();
                         data.courses.forEach(course => {
                             let planinName = course.course_name.substring(0, 30);
                             if (course.course_name.length > 30) {
@@ -381,18 +397,21 @@
 
                             $('#course_handel').append(
                                 `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
-                                <div class="card shadow bg-white border-none rounded-4">
-                                <div class="card-header m-2 p-0 text-primary">
-                                    <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
-                                    <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
-                                    <p class="text-secondary course_type">${course.type_name}</p>
-                                </div>
-                                <div class="card-body">
-                                    ${plainDescription}
-                                </div>
-                            </div>
-                        </div>`
+                                    <div class="card shadow bg-white border-none rounded-4">
+                                        <div class="card-header m-2 p-0 text-primary">
+                                            <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                <p class="text-secondary course_type">${course.type_name}</p>
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            ${plainDescription}
+                                        </div>
+                                    </div>
+                                </div>`
                             );
+                            $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
                         });
                     } else {
                         toastr.error(data.message);
@@ -412,6 +431,69 @@
                     .toLowerCase()) > -1;
                 return courseNameFilter && courseTypeFilter;
             }).parent().parent().show();
+        }
+
+        function deleteCourse(){
+            var course_id = $('#course_id').val();
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ action('App\Http\Controllers\CourseController@deleteCourse') }}',
+                        data: {
+                            course_id: course_id,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        type: 'delete',
+                        success: function(data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                $('#modalEditCourse').modal('hide');
+                                $('#course_handel').empty();
+                                $('#select_data').empty();
+                                data.courses.forEach(course => {
+                                    let planinName = course.course_name.substring(0, 30);
+                                    if (course.course_name.length > 30) {
+                                        planinName += '...';
+                                    }
+                                    let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g,
+                                        "").substring(0, 30);
+                                    if (course.description.replace(/<\/?[^>]+(>|$)/g, "").length > 30) {
+                                        plainDescription += '...';
+                                    }
+
+                                    $('#course_handel').append(
+                                        `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
+                                            <div class="card shadow bg-white border-none rounded-4">
+                                                <div class="card-header m-2 p-0 text-primary">
+                                                    <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                        <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                        <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                        <p class="text-secondary course_type">${course.type_name}</p>
+                                                    </a>
+                                                </div>
+                                                <div class="card-body">
+                                                    ${plainDescription}
+                                                </div>
+                                            </div>
+                                        </div>`
+                                    );
+                                    $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
+                                });
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection

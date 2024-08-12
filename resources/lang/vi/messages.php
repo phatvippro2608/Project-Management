@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     'language' => 'Tiếng Việt',
     'welcome' => 'Chào mừng bạn đến với ứng dụng của chúng tôi',
     'dashboard' => 'Bảng điều khiển',

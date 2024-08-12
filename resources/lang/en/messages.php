@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     'language' => 'English',
     'welcome' => 'Welcome to our application',
     'dashboard' => 'Dashboard',
