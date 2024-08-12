@@ -14,33 +14,37 @@
 
 @section('contents')
 <div class="pagetitle">
-    <h1>Recognitions</h1>
+    <h1>{{ __('messages.recognition') }}</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{action('App\Http\Controllers\DashboardController@getViewDashboard')}}">Home</a></li>
-            <li class="breadcrumb-item active">Recognitions</li>
+            <li class="breadcrumb-item active">{{ __('messages.recognition') }}</li>
         </ol>
     </nav>
 </div>
 
+<div class="mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">
+        <i class="bi bi-plus-lg"></i>{{ __('messages.add') }}
+    </button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">
+        <i class="bi bi-plus-lg"></i>
+        Add recognition type
+    </button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">
+        <i class="bi bi-file-earmark-arrow-up"></i>
+        {{ __('messages.import') }}
+    </button>
+    <button class="btn btn-secondary" id="toggleHiddenRows" onclick="toggleShow()">
+        <i class="bi bi-eye-slash me-2"></i>
+        Show/Hide Hidden Rows
+    </button>
+</div>
+
 <div class="section recognition">
     <div class="card border rounded-4 p-2">
-        <div class="card-header">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionModal">
-                <i class="bi bi-plus-lg"></i>Add
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecognitionTypeModal">
-                <i class="bi bi-plus-lg"></i>
-                Add recognition type
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importRecognitionModal">
-                <i class="bi bi-file-earmark-arrow-up"></i>
-                Import recognition
-            </button>
-            <button class="btn btn-secondary" id="toggleHiddenRows" onclick="toggleShow()">
-                <i class="bi bi-eye-slash me-2"></i>
-                Show/Hide Hidden Rows
-            </button>
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">{{ __('messages.recognition_list') }}</div>
         </div>
         <div class="card-body">
             <table id="recognitionTable" class="table table-hover table-borderless display">
