@@ -407,7 +407,7 @@ $token = 'position';
                         <li>
                             <a class="nav-sub-link"
                                href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
-                                <i class="bi bi-circle"></i><span>{{ __('messages.employees') }}</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.inactive_user') }}</span>
                             </a>
                         </li>
                         <li>

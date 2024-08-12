@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'language' => 'Tiếng Việt',
     'welcome' => 'Chào mừng bạn đến với ứng dụng của chúng tôi',
     'dashboard' => 'Bảng điều khiển',
@@ -10,11 +9,11 @@ return [
     'departments' => 'Danh sách phòng ban',
     'add_department' => 'Thêm phòng ban',
     'department_name' => 'Tên phòng ban',
-
     'designation' => 'Chức danh',
-    'employees' => 'Nhân viên',
-    'hr_manager' => 'Quản lý nhân sự',
+    'employee' => 'Nhân viên',
+    'employees' => 'Danh sách nhân viên',
     'inactive_user' => 'Người dùng không hoạt động',
+    'hr_manager' => 'Quản lý nhân sự',
     'certificate_types' => 'Loại chứng chỉ',
     'job_info' => 'Thông tin công việc',
     'account' => 'Tài khoản',
@@ -64,9 +63,17 @@ return [
     'activity_log' => 'Nhật ký hoạt động',
     'notice' => 'Thông báo',
     'settings' => 'Cài đặt',
-
     'overview' => 'Tổng quan',
     'subtask' => 'Công việc con',
     'recent' => 'Gần đây',
     'todolist' => 'Danh sách việc cần làm',
+    'action' => 'Hành động',
+
+    'add' => 'Thêm',
+    'import' => 'Nhập',
+    'export' => 'Xuất',
+
+    'employee_code' => 'Mã NV',
+    'full_name' => 'Họ và tên',
+    'gender' => 'Giới tính',
 ];

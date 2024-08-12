@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'language' => 'English',
     'welcome' => 'Welcome to our application',
     'dashboard' => 'Dashboard',
@@ -9,10 +8,10 @@ return [
     'department' => 'Department',
     'departments' => 'Departments',
     'add_department' => 'Add Department',
-    'department_name' => 'Department Name',
-
+    'department_name' => 'Department name',
     'designation' => 'Designation',
     'hr_manager' => 'HR Manager',
+    'employee' => 'Employee',
     'employees' => 'Employees',
     'inactive_user' => 'Inactive User',
     'certificate_types' => 'Certificate Types',
@@ -66,4 +65,13 @@ return [
     'subtask' => 'Sub Task',
     'recent' => 'Recent',
     'todolist' => 'Todo List',
+    'action' => 'Hành động',
+
+    'add' => 'Add',
+    'import' => 'Import',
+    'export' => 'Export',
+
+    'employee_code' => 'Employee Code',
+    'full_name' => 'Full Name',
+    'gender' => 'Gender',
 ];
