@@ -10,15 +10,18 @@ use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use Illuminate\Support\Facades\File;
 
 class QuizController extends Controller
 {
     function getView()
     {
         $model = new QuizModel();
-//        dd($model->getInfo());
-        return view('auth.quiz.quiz',
-            ['data' => $model->getInfo()]);
+        //        dd($model->getInfo());
+        return view(
+            'auth.quiz.quiz',
+            ['data' => $model->getInfo()]
+        );
     }
 
     function getViewQuestionBank()
@@ -29,7 +32,7 @@ class QuizController extends Controller
 
     function addQuestion(Request $request)
     {
-//        dd($request);
+        //        dd($request);
         $validated = $request->validate([
             'add_question' => 'required|string',
             'add_answer_a' => 'required|string',
@@ -78,7 +81,7 @@ class QuizController extends Controller
 
     public function destroy($id)
     {
-//        dd($id);
+        //        dd($id);
         $question = QuizModel::findOrFail($id);
 
         // Define the directory path
@@ -113,7 +116,7 @@ class QuizController extends Controller
 
     function update(Request $request, $id)
     {
-//        dd($request, $id);
+        //        dd($request, $id);
         $validated = $request->validate([
             'question' => 'string',
             'question_a' => 'string',
@@ -128,7 +131,7 @@ class QuizController extends Controller
         $imgOld = $model->getQuestionImg($id);
 
         $imagePath = $imgOld;
-//        dd($request->hasFile('question_image'));
+        //        dd($request->hasFile('question_image'));
         if ($request->hasFile('question_image')) {
             $file = $request->file('question_image');
             $imagePath = time() . '_' . $file->getClientOriginalName();
@@ -154,7 +157,7 @@ class QuizController extends Controller
             $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
             $num_row = 0;
             $dataArray = array();
-//            dd($dataExcel['data']);
+            //            dd($dataExcel['data']);
             foreach ($dataExcel['data'] as $item) {
                 $num_row++;
                 if ($num_row == 1) {
@@ -185,7 +188,6 @@ class QuizController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => 500, 'message' => 'An error occurred ' . $e->getMessage()]);
         }
-
     }
 
     public function export($id)
@@ -220,7 +222,12 @@ class QuizController extends Controller
         }
 
         $fileName = "Question-Bank-Export-" . time() . ".xlsx";
-        $filePath = public_path('excel-download/' . $fileName);
+        $directoryPath = public_path('excel-download');
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
+        }
+
+        $filePath = $directoryPath . '/' . $fileName;
 
         $writer = IOFactory::createWriter($excel, 'Xlsx');
         $writer->save($filePath);
@@ -237,5 +244,4 @@ class QuizController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'File not found']);
     }
-
 }
