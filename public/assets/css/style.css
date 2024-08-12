@@ -13,6 +13,14 @@
     font-family: GoogleSans;
     src: url('../fonts/GoogleSans-Regular.ttf');
 }
+@font-face {
+    font-family: GoogleSans-Bold;
+    src: url('../fonts/GoogleSans-Bold.ttf');
+}
+
+.fw-bold{
+    font-family: GoogleSans-Bold;
+}
 
 body {
   /*font-family: "Open Sans", sans-serif;*/
