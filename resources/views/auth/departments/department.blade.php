@@ -246,6 +246,7 @@
                             success: function(response) {
                                 if (response.success) {
                                     table.row(row).remove().draw();
+                                    toastr.success("Delete successful");
                                 }
                             },
                             error: function(xhr) {
