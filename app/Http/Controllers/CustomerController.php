@@ -35,6 +35,7 @@ class CustomerController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'address' => $request->address,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
@@ -50,10 +51,10 @@ class CustomerController extends Controller
                 return AccountController::status('Thêm thành công', 200);
             } else {
                 DB::table('customers')->where('customer_id', $id_new_customer)->delete();
-                return AccountController::status('Thêm thất bại', 500);
+                return AccountController::status('Added Customer', 500);
             }
         } else {
-            return AccountController::status('Thêm thất bại', 500);
+            return AccountController::status('Fail To Add Customer', 500);
         }
     }
 
@@ -65,24 +66,25 @@ class CustomerController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'address' => $request->address,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
         $count = DB::table('customers')->where('customer_id', $request->customer_id)->update($update_customer);
 
         if ($count>0) {
-            return AccountController::status('Cập nhật thông tin thành công', 200);
+            return AccountController::status('Updated Customer', 200);
         } else {
-            return AccountController::status('Cập nhật thất bại', 500);
+            return AccountController::status('Fail To Update', 500);
         }
     }
 
     function delete(Request $request)
     {
         if (DB::table('customers')->where('customer_id', $request->customer_id)->delete()) {
-            return AccountController::status('Xóa thành công', 200);
+            return AccountController::status('Deleted Customer', 200);
         } else {
-            return AccountController::status('Xóa thất bại', 500);
+            return AccountController::status('Fail To Delete', 500);
         }
     }
 

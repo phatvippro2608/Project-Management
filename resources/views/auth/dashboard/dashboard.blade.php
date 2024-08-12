@@ -5,12 +5,12 @@
         <div class="row gx-5">
             <div class="col-lg-12">
                 <div class="row">
-                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"></i> Overview</h4>
+                    <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line"> </i>{{ __('messages.overview') }}</h4>
 
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Department</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.department') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -31,7 +31,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Employee</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.employees') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -48,7 +48,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Team</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.teams') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -65,7 +65,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Project</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.projects') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -82,7 +82,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Task</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.task') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -103,7 +103,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>Subtask</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.subtask') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -126,7 +126,7 @@
         </div>
         <div class="row gy-3">
             <div class="col-xl-8 col-lg-6">
-                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"></i> Recent</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.subtask') }}</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">
@@ -155,15 +155,13 @@
                 </div>
             </div>
             <div class="col-xl-4 col-lg-6">
-                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"></i> Todo list</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-list-task"> </i>{{ __('messages.todolist') }}</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="card bg-white shadow-none">
                             <div class="card-header">
                                 <div class="card-title">{{\App\Http\Controllers\AccountController::getNow()}}</div>
                             </div>
-
-
                         </div>
                         <div class="row">
                             @foreach($tasks as $item)

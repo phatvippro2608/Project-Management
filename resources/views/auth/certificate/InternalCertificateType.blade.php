@@ -31,7 +31,20 @@
             </ol>
         </nav>
     </div>
-    <div class="card">
+    <div class="row my-4">
+        <div class="col-auto d-flex gap-2">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+                <i class="bi bi-building-add me-2"></i>
+                Add Company
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#addCertificateModal">
+                <i class="bi bi-patch-check me-2"></i>
+                Add Certificates
+            </button>
+        </div>
+    </div>
+    <div class="card border rounded-4 p-2">
         <div class="card-body p-3 ">
             <div class="row">
                 <table class="table table-hover table-striped" id="certificateTable">
@@ -80,14 +93,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-auto d-flex gap-2">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#addCertificateModal">
-                        Add Certificates
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -193,15 +198,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            $('#certificateTable').DataTable({
-                "paging": true,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": true,
-                "pageLength": 10,
-                "lengthMenu": [5, 10, 25, 50, 75, 100]
+            var table = $('#certificateTable').DataTable({
+                language: {
+                    search: ""
+                },
+                initComplete: function(settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
             });
 
             $('#editCompanySelect').on('change', function() {

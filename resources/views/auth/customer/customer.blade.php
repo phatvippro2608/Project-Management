@@ -44,7 +44,7 @@
     </div>
     <div class="btn btn-primary my-3 btn-add">
         <div class="d-flex align-items-center">
-            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+            <i class="bi bi-file-earmark-plus pe-2"></i>
             Add Customer
         </div>
     </div>
@@ -98,7 +98,8 @@
                                 {{$item->address}}
                             </td>
                             <td class="text-center">
-                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}" class="contract">
+                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}"
+                                   class="contract btn btn-primary p-1" style="font-size: 12px">
                                     Contract Detail
                                 </a>
                             </td>
@@ -147,7 +148,7 @@
                                     <label for="">
                                         Phone number
                                     </label>
-                                    <input type="text" class="form-control name8">
+                                    <input type="number" class="form-control name8">
                                 </div>
                             </div>
 
@@ -248,15 +249,62 @@
             },
             responsive: true
         });
+        function validateForm() {
+            let isValid = true;
+
+            const validCharRegex = /^[\p{L}\s]+$/u; // Matches letters (including those with diacritics), numbers, and spaces
+            const firstName = $('.name1').val();
+            const lastName = $('.name2').val();
+
+            if (!validCharRegex.test(firstName)) {
+                toastr.error("First Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+            if (!validCharRegex.test(lastName)) {
+                toastr.error("Last Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+
+            const dob = new Date($('.name4').val());
+            const age = (new Date().getFullYear()) - dob.getFullYear();
+            if (isNaN(dob.getTime()) || age < 18) {
+                toastr.error("Date of Birth must indicate an age of 18 years or older", "Failed Action");
+                isValid = false;
+            }
+
+            const phoneNumber = $('.name8').val();
+            const phoneRegex = /^[0-9]+$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                toastr.error("Phone Number can only contain numbers", "Failed Action");
+                isValid = false;
+            }
+
+            const email = $('.name3').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                toastr.error("Invalid email format", "Failed Action");
+                isValid = false;
+            }
+
+            const contractDate = new Date($('.name22').val());
+            const contractEndDay = new Date($('.name23').val());
+            if (isNaN(contractDate.getTime()) || isNaN(contractEndDay.getTime()) || contractDate > contractEndDay) {
+                toastr.error("Contract Date must be less than or equal to Contract End Day", "Failed Action");
+                isValid = false;
+            }
+
+            return isValid;
+        }
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add New Customer');
             $('.md1').modal('show');
 
             $('.at1').click(function () {
-                // if ($('.name1').val().trim() === '') {
-                //     alert('Please enter a team name.');
-                //     return;
-                // }
+                if (!validateForm()) {
+                    return;
+                }
 
                 $.ajax({
                     url: `{{action('App\Http\Controllers\CustomerController@add')}}`,
@@ -282,85 +330,16 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 300);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed Action");
                         }
                     }
                 });
             });
         });
-        {{--$('.at2').click(function () {--}}
-        {{--    $('.md1 .modal-title').text('Update Team');--}}
-        {{--    var data = JSON.parse($(this).attr('data'));--}}
-        {{--    $('.name1').val(data.team_name);--}}
-        {{--    $('.name2').val(data.status);--}}
-        {{--    $('.name3').val(data.team_description);--}}
-        {{--    $('.md1').modal('show');--}}
-
-        {{--    $('.at1').click(function () {--}}
-        {{--        if ($('.name1').val().trim() === '') {--}}
-        {{--            alert('Please enter a team name.');--}}
-        {{--            return;--}}
-        {{--        }--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: `{{action('App\Http\Controllers\TeamController@update')}}`,--}}
-        {{--            type: "POST",--}}
-        {{--            headers: {--}}
-        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--            },--}}
-        {{--            data: {--}}
-        {{--                'id_team' : data.id_team,--}}
-        {{--                'team_name': $('.name1').val(),--}}
-        {{--                'status': $('.name2').val(),--}}
-        {{--                'team_description': $('.name3').val(),--}}
-        {{--            },--}}
-        {{--            success: function (result) {--}}
-        {{--                result = JSON.parse(result);--}}
-        {{--                if (result.status === 200) {--}}
-        {{--                    toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                    setTimeout(function () {--}}
-        {{--                        window.location.reload();--}}
-        {{--                    }, 300);--}}
-        {{--                } else {--}}
-        {{--                    toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-        {{--});--}}
-
-        {{--$('.at3').click(function () {--}}
-        {{--    if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {--}}
-        {{--        return;--}}
-        {{--    }--}}
-        {{--    var id = $(this).attr('data');--}}
-        {{--    $.ajax({--}}
-        {{--        url: `{{action('App\Http\Controllers\TeamController@delete')}}`,--}}
-        {{--        type: "DELETE",--}}
-        {{--        headers: {--}}
-        {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--        },--}}
-        {{--        data: {--}}
-        {{--            'id_team': id,--}}
-        {{--        },--}}
-        {{--        success: function (result) {--}}
-        {{--            result = JSON.parse(result);--}}
-        {{--            if (result.status === 200) {--}}
-        {{--                toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                setTimeout(function () {--}}
-        {{--                    window.location.reload();--}}
-        {{--                }, 300);--}}
-        {{--            } else {--}}
-        {{--                toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--})--}}
-
     </script>
 @endsection

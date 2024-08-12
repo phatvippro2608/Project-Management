@@ -224,6 +224,8 @@ class UploadFileController extends Controller
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
     }
 
+
+
     public function uploadMedicalCheckUp(Request $request)
     {
         $request->validate([
@@ -358,5 +360,49 @@ class UploadFileController extends Controller
             TemporaryFile::where('folder', $request->getContent())->delete();
         }
         return '';
+    }
+
+    public function uploadEmploymentContract(Request $request)
+    {
+        $request->validate([
+            'employment_contract_file' => 'nullable|file|max:1048576', // 10MB
+        ]);
+
+        $employment_contract = $request->file('employment_contract_file');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        $employment_contract_start_date = $request->input('start_date');
+        $employment_contract_end_date = $request->input('end_date');
+        $directoryPath = public_path('uploads/' . $employee_id);
+
+        if (!file_exists($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
+        }
+
+        $uploadedFile = null;
+        $failedFile = null;
+
+        // Handle file upload
+        if ($employment_contract) {
+            try {
+                $filename = $employment_contract->getClientOriginalName();
+                $employment_contract->move($directoryPath, $filename);
+                $uploadedFile = $filename;
+            } catch (\Exception $e) {
+                $failedFile = $filename;
+            }
+        }
+
+        DB::table('employment_contract')->insert([
+            'employee_id' => $employee_id,
+            'employment_contract' => $uploadedFile,
+            'start_date' => $employment_contract_start_date,
+            'end_date' => $employment_contract_end_date
+        ]);
+
+        if ($failedFile) {
+            return response()->json(['status' => 400,'Action Failed']);
+        }
+
+        return response()->json(['status' => 200,'Action Successful']);
     }
 }

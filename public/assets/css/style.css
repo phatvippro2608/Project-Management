@@ -11,7 +11,15 @@
 
 @font-face {
     font-family: GoogleSans;
-    src: url('../fonts/GoogleSans-Regular.ttf');
+    src: url("../fonts/GoogleSans-Regular.ttf");
+}
+@font-face {
+    font-family: GoogleSans-Bold;
+    src: url("../fonts/GoogleSans-Bold.ttf");
+}
+
+.fw-bold {
+    font-family: GoogleSans-Bold;
 }
 
 body {
@@ -21,7 +29,7 @@ body {
 }
 
 main {
-    font-family: 'GoogleSans';
+    font-family: "GoogleSans";
 }
 
 a {
@@ -43,7 +51,6 @@ h6 {
     /*font-family: "Nunito", sans-serif;*/
 }
 
-
 #main {
     margin-top: 60px;
     padding: 20px 30px;
@@ -56,7 +63,6 @@ h6 {
     }
 }
 
-
 .pagetitle {
     margin-bottom: 30px;
 }
@@ -67,7 +73,6 @@ h6 {
     font-weight: 600;
     color: #012970;
 }
-
 
 .back-to-top {
     position: fixed;
@@ -98,7 +103,6 @@ h6 {
     visibility: visible;
     opacity: 1;
 }
-
 
 .dropdown-menu {
     border-radius: 4px;
@@ -347,7 +351,6 @@ h6 {
     border-bottom: 2px solid #4154f1;
 }
 
-
 .logo {
     line-height: 1;
 }
@@ -447,7 +450,6 @@ h6 {
 .header .search-form button i {
     color: #012970;
 }
-
 
 .header-nav ul {
     list-style: none;
@@ -586,7 +588,6 @@ h6 {
     background-color: #f6f9ff;
 }
 
-
 .sidebar {
     position: fixed;
     top: 60px;
@@ -620,7 +621,6 @@ h6 {
 }
 
 @media (min-width: 1200px) {
-
     #main,
     #footer {
         margin-left: 300px;
@@ -634,7 +634,6 @@ h6 {
 }
 
 @media (min-width: 1200px) {
-
     .toggle-sidebar #main,
     .toggle-sidebar #footer {
         margin-left: 0;
@@ -745,7 +744,6 @@ h6 {
 .sidebar-nav .nav-content a.active i {
     background-color: #4154f1;
 }
-
 
 .dashboard .filter {
     position: absolute;
@@ -944,7 +942,6 @@ h6 {
     max-width: 60px;
 }
 
-
 .iconslist {
     display: grid;
     max-width: 100%;
@@ -977,7 +974,6 @@ h6 {
     white-space: nowrap;
     color: #666;
 }
-
 
 .profile .profile-card img {
     max-width: 120px;
@@ -1030,7 +1026,6 @@ h6 {
     max-width: 120px;
 }
 
-
 .faq .basic h6 {
     font-size: 18px;
     font-weight: 600;
@@ -1040,7 +1035,6 @@ h6 {
 .faq .basic p {
     color: #6980aa;
 }
-
 
 .contact .info-box {
     padding: 28px 30px;
@@ -1127,7 +1121,7 @@ h6 {
     padding: 12px 15px;
 }
 
-.contact .php-email-form button[type=submit] {
+.contact .php-email-form button[type="submit"] {
     background: #4154f1;
     border: 0;
     padding: 10px 30px;
@@ -1136,7 +1130,7 @@ h6 {
     border-radius: 4px;
 }
 
-.contact .php-email-form button[type=submit]:hover {
+.contact .php-email-form button[type="submit"]:hover {
     background: #5969f3;
 }
 
@@ -1149,7 +1143,6 @@ h6 {
         transform: rotate(360deg);
     }
 }
-
 
 .error-404 {
     padding: 30px;
@@ -1282,11 +1275,11 @@ h6 {
 }
 
 .form-control {
-    padding: 0.25rem .75rem;
+    padding: 0.25rem 0.75rem;
 }
 
 .form-control:focus {
-    box-shadow: 0 0 0 .15rem rgba(13, 110, 253, .25);
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
 }
 
 .btn-primary {
@@ -1326,11 +1319,10 @@ h6 {
 }
 
 .rounded-checkbox:checked {
-    background-image: url('../img/check.png');
+    background-image: url("../img/check.png");
     background-repeat: no-repeat;
     background-position: center;
 }
-
 
 div.dt-container div.dt-search {
     flex-wrap: nowrap;
@@ -1356,3 +1348,7 @@ div.dt-container div.dt-search {
 
 
 
+.bg-light-hover:hover {
+    background: var(--bs-light);
+    cursor: pointer;
+}
