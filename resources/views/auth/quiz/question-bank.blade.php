@@ -48,9 +48,8 @@
             <div class="col-md-12">
                 <label for="courseSelect">Select course</label>
                 <select class="form-control" id="courseSelect">
-                    <option value="">No select</option>
-                    @foreach($courses as $item)
-                        <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                    @foreach ($courses as $item)
+                        <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -58,16 +57,16 @@
         <div class="table-responsive">
             <table id="questionsTable" class="table table-hover table-borderless">
                 <thead class="table-light">
-                <tr>
-                    <th>No</th>
-                    <th>Question</th>
-                    <th>Answer A</th>
-                    <th>Answer B</th>
-                    <th>Answer C</th>
-                    <th>Answer D</th>
-                    <th>Correct</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>No</th>
+                        <th>Question</th>
+                        <th>Answer A</th>
+                        <th>Answer B</th>
+                        <th>Answer C</th>
+                        <th>Answer D</th>
+                        <th>Correct</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
                 <tbody>
 
@@ -89,8 +88,8 @@
                         <div class="mb-3">
                             <label for="course_name" class="form-label">Course name</label>
                             <select class="form-control" id="add_course_name" name="add_course_name" required>
-                                @foreach($courses as $item)
-                                    <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                                @foreach ($courses as $item)
+                                    <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -101,27 +100,23 @@
                         <div class="mb-3">
                             <label for="question_img" class="form-label">Image</label>
                             <input type="file" class="form-control" id="add_question_img" name="add_question_img"
-                                   accept="image/*">
+                                accept="image/*">
                         </div>
                         <div class="mb-3">
                             <label for="answer_a" class="form-label">Answer A</label>
-                            <textarea type="text" class="form-control" id="add_answer_a" name="add_answer_a"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_a" name="add_answer_a" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_b" class="form-label">Answer B</label>
-                            <textarea type="text" class="form-control" id="add_answer_b" name="add_answer_b"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_b" name="add_answer_b" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_c" class="form-label">Answer C</label>
-                            <textarea type="text" class="form-control" id="add_answer_c" name="add_answer_c"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_c" name="add_answer_c" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_d" class="form-label">Answer D</label>
-                            <textarea type="text" class="form-control" id="add_answer_d" name="add_answer_d"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_d" name="add_answer_d" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="correct_answer" class="form-label">Correct</label>
@@ -153,8 +148,8 @@
                         <div class="mb-3">
                             <label for="course_name" class="form-label">Course name</label>
                             <select class="form-control" id="course_name" name="course_id" required>
-                                @foreach($courses as $item)
-                                    <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                                @foreach ($courses as $item)
+                                    <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -172,29 +167,25 @@
                                 <div class="col-8">
                                     <label for="question_img" class="form-label">Image</label>
                                     <input type="file" class="form-control" id="question_img" name="question_image"
-                                           accept="image/*">
+                                        accept="image/*">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="answer_a" class="form-label">Answer A</label>
-                            <textarea type="text" class="form-control" id="answer_a" name="question_a"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="answer_a" name="question_a" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_b" class="form-label">Answer B</label>
-                            <textarea type="text" class="form-control" id="answer_b" name="question_b"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="answer_b" name="question_b" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_c" class="form-label">Answer C</label>
-                            <textarea type="text" class="form-control" id="answer_c" name="question_c"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="answer_c" name="question_c" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_d" class="form-label">Answer D</label>
-                            <textarea type="text" class="form-control" id="answer_d" name="question_d"
-                                      required></textarea>
+                            <textarea type="text" class="form-control" id="answer_d" name="question_d" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="correct_answer" class="form-label">Correct</label>
@@ -243,10 +234,10 @@
     <script>
         var table = $('#questionsTable').DataTable();
 
-        $('.btnExcel').click(function () {
+        $('.btnExcel').click(function() {
             $('.md2 .modal-title').text('Import question');
             $('.md2').modal('show');
-            $('.luuTT').click(function () {
+            $('.luuTT').click(function() {
                 var fileInput = $('input[name="file-excel"]')[0].files[0];
 
                 var formData = new FormData();
@@ -260,24 +251,24 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function (result) {
+                    success: function(result) {
                         if (result.status === 200) {
                             toastr.success(result.message);
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 location.reload();
                             }, 750);
                         } else {
                             toastr.error(result.message);
                         }
                     },
-                    error: function (error) {
+                    error: function(error) {
                         toastr.error("Thêm thất bại");
                     }
                 });
             })
         })
 
-        $('#addQuestionForm').submit(function (e) {
+        $('#addQuestionForm').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
             $.ajax({
@@ -286,18 +277,18 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         $('#addQuestionForm').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function () {
+                        setTimeout(function() {
                             location.reload();
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     if (xhr.status === 400) {
                         var response = xhr.responseJSON;
                         toastr.error(response.message, "Error");
@@ -309,15 +300,14 @@
         });
 
         $(document).ready(function() {
-            let questionsTable = $('#questionsTable').DataTable(); // Khởi tạo DataTables
+            let questionsTable = $('#questionsTable').DataTable(); 
 
-            $('#courseSelect').on("change", function() {
-                let course_id = $("#courseSelect option:selected").val();
+            function loadQuestions(course_id) {
                 let tableBody = $("#questionsTable tbody");
 
                 if (course_id === "") {
                     tableBody.empty();
-                    questionsTable.clear().draw(); // Xóa dữ liệu trong DataTables
+                    questionsTable.clear().draw(); 
                     return;
                 }
 
@@ -326,43 +316,55 @@
                     method: 'GET',
                     success: function(response) {
                         const data = response.question_list;
-                        tableBody.empty();  // Clear existing data
-                        questionsTable.clear(); // Clear DataTables data
+                        tableBody.empty(); 
+                        questionsTable.clear();
 
                         data.forEach((question, index) => {
                             let row =
                                 `
-                            <tr>
-                                <td class="text-start">${index + 1}</td>
-                                <td> <textarea readonly>${question.question}</textarea></td>
-                                <td> <textarea readonly>${question.question_a}</textarea></td>
-                                <td> <textarea readonly>${question.question_b}</textarea></td>
-                                <td> <textarea readonly>${question.question_c}</textarea></td>
-                                <td> <textarea readonly>${question.question_d}</textarea></td>
-                                <td>${question.correct}</td>
-                                <td>
-                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="${question.question_bank_id}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="${question.question_bank_id}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                            questionsTable.row.add($(row)).draw(false); // Add row to DataTables and draw
+                        <tr>
+                            <td class="text-start">${index + 1}</td>
+                            <td> <textarea readonly>${question.question}</textarea></td>
+                            <td> <textarea readonly>${question.question_a}</textarea></td>
+                            <td> <textarea readonly>${question.question_b}</textarea></td>
+                            <td> <textarea readonly>${question.question_c}</textarea></td>
+                            <td> <textarea readonly>${question.question_d}</textarea></td>
+                            <td>${question.correct}</td>
+                            <td>
+                                <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="${question.question_bank_id}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="${question.question_bank_id}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                            questionsTable.row.add($(row)).draw(
+                                false); 
                         });
                     },
                     error: function(xhr) {
                         toastr.error(xhr.responseJSON.message, "Error");
                     }
                 });
-            });
-        });
+            }
 
-        $('#questionsTable').on('click', '.delete-btn', function () {
+            $('#courseSelect').on("change", function() {
+                let course_id = $("#courseSelect option:selected").val();
+                loadQuestions(course_id);
+            });
+
+
+            let initialCourseId = $("#courseSelect option:first").val();
+            if (initialCourseId) {
+                $("#courseSelect").val(initialCourseId).change();
+            }
+        })
+
+        $('#questionsTable').on('click', '.delete-btn', function() {
             var question_id = $(this).data('id');
 
             Swal.fire({
@@ -382,10 +384,10 @@
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function (response) {
+                        success: function(response) {
                             if (response.success) {
                                 toastr.success(response.message, "Deleted successfully");
-                                setTimeout(function () {
+                                setTimeout(function() {
                                     location.reload();
                                 }, 500);
                             } else {
@@ -393,7 +395,7 @@
                                     "Operation Failed");
                             }
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             toastr.error("An error occurred.", "Operation Failed");
                         }
                     });
@@ -401,7 +403,7 @@
             });
         });
 
-        $('#questionsTable').on('click', '.edit-btn', function () {
+        $('#questionsTable').on('click', '.edit-btn', function() {
             var question_id = $(this).data('id');
 
             $('#editQuestionForm').data('id', question_id);
@@ -410,16 +412,18 @@
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function (response) {
+                success: function(response) {
                     var data = response.question;
                     $('#question_bank_id').val(data.question_bank_id);
                     $('#course_name').val(data.course_id);
                     $('#question').val(data.question);
-                    {{--var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;--}}
+                    {{-- var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image; --}}
 
                     if (data.question_image) {
-                        var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;
-                        $('#preview_img').attr('href', imagePath).text('Click to preview image question');
+                        var imagePath = '{{ asset('question_bank_image') }}' + '/' + data
+                            .question_image;
+                        $('#preview_img').attr('href', imagePath).text(
+                            'Click to preview image question');
                     } else {
                         $('#preview_img').removeAttr('href').text('No Image Available');
                     }
@@ -431,13 +435,12 @@
                     $('#correct_answer').val(data.correct);
                     $('#editQuestionModal').modal('show');
                 },
-                error: function (xhr) {
-                }
+                error: function(xhr) {}
             });
         });
 
 
-        $('#editQuestionForm').submit(function (e) {
+        $('#editQuestionForm').submit(function(e) {
             e.preventDefault();
             var question_id = $(this).data('id'); // Lấy ID từ form
             var url = "{{ route('question-bank.update', ':id') }}";
@@ -449,16 +452,16 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         $('#editQuestionModal').modal('hide');
                         toastr.success(response.response, "Edit successful");
-                        setTimeout(function () {
+                        setTimeout(function() {
                             location.reload()
                         }, 500);
                     }
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     toastr.error("Error");
                 }
             });
