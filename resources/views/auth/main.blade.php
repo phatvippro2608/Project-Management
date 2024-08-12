@@ -81,6 +81,7 @@ $token = 'position';
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+
             <!-- Mục chuyển đổi ngôn ngữ -->
             <li class="nav-item dropdown">
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
@@ -247,9 +248,28 @@ $token = 'position';
                     <li class="dropdown-footer">
                         <a href="#">Show all messages</a>
                     </li>
-
                 </ul>
 
+            {{--     Change language      --}}
+            <li class="nav-item dropdown-center my-2">
+                <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#" data-bs-toggle="dropdown">
+                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'vi')
+                        <img src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
+                    @else
+                        <img src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">
+                    @endif
+                </a>
+                <div class="dropdown-menu">
+                    <a class="d-flex align-items-center justify-content-between px-3 py-1 bg-light-hover" href="{{url('lang/vi')}}">
+                        <img class="" src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">
+                        <span class="text-dark mx-3">VIE</span>
+                    </a>
+                    <a class="d-flex align-items-center justify-content-between px-3 py-1 bg-light-hover" href="{{url('lang/en')}}">
+                        <img class="" src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
+                        <span class="text-dark mx-3">ENG</span>
+                    </a>
+                </div>
+            </li>
             </li>
 
             @php
@@ -779,6 +799,5 @@ $token = 'position';
 
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
-
 </html>
 @yield('script')
