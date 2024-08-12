@@ -339,6 +339,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/question-bank/{id}', [QuizController::class, 'destroy'])->name('question-bank.destroy');
         Route::get('/question-bank/{id}/edit', [QuizController::class, 'edit'])->name('question-bank.edit');
         Route::post('/question-bank/{id}/update', [QuizController::class, 'update'])->name('question-bank.update');
+        Route::post('/question-bank/{course_id}/import', [QuizController::class, 'import'])->name('question-bank.import');
+        Route::get('/question-bank/{course_id}/export', [QuizController::class, 'export'])->name('question-bank.export');
+        Route::post('/question-bank/delete-file', [QuizController::class, 'deleteExportedFile'])->name('question-bank.deleteFile');
 
 
     });

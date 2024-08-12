@@ -21,25 +21,21 @@
         </nav>
     </div>
     <div class="row gx-3 my-3">
-        <div class="col-md-6 m-0">
+        <div class="col-md-6 m-0 d-flex">
             <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
                 <div class="d-flex align-items-center at1">
                     <i class="bi bi-file-earmark-plus pe-2"></i>
                     Add question
                 </div>
             </div>
-            <div class="btn btn-success mx-2">
-                <div class="d-flex align-items-center at2 text-white btnExcel">
-                    <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
-                    Import
-                </div>
+            <div class="btn btn-success d-flex align-items-center at2 text-white btnExcel mx-2">
+                <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
+                Import
             </div>
-            <div class="btn btn-success mx-2">
-                <a href="" class="d-flex align-items-center at2 text-white">
-                    <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                    Export
-                </a>
-            </div>
+            <button class="btn btn-success d-flex align-items-center at2 text-white btnExportExcel mx-2">
+                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                Export
+            </button>
         </div>
     </div>
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
@@ -57,16 +53,16 @@
         <div class="table-responsive">
             <table id="questionsTable" class="table table-hover table-borderless">
                 <thead class="table-light">
-                    <tr>
-                        <th>No</th>
-                        <th>Question</th>
-                        <th>Answer A</th>
-                        <th>Answer B</th>
-                        <th>Answer C</th>
-                        <th>Answer D</th>
-                        <th>Correct</th>
-                        <th>Action</th>
-                    </tr>
+                <tr>
+                    <th>No</th>
+                    <th>Question</th>
+                    <th>Answer A</th>
+                    <th>Answer B</th>
+                    <th>Answer C</th>
+                    <th>Answer D</th>
+                    <th>Correct</th>
+                    <th>Action</th>
+                </tr>
                 </thead>
                 <tbody>
 
@@ -100,23 +96,27 @@
                         <div class="mb-3">
                             <label for="question_img" class="form-label">Image</label>
                             <input type="file" class="form-control" id="add_question_img" name="add_question_img"
-                                accept="image/*">
+                                   accept="image/*">
                         </div>
                         <div class="mb-3">
                             <label for="answer_a" class="form-label">Answer A</label>
-                            <textarea type="text" class="form-control" id="add_answer_a" name="add_answer_a" required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_a" name="add_answer_a"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_b" class="form-label">Answer B</label>
-                            <textarea type="text" class="form-control" id="add_answer_b" name="add_answer_b" required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_b" name="add_answer_b"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_c" class="form-label">Answer C</label>
-                            <textarea type="text" class="form-control" id="add_answer_c" name="add_answer_c" required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_c" name="add_answer_c"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_d" class="form-label">Answer D</label>
-                            <textarea type="text" class="form-control" id="add_answer_d" name="add_answer_d" required></textarea>
+                            <textarea type="text" class="form-control" id="add_answer_d" name="add_answer_d"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="correct_answer" class="form-label">Correct</label>
@@ -167,25 +167,29 @@
                                 <div class="col-8">
                                     <label for="question_img" class="form-label">Image</label>
                                     <input type="file" class="form-control" id="question_img" name="question_image"
-                                        accept="image/*">
+                                           accept="image/*">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="answer_a" class="form-label">Answer A</label>
-                            <textarea type="text" class="form-control" id="answer_a" name="question_a" required></textarea>
+                            <textarea type="text" class="form-control" id="answer_a" name="question_a"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_b" class="form-label">Answer B</label>
-                            <textarea type="text" class="form-control" id="answer_b" name="question_b" required></textarea>
+                            <textarea type="text" class="form-control" id="answer_b" name="question_b"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_c" class="form-label">Answer C</label>
-                            <textarea type="text" class="form-control" id="answer_c" name="question_c" required></textarea>
+                            <textarea type="text" class="form-control" id="answer_c" name="question_c"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="answer_d" class="form-label">Answer D</label>
-                            <textarea type="text" class="form-control" id="answer_d" name="question_d" required></textarea>
+                            <textarea type="text" class="form-control" id="answer_d" name="question_d"
+                                      required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="correct_answer" class="form-label">Correct</label>
@@ -214,7 +218,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="">Select file (*.xlsx) or download
-                                <a target="_blank" href="">
+                                <a target="_blank" href="{{asset('excel-example/question-bank-import.xlsx')}}">
                                     Example file
                                 </a>
                             </label>
@@ -234,16 +238,17 @@
     <script>
         var table = $('#questionsTable').DataTable();
 
-        $('.btnExcel').click(function() {
-            $('.md2 .modal-title').text('Import question');
+        $('.btnExcel').click(function () {
+            let course_name = $("#courseSelect option:selected").text();
+            let course_id = $("#courseSelect option:selected").val();
+            $('.md2 .modal-title').text('Import question for ' + course_name);
             $('.md2').modal('show');
-            $('.luuTT').click(function() {
+            $('.luuTT').click(function () {
                 var fileInput = $('input[name="file-excel"]')[0].files[0];
-
                 var formData = new FormData();
                 formData.append('file-excel', fileInput);
                 $.ajax({
-                    url: '',
+                    url: '{{route('question-bank.import', ':id')}}'.replace(':id', course_id),
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -251,24 +256,24 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function(result) {
+                    success: function (result) {
                         if (result.status === 200) {
                             toastr.success(result.message);
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 location.reload();
                             }, 750);
                         } else {
                             toastr.error(result.message);
                         }
                     },
-                    error: function(error) {
+                    error: function (error) {
                         toastr.error("Thêm thất bại");
                     }
                 });
             })
         })
 
-        $('#addQuestionForm').submit(function(e) {
+        $('#addQuestionForm').submit(function (e) {
             e.preventDefault();
             var formData = new FormData(this);
             $.ajax({
@@ -277,18 +282,18 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#addQuestionForm').modal('hide');
                         toastr.success(response.message, "Successful");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload();
                         }, 500);
                     } else {
                         toastr.error(response.message, "Error");
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 400) {
                         var response = xhr.responseJSON;
                         toastr.error(response.message, "Error");
@@ -299,24 +304,24 @@
             });
         });
 
-        $(document).ready(function() {
-            let questionsTable = $('#questionsTable').DataTable(); 
+        $(document).ready(function () {
+            let questionsTable = $('#questionsTable').DataTable();
 
             function loadQuestions(course_id) {
                 let tableBody = $("#questionsTable tbody");
 
                 if (course_id === "") {
                     tableBody.empty();
-                    questionsTable.clear().draw(); 
+                    questionsTable.clear().draw();
                     return;
                 }
 
                 $.ajax({
                     url: '{{ route('question-bank.list', ':id') }}'.replace(':id', course_id),
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         const data = response.question_list;
-                        tableBody.empty(); 
+                        tableBody.empty();
                         questionsTable.clear();
 
                         data.forEach((question, index) => {
@@ -343,16 +348,16 @@
                         </tr>
                     `;
                             questionsTable.row.add($(row)).draw(
-                                false); 
+                                false);
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         toastr.error(xhr.responseJSON.message, "Error");
                     }
                 });
             }
 
-            $('#courseSelect').on("change", function() {
+            $('#courseSelect').on("change", function () {
                 let course_id = $("#courseSelect option:selected").val();
                 loadQuestions(course_id);
             });
@@ -364,7 +369,7 @@
             }
         })
 
-        $('#questionsTable').on('click', '.delete-btn', function() {
+        $('#questionsTable').on('click', '.delete-btn', function () {
             var question_id = $(this).data('id');
 
             Swal.fire({
@@ -384,10 +389,10 @@
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.success) {
                                 toastr.success(response.message, "Deleted successfully");
-                                setTimeout(function() {
+                                setTimeout(function () {
                                     location.reload();
                                 }, 500);
                             } else {
@@ -395,7 +400,7 @@
                                     "Operation Failed");
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             toastr.error("An error occurred.", "Operation Failed");
                         }
                     });
@@ -403,7 +408,7 @@
             });
         });
 
-        $('#questionsTable').on('click', '.edit-btn', function() {
+        $('#questionsTable').on('click', '.edit-btn', function () {
             var question_id = $(this).data('id');
 
             $('#editQuestionForm').data('id', question_id);
@@ -412,7 +417,7 @@
             $.ajax({
                 url: url,
                 method: 'GET',
-                success: function(response) {
+                success: function (response) {
                     var data = response.question;
                     $('#question_bank_id').val(data.question_bank_id);
                     $('#course_name').val(data.course_id);
@@ -435,12 +440,13 @@
                     $('#correct_answer').val(data.correct);
                     $('#editQuestionModal').modal('show');
                 },
-                error: function(xhr) {}
+                error: function (xhr) {
+                }
             });
         });
 
 
-        $('#editQuestionForm').submit(function(e) {
+        $('#editQuestionForm').submit(function (e) {
             e.preventDefault();
             var question_id = $(this).data('id'); // Lấy ID từ form
             var url = "{{ route('question-bank.update', ':id') }}";
@@ -452,19 +458,77 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#editQuestionModal').modal('hide');
                         toastr.success(response.response, "Edit successful");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             location.reload()
                         }, 500);
                     }
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     toastr.error("Error");
                 }
             });
         });
+
+        $('.btnExportExcel').click(function () {
+            let course_name = $("#courseSelect option:selected").text();
+            let course_id = $("#courseSelect option:selected").val();
+            Swal.fire({
+                title: 'Export excel',
+                text: "Do you want to export " + course_name + " course?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('question-bank.export', ':id') }}'.replace(':id', course_id),
+                        method: 'GET',
+                        success: function (response) {
+                            console.log(response); // Log the response for debugging
+                            if (response.status === 200) {
+                                toastr.success(response.message, "Export excel successfully");
+                                // Create a link to download the file
+                                let link = document.createElement('a');
+                                link.href = '/' + response.file;
+                                link.download = response.file;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+
+                                // Delete the file after download
+                                $.ajax({
+                                    url: '{{ route('question-bank.deleteFile') }}',
+                                    method: 'POST',
+                                    data: { file: response.file },
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function (deleteResponse) {
+                                        console.log(deleteResponse.message);
+                                        if (!deleteResponse.success) {
+                                            toastr.error("Failed to delete file.", "Operation Failed");
+                                        }
+                                    }
+                                });
+                            } else {
+                                toastr.error("Failed to export excel.", "Operation Failed");
+                            }
+                        },
+                        error: function (xhr) {
+                            toastr.error("An error occurred.", "Operation Failed");
+                        }
+                    });
+                }
+            });
+        });
+
+
+
     </script>
 @endsection
