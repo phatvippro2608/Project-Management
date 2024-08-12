@@ -81,6 +81,28 @@ $token = 'position';
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
+            <!-- Mục chuyển đổi ngôn ngữ -->
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <i class="bi bi-globe"></i>
+                    <span>
+                    @if (App::getLocale() == 'en')
+                            English
+                        @else
+                            Tiếng Việt
+                        @endif
+                </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li>
+                        @if (App::getLocale() == 'en')
+                            <a class="dropdown-item" href="{{ url('lang/vi') }}">Tiếng Việt</a>
+                        @else
+                            <a class="dropdown-item" href="{{ url('lang/en') }}">English</a>
+                        @endif
+                    </li>
+                </ul>
+            </li>
             <li class="nav-item d-block d-lg-none">
                 <a class="nav-link nav-icon search-bar-toggle " href="#">
                     <i class="bi bi-search"></i>
