@@ -26,8 +26,9 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             $project->team_members = DB::table('team_details')
                 ->join('employees', 'employees.employee_id', '=', 'team_details.employee_id')
+                ->join('team_positions', 'team_positions.team_position_id', '=', 'team_details.team_position_id')
                 ->where('team_id', $project->team_id)
-                ->orderBy('team_position_id', 'asc')->get();
+                ->orderBy('team_permission', 'asc')->get();
         }
         $teams = DB::table('teams')->get();
         $contracts = DB::table('contracts')
