@@ -94,8 +94,8 @@
                                     {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
                                 </td>
                                 <td class="text-center">
-                                    @if($status[$item->status] == 'Offine')
-                                        <i class="bi bi-circle-fill account-status offine"></i>
+                                    @if($status[$item->status] == 'Offline')
+                                        <i class="bi bi-circle-fill account-status offline"></i>
                                     @elseif($status[$item->status] == 'Locked')
                                         <i class="bi bi-circle-fill account-status" style="color:red;"></i>
                                     @else

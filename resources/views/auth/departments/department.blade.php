@@ -1,25 +1,24 @@
 @extends('auth.main');
 @section('contents')
     <div class="pagetitle">
-        <h1>Departments</h1>
+        <h1>{{ __('messages.departments') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active">Departments list</li>
             </ol>
         </nav>
-    </div>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+    </div>    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
         <i class="bi bi-building-add me-3"></i>
-        Add Department
+        {{ __('messages.add_department') }}
     </button>
+
 
     <div class="modal fade" id="addDepartmentModal">
         <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Department</h4>
+                    <h4 class="modal-title">{{ __('messages.add_department') }}</h4>
                     @component('auth.component.btnCloseModal')@endcomponent
                 </div>
 
@@ -81,12 +80,12 @@
     </div>
 
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
-        <h3 class="text-left mb-4">Departments List</h3>
+{{--        <h3 class="text-left mb-4">Departments List</h3>--}}
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
                 <th>ID</th>
-                <th>Department Name</th>
+                <th>{{ __('messages.department_name') }}</th>
                 <th>Action</th>
             </tr>
             </thead>

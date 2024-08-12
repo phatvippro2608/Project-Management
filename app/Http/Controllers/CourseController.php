@@ -19,6 +19,7 @@ class CourseController extends Controller
 
         return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName]);
     }
+    
     function getCourseView($id)
     {
         $account_id = session()->get(\App\StaticString::ACCOUNT_ID);
@@ -40,24 +41,8 @@ class CourseController extends Controller
         } else {
             return view('auth.lms.course_section', ['show'=>false,'course' => $course,'id' => $id]);
         }
-        
     }
-    function getCourseSection(Request $requet)
-    {
-        $id = $requet->input('id');
-        $type = $requet->input('type');
-        if($type==null){
-            $sections=DB::table('courses_section')
-            ->select('courses_section_id','section_name')
-            ->where('course_id',$id)
-            ->get();
-        }else{
-            $sections=DB::table('courses_section')
-            ->where('courses_section_id',$id)
-            ->get();
-        }
-        return response()->json(['success' => true, 'sections' => $sections]);
-    }
+
     function joinCourse(Request $request){
         try {
             $course_id = $request->input('course_id');
@@ -74,7 +59,7 @@ class CourseController extends Controller
             ]);
             return response()->json(['success' => true, 'message' => 'Join course success!']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while joining the course.\n'.$e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while joining the course. '.$e->getMessage()]);
         }
     }
 
@@ -108,22 +93,14 @@ class CourseController extends Controller
 
             $course->course_image = $course_image;
             $course->save();
-            $courses = CourseModel::all();
+            $courses=DB::table('courses')
+                ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+                ->select('courses.*','course_types.type_name')
+                ->get();
             return response()->json(['success' => true,'message' => 'Add new course success!', 'courses' => $courses]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while creating the course.\n'.$e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating the course. '.$e->getMessage()]);
         }
-    }
-
-    function getCourse($id)
-    {
-        $course=DB::table('courses')
-        ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
-        ->select('courses.*','course_types.type_name')
-        ->where('course_id',$id)
-        ->get();
-        $getTypeName = DB::table('course_types')->get();
-        return response()->json(['success' => true, 'course' => $course, 'getTypeName' => $getTypeName]);
     }
 
     function updateCourse(Request $request)
@@ -172,8 +149,65 @@ class CourseController extends Controller
             $getTypeName = DB::table('course_types')->get();
             return response()->json(['success' => true,'message' => 'Update course success!', 'courses' => $courses, 'getTypeName' => $getTypeName]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while updating the course.\n'.$e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while updating the course. '.$e->getMessage()]);
         }
+    }
+
+    function deleteCourse(Request $request){
+        try {
+            $id = $request->input('course_id');
+            $course = CourseModel::find($id);
+            $old_image = public_path('uploads/course/' . $course->course_image);
+            if (file_exists($old_image)) {
+                unlink($old_image);
+            }
+            $course->delete();
+            $courses=DB::table('courses')
+                ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+                ->select('courses.*','course_types.type_name')
+                ->get();
+            return response()->json(['success' => true, 'message' => 'Delete course success!', 'courses' => $courses]);
+        } catch (\Exception $e) {
+            $id = $request->input('course_id');
+            return response()->json(['success' => false, 'message' => 'An error occurred while deleting the course. '.$e->getMessage()]);
+        }
+    }
+
+
+
+
+    // Section
+    // Section
+    // Section
+    // Section
+    // Section
+
+    function getCourseSection(Request $requet)
+    {
+        $id = $requet->input('id');
+        $type = $requet->input('type');
+        if($type==null){
+            $sections=DB::table('courses_section')
+            ->select('courses_section_id','section_name')
+            ->where('course_id',$id)
+            ->get();
+        }else{
+            $sections=DB::table('courses_section')
+            ->where('courses_section_id',$id)
+            ->get();
+        }
+        return response()->json(['success' => true, 'sections' => $sections]);
+    }
+
+    function getCourse($id)
+    {
+        $course=DB::table('courses')
+        ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+        ->select('courses.*','course_types.type_name')
+        ->where('course_id',$id)
+        ->get();
+        $getTypeName = DB::table('course_types')->get();
+        return response()->json(['success' => true, 'course' => $course, 'getTypeName' => $getTypeName]);
     }
 
     function createSection(Request $request)
@@ -188,9 +222,10 @@ class CourseController extends Controller
             $sections = DB::table('courses_section')->where('course_id',$course_id)->get();
             return response()->json(['success' => true,'message' => 'Add new section success!', 'sections' => $sections]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while creating the section.\n'.$e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating the section. '.$e->getMessage()]);
         }
     }
+
     function updateSection(Request $request)
     {
         try {
@@ -206,7 +241,18 @@ class CourseController extends Controller
             $sections = DB::table('courses_section')->where('courses_section_id',$section_id)->get();
             return response()->json(['success' => true,'message' => 'Update section success!', 'sections' => $sections]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while updating the section.\n'.$e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'An error occurred while updating the section. '.$e->getMessage()]);
+        }
+    }
+
+    function deleteSection(Request $request){
+        try {
+            $id = $request->input('section_id');
+            DB::table('courses_section')->where('courses_section_id',$id)->delete();
+            $sections = DB::table('courses_section')->where('course_id',$id)->get();
+            return response()->json(['success' => true, 'message' => 'Delete section success!', 'sections' => $sections]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while deleting the section. '.$e->getMessage()]);
         }
     }
 }
