@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class InternalCertificatesController extends Controller
 {
@@ -121,23 +122,30 @@ class InternalCertificatesController extends Controller
 
     public function temp()
     {
-        $teacher = DB::table('employees')
-            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
-            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
-            ->where('permissions.permission_str', '=', 'teacher')
-            // ->where('employees.employee_id', '=', '191')
-            ->get();
+
+        $employee = DB::table('employees')->where('employee_id','=','1')->first();
+    
         $director = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('employment_contract', 'employment_contract.employee_id', '=', 'employees.employee_id')
+            ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
-            // ->where('employment_contract.end_date', '>', DB::raw('CURRENT_TIMESTAMP'))
-            // ->where('permissions.permission_name', '=', 'Director')
-            ->get();
-        dd($director);
+            ->where(DB::raw('DATE(employment_contract.end_date)'), '>=', Carbon::now()->toDateString())
+            ->where('permissions.permission_name', '=', 'Director')
+            ->first();
+
+        $teacher = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
+            ->where('permissions.permission_str', '=', 'teacher')
+            // ->where('employees.employee_id', '=', '191')
+            ->first();
+
         return view('auth.certificate.certificate', [
-            'teacher' => $teacher,
-            'director' => $director
+            'employee' => $employee,
+            'director' => $director,
+            'teacher' => $teacher
         ]);
     }
 }

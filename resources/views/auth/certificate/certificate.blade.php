@@ -1,10 +1,15 @@
 @extends('auth.main')
 
 @section('head')
+    <link rel="stylesheet" href="{{ asset('assets/css/certificateFonts.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 @endsection
 
 @section('contents')
+    <h1 class="text" style="font-family: Great Vibes">Hello</h1>
+    <h1 class="text" style="font-family: Lora">Hello</h1>
     <canvas id="certificateCanvas" width="1000" height="600"></canvas>
+    <button type="button" id="downloadBtn" class="btn btn-success">Download Certificate</button>
 @endsection
 
 @section('script')
@@ -59,7 +64,6 @@
                 width: 150,
                 height: 75
             };
-
             var signaturePositionRight = {
                 x: (canvas.width / 2 + 90),
                 y: signatureHeight,
@@ -69,123 +73,127 @@
 
             img.onload = function() {
                 context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                document.fonts.ready.then(function() {
+                    drawCertificate();
+                });
             };
             img.src = '{{ asset('assets/img/certificate.png') }}';
 
-            // $('#signatureLeft').on('change', function(e) {
-            //     var reader = new FileReader();
-            //     reader.onload = function(event) {
-            //         signatureImgLeft.onload = function() {
-            //             signatureCanvasLeft.width = signatureImgLeft.width;
-            //             signatureCanvasLeft.height = signatureImgLeft.height;
-            //             var tempContext = signatureCanvasLeft.getContext('2d');
-            //             tempContext.drawImage(signatureImgLeft, 0, 0);
+            var signatureLeftSrc = '{{ asset($director->employee_signature_img) }}';
+            var signatureRightSrc = '{{ asset($teacher->employee_signature_img) }}';
 
-            //             var imageData = tempContext.getImageData(0, 0, signatureCanvasLeft.width,
-            //                 signatureCanvasLeft.height);
-            //             var data = imageData.data;
+            signatureImgLeft.onload = function() {
+                signatureCanvasLeft.width = signatureImgLeft.width;
+                signatureCanvasLeft.height = signatureImgLeft.height;
+                var tempContext = signatureCanvasLeft.getContext('2d');
+                tempContext.drawImage(signatureImgLeft, 0, 0);
 
-            //             for (var i = 0; i < data.length; i += 4) {
-            //                 var r = data[i];
-            //                 var g = data[i + 1];
-            //                 var b = data[i + 2];
+                var imageData = tempContext.getImageData(0, 0, signatureCanvasLeft.width,
+                    signatureCanvasLeft.height);
+                var data = imageData.data;
 
-            //                 if (r > 200 && g > 200 && b > 200) {
-            //                     data[i + 3] = 0;
-            //                 }
-            //             }
+                for (var i = 0; i < data.length; i += 4) {
+                    var r = data[i];
+                    var g = data[i + 1];
+                    var b = data[i + 2];
 
-            //             tempContext.putImageData(imageData, 0, 0);
-            //             signatureLoadedLeft = true;
-            //             context.drawImage(signatureCanvasLeft, signaturePositionLeft.x,
-            //                 signaturePositionLeft.y, signaturePositionLeft.width,
-            //                 signaturePositionLeft.height);
-            //         };
-            //         signatureImgLeft.src = event.target.result;
-            //     };
-            //     reader.readAsDataURL(e.target.files[0]);
-            // });
+                    if (r > 200 && g > 200 && b > 200) {
+                        data[i + 3] = 0;
+                    }
+                }
 
-            // $('#signatureRight').on('change', function(e) {
-            //     var reader = new FileReader();
-            //     reader.onload = function(event) {
-            //         signatureImgRight.onload = function() {
-            //             signatureCanvasRight.width = signatureImgRight.width;
-            //             signatureCanvasRight.height = signatureImgRight.height;
-            //             var tempContext = signatureCanvasRight.getContext('2d');
-            //             tempContext.drawImage(signatureImgRight, 0, 0);
+                tempContext.putImageData(imageData, 0, 0);
+                signatureLoadedLeft = true;
+                context.drawImage(signatureCanvasLeft, signaturePositionLeft.x,
+                    signaturePositionLeft.y, signaturePositionLeft.width,
+                    signaturePositionLeft.height);
+            };
+            signatureImgLeft.src = signatureLeftSrc;
 
-            //             var imageData = tempContext.getImageData(0, 0, signatureCanvasRight.width,
-            //                 signatureCanvasRight.height);
-            //             var data = imageData.data;
+            signatureImgRight.onload = function() {
+                signatureCanvasRight.width = signatureImgRight.width;
+                signatureCanvasRight.height = signatureImgRight.height;
+                var tempContext = signatureCanvasRight.getContext('2d');
+                tempContext.drawImage(signatureImgRight, 0, 0);
 
-            //             for (var i = 0; i < data.length; i += 4) {
-            //                 var r = data[i];
-            //                 var g = data[i + 1];
-            //                 var b = data[i + 2];
+                var imageData = tempContext.getImageData(0, 0, signatureCanvasRight.width,
+                    signatureCanvasRight.height);
+                var data = imageData.data;
 
-            //                 if (r > 200 && g > 200 && b > 200) {
-            //                     data[i + 3] = 0;
-            //                 }
-            //             }
+                for (var i = 0; i < data.length; i += 4) {
+                    var r = data[i];
+                    var g = data[i + 1];
+                    var b = data[i + 2];
 
-            //             tempContext.putImageData(imageData, 0, 0);
-            //             signatureLoadedRight = true;
-            //             context.drawImage(signatureCanvasRight, signaturePositionRight.x,
-            //                 signaturePositionRight.y, signaturePositionRight.width,
-            //                 signaturePositionRight.height);
-            //         };
-            //         signatureImgRight.src = event.target.result;
-            //     };
-            //     reader.readAsDataURL(e.target.files[0]);
-            // });
+                    if (r > 200 && g > 200 && b > 200) {
+                        data[i + 3] = 0;
+                    }
+                }
 
-            // $('#editCertificateForm').on('submit', function(e) {
-            // e.preventDefault();
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                tempContext.putImageData(imageData, 0, 0);
+                signatureLoadedRight = true;
+                context.drawImage(signatureCanvasRight, signaturePositionRight.x,
+                    signaturePositionRight.y, signaturePositionRight.width,
+                    signaturePositionRight.height);
+            };
+            signatureImgRight.src = signatureRightSrc;
 
-            var name = capitalizeFirstLetterOfEachWord($('#name').val());
-            var description = $('#description').val();
-            var namedescription = $('#namedescription').val().toUpperCase();
+            function drawCertificate() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-            context.fillStyle = "black";
-            context.textAlign = "center";
+                context.fillStyle = "black";
+                context.textAlign = "center";
 
-            context.font = "46.7px 'Great Vibes', cursive";
-            context.fillText(name, canvas.width / 2, (canvas.height / 2) + 40);
+                var name = capitalizeFirstLetterOfEachWord(
+                    '{{ $employee->last_name . ' ' . $employee->first_name }}');
+                context.font = "46.7px 'Great Vibes', cursive";
+                context.fillText(name, canvas.width / 2, (canvas.height / 2) + 40);
 
-            context.font = "13px 'Lora', serif";
-            var maxWidth = canvas.width - 400;
-            var lineHeight = 16;
-            wrapText(context, description, canvas.width / 2, canvas.height / 2 + 70, maxWidth,
-                lineHeight);
+                var description =
+                    'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
+                context.font = "13px 'Lora', serif";
+                var maxWidth = canvas.width - 400;
+                var lineHeight = 16;
+                wrapText(context, description, canvas.width / 2, canvas.height / 2 + 70, maxWidth, lineHeight);
 
-            context.font = "bold 34px 'Lora', serif";
-            wrapText(context, namedescription, canvas.width / 2, canvas.height / 2 - 85, maxWidth,
-                lineHeight);
+                var namedescription = 'of achievement'.toUpperCase();
+                context.font = "bold 34px 'Lora', serif";
+                wrapText(context, namedescription, canvas.width / 2, canvas.height / 2 - 85, maxWidth, lineHeight);
 
-            if (signatureLoadedLeft) {
-                context.drawImage(signatureCanvasLeft, signaturePositionLeft.x, signaturePositionLeft.y,
-                    signaturePositionLeft.width, signaturePositionLeft.height);
+                if (signatureLoadedLeft) {
+                    context.drawImage(signatureCanvasLeft, signaturePositionLeft.x, signaturePositionLeft.y,
+                        signaturePositionLeft.width, signaturePositionLeft.height);
+                }
+
+                if (signatureLoadedRight) {
+                    context.drawImage(signatureCanvasRight, signaturePositionRight.x, signaturePositionRight.y,
+                        signaturePositionRight.width, signaturePositionRight.height);
+                }
+
+                var leftName = "{{ $director->last_name . ' ' . $director->first_name }}";
+                context.font = "bold 11px 'Lora', serif";
+                var leftWidth = canvas.width / 4 + 80;
+                context.fillText(leftName, leftWidth, canvas.height - 80);
+
+                var rightName = "{{ $teacher->last_name . ' ' . $teacher->first_name  }}";
+                var rightWidth = canvas.width / 2 + 160;
+                context.fillText(rightName, rightWidth, canvas.height - 80);
             }
 
-            if (signatureLoadedRight) {
-                context.drawImage(signatureCanvasRight, signaturePositionRight.x, signaturePositionRight
-                    .y, signaturePositionRight.width, signaturePositionRight.height);
-            }
-            // Vẽ tên chức vụ và người ký bên trái
-            var leftHeight = canvas.height - 100;
-            var leftName = $('#leftName').val();
-            context.font = "bold 11px 'Lora', serif";
-            var leftWidth = canvas.width / 4 + 80;
-            context.fillText(leftName, leftWidth, leftHeight + 20);
+            $('.text').remove();
 
-            // Vẽ tên chức vụ và người ký bên Phải
-            var rightName = $('#rightName').val();
-            var leftWidth = canvas.width / 2 + 160;
-            context.fillText(rightName, leftWidth, leftHeight + 20);
-            // });
+            $('#downloadBtn').click(function() {
+                const {
+                    jsPDF
+                } = window.jspdf;
+
+                var pdf = new jsPDF('landscape', 'pt', [canvas.width, canvas.height]);
+                var imgData = canvas.toDataURL('image/png');
+
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                pdf.save('certificate.pdf');
+            });
         });
     </script>
 @endsection
