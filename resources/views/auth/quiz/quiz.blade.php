@@ -69,6 +69,9 @@
                                     </div>
                                 @endif
                             @endforeach
+                            <div class="d-flex justify-content-end mt-4">
+                                {{ $completed_courses->links('pagination::bootstrap-5') }}
+                            </div>
                         @else
                             <div class="alert alert-danger text-center">
                                 There are currently no exams.
@@ -91,7 +94,8 @@
                         @foreach ($exam_results as $result)
                             <div class="alert alert-info text-left">
                                 Course: {{ $result->course_name }} <br>
-                                Score: <span style="color: red; font-weight: normal;"><b>{{ $result->score }}</b></span><br>
+                                Score: <span
+                                    style="color: red; font-weight: normal;"><b>{{ $result->score }}</b></span><br>
                                 Test Date: {{ $result->exam_date }}
                             </div>
                         @endforeach

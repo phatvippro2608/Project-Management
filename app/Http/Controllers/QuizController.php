@@ -33,7 +33,7 @@ class QuizController extends Controller
             ->where('courses_employees.employee_id', $employee_id)
             ->where('courses_employees.progress', 100)
             ->select('courses.course_id', 'courses.course_name')
-            ->get();
+            ->paginate(3,['*'], 'completed_courses_page');
 
         // Lấy kết quả thi của nhân viên
         $exam_results = DB::table('exam_results')
@@ -41,7 +41,7 @@ class QuizController extends Controller
             ->join('courses', 'exams.course_id', '=', 'courses.course_id')
             ->where('exam_results.employee_id', $employee_id)
             ->select('courses.course_name', 'exam_results.score', 'exam_results.exam_date')
-            ->paginate(3);
+            ->paginate(3,['*'], 'exam_results_page');
 
         // Truyền dữ liệu vào view
         return view(
