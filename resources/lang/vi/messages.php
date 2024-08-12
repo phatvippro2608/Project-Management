@@ -9,6 +9,7 @@ return [
     'department' => 'Phòng ban',
     'departments' => 'Danh sách phòng ban',
     'add_department' => 'Thêm phòng ban',
+    'department_name' => 'Tên phòng ban',
 
     'designation' => 'Chức danh',
     'employees' => 'Nhân viên',

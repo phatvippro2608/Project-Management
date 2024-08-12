@@ -18,7 +18,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Department</h4>
+                    <h4 class="modal-title">{{ __('messages.add_department') }}</h4>
                     @component('auth.component.btnCloseModal')@endcomponent
                 </div>
 
@@ -85,7 +85,7 @@
             <thead class="table-light">
             <tr>
                 <th>ID</th>
-                <th>Department Name</th>
+                <th>{{ __('messages.department_name') }}</th>
                 <th>Action</th>
             </tr>
             </thead>
