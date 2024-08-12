@@ -12,7 +12,7 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-between p-3">
                             <h5 class="fw-bold text-white mb-0">
-                                <i class="bi bi-question-circle me-2"></i> Câu 1/30
+                                <i class="bi bi-question-circle me-2"></i> Question 1/30
                             </h5>
                             <div class="rounded-circle bg-light p-2">
                                 <span class="fw-bold text-danger">60s</span>
@@ -63,6 +63,11 @@
             </div>
             <div class="col-lg-4">
                 <div class="card rounded-4 border">
+                    <div class="card-header bg-secondary fw-bold text-dark p-4">
+                        <h5 class="fw-bold text-white mb-0">
+                            <i class="bi bi-list me-2"></i> Question list
+                        </h5>
+                    </div>
                     <div class="card-body p-3">
                         <div class="row gy-2">
                             <div class="col-xl-3 col-sm-3 col-4 text-center">
@@ -84,6 +89,11 @@
                     </div>
                 </div>
                 <div class="card rounded-4 border">
+                    <div class="card-header bg-info fw-bold text-dark">
+                        <h5 class="fw-bold text-white mb-0">
+                            <i class="bi bi-info-circle me-2"></i> Info
+                        </h5>
+                    </div>
                     <div class="card-body p-3">
                         <div class="row gy-2 align-items-center">
                             <div class="col-xl-4">
