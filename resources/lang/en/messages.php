@@ -13,6 +13,7 @@ return [
     'hr_manager' => 'HR Manager',
     'employee' => 'Employee',
     'employees' => 'Employees',
+    'employee_code' => 'Employee Code',
     'inactive_user' => 'Inactive User',
     'certificate_types' => 'Certificate Types',
     'job_info' => 'Job Info',
@@ -35,12 +36,17 @@ return [
     'KPI' => 'KPI',
     'team' => 'Team',
     'teams' => 'Teams',
+    'team_name' => 'Team name',
+    'team_description' => 'Team Description',
     'customer' => 'Customer',
     'customers' => 'Customers',
     'customer_accounts' => 'Customer Accounts',
     'customer_support' => 'Customer Support',
     'project_management' => 'Project Management',
+    'project' => 'Project',
     'projects' => 'Projects',
+    'project_name' => 'Project name',
+    'team_members' => 'Team Members',
     'task' => 'Task',
     'tasks' => 'Tasks',
     'task_list' => 'Task List',
@@ -70,8 +76,16 @@ return [
     'add' => 'Add',
     'import' => 'Import',
     'export' => 'Export',
+    'status' => 'Status',
 
-    'employee_code' => 'Employee Code',
+    'company' => 'Company',
+    'address' => 'Address',
+    'contract' => 'Contract',
+
+    'datestart' => 'Start Date',
+    'dateend' => 'End Date',
+
+
     'full_name' => 'Full Name',
     'gender' => 'Gender',
 ];
