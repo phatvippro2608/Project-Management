@@ -40,6 +40,7 @@ return [
     'customer_accounts' => 'Customer Accounts',
     'customer_support' => 'Customer Support',
     'project_management' => 'Project Management',
+    'project' => 'Project',
     'projects' => 'Projects',
     'task' => 'Task',
     'tasks' => 'Tasks',

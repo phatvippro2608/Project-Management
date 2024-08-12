@@ -28,39 +28,42 @@
 
     <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
         <i class="bi bi-plus-lg"></i>
-        Add
+        {{ __('messages.add') }}
     </button>
     <button class="btn btn-primary mb-4">
         <i class="bi bi-file-earmark-arrow-up"></i>
-        Import
+        {{ __('messages.import') }}
     </button>
     <button class="btn btn-primary mb-4">
         <i class="bi bi-file-earmark-arrow-down"></i>
-        Export
+        {{ __('messages.export') }}
     </button>
 
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">{{ __('messages.projects') }}</div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="projectListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                     <tr>
-                        <th>No.</th>
-                        <th scope="col">Project Name</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Team Memebers</th>
+                        <th class="text-center">#</th>
+                        <th scope="col" class="text-center">Project Name</th>
+                        <th scope="col" class="text-center">Customer</th>
+                        <th scope="col" class="text-center">Team Memebers</th>
                         {{--                        <th>Tags</th>--}}
-                        <th scope="col">StartDate</th>
-                        <th scope="col">EndDate</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" class="text-center">StartDate</th>
+                        <th scope="col" class="text-center">EndDate</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($projects as $project)
                         <tr>
-                            <td>{{ $project->project_id }}</td>
+                            <td class="text-center">{{ $project->project_id }}</td>
                             <td>{{ $project->project_name }}</td>
                             <td>{{ $project->customer_info }}</td>
                             <td>
@@ -85,9 +88,9 @@
                                 </div>
                             </td>
                             {{--                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>--}}
-                            <td>{{ $project->project_date_start }}</td>
-                            <td>{{ $project->project_date_end }}</td>
-                            <td>
+                            <td class="text-center">{{ $project->project_date_start }}</td>
+                            <td class="text-center">{{ $project->project_date_end }}</td>
+                            <td class="text-center">
                                 <span class="badge rounded-pill
                                     @switch($project->phase_id)
                                         @case(1)

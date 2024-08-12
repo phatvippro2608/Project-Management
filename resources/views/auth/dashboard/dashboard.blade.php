@@ -31,7 +31,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.employees') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.employee') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -48,7 +48,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.teams') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.team') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -65,7 +65,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.projects') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.project') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">

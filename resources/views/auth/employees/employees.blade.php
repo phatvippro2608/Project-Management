@@ -19,13 +19,13 @@
                     {{ __('messages.add') }}
                 </div>
             </div>
-            <div class="btn btn-success mx-2">
+            <div class="btn btn-primary mx-2">
                 <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
                     <i class="bi bi-file-earmark-arrow-up pe-2"></i>
                     {{ __('messages.import') }}
                 </a>
             </div>
-            <div class="btn btn-success mx-2 btn-export">
+            <div class="btn btn-primary mx-2 btn-export">
                 <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
                     <i class="bi bi-file-earmark-arrow-down pe-2"></i>
                     {{ __('messages.export') }}
