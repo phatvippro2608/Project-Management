@@ -71,7 +71,7 @@ return [
     'subtask' => 'Sub Task',
     'recent' => 'Recent',
     'todolist' => 'Todo List',
-    'action' => 'Hành động',
+    'action' => 'Action',
 
     'add' => 'Add',
     'import' => 'Import',

@@ -24,15 +24,15 @@
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">
             <tr>
-                <th>ID</th>
-                <th>{{ __('messages.department_name') }}</th>
-                <th>{{ __('messages.action') }}</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">{{ __('messages.department_name') }}</th>
+                <th class="text-center">{{ __('messages.action') }}</th>
             </tr>
             </thead>
             <tbody id="departmentsTableBody">
             @foreach ($departments as $department)
                 <tr>
-                    <td>{{ $department->department_id }}</td>
+                    <td class="text-center">{{ $department->department_id }}</td>
                     <td>{{ $department->department_name }}</td>
                     <td>
                         <button
