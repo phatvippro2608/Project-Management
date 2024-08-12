@@ -498,18 +498,12 @@ $token = 'position';
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\AttendanceController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Attendance List</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}">
-                            <i class="bi bi-circle"></i><span>Add Attendance</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.attendance') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>Attendance Report</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.attendance_report') }}</span>
                         </a>
                     </li>
                 </ul>
@@ -517,36 +511,36 @@ $token = 'position';
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#leave-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-person-fill-x"></i><span>Leave</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-person-fill-x"></i><span>{{ __('messages.leave') }}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
 
                     @if($data->permission === 1 || $data->permission === 2)
                         <li>
                             <a class="nav-sub-link" href="{{ route('holidays.index') }}">
-                                <i class="bi bi-circle"></i><span>Holiday</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.holiday') }}</span>
                             </a>
                         </li>
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-type.index') }}">
-                                <i class="bi bi-circle"></i><span>Leave Type</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.leave_type') }}</span>
                             </a>
                         </li>
                     @elseif($data->permission === 4)
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
-                                <i class="bi bi-circle"></i><span>Leave Report</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.leave_report') }}</span>
                             </a>
                         </li>
                     @else
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
-                                <i class="bi bi-circle"></i><span>Leave Application</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.leave_application') }}</span>
                             </a>
                         </li>
                         <li>
                             <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
-                                <i class="bi bi-circle"></i><span>Earned Leave</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.earned_leave') }}</span>
                             </a>
                         </li>
                     @endif
@@ -570,48 +564,48 @@ $token = 'position';
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>Team List</span>
+                    <i class="bi bi-people"></i><span>{{ __('messages.team_list') }}</span>
                 </a>
             </li>
 
-            <li class="nav-heading">Customer Manager</li>
+            <li class="nav-heading">{{ __('messages.customer_manager') }}</li>
             <li class="nav-item">
                 <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
                      href="">
-                    <i class="bi bi-person"></i><span>Customer</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-person"></i><span>{{ __('messages.customer') }}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </div>
                 <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Customers</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.customers') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>Customer Accounts</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.customer_accounts') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>Customer Support</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.customer_support') }}</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="nav-heading">Project Management</li>
+            <li class="nav-heading">{{ __('messages.project_management') }}</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                    href="#">
-                    <i class="bi bi-folder"></i><span>Projects</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-folder"></i><span>{{ __('messages.projects') }}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
 
-                            <i class="bi bi-circle"></i><span>Projects</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.projects') }}</span>
                         </a>
                     </li>
                     <li>
@@ -621,12 +615,12 @@ $token = 'position';
                     </li>
                     <li>
                         <a href="#">
-                            <i class="bi bi-circle"></i><span>Task List</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.task_list') }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="#">
-                            <i class="bi bi-circle"></i><span>Field Visit</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.field_visit') }}</span>
                         </a>
                     </li>
                 </ul>
@@ -649,29 +643,29 @@ $token = 'position';
                 </ul>
             </li>
 
-            <li class="nav-heading">Warehouse Management</li>
+            <li class="nav-heading">{{ __('messages.warehouse_management') }}</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
                    href="#">
-                    <i class="bi bi-boxes"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-boxes"></i><span>{{ __('messages.inventory') }}</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Dashboard</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.dashboard') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                            <i class="bi bi-circle"></i><span>Material Management</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.material_management') }}</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="nav-heading">Education</li>
+            <li class="nav-heading">{{ __('messages.education') }}</li>
             <li class="nav-item">
                 <a class="nav-link " href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
                     <i class="bi bi-mortarboard"></i>
@@ -682,39 +676,39 @@ $token = 'position';
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
                    href="#">
-                    <i class="bi bi-clipboard"></i><span>Internal Certificates</span><i
+                    <i class="bi bi-clipboard"></i><span>{{ __('messages.internal_certificates') }}</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link" href="{{ route('certificate.user') }}">
-                            <i class="bi bi-circle"></i><span>Internal Certificates</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link" href="{{ route('certificate.type') }}">
-                            <i class="bi bi-circle"></i><span>Internal Certificates Types</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_types') }}</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="nav-heading">Pages</li>
+            <li class="nav-heading">{{ __('messages.page') }}</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#proposal-nav" data-bs-toggle="collapse"
                    href="#">
-                    <i class="bi bi-gear-wide-connected"></i><span>Proposal</span><i
+                    <i class="bi bi-gear-wide-connected"></i><span>{{ __('messages.proposal') }}</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="proposal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link" href="{{route('proposal-application.index')}}">
-                            <i class="bi bi-circle"></i><span>Proposal Application</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.proposal_application') }}</span>
                         </a>
                     </li>
                     <li>
                         <a class="nav-sub-link" href="{{ route('proposal-types.index') }}">
-                            <i class="bi bi-circle"></i><span>Proposal Types</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.proposal_type') }}</span>
                         </a>
                     </li>
                 </ul>
