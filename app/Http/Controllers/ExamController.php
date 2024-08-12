@@ -16,6 +16,7 @@ class ExamController extends Controller
         $courses = CourseModel::all();
         $questions = QuizModel::all();
         return view('auth.quiz.exam', compact('exams', 'courses', 'questions'));
+        
     }
 
     public function store(Request $request)
