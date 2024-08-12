@@ -1338,4 +1338,10 @@ div.dt-container div.dt-search{
     display: none;
 }
 
+.truncate {
+    max-width:50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
