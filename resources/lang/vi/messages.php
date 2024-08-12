@@ -72,7 +72,7 @@ return [
     'subtask' => 'Công việc con',
     'recent' => 'Gần đây',
     'todolist' => 'Danh sách việc cần làm',
-    'action' => 'Hành động',
+    'action' => 'Thao tác',
 
     'add' => 'Thêm',
     'import' => 'Nhập',
