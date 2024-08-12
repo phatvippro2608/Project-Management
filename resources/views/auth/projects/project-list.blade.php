@@ -10,7 +10,7 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Project List</h1>
+        <h1>{{ __('messages.project_list') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a
@@ -50,7 +50,7 @@
                         <th scope="col">Project Name</th>
                         <th scope="col">Customer</th>
                         <th scope="col">Team Memebers</th>
-                        <th>Tags</th>
+{{--                        <th>Tags</th>--}}
                         <th scope="col">StartDate</th>
                         <th scope="col">EndDate</th>
                         <th scope="col">Status</th>
@@ -75,7 +75,7 @@
                                          width="36" height="36">
                                 @endforeach
                             </td>
-                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>
+{{--                            <td><span class="badge rounded-pill bg-light text-dark">Web Development</span></td>--}}
                             <td>{{ $project->project_date_start }}</td>
                             <td>{{ $project->project_date_end }}</td>
                             <td>
@@ -103,8 +103,8 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}"
-                                   class="btn btn-primary">Details and Cost</a>
+                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
+                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
                             </td>
                         </tr>
                     @endforeach

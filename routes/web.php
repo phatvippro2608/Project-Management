@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EarnLeaveController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\CreateQuizController;
 use App\Http\Controllers\TestQuizController;
 use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\ProjectBudgetController;
 
 
 /*
@@ -101,20 +103,26 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
         Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
-        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
         Route::get('workshops', [WorkshopController::class, 'index'])->name('workshop.index');
         Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
         Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
         Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
         Route::get('/live/{workshop_id}', [WorkshopController::class, 'live'])->name('lms.live');
-        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('education.course');
+
+        //Courses
+        Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
+        Route::delete('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
+
+        //Sections
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
         Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
         Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
+        Route::delete('/course/deleteSection', 'App\Http\Controllers\CourseController@deleteSection');
+        Route::post('/course/join', 'App\Http\Controllers\CourseController@joinCourse');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
@@ -200,6 +208,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_personal_profile', 'App\Http\Controllers\UploadFileController@uploadPersonalProfile');
     Route::post('/upload_medical_checkup', 'App\Http\Controllers\UploadFileController@uploadMedicalCheckUp');
     Route::post('/upload_certificate', 'App\Http\Controllers\UploadFileController@uploadCertificate');
+    Route::post('/upload_employment_contract', 'App\Http\Controllers\UploadFileController@uploadEmploymentContract');
 
 
     Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
@@ -237,15 +246,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{id}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'update'])->name('project.update');
         //List of Expenses
         Route::get('/{id}/budget', '\App\Http\Controllers\ProjectBudgetController@getView')->name('budget');
-        Route::get('/{id}/budget/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editBudget'])->name('budget.edit');
+        Route::get('/project/{id}/budget/group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'viewCost'])->name('budget.viewCost');
         Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
         Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
-        Route::delete('/{project_id}/budget/{cost_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteBudget'])->name('budget.delete');
         Route::post('/budget/rename-cost-group', [\App\Http\Controllers\ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
         Route::post('/{id}/budget/create-group', [\App\Http\Controllers\ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
         Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
         Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
-        Route::delete('/{project_id}/budget/group/{cost_group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostGroup'])->name('budget.deleteCostGroup');
         Route::get('/project/{id}/budget/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
 
         //List of Commission
@@ -258,6 +265,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
 
         Route::get('/{project_id}/commission/commision-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
+
+        Route::get('/{project_id}/report', [ProjectBudgetController::class, 'report'])->name('project.report');
     });
 
     Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
@@ -330,18 +339,18 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/{disciplinary_id}', [DisciplinaryController::class, 'get'])->name('disciplinary.get');
     });
 
-
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
-    });
-
-    Route::group(['prefix' => '/quiz'], function () {
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
         Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
         Route::post('/question-bank/add', [QuizController::class, 'addQuestion'])->name('question-bank.add');
         Route::get('/question-bank/list/{id}', [QuizController::class, 'getQuestionList'])->name('question-bank.list');
+        Route::delete('/question-bank/{id}', [QuizController::class, 'destroy'])->name('question-bank.destroy');
+        Route::get('/question-bank/{id}/edit', [QuizController::class, 'edit'])->name('question-bank.edit');
+        Route::post('/question-bank/{id}/update', [QuizController::class, 'update'])->name('question-bank.update');
+
 
     });
 
@@ -356,4 +365,25 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
 
+
+    Route::get('contract', [ContractController::class, 'getView']);
+
+    Route::get('lang/{locale}', function ($locale) {
+        if (in_array($locale, ['en', 'vi'])) {
+            session(['locale' => $locale]);
+        }
+        return redirect()->back();
+    });
 });
+
+// Language - chuyển đổi ngôn ngữ
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'vi'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+});
+
+// Tạo liên kết chuyển đổi
+//<a href="{{ url('lang/en') }}">English</a>
+//<a href="{{ url('lang/vi') }}">Tiếng Việt</a>
