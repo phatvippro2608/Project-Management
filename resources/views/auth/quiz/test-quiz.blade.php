@@ -63,6 +63,11 @@
             </div>
             <div class="col-lg-4">
                 <div class="card rounded-4 border">
+                    <div class="card-header bg-secondary fw-bold text-dark p-4">
+                        <h5 class="fw-bold text-white mb-0">
+                            <i class="bi bi-list me-2"></i> Question list
+                        </h5>
+                    </div>
                     <div class="card-body p-3">
                         <div class="row gy-2">
                             <div class="col-xl-3 col-sm-3 col-4 text-center">
