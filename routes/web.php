@@ -29,6 +29,8 @@ use App\Http\Controllers\CreateQuizController;
 use App\Http\Controllers\TestQuizController;
 use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\ExamController;
+
 
 
 /*
@@ -342,6 +344,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/question-bank/{course_id}/import', [QuizController::class, 'import'])->name('question-bank.import');
         Route::get('/question-bank/{course_id}/export', [QuizController::class, 'export'])->name('question-bank.export');
         Route::post('/question-bank/delete-file', [QuizController::class, 'deleteExportedFile'])->name('question-bank.deleteFile');
+
+        Route::get('/exam', [ExamController::class, 'getView'])->name('exams.index');
+        Route::post('/exam/add', [ExamController::class, 'store'])->name('exams.store');
+        Route::delete('/exam/{id}', [ExamController::class, 'destroy'])->name('exams.destroy');
+        Route::get('/exam/{id}/edit', [ExamController::class, 'edit'])->name('exams.edit');
+        Route::put('/exam/{id}/update', [ExamController::class, 'update'])->name('exams.update');
+        Route::get('/exam/{id}/questions', [ExamController::class, 'getQuestionsByCourse'])->name('exams.questions');
 
 
     });
