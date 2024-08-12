@@ -14,15 +14,46 @@ use Illuminate\Support\Facades\File;
 
 class QuizController extends Controller
 {
-    function getView()
+    public function getView()
     {
         $model = new QuizModel();
-        //        dd($model->getInfo());
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+
+        // Lấy employee_id từ bảng accounts
+        $employee_id = DB::table('accounts')->where('account_id', $account_id)->value('employee_id');
+
+        // Kiểm tra nếu employee_id tồn tại
+        if (!$employee_id) {
+            return view('auth.quiz.quiz')->with('message', 'Employee not found');
+        }
+
+        // Lấy danh sách các khóa học mà employee_id đã hoàn thành (progress = 100)
+        $completed_courses = DB::table('courses_employees')
+            ->join('courses', 'courses_employees.course_id', '=', 'courses.course_id')
+            ->where('courses_employees.employee_id', $employee_id)
+            ->where('courses_employees.progress', 100)
+            ->select('courses.course_id', 'courses.course_name')
+            ->get();
+
+        // Lấy kết quả thi của nhân viên
+        $exam_results = DB::table('exam_results')
+            ->join('exams', 'exam_results.exam_id', '=', 'exams.exam_id')
+            ->join('courses', 'exams.course_id', '=', 'courses.course_id')
+            ->where('exam_results.employee_id', $employee_id)
+            ->select('courses.course_name', 'exam_results.score', 'exam_results.exam_date')
+            ->paginate(3);
+
+        // Truyền dữ liệu vào view
         return view(
             'auth.quiz.quiz',
-            ['data' => $model->getInfo()]
+            [
+                'data' => $model->getInfo(),
+                'completed_courses' => $completed_courses,
+                'exam_results' => $exam_results
+            ]
         );
     }
+
 
     function getViewQuestionBank()
     {

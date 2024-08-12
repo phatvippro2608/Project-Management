@@ -14,26 +14,27 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                     Information
+                    Information
                 </div>
                 @php
                     $imageUrl = asset('assets/img/avt.png');
-                    if($data->photo != null){
+                    if ($data->photo != null) {
                         $imagePath = public_path($data->photo);
-                        if(file_exists($imagePath)) {
+                        if (file_exists($imagePath)) {
                             $imageUrl = asset($data->photo);
                         }
                     }
                 @endphp
                 <div class="card-body text-center mt-3">
-                    <img src="{{ $imageUrl }}" alt="Ảnh thí sinh" class="img-fluid mb-3 rounded-circle" style="height: 200px">
-                    <p><strong>Employee Code: </strong> {{$data->employee_code}}</p>
-                    <p><strong>Full name: </strong>{{$data->last_name.' '.$data->first_name}}</p>
-                    <p><strong>Department: </strong>{{$data->department_name}}</p>
+                    <img src="{{ $imageUrl }}" alt="Ảnh thí sinh" class="img-fluid mb-3 rounded-circle"
+                        style="height: 200px">
+                    <p><strong>Employee Code: </strong> {{ $data->employee_code }}</p>
+                    <p><strong>Full name: </strong>{{ $data->last_name . ' ' . $data->first_name }}</p>
+                    <p><strong>Department: </strong>{{ $data->department_name }}</p>
                 </div>
             </div>
 
-            @if($data->permission == 11)
+            @if ($data->permission == 11)
                 <div class="card mt-4">
                     <div class="card-body text-center p-3 d-flex justify-content-around">
                         <a href="{{ route('exams.index') }}" class="btn btn-success">Create exam</a>
@@ -45,17 +46,40 @@
 
         <div class="col-md-8">
             <div class="card mb-4">
+                @php
+                    use Carbon\Carbon;
+                    $currentDate = Carbon::now();
+                    $formattedDate = $currentDate->format('l, F j, Y');
+                @endphp
+
                 <div class="card-header bg-primary text-white">
-                    Exam schedule on Thursday, August 8, 2024
+                    Exam schedule on {{ $formattedDate }}
                 </div>
                 <div class="card-body p-3">
-                    <div class="alert alert-danger text-center">
-                        There are currently no exams.
+                    <div id="examContainer">
+                        @if (isset($completed_courses) && count($completed_courses) > 0)
+                            @foreach ($completed_courses as $course)
+                                @php
+                                    $exam_result = $exam_results->firstWhere('course_name', $course->course_name);
+                                @endphp
+                                @if (!$exam_result)
+                                    <div class="alert alert-success text-center">
+                                        <p>You have a test available for the course: {{ $course->course_name }}</p>
+                                        <a href="/exam-link" class="btn btn-primary">Start Exam</a>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div class="alert alert-danger text-center">
+                                There are currently no exams.
+                            </div>
+                        @endif
                     </div>
                     <div class="text-center">
                         <button class="btn btn-info" onclick="location.reload();">Reload</button>
                     </div>
                 </div>
+
             </div>
 
             <div class="card">
@@ -63,10 +87,24 @@
                     Result
                 </div>
                 <div class="card-body p-4">
-                    <div class="alert alert-danger text-center">
-                        No data available.
-                    </div>
+                    @if (isset($exam_results) && count($exam_results) > 0)
+                        @foreach ($exam_results as $result)
+                            <div class="alert alert-info text-left">
+                                Course: {{ $result->course_name }} <br>
+                                Score: <span style="color: red; font-weight: normal;"><b>{{ $result->score }}</b></span><br>
+                                Test Date: {{ $result->exam_date }}
+                            </div>
+                        @endforeach
+                        <div class="d-flex justify-content-end mt-4">
+                            {{ $exam_results->links('pagination::bootstrap-5') }}
+                        </div>
+                    @else
+                        <div class="alert alert-danger text-center">
+                            No data available.
+                        </div>
+                    @endif
                 </div>
+
             </div>
         </div>
     </div>
@@ -74,4 +112,3 @@
 
 @section('script')
 @endsection
-
