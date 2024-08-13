@@ -1,5 +1,23 @@
 @extends('auth.main')
+@section('head')
+    <style>
+        label {
+            font-weight: bolder;
+            margin-left: 5px;
+            margin-top: 20px;
+        }
 
+        tr{
+            border-bottom: 1px solid #E8E8E8;
+        }
+        .bg-hover:hover{
+            background: #E2E3E5!important;
+        }
+        .dropdown-toggle::after {
+            display: none!important;
+        }
+    </style>
+@endsection
 @section('contents')
     <div class="pagetitle">
         <h1>Contract list</h1>
@@ -21,23 +39,44 @@
             <table id="contractTable" class="table table-borderless table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>No.</th>
-                        <th>Contract name</th>
-                        <th>Contact date</th>
-                        <th>Contact end date</th>
-                        <th>Contact details</th>
-                        <th>Amount</th>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">Contract detail</th>
+                        <th class="text-center">Contact date</th>
+                        <th class="text-center">Contact end date</th>
+                        <th class="text-center">Amount</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php $i = 1 @endphp
                     @foreach($contracts as $contract)
                         <tr>
-                            <td>{{$contract->contract_id}}</td>
-                            <td class="text-truncate" style="max-width: 50px">{{$contract->contract_name}}</td>
-                            <td>{{$contract->contract_date}}</td>
-                            <td>{{$contract->contract_end_date}}</td>
-                            <td class="text-truncate" style="max-width: 50px">{{$contract->contract_details}}</td>
-                            <td>{{$contract->amount}}</td>
+                            <td class="text-center">{{$i}}</td>
+                            @php $i++ @endphp
+                            <td style="width: 33%">
+                                <div class="fw-bold">{{Str::limit($contract->contract_name,60)}}</div>
+                                <div>{{Str::limit($contract->contract_details,120)}}</div>
+                            </td>
+                            <td class="text-center">{{\App\Http\Controllers\AccountController::format($contract->contract_date)}}</td>
+                            <td class="text-center">{{\App\Http\Controllers\AccountController::format($contract->contract_end_date)}}</td>
+
+                            <td>{{number_format($contract->amount)}}</td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="d-flex align-items-center">
+                                        <a class=" edit" style="cursor: pointer">
+                                            <i class="bi bi-pencil-square ic-update ic-btn at2"
+                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson($contract))}}"></i>
+                                        </a>
+                                        <a class=" delete" style="cursor: pointer">
+                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                               data="{{$contract->contract_id}}"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

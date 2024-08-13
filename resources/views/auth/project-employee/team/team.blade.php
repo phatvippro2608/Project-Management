@@ -100,11 +100,11 @@
                                 <td class="text-center">
                                     <div class="d-flex align-items-center justify-content-center">
                                         <div class="d-flex align-items-center">
-                                            <a class=" edit">
+                                            <a class=" edit" style="cursor: pointer">
                                                 <i class="bi bi-pencil-square ic-update ic-btn at2"
                                                    data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
                                             </a>
-                                            <a class=" delete">
+                                            <a class=" delete" style="cursor: pointer">
                                                 <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
                                                    data="{{$item->team_id}}"></i>
                                             </a>
