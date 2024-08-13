@@ -150,6 +150,7 @@
             let timeRemaining = {{ $exam->time }};
             let interval;
             let visitedQuestions = new Set();
+            let examSubmitted = false; // New flag to check if the exam is submitted
 
             function startTimer() {
                 stopTimer();
@@ -280,9 +281,84 @@
                 });
             }
 
-            // nextButton.addEventListener('click', function() {
-            //     moveToNextQuestion();
-            // });
+            function submitQuiz() {
+                // Do not stop the timer here, let it run
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to submit the quiz?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, submit it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        examSubmitted = true; // Mark the exam as submitted
+                        // Save the current question answer
+                        saveAnswer(currentQuestionIndex, false).then(() => {
+                            // Save null for remaining unanswered questions
+                            let promises = [];
+                            for (let i = 0; i < questions.length; i++) {
+                                if (!visitedQuestions.has(i)) {
+                                    promises.push(saveAnswer(i, false));
+                                }
+                            }
+                            Promise.all(promises).then(() => {
+                                calculateAndSaveScore();
+                            });
+                        });
+                    }
+                });
+            }
+
+            async function calculateAndSaveScore() {
+                let score = 0;
+                const totalQuestions = questions.length;
+
+                const response = await fetch('{{ route('test-quiz.calculateScore') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        exam_id: '{{ $exam->exam_id }}',
+                        employee_id: '{{ $employee_id }}'
+                    })
+                });
+
+                const data = await response.json();
+                score = data.score;
+
+                Swal.fire(
+                    'Submitted!',
+                    'Your quiz has been submitted.',
+                    'success'
+                ).then(() => {
+                    window.location.href = '{{ route('quiz.index') }}';
+                });
+            }
+
+            window.addEventListener('beforeunload', function(e) {
+                if (!examSubmitted) {
+                    fetch('{{ route('test-quiz.markExamAsZero') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            exam_id: '{{ $exam->exam_id }}',
+                            employee_id: '{{ $employee_id }}'
+                        })
+                    });
+                }
+            });
+
+            submitButton.addEventListener('click', function() {
+                submitQuiz();
+            });
 
             questionButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -290,7 +366,8 @@
                     if (index === currentQuestionIndex) return;
                     if (visitedQuestions.has(index)) return;
                     visitedQuestions.add(
-                    currentQuestionIndex); // Add current question to visitedQuestions before moving
+                        currentQuestionIndex
+                        ); // Add current question to visitedQuestions before moving
                     moveToQuestion(index);
                 });
             });
