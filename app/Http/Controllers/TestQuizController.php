@@ -110,13 +110,29 @@ class TestQuizController extends Controller
 
         $totalQuestions = ExamAnswerModel::where('exam_result_id', $exam_result->exam_result_id)->count();
 
-        $score = ($correctAnswers / $totalQuestions) * 10;
+        if ($totalQuestions == 0) {
+            return response()->json(['success' => false, 'message' => 'No questions found for this exam result']);
+        }
 
-        $exam_result->score = $score;
+        $rawScore = $correctAnswers / $totalQuestions;
+
+        // Round the score according to the specified rules
+        if ($rawScore >= 0.75) {
+            $roundedScore = 1;
+        } elseif ($rawScore >= 0.3) {
+            $roundedScore = 0.5;
+        } else {
+            $roundedScore = 0.0;
+        }
+
+        $finalScore = $roundedScore * 10;
+
+        $exam_result->score = $finalScore;
         $exam_result->save();
 
-        return response()->json(['success' => true, 'score' => $score]);
+        return response()->json(['success' => true, 'score' => $finalScore]);
     }
+
 
     public function markExamAsZero(Request $request)
     {
