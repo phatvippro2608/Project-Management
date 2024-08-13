@@ -126,10 +126,9 @@
                             <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="file"
-                                       id="imageAttachment"
-                                       name="imageAttachment[]"
-                                       multiple="multiple"
-                                       accept="image/png, image/jpeg, image/gif">
+                                       id="contractAttachment"
+                                       name="contractAttachment[]"
+                                       multiple="multiple">
                                 <button class="btn btn-primary mx-auto d-none filepond-upload1 btn-upload-image" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                                 <div class="border rounded-4 p-3 mb-2 ">
                                     <div class="row gy-3 content_image">
@@ -155,7 +154,8 @@
             language: {search: ""},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
-                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                $('.dt-search').prepend(`
+                            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
                                 <i class="bi bi-search"></i>
                             </button>`)
             },
@@ -171,8 +171,8 @@
             FilePondPluginImagePreview,
             FilePondPluginFileValidateType
         );
-        const imageAttachmentPond = FilePond.create(
-            document.querySelector('#imageAttachment'),
+        const contractAttachmentPond = FilePond.create(
+            document.querySelector('#contractAttachment'),
             {
                 allowPdfPreview: true,
                 pdfPreviewHeight: 320,
