@@ -94,4 +94,6 @@ return [
 
     'full_name' => 'Full Name',
     'gender' => 'Gender',
+    'male' => 'Male',
+    'female' => 'Female',
 ];
