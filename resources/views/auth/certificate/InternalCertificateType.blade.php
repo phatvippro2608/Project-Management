@@ -33,10 +33,10 @@
     </div>
     <div class="row my-4">
         <div class="col-auto d-flex gap-2">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+            {{-- <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
                 <i class="bi bi-building-add me-2"></i>
                 Add Company
-            </button>
+            </button> --}}
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#addCertificateModal">
                 <i class="bi bi-patch-check me-2"></i>
