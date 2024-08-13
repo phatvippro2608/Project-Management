@@ -424,28 +424,10 @@ $token = 'position';
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-target="#account-nav" data-bs-toggle="collapse"
-                       href="#">
-                        <i class="bi bi-person"></i><span>{{ __('messages.account') }}</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <a class="nav-link"
+                       href="{{ action('App\Http\Controllers\AccountController@getView') }}">
+                        <i class="bi bi-person"></i><span>{{ __('messages.account') }}</span>
                     </a>
-                    <ul id="account-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                        <li>
-
-                            <a class="nav-sub-link"
-                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-
-                                <i class="bi bi-circle"></i><span>{{ __('messages.info') }}</span>
-                            </a>
-                        </li>
-                        <li>
-
-                            <a class="nav-sub-link"
-                               href="{{ action('App\Http\Controllers\AccountController@getView') }}">
-
-                                <i class="bi bi-circle"></i><span>{{ __('messages.history') }}</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
             @endif
 
@@ -545,12 +527,12 @@ $token = 'position';
 
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#kpi-nav" data-bs-toggle="collapse" href="#kpi">
                     <i class="bi bi-person-fill-x"></i><span>KPI</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="kpi-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a class="nav-sub-link" href="">
+                        <a class="nav-sub-link" href="#kpi">
                             <i class="bi bi-circle"></i><span>KPI</span>
                         </a>
                     </li>
@@ -565,28 +547,10 @@ $token = 'position';
 
             <li class="nav-heading">{{ __('messages.customer_manager') }}</li>
             <li class="nav-item">
-                <div class="nav-link collapsed" data-bs-target="#customer-nav" data-bs-toggle="collapse"
-                     href="">
-                    <i class="bi bi-person"></i><span>{{ __('messages.customer') }}</span><i class="bi bi-chevron-down ms-auto"></i>
-                </div>
-                <ul id="customer-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.customers') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.customer_accounts') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.customer_support') }}</span>
-                        </a>
-                    </li>
-                </ul>
+                <a class="nav-link"
+                     href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
+                    <i class="bi bi-person"></i><span>{{ __('messages.customer') }}</span>
+                </a>
             </li>
 
             <li class="nav-heading">{{ __('messages.project_management') }}</li>
@@ -599,13 +563,7 @@ $token = 'position';
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('\App\Http\Controllers\ProjectController@getView') }}">
-
                             <i class="bi bi-circle"></i><span>{{ __('messages.projects') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ action([\App\Http\Controllers\ProjectController::class, 'getView']) }}">
-                            <i class="bi bi-circle"></i><span>Project Manager</span>
                         </a>
                     </li>
                     <li>
@@ -619,6 +577,12 @@ $token = 'position';
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{{action('App\Http\Controllers\ContractController@getView')}}">
+                    <i class="bi bi-journal-bookmark"></i><span>Contracts</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
             </li>
 
             <li class="nav-heading">myXteam Manager</li>

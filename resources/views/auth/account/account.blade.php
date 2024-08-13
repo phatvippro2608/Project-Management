@@ -23,6 +23,12 @@
                     Add Account
                 </div>
             </div>
+            <a class="btn btn-danger mx-2" href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-flower3 pe-2"></i>
+                    Log History
+                </div>
+            </a>
         </div>
     </div>
 
@@ -30,9 +36,6 @@
         <div class="row">
             <div class="col">
                 <div class="card p-2 border rounded-4">
-                    <div class="card-header py-0">
-                        <div class="card-title my-3 p-0">Account List</div>
-                    </div>
                     <div class="card-body m-1">
                         <table id="accountsTable" class="table table-borderless table-hover">
                             <thead class="table-light">

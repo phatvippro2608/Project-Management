@@ -22,7 +22,15 @@
             opacity: 1;
             color: var(--bs-primary);
         }
+        label {
+                 font-weight: bolder;
+                 margin-left: 5px;
+                 margin-top: 20px;
+             }
 
+        tr{
+            border-bottom: 1px solid #E8E8E8;
+        }
     </style>
 @endsection
 @section('contents')
@@ -37,7 +45,7 @@
     </div>
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
-            <div class="btn btn-primary me-2">
+            <div class="btn btn-primary me-2 btn-add">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                         {{ __('messages.add') }}
@@ -52,7 +60,6 @@
                     <thead class="table-light">
                         <tr>
                             <th class="text-center">{{ __('messages.team_name') }}</th>
-                            <th class="text-center">{{ __('messages.team_description') }}</th>
                             <th class="text-center">Created by</th>
                             <th class="text-center">Created at</th>
                             <th class="text-center">Last update</th>
@@ -62,15 +69,13 @@
                     </thead>
                     <tbody class="account-list">
                         @foreach($team as $item)
-                            <tr class="account-item">
+                            <tr class="account-item " style="height: 80px" >
 
-                                <td class="text-left fw-bold pt-1 pb-1">
-                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details">
+                                <td class="text-left pt-1 pb-1 w-25">
+                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details fw-bold ">
                                         {{$item->team_name}}
                                     </a>
-                                </td>
-                                <td class="text-left">
-                                    {{$item->team_description}}
+                                    <div class="text-truncate fw-normal">{{$item->team_description}}</div>
                                 </td>
                                 <td class="text-center">
                                     {{$item->first_name.' '.$item->last_name}}
