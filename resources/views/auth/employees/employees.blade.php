@@ -39,28 +39,6 @@
             <div class="card-title my-3 p-0">{{ __('messages.employee_list') }}</div>
         </div>
         <div class="card-body">
-            <div class="row gx-3 my-3">
-                <div class="col-md-6 m-0">
-                    <div class="btn btn-primary me-2">
-                        <div class="d-flex align-items-center at1">
-                            <i class="bi bi-file-earmark-plus pe-2"></i>
-                            Add
-                        </div>
-                    </div>
-                    <div class="btn btn-success mx-2">
-                        <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
-                            <i class="bi bi-file-earmark-arrow-up pe-2"></i>
-                            Import
-                        </a>
-                    </div>
-                    <div class="btn btn-success mx-2 btn-export">
-                        <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
-                            <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                            Export
-                        </a>
-                    </div>
-                </div>
-            </div>
             <table id="employeesTable" class="table table-hover table-borderless">
                 <thead class="table-light">
                     <tr>
@@ -91,7 +69,7 @@
                                     <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
                                     <td>{{$item->last_name . ' ' . $item->first_name}}</td>
                                     <td>{{$item->en_name}}</td>
-                                    <td class="text-center">{{$item->gender == 0 ? "Nam" : "Nữ"}}</td>
+                                    <td class="text-center">{{ $item->gender == 0 ? __('messages.male') : __('messages.female') }}</td>
                                     <td align="center">
                                             <?php
                                             $id = $item->employee_id;
