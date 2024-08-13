@@ -73,6 +73,7 @@
             <div class="col-lg">
                 <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="date" class="form-control form-control-lg date-of-file-attachment mb-2">
                     <input type="file"
                            id="fileAttachment"
                            name="fileAttachment[]"
@@ -98,6 +99,7 @@
             <div class="col-lg">
                 <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="date" class="form-control form-control-lg date-of-image-attachment mb-2">
                     <input type="file"
                            id="imageAttachment"
                            name="imageAttachment[]"
@@ -156,8 +158,8 @@
                         $select.append(fisrtOption);
                         $.each(result, function(index) {
                             var $option = $('<option></option>')
-                                .val(result[index])
-                                .text(result[index]);
+                                .val(result[index].date)
+                                .text(result[index].date);
 
                             $select.append($option);
                         });
@@ -302,12 +304,17 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            formData.append('_token', csrfToken);
-                            formData.append('project_location_id', document.querySelector('.location_select').value);
-                            formData.append('date', document.querySelector('.date_select').value);
-                            formData.append('type', 'file');
+                            if($('.date-of-file-attachment').val().length != 0){
+                                formData.append('_token', csrfToken);
+                                formData.append('project_location_id', document.querySelector('.location_select').value);
+                                formData.append('date', document.querySelector('.date-of-file-attachment').value);
+                                formData.append('type', 'file');
 
-                            return formData;
+                                return formData;
+                            }else{
+                                toastr.error('Please choose date!', 'Error');
+                            }
+
                         },
                     },
                     revert: {
@@ -334,12 +341,16 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            formData.append('_token', csrfToken);
-                            formData.append('project_location_id', document.querySelector('.location_select').value);
-                            formData.append('date', document.querySelector('.date_select').value);
-                            formData.append('type', 'image');
+                            if($('.date-of-image-attachment').val().length != 0){
+                                formData.append('_token', csrfToken);
+                                formData.append('project_location_id', document.querySelector('.location_select').value);
+                                formData.append('date', document.querySelector('.date-of-image-attachment').value);
+                                formData.append('type', 'image');
 
-                            return formData;
+                                return formData;
+                            }else{
+                                toastr.error('Please choose date!', 'Error');
+                            }
                         },
                     },
                     revert: {
