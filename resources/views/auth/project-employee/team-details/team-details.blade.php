@@ -161,9 +161,11 @@
                                             </td>
                                             <td class="text-left">
                                                 <select class="form-select position" data="{{$item->employee_id}}">
-                                                    <option value="">Member</option>
+                                                    <option value="100">Member</option>
                                                     @foreach($team_positions as $position)
-                                                        <option value="{{$position->team_position_id}}" @if($item->team_position_id==$position->team_position_id) selected @endif>{{$position->position_name}}</option>
+                                                        @if($position->team_permission !== 100)
+                                                            <option value="{{$position->team_permission}}" @if($item->team_permission==$position->team_permission) selected @endif>{{$position->position_name}}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -263,9 +265,9 @@
 
         $('.check-item').change(function (){
             let employee_id = $(this).attr('data');
-            let position_id = $('select.form-select.position[data="' + employee_id + '"]').val();
+            let team_permission = $('select.form-select.position[data="' + employee_id + '"]').val();
             console.log(employee_id)
-            console.log(position_id)
+            console.log(team_permission)
             $.ajax({
                 url: `{{action('App\Http\Controllers\TeamDetailsController@update')}}`,
                 type: "POST",
@@ -275,7 +277,7 @@
                 data: {
                     'employee_id': employee_id,
                     'team_id': {{$teams->team_id}},
-                    'position_id': position_id,
+                    'team_permission': team_permission,
                     'checked': $(this).prop('checked')?1:0
                 },
                 success: function (result) {
@@ -295,7 +297,7 @@
 
         $('.position').change(function (){
             let employee_id = $(this).attr('data');
-            let position_id = $(this).val();
+            let team_permission = $(this).val();
             $.ajax({
                 url: `{{action('App\Http\Controllers\TeamDetailsController@updatePosition')}}`,
                 type: "POST",
@@ -305,7 +307,7 @@
                 data: {
                     'employee_id': employee_id,
                     'team_id': {{$teams->team_id}},
-                    'position_id': position_id,
+                    'team_permission': team_permission,
                 },
                 success: function (result) {
                     result = JSON.parse(result);

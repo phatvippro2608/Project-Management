@@ -22,67 +22,60 @@
             opacity: 1;
             color: var(--bs-primary);
         }
+        label {
+                 font-weight: bolder;
+                 margin-left: 5px;
+                 margin-top: 20px;
+             }
 
+        tr{
+            border-bottom: 1px solid #E8E8E8;
+        }
     </style>
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Team List</h1>
+        <h1>{{ __('messages.team') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Team List</li>
+                <li class="breadcrumb-item active">{{ __('messages.team') }}</li>
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary my-3 btn-add">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-            Add Team
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary me-2 btn-add">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+                        {{ __('messages.add') }}
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="teamListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center" style="width: 60px!important;">Action</th>
-                            <th class="text-center">Team name</th>
-                            <th class="text-center">Team Description</th>
+                            <th class="text-center">{{ __('messages.team_name') }}</th>
                             <th class="text-center">Created by</th>
                             <th class="text-center">Created at</th>
                             <th class="text-center">Last update</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">{{ __('messages.status') }}</th>
+                            <th class="text-center" style="width: 60px!important;">Action</th>
                         </tr>
                     </thead>
                     <tbody class="account-list">
                         @foreach($team as $item)
-                            <tr class="account-item">
-                                <td class="text-center">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <div class="d-flex align-items-center">
-                                            <a class=" edit">
-                                                <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                                   data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
-                                            </a>
-                                            <a class=" delete">
-                                                <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                   data="{{$item->team_id}}"></i>
-                                            </a>
-                                        </div>
+                            <tr class="account-item " style="height: 80px" >
 
-                                    </div>
-
-                                </td>
-                                <td class="text-left fw-bold pt-1 pb-1">
-                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details">
+                                <td class="text-left pt-1 pb-1 w-25">
+                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details fw-bold ">
                                         {{$item->team_name}}
                                     </a>
-                                </td>
-                                <td class="text-left">
-                                    {{$item->team_description}}
+                                    <div class="text-truncate fw-normal">{{$item->team_description}}</div>
                                 </td>
                                 <td class="text-center">
                                     {{$item->first_name.' '.$item->last_name}}
@@ -94,8 +87,8 @@
                                     {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
                                 </td>
                                 <td class="text-center">
-                                    @if($status[$item->status] == 'Offine')
-                                        <i class="bi bi-circle-fill account-status offine"></i>
+                                    @if($status[$item->status] == 'Offline')
+                                        <i class="bi bi-circle-fill account-status offline"></i>
                                     @elseif($status[$item->status] == 'Locked')
                                         <i class="bi bi-circle-fill account-status" style="color:red;"></i>
                                     @else
@@ -103,6 +96,22 @@
                                     @endif
 
                                     {{$status[$item->status]}}
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="d-flex align-items-center">
+                                            <a class=" edit" style="cursor: pointer">
+                                                <i class="bi bi-pencil-square ic-update ic-btn at2"
+                                                   data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                            </a>
+                                            <a class=" delete" style="cursor: pointer">
+                                                <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                                   data="{{$item->team_id}}"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+
                                 </td>
                             </tr>
                         @endforeach

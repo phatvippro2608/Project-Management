@@ -96,8 +96,8 @@
                             <td class="text-center">{{$course->course_id}}</td>
                             <td>{{$course->course_name}}</td>
                             <td>{{$course->progress}}%</td>
-                            <td>{{$course->start_date}}</td>
-                            <td>{{$course->end_date}}</td>
+                            <td>{{\Carbon\Carbon::parse($course->start_date)->format('d M Y')}}</td>
+                            <td>{{\Carbon\Carbon::parse($course->end_date)->format('d M Y')}}</td>
                             <td></td>
                             <td>{{$course->course_type}}</td>
                             <td class="align-center text-center">
@@ -132,8 +132,8 @@
                                     <td class="text-center">{{ $course->course_id }}</td>
                                     <td>{{ $course->course_name }}</td>
                                     <td>{{ $course->progress }}%</td>
-                                    <td>{{ $course->start_date }}</td>
-                                    <td>{{ $course->end_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($course->start_date)->format('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($course->end_date)->format('d M Y') }}</td>
                                     <td></td>
                                     <td>{{ $course->course_type }}</td>
                                     <td class="align-center text-center">
@@ -170,8 +170,8 @@
                                     <td class="text-center">{{ $course->course_id }}</td>
                                     <td>{{ $course->course_name }}</td>
                                     <td>{{ $course->progress }}%</td>
-                                    <td>{{ $course->start_date }}</td>
-                                    <td>{{ $course->end_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($course->start_date)->format('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($course->end_date)->format('d M Y') }}</td>
                                     <td></td>
                                     <td>{{ $course->course_type }}</td>
                                     <td class="align-center text-center">
@@ -186,121 +186,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <table id="CourseTable" class="table table-hover table-borderless">
-            <thead class="table-light">
-                <tr>
-                    <th class="text-center sortable" data-sort="id_source">ID Source <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="name_source">Name Source <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="progress">Progress <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="start_date">Start To <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="end_date">From <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="certificate">Certificate <i class="bi bi-sort"></i></th>
-                    <th class="sortable" data-sort="type">Type <i class="bi bi-sort"></i></th>
-                    <th class="align-center text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody id="CourseTableBody">
-                @foreach($data as $course)
-                <tr class="clickable-row" data-href="/lms/course/{{ $course->course_id }}">
-                    <td class="text-center">{{$course->course_id}}</td>
-                    <td>{{$course->course_name}}</td>
-                    <td>{{$course->progress}}%</td>
-                    <td>{{$course->start_date}}</td>
-                    <td>{{$course->end_date}}</td>
-                    <td></td>
-                    <td>{{$course->course_type}}</td>
-                    <td class="align-center text-center">
-                        <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
-                            <i class="bi bi-info-circle-fill"></i>
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        </div>    
     </div>
-    <div class="tab-pane fade border border-top-0 rounded-bottom-4 bg-white p-3" id="course-completed" role="tabpanel" aria-labelledby="course-completed-tab">
-        <div class="input-group w-25 ms-auto my-3">
-            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                <i class="bi bi-search"></i>
-            </button>
-            <input type="text" id="completedCoursesSearch" class="form-control border-secondary-subtle rounded-end-4" placeholder="Search Courses">
-        </div>
-        <table id="coursesCompleted" class="table table-hover table-borderless">
-            <thead class="table-light">
-                <tr>
-                    <th class="text-center">ID Source</th>
-                    <th>Name Source</th>
-                    <th>Progress</th>
-                    <th>Start To</th>
-                    <th>From</th>
-                    <th>Certificate</th>
-                    <th>Type</th>
-                    <th class="align-center text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody id="completed-courses-table">
-                @foreach($data as $course)
-                <tr class="course-row" data-progress="{{ $course->progress }}">
-                    <td class="text-center">{{ $course->course_id }}</td>
-                    <td>{{ $course->course_name }}</td>
-                    <td>{{ $course->progress }}%</td>
-                    <td>{{ $course->start_date }}</td>
-                    <td>{{ $course->end_date }}</td>
-                    <td></td>
-                    <td>{{ $course->course_type }}</td>
-                    <td class="align-center text-center">
-                        <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
-                            <i class="bi bi-info-circle-fill"></i>
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    <div class="tab-pane fade border border-top-0 rounded-bottom-4 bg-white p-3" id="course-not-completed" role="tabpanel" aria-labelledby="course-not-completed-tab">
-        <div class="input-group w-25 ms-auto my-3">
-            <button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                <i class="bi bi-search"></i>
-            </button>
-            <input type="text" id="notCompletedCoursesSearch" class="form-control border-secondary-subtle rounded-end-4" placeholder="Search Courses">
-        </div>
-        <table id="coursesNotCompleted" class="table table-hover table-borderless">
-            <thead class="table-light">
-                <tr>
-                    <th class="text-center">ID Source</th>
-                    <th>Name Source</th>
-                    <th>Progress</th>
-                    <th>Start To</th>
-                    <th>From</th>
-                    <th>Certificate</th>
-                    <th>Type</th>
-                    <th class="align-center text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody id="not-completed-courses-table">
-                @foreach($data as $course)
-                <tr class="course-row" data-progress="{{ $course->progress }}">
-                    <td class="text-center">{{ $course->course_id }}</td>
-                    <td>{{ $course->course_name }}</td>
-                    <td>{{ $course->progress }}%</td>
-                    <td>{{ $course->start_date }}</td>
-                    <td>{{ $course->end_date }}</td>
-                    <td></td>
-                    <td>{{ $course->course_type }}</td>
-                    <td class="align-center text-center">
-                        <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
-                            <i class="bi bi-info-circle-fill"></i>
-                        </button>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
+    
 
 @endsection
 
@@ -313,7 +201,7 @@
             var rows = document.querySelectorAll('#completed-courses-table .course-row');
             rows.forEach(function (row) {
                 var progress = row.getAttribute('data-progress');
-                if (progress == '100') {
+                if (progress == 100) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -326,7 +214,7 @@
             var rows = document.querySelectorAll('#not-completed-courses-table .course-row');
             rows.forEach(function (row) {
                 var progress = row.getAttribute('data-progress');
-                if (progress < '100') {
+                if (progress < 100) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';

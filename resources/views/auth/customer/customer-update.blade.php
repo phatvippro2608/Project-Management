@@ -39,7 +39,7 @@
 
 @section('contents')
     <div class="pagetitle">
-        <h1>Customer Datail</h1>
+        <h1>Customer Detail</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -66,13 +66,15 @@
                                 <label for="">
                                     First name
                                 </label>
-                                <input type="text" class="form-control name1" value="{{$customer['first_name']}}" disabled>
+                                <input type="text" class="form-control name1" value="{{$customer['first_name']}}"
+                                       disabled>
                             </div>
                             <div class="col-md-6" style="margin-top: 1rem">
                                 <label for="">
                                     Last name
                                 </label>
-                                <input type="text" class="form-control name2" value="{{$customer['last_name']}}" disabled>
+                                <input type="text" class="form-control name2" value="{{$customer['last_name']}}"
+                                       disabled>
                             </div>
                         </div>
 
@@ -81,13 +83,15 @@
                                 <label for="">
                                     Date of birth
                                 </label>
-                                <input type="date" class="form-control name3" value="{{$customer['date_of_birth']}}" disabled>
+                                <input type="date" class="form-control name3" value="{{$customer['date_of_birth']}}"
+                                       disabled>
                             </div>
                             <div class="col-md-6" style="margin-top: 1rem">
                                 <label for="">
                                     Phone number
                                 </label>
-                                <input type="text" class="form-control name4" value="{{$customer['phone_number']}}" disabled>
+                                <input type="number" class="form-control name4" value="{{$customer['phone_number']}}"
+                                       disabled>
                             </div>
                         </div>
 
@@ -111,7 +115,8 @@
                             <label for="">
                                 Company name
                             </label>
-                            <input type="text" class="form-control name7" value="{{$customer['company_name']}}" disabled>
+                            <input type="text" class="form-control name7" value="{{$customer['company_name']}}"
+                                   disabled>
                         </div>
                         <div class="col-md-12" style="margin-top: 1rem">
                             <label for="">
@@ -125,7 +130,8 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-none border-danger at1 text-danger fw-bolder btn-delete">Delete
+                        <button type="button" class="btn btn-none border-danger at1 text-danger fw-bolder btn-delete">
+                            Delete
                             Customer
                         </button>
                     </div>
@@ -175,74 +181,110 @@
 
 @section('script')
     <script>
-        $('.name5').val({{$customer['status']}});
+        function validateForm() {
+            let isValid = true;
+
+            const validCharRegex = /^[\p{L}\s]+$/u; // Matches letters (including those with diacritics), numbers, and spaces
+            const firstName = $('.name1').val();
+            const lastName = $('.name2').val();
+
+            if (!validCharRegex.test(firstName)) {
+                toastr.error("First Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+            if (!validCharRegex.test(lastName)) {
+                toastr.error("Last Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+
+            const dob = new Date($('.name3').val());
+            const age = (new Date().getFullYear()) - dob.getFullYear();
+            if (isNaN(dob.getTime()) || age < 18) {
+                toastr.error("Date of Birth must indicate an age of 18 years or older", "Failed Action");
+                isValid = false;
+            }
+
+            const phoneNumber = $('.name4').val();
+            const phoneRegex = /^[0-9]+$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                toastr.error("Phone Number can only contain numbers", "Failed Action");
+                isValid = false;
+            }
+
+            const email = $('.name5').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                toastr.error("Invalid email format", "Failed Action");
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        $('.name8').val({{$customer['status']}});
+        const icon = $('.btn-open-update i');
+        let isFormOpen = false;
         $('.btn-open-update').click(() => {
-            for (let i = 1; i <= 8; i++) {
-                $(`.name${i}`).prop('disabled', (i, val) => !val);
-            }
-
-            const icon = $('.btn-open-update i');
-            if (
-                $('.name1').val()===`{{$customer['first_name']}}` &&
-                $('.name2').val()===`{{$customer['last_name']}}` &&
-                $('.name3').val()===`{{$customer['date_of_birth']}}` &&
-                $('.name4').val()===`{{$customer['phone_number']}}` &&
-                $('.name5').val()===`{{$customer['email']}}` &&
-
-                $('.name6').val()===`{{$customer['address']}}` &&
-                $('.name7').val()===`{{$customer['company_name']}}` &&
-                $('.name8').val()===`{{$customer['status']}}`
-            ) {
+            if (!isFormOpen) {
+                for (let i = 1; i <= 8; i++) {
+                    $(`.name${i}`).prop('disabled', (i, val) => !val);
+                }
                 icon.removeClass('bi-pencil-fill').addClass('bi-floppy2');
+                isFormOpen = true;
             } else {
-                icon.removeClass('bi-floppy2').addClass('bi-pencil-fill');
-            }
-        });
-        $('.btn-open-update').click(function () {
-            if (
-                $('.name1').val()!==`{{$customer['first_name']}}` ||
-                $('.name2').val()!==`{{$customer['last_name']}}` ||
-                $('.name3').val()!==`{{$customer['date_of_birth']}}` ||
-                $('.name4').val()!==`{{$customer['phone_number']}}` ||
-                $('.name5').val()!==`{{$customer['email']}}` ||
-                $('.name6').val()!==`{{$customer['address']}}` ||
-                $('.name7').val()!==`{{$customer['company_name']}}` ||
-                $('.name8').val()!==`{{$customer['status']}}`
-            ) {
-                $.ajax({
-                    url: `{{action('App\Http\Controllers\CustomerController@update')}}`,
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        'customer_id': {{$customer->customer_id}},
-                        'first_name': $('.name1').val(),
-                        'last_name': $('.name2').val(),
-                        'date_of_birth': $('.name3').val(),
-                        'phone_number': $('.name4').val(),
-                        'email': $('.name5').val(),
-
-                        'address': $('.name6').val(),
-                        'company_name': $('.name7').val(),
-                        'status': $('.name8').val(),
-                    },
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Thao tác thất bại");
-                        }
+                if (
+                    $('.name1').val() != `{{$customer['first_name']}}` ||
+                    $('.name2').val() != `{{$customer['last_name']}}` ||
+                    $('.name3').val() != `{{$customer['date_of_birth']}}` ||
+                    $('.name4').val() != `{{$customer['phone_number']}}` ||
+                    $('.name5').val() != `{{$customer['email']}}` ||
+                    $('.name6').val() != `{{$customer['address']}}` ||
+                    $('.name7').val() != `{{$customer['company_name']}}` ||
+                    $('.name8').val() != `{{$customer['status']}}`
+                ) {
+                    if (!validateForm()) {
+                        return;
                     }
-                });
-            }
+                    $.ajax({
+                        url: `{{action('App\Http\Controllers\CustomerController@update')}}`,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            'customer_id': {{$customer->customer_id}},
+                            'first_name': $('.name1').val(),
+                            'last_name': $('.name2').val(),
+                            'date_of_birth': $('.name3').val(),
+                            'phone_number': $('.name4').val(),
+                            'email': $('.name5').val(),
 
+                            'address': $('.name6').val(),
+                            'company_name': $('.name7').val(),
+                            'status': $('.name8').val(),
+                        },
+                        success: function (result) {
+                            result = JSON.parse(result);
+                            if (result.status === 200) {
+                                toastr.success(result.message, "Successfully");
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 500);
+                                icon.removeClass('bi-floppy2').addClass('bi-pencil-fill');
+                                isFormOpen = false;
+                            } else {
+                                toastr.error(result.message, "Failed Action");
+                            }
+                        }
+                    });
+                }else{
+                    window.location.reload();
+                }
+            }
         });
-        $('.btn-delete').click(function (){
+        $('.btn-delete').click(function () {
             if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
                 return;
             }
@@ -258,12 +300,12 @@
                 success: function (result) {
                     result = JSON.parse(result);
                     if (result.status === 200) {
-                        toastr.success(result.message, "Thao tác thành công");
+                        toastr.success(result.message, "Successfully");
                         setTimeout(function () {
                             window.location.href = "{{action('App\Http\Controllers\CustomerController@getView')}}";
                         }, 500);
                     } else {
-                        toastr.error(result.message, "Thao tác thất bại");
+                        toastr.error(result.message, "Failed Action");
                     }
                 }
             });
