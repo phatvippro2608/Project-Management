@@ -39,7 +39,7 @@ return [
     'KPI' => 'KPI',
     'team' => 'Team',
     'teams' => 'Teams',
-    'team_name' => 'Team name',
+    'team_name' => 'Team details',
     'team_description' => 'Team Description',
     'customer' => 'Customer',
     'customers' => 'Customers',
@@ -94,4 +94,6 @@ return [
 
     'full_name' => 'Full Name',
     'gender' => 'Gender',
+    'male' => 'Male',
+    'female' => 'Female',
 ];
