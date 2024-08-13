@@ -31,7 +31,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.employees') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.employee') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -48,7 +48,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.teams') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.team') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -65,7 +65,7 @@
                     <div class="col-xxl-3 col-xl-4 col-md-6">
                         <div class="card info-card sales-card">
                             <div class="card-body">
-                                <h5 class="card-title"><b>{{ __('messages.projects') }}</b></h5>
+                                <h5 class="card-title"><b>{{ __('messages.project') }}</b></h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -126,7 +126,7 @@
         </div>
         <div class="row gy-3">
             <div class="col-xl-8 col-lg-6">
-                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.subtask') }}</h4>
+                <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.recent_project') }}</h4>
                 <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">

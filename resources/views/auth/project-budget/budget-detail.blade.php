@@ -36,54 +36,63 @@
         </div>
 
         <h5>LIST OF EXPENSES</h5>
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td scope="row">SUBTOTAL</td>
-                    <td>{{ number_format($total, 0, ',', '.') }} VND</td>
-                </tr>
-                <tr>
-                    <td scope="row">RISK (CONTINGENCY)</td>
-                    <td>{{ number_format($contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
-                </tr>
-                <tr class="table-primary">
-                    <td scope="row"><b>TOTAL</b></td>
-                    <td>{{ number_format($total - $contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h5><b>Pie Chart Of Cost</b></h5>
-<div class="row">
-    <div class="col-md-6">
-        <div id="pieChart" class="container-fluid"></div>
-    </div>
-    <div class="col-md-6">
-        <div class="card p-2 border rounded-4">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Expense Statistics</div>
-            </div>
-            <div class="card-body">
-                <table id="total" class="table table-hover table-borderless">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($chart as $key => $value)
+        <div class="col-md-12">
+            <div class="card p-2 border rounded-4">
+                <div class="card-header py-0">
+                    <div class="card-title my-3 p-0">Total of Expenses</div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
                             <tr>
-                                <td>{{ $key }}</td>
-                                <td>{{ number_format($value, 0, ',', '.') }} VND</td>
+                                <th scope="row">SUBTOTAL</th>
+                                <td>{{ number_format($total, 0, ',', '.') }} VND</td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                            <tr>
+                                <th scope="row">RISK (CONTINGENCY)</th>
+                                <td>{{ number_format($contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
+                            </tr>
+                            <tr class="table-primary">
+                                <th scope="row"><b>TOTAL</b></th>
+                                <td>{{ number_format($total - $contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
+                            </tr>
+                        </tbody>
+                    
+        </table>
     </div>
 </div>
+</div>
+        <h5><b>Pie Chart Of Cost</b></h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="pieChart" class="container-fluid"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-2 border rounded-4">
+                    <div class="card-header py-0">
+                        <div class="card-title my-3 p-0">Expense Statistics</div>
+                    </div>
+                    <div class="card-body">
+                        <table id="total" class="table table-hover table-borderless">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($chart as $key => $value)
+                                    <tr>
+                                        <td>{{ $key }}</td>
+                                        <td>{{ number_format($value, 0, ',', '.') }} VND</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row mb-3">
             <!-- Filter by Name -->
@@ -248,7 +257,7 @@
             </div>
         </div>
     </div>
-    
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -453,6 +462,5 @@
         });
         new DataTable('#costTable');
         new DataTable('#total');
-
     </script>
 @endsection

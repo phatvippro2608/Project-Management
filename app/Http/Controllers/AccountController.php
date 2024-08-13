@@ -157,7 +157,7 @@ class AccountController extends Controller
         }
 
         if (AccountModel::where('email', $email)->count() >= 1) {
-            return self::status('Email đã tồn tại', 500);
+            return self::status('Existed Email', 500);
         }
 
         if (AccountModel::where('username', $username)->count() >= 1) {

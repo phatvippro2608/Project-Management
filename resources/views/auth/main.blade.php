@@ -228,7 +228,7 @@ $token = 'position';
             {{--     Change language      --}}
             <li class="nav-item dropdown-center my-2">
                 <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#" data-bs-toggle="dropdown">
-                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'vi')
+                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'en')
                         <img src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
                     @else
                         <img src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">
@@ -377,7 +377,7 @@ $token = 'position';
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.departments') }}</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.department') }}</span>
                         </a>
                     </li>
                     <li>
@@ -407,7 +407,7 @@ $token = 'position';
                         <li>
                             <a class="nav-sub-link"
                                href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
-                                <i class="bi bi-circle"></i><span>{{ __('messages.employees') }}</span>
+                                <i class="bi bi-circle"></i><span>{{ __('messages.inactive_user') }}</span>
                             </a>
                         </li>
                         <li>
@@ -559,7 +559,7 @@ $token = 'position';
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>{{ __('messages.teams') }}</span>
+                    <i class="bi bi-people"></i><span>{{ __('messages.team') }}</span>
                 </a>
             </li>
 

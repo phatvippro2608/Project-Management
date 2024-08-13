@@ -20,44 +20,46 @@
         }
     </style>
     <div class="pagetitle">
-        <h1>Proposal Applicaiton</h1>
+        <h1>{{ __('messages.proposal') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Proposal Applicaiton</li>
+                <li class="breadcrumb-item active">{{ __('messages.proposal') }}</li>
             </ol>
         </nav>
     </div>
+
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
             <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addProposalApplicationModal">
                 <div class="d-flex align-items-center at1">
                     <i class="bi bi-file-earmark-plus pe-2"></i>
-                    Add Proposal Applicaiton
+                    {{ __('messages.add') }}
                 </div>
             </div>
             @if ($data['permission'] == 9)
-                <div class="btn btn-success mx-2 btn-export">
+                <div class="btn btn-primary mx-2 btn-export">
                     <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
                                                                     'employee_id' => $data['employee_current']->employee_id
                                                                     ])}}"
                        class="d-flex align-items-center text-white">
                         <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                        Export
+                        {{ __('messages.import') }}
                     </a>
                 </div>
             @elseif($data['permission'] == 10)
-                <div class="btn btn-success mx-2 btn-export">
+                <div class="btn btn-primary mx-2 btn-export">
                     <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
                                                                     'employee_id' => $data['employee_current']->employee_id])}}" class="d-flex align-items-center text-white">
                         <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                        Export
+                        {{ __('messages.export') }}
                     </a>
                 </div>
             @endif
 
         </div>
     </div>
+
     <div class="modal fade" id="addProposalApplicationModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -121,6 +123,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="editProposalModal" tabindex="-1" aria-labelledby="editProposalModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -175,31 +178,30 @@
         </div>
     </div>
 
-
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
-        <h3 class="text-left mb-4">Proposal Application</h3>
+        <h3 class="text-left mb-4">{{ __('messages.proposal_list') }}</h3>
         <table id="proposalApplicationsTable" class="table table-hover table-borderless">
             <thead class="table-light">
                 <tr>
-                    <th>No</th>
-                    <th>Employee Name</th>
-                    <th>Proposal Name Type</th>
-                    <th>Description</th>
-                    <th class='w-25 '>Progress</th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ __('messages.employee_name') }}</th>
+                    <th class="text-center">{{ __('messages.proposal_type') }}</th>
+                    <th class="text-center">{{ __('messages.description') }}</th>
+                    <th class='text-center w-25 '>Progress</th>
                     @if ($data['permission'] == 9)
                         <th class="text-center">Direct Department</th>
                     @endif
                     @if ($data['permission'] == 10)
                         <th class="text-center">Direct Manager</th>
                     @endif
-                    <th>Action</th>
+                    <th>{{ __('messages.action') }}</th>
                 </tr>
             </thead>
             <tbody id="proposalTableBody">
                 @php($stt = 0)
                 @foreach ($data['list_proposal'] as $item)
                     <tr>
-                        <td>{{ ++$stt }}</td>
+                        <td class="text-center">{{ ++$stt }}</td>
                         <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                         <td>{{ $item->name }}</td>
                         <td>
