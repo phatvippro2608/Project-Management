@@ -150,7 +150,7 @@
             let timeRemaining = {{ $exam->time }};
             let interval;
             let visitedQuestions = new Set();
-            let examSubmitted = false; // New flag to check if the exam is submitted
+            let examSubmitted = false; 
 
             function startTimer() {
                 stopTimer();
@@ -191,7 +191,6 @@
                 });
 
                 const text = await response.text();
-                console.log(text);
                 return {
                     answered,
                     timeout
@@ -209,7 +208,7 @@
                         return i;
                     }
                 }
-                return -1; // All questions have been visited
+                return -1; 
             }
 
             function moveToQuestion(index) {
@@ -240,7 +239,7 @@
                     questionButtons[index].classList.remove('btn-outline-primary', 'btn-info');
                     questionButtons[index].classList.add('btn-primary');
 
-                    visitedQuestions.add(currentQuestionIndex); // Mark the current question as visited
+                    visitedQuestions.add(currentQuestionIndex); 
 
                     currentQuestionIndex = index;
                     document.getElementById('current-question').textContent = index + 1;
@@ -266,9 +265,7 @@
                         currentButton.classList.add('btn-success');
                     }
 
-                    console.log(currentButton.classList); // Log the class list of the button
-
-                    visitedQuestions.add(currentQuestionIndex); // Mark the current question as visited
+                    visitedQuestions.add(currentQuestionIndex); 
 
                     let nextQuestionIndex = currentQuestionIndex + 1;
                     if (visitedQuestions.has(nextQuestionIndex)) {
@@ -282,8 +279,6 @@
             }
 
             function submitQuiz() {
-                // Do not stop the timer here, let it run
-
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to submit the quiz?",
@@ -294,10 +289,8 @@
                     confirmButtonText: 'Yes, submit it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        examSubmitted = true; // Mark the exam as submitted
-                        // Save the current question answer
+                        examSubmitted = true; 
                         saveAnswer(currentQuestionIndex, false).then(() => {
-                            // Save null for remaining unanswered questions
                             let promises = [];
                             for (let i = 0; i < questions.length; i++) {
                                 if (!visitedQuestions.has(i)) {
@@ -367,7 +360,7 @@
                     if (visitedQuestions.has(index)) return;
                     visitedQuestions.add(
                         currentQuestionIndex
-                        ); // Add current question to visitedQuestions before moving
+                        ); 
                     moveToQuestion(index);
                 });
             });
