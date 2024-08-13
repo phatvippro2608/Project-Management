@@ -1263,6 +1263,7 @@ h6 {
 .file-selector:hover {
     transform: scale(1.1);
 }
+
 /*===============================*/
 .card-hover {
     transition: background-color 0.2s linear;
@@ -1357,6 +1358,7 @@ h6 {
     outline: none;
     cursor: pointer;
 }
+
 .rounded-checkbox:checked {
     background-image: url("../img/check.png");
     background-repeat: no-repeat;
@@ -1371,9 +1373,21 @@ div.dt-container div.dt-search {
     display: none;
 }
 
-.border-admin {
-    border: 3px solid red;
+.fade-animation {
+    animation: hideshow 1s ease-in-out infinite;
 }
+
+@keyframes hideshow {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+
+
 
 .bg-light-hover:hover {
     background: var(--bs-light);
