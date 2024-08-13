@@ -224,6 +224,10 @@
             // Event handler for location change
             $('.location_select').change(function() {
                 var locationId = $(this).val();
+                var body = $('.filesTableBody');
+                body.empty();
+                let bodyImage = $('.content_image');
+                bodyImage.empty();
                 updateDates(locationId);
             });
 
