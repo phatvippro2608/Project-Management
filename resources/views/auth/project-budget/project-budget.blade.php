@@ -105,11 +105,11 @@
                                 </tr>
                                 <tr>
                                     <th>Start Date</th>
-                                    <td id="project_date_start">{{ $data->project_date_start }}</td>
+                                    <td id="project_date_start">{{ \Carbon\Carbon::parse($data->project_date_start)->format('d M Y') }}</td>
                                 </tr>
                                 <tr>
                                     <th>End Date</th>
-                                    <td id="project_date_end">{{ $data->project_date_end }}</td>
+                                    <td id="project_date_end">{{ \Carbon\Carbon::parse($data->project_date_end)->format('d M Y') }}</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -14,12 +14,12 @@ class TeamDetailsController extends Controller
         $employees = DB::table("employees")
             ->join('accounts', 'employees.employee_id', '=', 'accounts.employee_id')
             ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
-            ->leftjoin('team_positions', 'team_details.team_position_id', '=', 'team_positions.team_position_id')
+            ->leftjoin('team_positions', 'team_details.team_permission', '=', 'team_positions.team_permission')
             ->where("team_id", $team_id)->get();
 
 //        dd($employees);
         $sql = "SELECT
-                    employees.*, accounts.*,team_details.team_position_id as team_position_id,
+                    employees.*, accounts.*,team_details.team_permission as team_permission,
                     CASE
                         WHEN team_details.employee_id IS NOT NULL THEN 1
                         ELSE 0
@@ -48,10 +48,10 @@ class TeamDetailsController extends Controller
     {
         $employee_id = $request->employee_id;
         $team_id = $request->team_id;
-        $team_position_id = $request->input('position_id', null);
+        $team_permission = $request->input('team_permission', null);
         $checked = $request->checked;
         if($checked==1){
-            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_position_id'=>$team_position_id])){
+            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_permission'=>$team_permission])){
                 return AccountController::status('Successfully Updated',200);
             }else{
                 return AccountController::status('Fail Updated', 500);
@@ -70,9 +70,9 @@ class TeamDetailsController extends Controller
     {
         $employee_id = $request->employee_id;
         $team_id = $request->team_id;
-        $position_id = $request->input('position_id', null);
+        $team_permission = $request->input('team_permission', null);
         if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->exists()){
-            if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->update(['team_position_id'=>$position_id])){
+            if(DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->update(['team_permission'=>$team_permission])){
                 return AccountController::status('Successfully Updated',200);
             }else{
                 return AccountController::status('Fail Updated', 500);

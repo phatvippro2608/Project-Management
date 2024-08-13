@@ -108,8 +108,18 @@
                 <div class="modal-content">
                     <form id="formEditSection" method="post" action="#">
                         @csrf
-                        <div class="modal-header">
+                        <div class="modal-header d-flex justify-content-between">
                             <h5 class="modal-title">Edit section</h5>
+                            <div class="dropdown">
+                                <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                                    <li><button class="dropdown-item" type="submit">Change</button></li>
+                                    <li><a class="dropdown-item" onclick="deleteSection()">Delete</a></li>
+                                    <li><a class="dropdown-item" data-bs-dismiss="modal">Close</a></li>
+                                </ul>
+                            </div>
                             <input type="text" id="section_id" name="section_id" hidden>
                         </div>
                         <div class="modal-body">
@@ -128,6 +138,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" onclick="deleteSection()">Delete</button>
                             <button type="submit" class="btn btn-primary">Change</button>
                         </div>
                     </form>
@@ -168,6 +179,10 @@
                                 }
                             }
                         });
+                    }
+                    else{
+                        //go back to course list
+                        window.location.href = '{{ action('App\Http\Controllers\CourseController@getViewCourses') }}';
                     }
                 });
             }
@@ -350,11 +365,12 @@
                             </li>`;
                             data.sections.forEach(section => {
                                 temp += `
-                            <li class="nav-item">
-                                <button style="width: 100%;" class="nav-link fs-5" onclick="loadSectionDetail(${section.courses_section_id})">
-                                    <i class="bi bi-circle"></i><span class="text-start">${section.section_name}</span>
-                                </button>
-                            </li>`
+                                <li class="nav-item">
+                                    <button style="width: 100%;" class="nav-link fs-5" onclick="loadSectionDetail(${section.courses_section_id})">
+                                        <i class="bi ${section.course_employee_id ? 'bi-check-circle-fill' : 'bi-circle'}"></i>
+                                        <span class="text-start">${section.section_name}</span>
+                                    </button>
+                                </li>`;
                             });
                             temp += `<li class="nav-item" id="new-section">
                             </li>
@@ -380,7 +396,6 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(data) {
-                        console.log(data);
                         if (data.success) {
                             data.sections.forEach(section => {
                                 $('#v_course_name').html(section.section_name);
@@ -392,13 +407,13 @@
                                     .detail != null ?
                                     section.detail : '');
                             });
+                            loadSection();
                         }
                     }
                 });
             };
 
             $('#formEditSection').submit(function(e) {
-                console.log('submit');
                 e.preventDefault();
                 var formData = new FormData(this);
                 if (tinymce.get('section_description_e').getContent() == '') {
@@ -414,7 +429,6 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        console.log(data);
                         if (data.success) {
                             toastr.success(data.message);
                             $('#modalEditSection').modal('hide');
@@ -432,6 +446,40 @@
                     }
                 });
             });
+
+            function deleteSection() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ action('App\Http\Controllers\CourseController@deleteSection') }}',
+                            type: 'delete',
+                            data: {
+                                section_id: $('#section_id').val(),
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(data) {
+                                if (data.success) {
+                                    toastr.success(data.message);
+                                    $('#modalEditSection').modal('hide');
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
         @endif
     </script>
 @endsection

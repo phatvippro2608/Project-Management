@@ -24,6 +24,17 @@ class AccountController extends Controller
         return \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
     }
 
+    static function getEmployeeId()
+    {
+        try {
+            return DB::table('employees')
+                ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+                ->first()->employee_id;
+        } catch (\Exception $e) {
+            return -1;
+        }
+    }
+
     static function permission()
     {
         return Session::get(StaticString::PERMISSION);
@@ -146,7 +157,7 @@ class AccountController extends Controller
         }
 
         if (AccountModel::where('email', $email)->count() >= 1) {
-            return self::status('Email đã tồn tại', 500);
+            return self::status('Existed Email', 500);
         }
 
         if (AccountModel::where('username', $username)->count() >= 1) {
