@@ -8,7 +8,13 @@
         }
 
         tr{
-            border-bottom: 1px solid #F8F9FA;
+            border-bottom: 1px solid #E8E8E8;
+        }
+        .bg-hover:hover{
+            background: #E2E3E5!important;
+        }
+        .dropdown-toggle::after {
+            display: none!important;
         }
     </style>
 @endsection
@@ -48,9 +54,6 @@
 
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
-        <div class="card-header py-0">
-            <div class="card-title my-3 p-0">{{ __('messages.projects') }}</div>
-        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="projectListTable" class="table table-hover table-borderless">
@@ -70,21 +73,21 @@
                     </thead>
                     <tbody>
                     @php $d = 1@endphp
-                    @foreach($projects as $project)
-                        <tr>
+                    @foreach($project as $item)
+                        <tr style="height: 80px;">
 
                             <td class="text-center">{{ $d }}</td>
                             @php $d++ @endphp
-                            <td>
-                                <span><b>{{ $project->project_name }}</b></span><br>
-                                <span>{{ \Carbon\Carbon::parse($project->project_date_start)->format('d M Y') }} - {{ \Carbon\Carbon::parse($project->project_date_end)->format('d M Y') }}</span>
+                            <td class="w-25">
+                                <span class="text-truncate fw-bold">{{ $item->project_name }}</span><br>
+                                <span>{{ \Carbon\Carbon::parse($item->project_date_start)->format('d M Y') }} - {{ \Carbon\Carbon::parse($item->project_date_end)->format('d M Y') }}</span>
                             </td>
 
-                            <td>{{ $project->customer_info }}</td>
+                            <td>{{ $item->customer_info }}</td>
                             <td>
                                 <div style="display: flex; align-items: center">
                                     @php $i = 1 @endphp
-                                    @foreach($project->team_members as $employee)
+                                    @foreach($item->team_members as $employee)
                                         @php $i++ @endphp
                                         @if($i>4) @break @endif
                                         @php
@@ -98,15 +101,15 @@
                                              title="{{$employee->last_name." ".$employee->first_name}}"
                                              style="cursor:pointer">
                                     @endforeach
-                                    @if(count($project->team_members)>3)
+                                    @if(count($item->team_members)>3)
                                     <div
                                         class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
                                         style="width: 36px; height: 36px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
                                         <i class="bi bi-plus position-absolute center" style="left: 1px;"></i>
-                                        <span class="position-absolute center" style="left:15px; ">{{count($project->team_members)-3}}</span>
+                                        <span class="position-absolute center" style="left:15px; ">{{count($item->team_members)-3}}</span>
                                         <div class="more-em" style="">
                                             @php $i=1 @endphp
-                                            @foreach($project->team_members as $employee)
+                                            @foreach($item->team_members as $employee)
                                                 @php $i++ @endphp
                                                 @if($i>4)
                                                     @php
@@ -139,7 +142,7 @@
 
                             <td class="text-center">
                                 <span class="badge rounded-pill
-                                    @switch($project->phase_id)
+                                    @switch($item->phase_id)
                                         @case(1)
                                             bg-primary
                                             @break
@@ -158,14 +161,22 @@
                                         @default
                                             bg-secondary
                                     @endswitch">
-                                    {{ $project->phase_name_eng }}
+                                    {{ $item->phase_name_eng }}
                                 </span>
                             </td>
 
-                            <td>
-                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
-                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
-                                <a href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $project->project_id) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Attachments</a>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <div class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="/assets/icons/settings.ico" alt="">
+                                    </div>
+
+                                    <ul class="dropdown-menu">
+                                        <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.details', ['id' => $item->project_id]) }}">Details and Cost</a></li>
+                                        <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.report', ['project_id' => $item->project_id]) }}">Report</a></li>
+                                        <li><a class="dropdown-item bg-hover" href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $item->project_id) }}">Attachments</a></li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -313,6 +324,11 @@
     <script>
         var table = $('#projectListTable').DataTable({
             language: {search: ""},
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">

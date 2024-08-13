@@ -14,15 +14,15 @@
         <div class="card-body p-2">
             <table>
                 <tr>
-                    <th>Mã hợp đồng:</th>
+                    <th>Contract Code:</th>
                     <td>{{$contract->contract_id}}</td>
                 </tr>
                 <tr>
-                    <th>Tên công ty:</th>
+                    <th>Company Name:</th>
                     <td>{{$company}}</td>
                 </tr>
                 <tr>
-                    <th>Tên dự án:</th>
+                    <th>Project Name:</th>
                     <th>{{$contract->contract_name}}</th>
                 </tr>
             </table>
@@ -103,7 +103,7 @@
                            name="imageAttachment[]"
                            multiple="multiple"
                            accept="image/png, image/jpeg, image/gif">
-                    <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                    <button class="btn btn-primary mx-auto d-none filepond-upload1 btn-upload-image" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                 </form>
             </div>
         </div>
@@ -180,7 +180,6 @@
                     success: function(result) {
                         let files = JSON.parse(result.files);
                         let images = JSON.parse(result.images);
-                        console.log(images)
                         var body = $('.filesTableBody');
                         body.empty();
 
@@ -205,7 +204,7 @@
                             let div = $('<div></div>').addClass('col-1 text-center btn btn-preview-image');
 
                             let img = $('<img/>')
-                                .attr('src', '{{asset('assets/img')}}'+ '/' + image.image_name)
+                                .attr('src', '{{asset('attachments/')}}/' + $('.location_select').val() + '/' + image.image_name)
                                 .attr('alt', 'Image preview')
                                 .attr('width', '75')
                                 .attr('height', '75')
@@ -284,61 +283,102 @@
             FilePondPluginFileValidateType
         );
 
-        const filePondConfig = {
-            allowPdfPreview: true,
-            pdfPreviewHeight: 320,
-            pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
-            server: {
-                process: {
-                    url: '{{route('attachment-upload')}}',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                    ondata: (formData, pond) => {
-                        formData.append('_token', csrfToken);
-                        formData.append('project_location_id', $('.location_select').val());
-                        formData.append('date', $('.date_select').val());
-                        if (pond.element.id === 'fileAttachment') {
-                            formData.append('type', 'file');
-                        } else if (pond.element.id === 'imageAttachment') {
-                            formData.append('type', 'image');
-                        }
-                        return formData;
-                    },
-                },
-                revert: {
-                    url: '{{route('attachment-delete')}}',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                }
-            },
-        };
+
         const fileAttachmentPond = FilePond.create(
             document.querySelector('#fileAttachment'),
-            filePondConfig
+            {
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                server: {
+                    process: {
+                        url: '{{route('attachment-upload')}}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        ondata: (formData) => {
+                            formData.append('_token', csrfToken);
+                            formData.append('project_location_id', document.querySelector('.location_select').value);
+                            formData.append('date', document.querySelector('.date_select').value);
+                            formData.append('type', 'file');
+
+                            return formData;
+                        },
+                    },
+                    revert: {
+                        url: '{{route('attachment-delete')}}',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    }
+                },
+            }
         );
+
         const imageAttachmentPond = FilePond.create(
             document.querySelector('#imageAttachment'),
             {
-                ...filePondConfig,
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                server: {
+                    process: {
+                        url: '{{route('attachment-upload')}}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        ondata: (formData) => {
+                            formData.append('_token', csrfToken);
+                            formData.append('project_location_id', document.querySelector('.location_select').value);
+                            formData.append('date', document.querySelector('.date_select').value);
+                            formData.append('type', 'image');
+
+                            return formData;
+                        },
+                    },
+                    revert: {
+                        url: '{{route('attachment-delete')}}',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    }
+                },
             }
         );
-
-        fileAttachmentPond.addEventListener('FilePond:processfile', e => {
-            const filepondUpload = document.querySelector('.filepond-upload');
+        const filePond = document.querySelector("#fileAttachment")
+        const filepondUpload = document.querySelector('.filepond-upload')
+        filePond.addEventListener('FilePond:processfile', e => {
             if (e.returnValue) {
-                filepondUpload.classList.remove('d-none');
+                filepondUpload.classList.remove('d-none')
             }
         });
 
-        fileAttachmentPond.addEventListener('FilePond:removefile', e => {
-            const filepondUpload = document.querySelector('.filepond-upload');
+        filePond.addEventListener('FilePond:removefile',e=>{
             if (e.returnValue) {
-                filepondUpload.classList.add('d-none');
+                filepondUpload.classList.add('d-none')
+            }
+        })
+
+        const filePond1 = document.querySelector("#imageAttachment")
+        const filepondUpload1 = document.querySelector('.filepond-upload1')
+        filePond1.addEventListener('FilePond:processfile', e => {
+            if (e.returnValue) {
+                filepondUpload1.classList.remove('d-none')
             }
         });
+
+        filePond1.addEventListener('FilePond:removefile',e=>{
+            if (e.returnValue) {
+                filepondUpload1.classList.add('d-none')
+            }
+        })
+
+
+
+
+
     </script>
     <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection
