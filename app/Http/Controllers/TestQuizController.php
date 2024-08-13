@@ -35,7 +35,11 @@ class TestQuizController extends Controller
             ->join('question_bank', 'question_bank.question_bank_id', '=', 'exam_questions.question_bank_id')
             ->where('exam_questions.exam_id', $exam->exam_id)
             ->select('question_bank.*', 'exam_questions.*')
-            ->get();
+            ->get()
+            ->toArray();
+
+        // Trộn các câu hỏi
+        shuffle($questions);
 
         return view('auth.quiz.test-quiz', [
             'exam' => $exam,
@@ -43,6 +47,7 @@ class TestQuizController extends Controller
             'employee_id' => $employee_id,
         ]);
     }
+
 
     public function saveAnswer(Request $request)
     {

@@ -67,10 +67,10 @@
                         @endforeach
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
-                        <button class="btn btn-primary" id="next-button">
+                        {{-- <button class="btn btn-primary" id="next-button">
                             <i class="bi bi-arrow-right me-2"></i>
                             Next
-                        </button>
+                        </button> --}}
                         <button class="btn btn-danger" id="submit-button">
                             <i class="bi bi-check2-all me-2"></i>
                             Submit
@@ -126,7 +126,7 @@
                                 <button class="btn btn-danger rounded-4 px-4 fw-bold">Question</button>
                             </div>
                             <div class="col-xl-8">
-                                <div class="fw-semibold">Time expired or moved to next</div>
+                                <div class="fw-semibold">Time expired or skipped</div>
                             </div>
                         </div>
                     </div>
@@ -169,95 +169,128 @@
                 clearInterval(interval);
             }
 
+            async function saveAnswer(questionIndex, timeout) {
+                const questionId = questions[questionIndex].dataset.questionId;
+                const selectedAnswer = document.querySelector(`input[name="answer_${questionId}"]:checked`);
+                const answer = selectedAnswer ? selectedAnswer.value : null;
+                const answered = !!selectedAnswer;
+
+                const response = await fetch('{{ route('test-quiz.saveAnswer') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        exam_id: '{{ $exam->exam_id }}',
+                        question_id: questionId,
+                        selected_answer: answer,
+                        employee_id: '{{ $employee_id }}'
+                    })
+                });
+
+                const text = await response.text();
+                console.log(text);
+                return {
+                    answered,
+                    timeout
+                };
+            }
+
+            function findNextUnvisitedQuestion(startIndex) {
+                for (let i = startIndex; i < questions.length; i++) {
+                    if (!visitedQuestions.has(i)) {
+                        return i;
+                    }
+                }
+                for (let i = startIndex - 1; i >= 0; i--) {
+                    if (!visitedQuestions.has(i)) {
+                        return i;
+                    }
+                }
+                return -1; // All questions have been visited
+            }
+
             function moveToQuestion(index) {
                 if (index < 0 || index >= questions.length) return;
 
-                const currentQuestion = questions[currentQuestionIndex];
-                const nextQuestion = questions[index];
+                saveAnswer(currentQuestionIndex, false).then(() => {
+                    const currentQuestion = questions[currentQuestionIndex];
+                    const nextQuestion = questions[index];
 
-                currentQuestion.classList.add('d-none');
-                nextQuestion.classList.remove('d-none');
+                    const questionId = questions[currentQuestionIndex].dataset.questionId;
+                    const selectedAnswer = document.querySelector(
+                        `input[name="answer_${questionId}"]:checked`);
+                    const answered = !!selectedAnswer;
 
-                questionButtons[currentQuestionIndex].classList.remove('btn-primary', 'btn-success', 'btn-danger',
-                    'btn-info', 'btn-outline-primary');
+                    const currentButton = questionButtons[currentQuestionIndex];
+                    currentButton.classList.remove('btn-primary', 'btn-outline-primary', 'btn-danger',
+                        'btn-success', 'btn-info');
 
-                if (visitedQuestions.has(currentQuestionIndex)) {
-                    questionButtons[currentQuestionIndex].classList.add('btn-info');
-                } else {
-                    questionButtons[currentQuestionIndex].classList.add('btn-outline-primary');
-                }
+                    if (!answered) {
+                        currentButton.classList.add('btn-danger');
+                    } else {
+                        currentButton.classList.add('btn-success');
+                    }
 
-                questionButtons[index].classList.remove('btn-outline-primary');
-                questionButtons[index].classList.add('btn-primary');
+                    currentQuestion.classList.add('d-none');
+                    nextQuestion.classList.remove('d-none');
 
-                currentQuestionIndex = index;
-                document.getElementById('current-question').textContent = index + 1;
+                    questionButtons[index].classList.remove('btn-outline-primary', 'btn-info');
+                    questionButtons[index].classList.add('btn-primary');
 
-                timeRemaining = {{ $exam->time }};
-                startTimer();
+                    visitedQuestions.add(currentQuestionIndex); // Mark the current question as visited
+
+                    currentQuestionIndex = index;
+                    document.getElementById('current-question').textContent = index + 1;
+
+                    timeRemaining = {{ $exam->time }};
+                    startTimer();
+                });
             }
 
             function moveToNextQuestion(timeout = false) {
                 stopTimer();
-                const questionId = questions[currentQuestionIndex].dataset.questionId;
-                const selectedAnswer = document.querySelector(`input[name="answer_${questionId}"]:checked`);
-                const answered = !!selectedAnswer;
+                saveAnswer(currentQuestionIndex, timeout).then((data) => {
+                    const currentButton = questionButtons[currentQuestionIndex];
 
-                saveAnswer(answered, timeout).then((data) => {
-                    questionButtons[currentQuestionIndex].classList.remove('btn-primary', 'btn-success',
-                        'btn-danger', 'btn-info', 'btn-outline-primary');
+                    currentButton.classList.remove('btn-primary', 'btn-success', 'btn-danger', 'btn-info',
+                        'btn-outline-primary');
 
-                    if (timeout || !answered) {
-                        questionButtons[currentQuestionIndex].classList.add('btn-danger');
-                    } else if (answered) {
-                        questionButtons[currentQuestionIndex].classList.add('btn-success');
+                    if (timeout && !data.answered) {
+                        currentButton.classList.add('btn-danger');
+                    } else if (!data.answered) {
+                        currentButton.classList.add('btn-danger');
+                    } else {
+                        currentButton.classList.add('btn-success');
                     }
 
-                    visitedQuestions.add(currentQuestionIndex);
-                    moveToQuestion(currentQuestionIndex + 1);
+                    console.log(currentButton.classList); // Log the class list of the button
+
+                    visitedQuestions.add(currentQuestionIndex); // Mark the current question as visited
+
+                    let nextQuestionIndex = currentQuestionIndex + 1;
+                    if (visitedQuestions.has(nextQuestionIndex)) {
+                        nextQuestionIndex = findNextUnvisitedQuestion(nextQuestionIndex);
+                    }
+
+                    if (nextQuestionIndex !== -1) {
+                        moveToQuestion(nextQuestionIndex);
+                    }
                 });
             }
 
-            async function saveAnswer(answered, timeout) {
-                const questionId = questions[currentQuestionIndex].dataset.questionId;
-                const selectedAnswer = document.querySelector(`input[name="answer_${questionId}"]:checked`);
-                const answer = selectedAnswer ? selectedAnswer.value : null;
-
-                try {
-                    const response = await fetch('{{ route('test-quiz.saveAnswer') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            exam_id: '{{ $exam->exam_id }}',
-                            question_id: questionId,
-                            selected_answer: answer,
-                            employee_id: '{{ $employee_id }}'
-                        })
-                    });
-
-                    const text = await response.text();
-                    console.log(text);
-                    return JSON.parse(text);
-
-                } catch (error) {
-                    console.error('Error saving answer:', error);
-                    return {
-                        success: false
-                    };
-                }
-            }
-
-            nextButton.addEventListener('click', function() {
-                moveToNextQuestion();
-            });
+            // nextButton.addEventListener('click', function() {
+            //     moveToNextQuestion();
+            // });
 
             questionButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const index = parseInt(this.dataset.questionIndex) - 1;
-                    if (visitedQuestions.has(index) || index <= currentQuestionIndex) return;
+                    if (index === currentQuestionIndex) return;
+                    if (visitedQuestions.has(index)) return;
+                    visitedQuestions.add(
+                    currentQuestionIndex); // Add current question to visitedQuestions before moving
                     moveToQuestion(index);
                 });
             });
