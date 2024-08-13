@@ -120,10 +120,19 @@ class InternalCertificatesController extends Controller
         }
     }
 
+    public function getViewSignature() {
+
+        return view('auth.certificate.InternalCertificateSignature');
+    }
+
+    public function getViewCreate() {
+        return view('auth.certificate.InternalCertificateCreate');
+    }
+
     public function temp()
     {
 
-        $employee = DB::table('employees')->where('employee_id','=','1')->first();
+        $employee = DB::table('employees')->where('employee_id','=','3')->first();
     
         $director = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
