@@ -157,7 +157,7 @@
                 var lineHeight = 16;
                 wrapText(context, description, canvas.width / 2, canvas.height / 2 + 70, maxWidth, lineHeight);
 
-                var namedescription = 'of achievement'.toUpperCase();
+                var namedescription = 'of internship'.toUpperCase();
                 context.font = "bold 34px 'Lora', serif";
                 wrapText(context, namedescription, canvas.width / 2, canvas.height / 2 - 85, maxWidth, lineHeight);
 
