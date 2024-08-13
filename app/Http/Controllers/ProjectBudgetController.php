@@ -24,7 +24,6 @@ class ProjectBudgetController extends Controller
         ->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
-        $dataCostGroupData = DB::table('project_cost_datagroup')->get();
         $total=0;
         $subtotal2=0;
         $chart=[];
@@ -47,7 +46,6 @@ class ProjectBudgetController extends Controller
         return view('auth.project-budget.budget-detail', [
             'dataCost' => $dataCost,
             'dataCostGroup' => $dataCostGroup,
-            'dataCostGroupData' => $dataCostGroupData,
             'id' => $id,
             'contingency_price' => $contingency_price,
             'total' => $total,
@@ -67,20 +65,14 @@ class ProjectBudgetController extends Controller
     // Validate the request
     $request->validate([
         'project_name' => 'nullable|string',
-        'project_description' => 'nullable|string',
-        'project_address' => 'nullable|string',
-        'project_date_start' => 'nullable|date',
-        'project_date_end' => 'nullable|date',
+        'project_description' => 'nullable|string'
     ]);
 
     try {
         // Update the project using raw SQL
         DB::table('projects')->where('project_id', $id)->update([
             'project_name' => $request->input('project_name'),
-            'project_description' => $request->input('project_description'),
-            'project_address' => $request->input('project_address'),
-            'project_date_start' => $request->input('project_date_start'),
-            'project_date_end' => $request->input('project_date_end'),
+            'project_description' => $request->input('project_description')
         ]);
 
         return response()->json([
@@ -98,8 +90,9 @@ class ProjectBudgetController extends Controller
     }
 }
 
-public function showProjectDetail($id)
+public function showProjectDetail(Request $request,$id)
 {
+    $keyword = $request->input('location', '');
     AccountController::setRecentProject($id);
     $data = DB::table('projects')->where('project_id', $id)->first();
     $prj = ProjectModel::find($id);
@@ -112,6 +105,22 @@ public function showProjectDetail($id)
     $total = 0;
     $subtotal1 = 0;
     $items = DB::table('project_costs')->where('project_id', $id)->get();
+
+    if(!empty($keyword)){
+        $dataLoca = DB::table('project_locations')
+        ->join('projects', 'projects.project_id','=','project_locations.project_id')
+        ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->where('project_locations.project_location_id', $keyword)->first();
+        
+    }else{
+        $dataLoca = DB::table('project_locations')
+        ->join('projects', 'projects.project_id','=','project_locations.project_id')
+        ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->first();
+    }
+
+    
+    $locations = DB::table('project_locations')
+    ->join('projects', 'projects.project_id','=','project_locations.project_id')
+    ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->get();
     foreach ($items as $item) {
         $subtotal2 = $item->project_cost_labor_qty *
                     $item->project_cost_budget_qty *
@@ -129,7 +138,10 @@ public function showProjectDetail($id)
         'total' => $total,
         'contract' => $contract,
         'contactEmployee' => $contactEmployee,
-        'customer' => $customer
+        'customer' => $customer,
+        'locations' => $locations,
+        'dataLoca' => $dataLoca,
+        'keyword' => $keyword
     ]);
 }
     public function viewCost($id, $group_id){
