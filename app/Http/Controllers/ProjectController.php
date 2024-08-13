@@ -20,8 +20,8 @@ class ProjectController extends Controller
             ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
             ->join('project_teams', 'project_teams.project_id', '=', 'projects.project_id')
             ->select(
-                'projects.*',
                 'project_teams.*',
+                'projects.*',
                 DB::raw("CONCAT(customers.company_name, ' - ', customers.last_name, ' ', customers.first_name) AS customer_info"),
                 'phases.phase_name_eng'
             )
