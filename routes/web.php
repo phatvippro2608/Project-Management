@@ -388,7 +388,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
-
+    Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
+    Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+    
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);

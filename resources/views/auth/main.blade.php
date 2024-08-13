@@ -649,6 +649,16 @@ $token = 'position';
                             <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_types') }}</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('certificate.signature') }}">
+                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_signature') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link" href="{{ route('certificate.create') }}">
+                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_create') }}</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
