@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
-    public function getView()
+    static public function getView()
     {
-        $projects = DB::table('projects')
+        $project = DB::table('projects')
             ->join('contracts', 'contracts.contract_id', '=', 'projects.contract_id')
             ->join('customers', 'customers.customer_id', '=', 'contracts.customer_id')
             ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
@@ -27,11 +27,10 @@ class ProjectController extends Controller
             )
             ->orderBy('project_teams.project_id', 'asc')
             ->get();
-
-        foreach ($projects as $project) {
-            $project->team_members = DB::table('team_details')
+        foreach ($project as $item) {
+            $item->team_members = DB::table('team_details')
                 ->join('employees', 'employees.employee_id', '=', 'team_details.employee_id')
-                ->where('team_id', $project->team_id)
+                ->where('team_id', $item->team_id)
                 ->orderBy('team_permission', 'asc')
                 ->get();
         }
@@ -39,7 +38,7 @@ class ProjectController extends Controller
         $contracts = DB::table('contracts')
             ->leftjoin('projects', 'contracts.contract_id', '=', 'projects.contract_id')
             ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
-        return view('auth.projects.project-list', compact('projects', 'teams', 'contracts'));
+        return view('auth.projects.project-list', compact('project', 'teams', 'contracts'));
     }
 
 
