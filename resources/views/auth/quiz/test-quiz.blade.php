@@ -150,7 +150,7 @@
             let timeRemaining = {{ $exam->time }};
             let interval;
             let visitedQuestions = new Set();
-            let examSubmitted = false; 
+            let examSubmitted = false;
 
             function startTimer() {
                 stopTimer();
@@ -203,12 +203,12 @@
                         return i;
                     }
                 }
-                for (let i = startIndex - 1; i >= 0; i--) {
+                for (let i = 0; i < startIndex; i++) {
                     if (!visitedQuestions.has(i)) {
                         return i;
                     }
                 }
-                return -1; 
+                return -1;
             }
 
             function moveToQuestion(index) {
@@ -239,7 +239,7 @@
                     questionButtons[index].classList.remove('btn-outline-primary', 'btn-info');
                     questionButtons[index].classList.add('btn-primary');
 
-                    visitedQuestions.add(currentQuestionIndex); 
+                    visitedQuestions.add(currentQuestionIndex);
 
                     currentQuestionIndex = index;
                     document.getElementById('current-question').textContent = index + 1;
@@ -265,50 +265,67 @@
                         currentButton.classList.add('btn-success');
                     }
 
-                    visitedQuestions.add(currentQuestionIndex); 
+                    visitedQuestions.add(currentQuestionIndex);
 
-                    let nextQuestionIndex = currentQuestionIndex + 1;
-                    if (visitedQuestions.has(nextQuestionIndex)) {
-                        nextQuestionIndex = findNextUnvisitedQuestion(nextQuestionIndex);
-                    }
+                    let nextQuestionIndex = findNextUnvisitedQuestion(currentQuestionIndex + 1);
 
                     if (nextQuestionIndex !== -1) {
                         moveToQuestion(nextQuestionIndex);
+                    } else {
+                        submitQuiz(
+                        true); // Automatically submit quiz if all questions are visited or last question times out
                     }
                 });
             }
 
-            function submitQuiz() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to submit the quiz?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, submit it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        examSubmitted = true; 
-                        saveAnswer(currentQuestionIndex, false).then(() => {
-                            let promises = [];
-                            for (let i = 0; i < questions.length; i++) {
-                                if (!visitedQuestions.has(i)) {
-                                    promises.push(saveAnswer(i, false));
-                                }
+            function submitQuiz(autoSubmit = false) {
+                if (autoSubmit) {
+                    examSubmitted = true;
+                    saveAnswer(currentQuestionIndex, false).then(() => {
+                        let promises = [];
+                        for (let i = 0; i < questions.length; i++) {
+                            if (!visitedQuestions.has(i)) {
+                                promises.push(saveAnswer(i, false));
                             }
-                            Promise.all(promises).then(() => {
-                                calculateAndSaveScore();
+                        }
+                        Promise.all(promises).then(() => {
+                            calculateAndSaveScore().then(() => {
+                                window.location.href = '{{ route('quiz.index') }}';
                             });
                         });
-                    }
-                });
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "Do you want to submit the quiz?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, submit it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            examSubmitted = true;
+                            saveAnswer(currentQuestionIndex, false).then(() => {
+                                let promises = [];
+                                for (let i = 0; i < questions.length; i++) {
+                                    if (!visitedQuestions.has(i)) {
+                                        promises.push(saveAnswer(i, false));
+                                    }
+                                }
+                                Promise.all(promises).then(() => {
+                                    calculateAndSaveScore().then(() => {
+                                        window.location.href =
+                                            '{{ route('quiz.index') }}';
+                                    });
+                                });
+                            });
+                        }
+                    });
+                }
             }
 
             async function calculateAndSaveScore() {
-                let score = 0;
-                const totalQuestions = questions.length;
-
                 const response = await fetch('{{ route('test-quiz.calculateScore') }}', {
                     method: 'POST',
                     headers: {
@@ -322,15 +339,13 @@
                 });
 
                 const data = await response.json();
-                score = data.score;
+                const score = data.score;
 
                 Swal.fire(
                     'Submitted!',
                     'Your quiz has been submitted.',
                     'success'
-                ).then(() => {
-                    window.location.href = '{{ route('quiz.index') }}';
-                });
+                );
             }
 
             window.addEventListener('beforeunload', function(e) {
@@ -358,9 +373,7 @@
                     const index = parseInt(this.dataset.questionIndex) - 1;
                     if (index === currentQuestionIndex) return;
                     if (visitedQuestions.has(index)) return;
-                    visitedQuestions.add(
-                        currentQuestionIndex
-                        ); 
+                    visitedQuestions.add(currentQuestionIndex);
                     moveToQuestion(index);
                 });
             });
