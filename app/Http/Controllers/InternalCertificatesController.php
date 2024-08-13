@@ -120,6 +120,10 @@ class InternalCertificatesController extends Controller
         }
     }
 
+    public function getViewSignature() {
+        return view('auth.certificate.InternalCertificateSignature');
+    }
+
     public function temp()
     {
 

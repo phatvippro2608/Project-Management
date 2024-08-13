@@ -37,8 +37,7 @@
                 <i class="bi bi-building-add me-2"></i>
                 Add Company
             </button> --}}
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#addCertificateModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCertificateModal">
                 <i class="bi bi-patch-check me-2"></i>
                 Add Certificates
             </button>
@@ -195,6 +194,9 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
@@ -205,8 +207,8 @@
                 initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>`)
+                            <i class="bi bi-search"></i>
+                        </button>`)
                 },
                 responsive: true
             });
