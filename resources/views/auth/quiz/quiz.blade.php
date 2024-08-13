@@ -60,7 +60,7 @@
                                     @php
                                         $exam_result = $exam_results->firstWhere('course_name', $course->course_name);
                                     @endphp
-                                    @if (!$exam_result)
+                                    @if (!$exam_result || ($exam_result && !$exam_result->passed))
                                         @php
                                             $hasAvailableExams = true;
                                         @endphp
@@ -110,9 +110,16 @@
                                     Course: {{ $result->course_name }} <br>
                                     Score: <span
                                         style="color: red; font-weight: normal;"><b>{{ $result->score }}</b></span><br>
-                                    Test Date: {{ $result->exam_date }}
+                                    Test Date: {{ $result->exam_date }} <br>
+                                    Status:
+                                    @if ($result->passed)
+                                        <span style="color: green; font-weight: bold;">(Passed)</span>
+                                    @else
+                                        <span style="color: red; font-weight: bold;">(Not Passed)</span>
+                                    @endif
                                 </div>
                             @endforeach
+
                             <div class="d-flex justify-content-end mt-4">
                                 {{ $exam_results->links('pagination::bootstrap-5') }}
                             </div>

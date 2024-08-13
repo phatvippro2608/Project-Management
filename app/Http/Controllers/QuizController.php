@@ -33,16 +33,15 @@ class QuizController extends Controller
             ->where('courses_employees.employee_id', $employee_id)
             ->where('courses_employees.progress', 100)
             ->select('courses.course_id', 'courses.course_name')
-            ->paginate(3,['*'], 'completed_courses_page');
-//        dd($completed_courses);
+            ->paginate(3, ['*'], 'completed_courses_page');
 
         // Lấy kết quả thi của nhân viên
         $exam_results = DB::table('exam_results')
             ->join('exams', 'exam_results.exam_id', '=', 'exams.exam_id')
             ->join('courses', 'exams.course_id', '=', 'courses.course_id')
             ->where('exam_results.employee_id', $employee_id)
-            ->select('courses.course_name', 'exam_results.score', 'exam_results.exam_date')
-            ->paginate(3,['*'], 'exam_results_page');
+            ->select('courses.course_name', 'exam_results.score', 'exam_results.exam_date', 'exam_results.passed')
+            ->paginate(3, ['*'], 'exam_results_page');
 
         // Truyền dữ liệu vào view
         return view(
@@ -51,11 +50,10 @@ class QuizController extends Controller
                 'data' => $model->getInfo(),
                 'completed_courses' => $completed_courses,
                 'exam_results' => $exam_results,
-                'employee_id' =>$employee_id
+                'employee_id' => $employee_id
             ]
         );
     }
-
 
     function getViewQuestionBank()
     {
