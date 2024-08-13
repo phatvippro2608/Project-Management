@@ -19,7 +19,7 @@
 {{--    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">--}}
     <div class="card p-2 border rounded-4">
     <div class="card-header py-0">
-        <div class="card-title my-3 p-0">{{ __('messages.departments') }}</div>
+        <div class="card-title my-3 p-0">{{ __('messages.department_list') }}</div>
     </div>
         <table id="departmentsTable" class="table table-hover table-borderless">
             <thead class="table-light">

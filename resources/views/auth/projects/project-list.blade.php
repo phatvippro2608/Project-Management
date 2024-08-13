@@ -161,11 +161,11 @@
                                     {{ $project->phase_name_eng }}
                                 </span>
                             </td>
-                            <td class="text-center">
-                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}"
-                                   class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
-                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}"
-                                   class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
+
+                            <td>
+                                <a href="{{ route('project.details', ['id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Details and Cost</a>
+                                <a href="{{ route('project.report', ['project_id' => $project->project_id]) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Report</a>
+                                <a href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $project->project_id) }}" class="btn btn-primary fw-bold p-1" style="font-size: 12px">Attachments</a>
                             </td>
                         </tr>
                     @endforeach

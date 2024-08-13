@@ -160,6 +160,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
     Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
     Route::delete('img-delete', 'App\Http\Controllers\UploadFileController@imgDelete')->name('img-delete');
+    //File attachments
+    Route::post('attachment-upload', 'App\Http\Controllers\UploadAttachmentController@attachmentUpload')->name('attachment-upload');
+    Route::post('attachment-store', 'App\Http\Controllers\UploadAttachmentController@attachmentStore')->name('attachment-store');
+    Route::delete('attachment-delete', 'App\Http\Controllers\UploadAttachmentController@attachmentDelete')->name('attachment-delete');
 
     Route::group(['prefix' => '/profile'], function () {
         Route::get('/{employee_id}', 'App\Http\Controllers\ProfileController@getViewProfile');
@@ -215,6 +219,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
     Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+    Route::get('/projects/{project_id}/attachments', 'App\Http\Controllers\ProjectController@getAttachmentView');
+    Route::get('/projects/{project_id}/attachments/{location_id}', 'App\Http\Controllers\ProjectController@getDateAttachments');
+    Route::get('/projects/{project_id}/attachments/{location_id}/{date}', 'App\Http\Controllers\ProjectController@getFileAttachments');
 
     Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
     Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
