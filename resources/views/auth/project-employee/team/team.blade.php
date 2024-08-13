@@ -51,34 +51,19 @@
                 <table id="teamListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-center" style="width: 60px!important;">Action</th>
                             <th class="text-center">{{ __('messages.team_name') }}</th>
                             <th class="text-center">{{ __('messages.team_description') }}</th>
                             <th class="text-center">Created by</th>
                             <th class="text-center">Created at</th>
                             <th class="text-center">Last update</th>
                             <th class="text-center">{{ __('messages.status') }}</th>
+                            <th class="text-center" style="width: 60px!important;">Action</th>
                         </tr>
                     </thead>
                     <tbody class="account-list">
                         @foreach($team as $item)
                             <tr class="account-item">
-                                <td class="text-center">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <div class="d-flex align-items-center">
-                                            <a class=" edit">
-                                                <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                                   data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
-                                            </a>
-                                            <a class=" delete">
-                                                <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                   data="{{$item->team_id}}"></i>
-                                            </a>
-                                        </div>
 
-                                    </div>
-
-                                </td>
                                 <td class="text-left fw-bold pt-1 pb-1">
                                     <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details">
                                         {{$item->team_name}}
@@ -106,6 +91,22 @@
                                     @endif
 
                                     {{$status[$item->status]}}
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="d-flex align-items-center">
+                                            <a class=" edit">
+                                                <i class="bi bi-pencil-square ic-update ic-btn at2"
+                                                   data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                            </a>
+                                            <a class=" delete">
+                                                <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
+                                                   data="{{$item->team_id}}"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+
                                 </td>
                             </tr>
                         @endforeach
