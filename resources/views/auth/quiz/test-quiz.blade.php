@@ -28,7 +28,7 @@
                                 @if ($question->question_image)
                                     <div class="my-2 w-100" style="height: 200px">
                                         <img class="w-100 h-100 object-fit-contain"
-                                            src="{{ asset('path_to_images/' . $question->question_image) }}" alt="">
+                                            src="{{ asset('question_bank_image/' . $question->question_image) }}" alt="">
                                     </div>
                                 @endif
                                 <div class="form-check my-3">

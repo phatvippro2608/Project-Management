@@ -37,7 +37,7 @@
                                 style="width: 200px; height: 200px;">
                             <p><strong>Employee Code: </strong> {{ $data->employee_code }}</p>
                             <p><strong>Full name: </strong>{{ $data->last_name . ' ' . $data->first_name }}</p>
-                            <p><strong>Full name: </strong>{{ $data->department_name }}</p>
+                            <p><strong>Department: </strong>{{ $data->department_name }}</p>
                         </div>
                     </div>
                 </div>
