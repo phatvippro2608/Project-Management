@@ -37,9 +37,9 @@
                                 <td class="text-center">{{$item->gender == '0' ? 'Nam' : 'Nữ'}}</td>
                                 <td>{{$item->phone ?? ''}}</td>
                                 <td align="center">
-                                    <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$item->employee_id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
+                                    <button data_id="{{$item->employee_id}}"  class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn-reactive">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -60,5 +60,32 @@
             },
             responsive: true
         });
+
+        $('.btn-reactive').click(function () {
+            if(confirm('Are you sure REACTIVE this employee!')){
+                let employee_id = $(this).attr('data_id');
+                let baseUrl = '{{action('App\Http\Controllers\EmployeesController@reactiveEmployee', ['employee_id' => ':id'])}}'
+                let url = baseUrl.replace(':id', employee_id);
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: { path: $('#profileImage').attr('data') },
+                    success: function(response) {
+                        if(response.code === 200){
+                            toastr.success('Action Successful','Successful');
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        }
+                        if(response.code === 500){
+                            toastr.error('Action Failed','Error');
+                        }
+                    }
+                });
+            }
+        })
     </script>
 @endsection

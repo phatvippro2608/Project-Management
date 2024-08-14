@@ -12,26 +12,25 @@ use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
-    public function getView()
+    static public function getView()
     {
-        $projects = DB::table('projects')
+        $project = DB::table('projects')
             ->join('contracts', 'contracts.contract_id', '=', 'projects.contract_id')
             ->join('customers', 'customers.customer_id', '=', 'contracts.customer_id')
             ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
             ->join('project_teams', 'project_teams.project_id', '=', 'projects.project_id')
             ->select(
-                'projects.*',
                 'project_teams.*',
+                'projects.*',
                 DB::raw("CONCAT(customers.company_name, ' - ', customers.last_name, ' ', customers.first_name) AS customer_info"),
                 'phases.phase_name_eng'
             )
             ->orderBy('project_teams.project_id', 'asc')
             ->get();
-
-        foreach ($projects as $project) {
-            $project->team_members = DB::table('team_details')
+        foreach ($project as $item) {
+            $item->team_members = DB::table('team_details')
                 ->join('employees', 'employees.employee_id', '=', 'team_details.employee_id')
-                ->where('team_id', $project->team_id)
+                ->where('team_id', $item->team_id)
                 ->orderBy('team_permission', 'asc')
                 ->get();
         }
@@ -39,7 +38,7 @@ class ProjectController extends Controller
         $contracts = DB::table('contracts')
             ->leftjoin('projects', 'contracts.contract_id', '=', 'projects.contract_id')
             ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
-        return view('auth.projects.project-list', compact('projects', 'teams', 'contracts'));
+        return view('auth.projects.project-list', compact('project', 'teams', 'contracts'));
     }
 
 
@@ -109,19 +108,29 @@ class ProjectController extends Controller
         ]);
     }
     public function getDateAttachments(Request $request, $project_id, $project_location_id) {
-        $dates = DB::table('projects')
-            ->where('project_id', $project_id)
-            ->select('project_date_start','project_date_end')
-            ->first();
-        $startDate = Carbon::parse($dates->project_date_start);
-        $endDate = Carbon::parse($dates->project_date_end);
+//        $dates = DB::table('projects')
+//            ->where('project_id', $project_id)
+//            ->select('project_date_start','project_date_end')
+//            ->first();
+//        $startDate = Carbon::parse($dates->project_date_start);
+//        $endDate = Carbon::parse($dates->project_date_end);
+//
+//        $dateRange = [];
+//
+//        while ($startDate->lte($endDate)) {
+//            $dateRange[] = $startDate->format('Y-m-d');
+//            $startDate->addDay();
+//        }
 
-        $dateRange = [];
+        $dateFile = DB::table('task_files')
+            ->where('project_location_id', $project_location_id)
+            ->select('date');
 
-        while ($startDate->lte($endDate)) {
-            $dateRange[] = $startDate->format('Y-m-d');
-            $startDate->addDay();
-        }
+        $dateImage = DB::table('task_images')
+            ->where('project_location_id', $project_location_id)
+            ->select('date');
+
+        $dateRange = $dateFile->union($dateImage)->get();
 
         return json_encode($dateRange);
     }
