@@ -234,20 +234,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     //Progress
     Route::post('/update-item', [ProgressController::class, 'updateItem']);
-    Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
-    Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
+    Route::post('/tasks', [TaskController::class, 'showTask'])->name('tasks.getTasks');
+    Route::post('/task', [TaskController::class, 'getTask'])->name('task.getTask');
     Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
     Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
     Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
-    Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+    Route::post('/task/delete', [TaskController::class, 'delete'])->name('task.delete');
 
     //Settings
     Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
     Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
-
-    Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
-    Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
-    Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
 
     Route::group(['prefix' => '/project'], function () {
