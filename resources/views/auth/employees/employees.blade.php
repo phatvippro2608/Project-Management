@@ -20,13 +20,15 @@
                 </div>
             </div>
             <div class="btn btn-primary mx-2">
-                <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}" class="d-flex align-items-center at2 text-white">
+                <a href="{{action('App\Http\Controllers\EmployeesController@importView')}}"
+                   class="d-flex align-items-center at2 text-white">
                     <i class="bi bi-file-earmark-arrow-up pe-2"></i>
                     {{ __('messages.import') }}
                 </a>
             </div>
             <div class="btn btn-primary mx-2 btn-export">
-                <a href="{{action('App\Http\Controllers\EmployeesController@export')}}" class="d-flex align-items-center text-white">
+                <a href="{{action('App\Http\Controllers\EmployeesController@export')}}"
+                   class="d-flex align-items-center text-white">
                     <i class="bi bi-file-earmark-arrow-down pe-2"></i>
                     {{ __('messages.export') }}
                 </a>
@@ -39,8 +41,9 @@
             <div class="card-title my-3 p-0">{{ __('messages.employee_list') }}</div>
         </div>
         <div class="card-body">
-            <table id="employeesTable" class="table table-hover table-borderless">
-                <thead class="table-light">
+            <div class="table-responsive">
+                <table id="employeesTable" class="table table-hover table-borderless">
+                    <thead class="table-light">
                     <tr>
                         <th class="text-center">{{ __('messages.employee_code') }}</th>
                         <th class="text-center">Photo</th>
@@ -49,50 +52,56 @@
                         <th class="text-center">{{ __('messages.gender') }}</th>
                         <th class="text-center">{{ __('messages.action') }}</th>
                     </tr>
-                </thead>
-                <tbody id="employeesTableBody">
+                    </thead>
+                    <tbody id="employeesTableBody">
+                    @foreach($data as $item)
+                        @if($item->fired == "false")
+                            <tr>
+                                <td class="text-center"><a
+                                        href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a>
+                                </td>
+                                @php
+                                    $imageUrl = asset('assets/img/avt.png');
 
-                        @foreach($data as $item)
-                            @if($item->fired == "false")
-                                <tr>
-                                    <td class="text-center"><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee', $item->employee_id)}}">{{$item->employee_code}}</a></td>
-                                    @php
-                                        $imageUrl = asset('assets/img/avt.png');
-
-                                        if($item->photo != null){
-                                            $imagePath = public_path($item->photo);
-                                            if(file_exists($imagePath)) {
-                                                $imageUrl = asset($item->photo);
-                                            }
+                                    if($item->photo != null){
+                                        $imagePath = public_path($item->photo);
+                                        if(file_exists($imagePath)) {
+                                            $imageUrl = asset($item->photo);
                                         }
-                                    @endphp
-                                    <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}" alt="" width="75" height="75"></td>
-                                    <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                    <td>{{$item->en_name}}</td>
-                                    <td class="text-center">{{ $item->gender == 0 ? __('messages.male') : __('messages.female') }}</td>
-                                    <td align="center">
-                                            <?php
-                                            $id = $item->employee_id;
-                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                            $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
-                                            ?>
-                                        <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}" class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        |
-                                        <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4" data="{{$id}}">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
+                                    }
+                                @endphp
+                                <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}"
+                                                             alt="" width="75" height="75"></td>
+                                <td>{{$item->last_name . ' ' . $item->first_name}}</td>
+                                <td>{{$item->en_name}}</td>
+                                <td class="text-center">{{ $item->gender == 0 ? __('messages.male') : __('messages.female') }}</td>
+                                <td align="center">
+                                        <?php
+                                        $id = $item->employee_id;
+                                        $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                        $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                        $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                        $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
+                                        ?>
+                                    <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}"
+                                       class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    |
+                                    <button
+                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4"
+                                        data="{{$id}}">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
     <div class="modal fade md1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -111,7 +120,8 @@
                                         <div class="row mb-3">
                                             <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="" disabled value="{{\App\Http\Controllers\EmployeesController::generateEmployeeCode()}}">
+                                                <input type="text" class="form-control employee_code" name="" disabled
+                                                       value="{{\App\Http\Controllers\EmployeesController::generateEmployeeCode()}}">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -145,13 +155,15 @@
                                             <div class="col-sm-8">
                                                 <div class="d-flex">
                                                     <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked>
+                                                        <input class="form-check-input" type="radio" name="gender"
+                                                               id="male" value="0" checked>
                                                         <label class="form-check-label" for="male">
                                                             Male
                                                         </label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="gender" id="female" value="1">
+                                                        <input class="form-check-input" type="radio" name="gender"
+                                                               id="female" value="1">
                                                         <label class="form-check-label" for="female">
                                                             Female
                                                         </label>
@@ -164,13 +176,15 @@
                                             <div class="col-sm-8">
                                                 <div class="d-flex">
                                                     <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" checked>
+                                                        <input class="form-check-input" type="radio"
+                                                               name="marital_status" id="single" value="Single" checked>
                                                         <label class="form-check-label" for="single">
                                                             Single
                                                         </label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="marital_status" id="married" value="Married">
                                                         <label class="form-check-label" for="married">
                                                             Married
                                                         </label>
@@ -183,13 +197,15 @@
                                             <div class="col-sm-8">
                                                 <div class="d-flex">
                                                     <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" checked>
+                                                        <input class="form-check-input" type="radio"
+                                                               name="military_service" id="Done" value="Done" checked>
                                                         <label class="form-check-label" for="Done">
                                                             Done
                                                         </label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="military_service" id="Noyet" value="No yet">
                                                         <label class="form-check-label" for="Noyet">
                                                             No yet
                                                         </label>
@@ -198,7 +214,7 @@
                                             </div>
                                         </fieldset>
                                         <div class="row mb-3">
-                                            <label for="inputDate" class="col-sm-4 col-form-label" >Date of Birth</label>
+                                            <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
                                             <div class="col-sm-8">
                                                 <input type="date" class="form-control date_of_birth" name="" required>
                                             </div>
@@ -206,7 +222,8 @@
                                         <div class="row mb-3">
                                             <label class="col-sm-4 col-form-label">Nation</label>
                                             <div class="col-sm-8">
-                                                <select class="form-select selectpicker national" aria-label="Default select example" id="countrySelect" name="">
+                                                <select class="form-select selectpicker national"
+                                                        aria-label="Default select example" id="countrySelect" name="">
                                                     <!-- Danh sách các quốc gia sẽ được thêm vào đây -->
                                                 </select>
                                             </div>
@@ -231,7 +248,7 @@
 @section('script')
     <script>
         var table = $('#employeesTable').DataTable({
-            language: { search: "" },
+            language: {search: ""},
             initComplete: function (settings, json) {
                 $('.dt-search').addClass('input-group');
                 $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
@@ -240,6 +257,7 @@
             },
             responsive: true
         });
+
         function validateNameInput(input) {
             const regex = /^[a-zA-Z\s]+$/;
             if (!regex.test(input.val())) {
@@ -247,6 +265,7 @@
             }
             return true;
         }
+
         let _put = "{{action('App\Http\Controllers\EmployeesController@put')}}";
         let _post = "{{action('App\Http\Controllers\EmployeesController@post')}}";
         let _delete = "{{action('App\Http\Controllers\EmployeesController@delete')}}";
@@ -258,6 +277,7 @@
         let _check_file_exists = "{{action('App\Http\Controllers\EmployeesController@checkFileExists')}}";
         let _delete_file = "{{action('App\Http\Controllers\EmployeesController@deleteFile')}}";
         let _export = "{{action('App\Http\Controllers\EmployeesController@export')}}";
+
         function validateForm() {
             const firstName = $('.first_name');
             const lastName = $('.last_name');
@@ -280,7 +300,7 @@
                 countError++;
             }
 
-            if(phoneNumber.val().length === 0){
+            if (phoneNumber.val().length === 0) {
                 toastr.error('Please enter phone number!', 'Please enter phone number!');
                 countError++;
             }
@@ -293,10 +313,10 @@
             if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
                 age--;
             }
-            if(dateOfBirth.val().length === 0){
+            if (dateOfBirth.val().length === 0) {
                 toastr.error('Please enter date of birth!', 'Please enter date of birth!');
                 countError++;
-            }else{
+            } else {
                 if (age < 18) {
                     toastr.error('User is younger than 18.', 'Please choose a valid date of birth!');
                     countError++;
@@ -305,11 +325,12 @@
 
             return countError === 0;
         }
+
         $('.at1').click(function () {
             $('.md1').modal('show');
 
             $('.btn-add').click(function () {
-                if(validateForm()){
+                if (validateForm()) {
                     let data = {
                         'employee_code': $('.md1 .employee_code').val(),
                         'first_name': $('.md1 .first_name').val(),
@@ -373,12 +394,12 @@
         });
 
         function populateCountrySelect(selectElementId, countrySelete) {
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $.ajax({
                     url: 'https://restcountries.com/v3.1/all',
                     method: 'GET',
-                    success: function(data) {
-                        $.each(data, function(index, country) {
+                    success: function (data) {
+                        $.each(data, function (index, country) {
                             const $option = $('<option></option>')
                                 .val(country.name.common)
                                 .text(country.name.common);
@@ -389,13 +410,14 @@
                             $(`#${selectElementId}`).append($option);
                         });
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         console.error('Error fetching countries:', textStatus, errorThrown);
                     }
                 });
             });
         }
-        populateCountrySelect('countrySelect','Vietnam');
+
+        populateCountrySelect('countrySelect', 'Vietnam');
     </script>
     <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection
