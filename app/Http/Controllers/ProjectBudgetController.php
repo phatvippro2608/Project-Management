@@ -16,44 +16,164 @@ class ProjectBudgetController extends Controller
 {
 
 
-    public function getView($id)
+    public function getView(Request $request, $id)
     {
-        $dataCost = DB::table('project_costs')
-        ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
-        ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
-        ->get();
-        $dataCostGroup = DB::table('project_cost_group')->get();
-        $contingency_price = DB::table('projects')->where('project_id', $id)->first();
-        $dataCostGroupData = DB::table('project_cost_datagroup')->get();
-        $total=0;
-        $subtotal2=0;
-        $chart=[];
-        foreach($dataCostGroup as $group){
-            $subtotal1=0;
-            foreach ($dataCost as $data) {
-                if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id){
-                    $subtotal2 = $data->project_cost_labor_qty *
-                                $data->project_cost_budget_qty *
-                                ($data->project_cost_labor_cost +
-                                    $data->project_cost_misc_cost +
-                                    $data->project_cost_ot_budget +
-                                    $data->project_cost_perdiempay);
-                    $subtotal1 += $subtotal2;
-                }
-                }
-            $chart[$group->project_cost_group_name] = $subtotal1;
-            $total += $subtotal1;
+        $index = $request->input('location', '');
+        if(empty($index)){
+            $dataCost = DB::table('project_costs')
+            ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+            ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
+            ->get();
+            $dataCostGroup = DB::table('project_cost_group')->get();
         }
+            else{
+                $dataCost = DB::table('project_costs')
+                ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+                ->join('project_locations', 'project_cost_group.project_location_id', '=', 'project_locations.project_location_id') // Corrected join
+                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')
+                ->where('project_costs.project_id', $id)
+                ->where('project_cost_group.project_location_id', $index)
+                ->get();
+                $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $index)->get();
+            }
+        $contingency_price = DB::table('projects')->where('project_id', $id)->first();
+        $total=0;
+            $subtotal2=0;
+            $chart=[];
+            foreach($dataCostGroup as $group){
+                $subtotal1=0;
+                foreach ($dataCost as $data) {
+                    if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id){
+                        $subtotal2 = $data->project_cost_labor_qty *
+                                    $data->project_cost_budget_qty *
+                                    ($data->project_cost_labor_cost +
+                                        $data->project_cost_misc_cost +
+                                        $data->project_cost_ot_budget +
+                                        $data->project_cost_perdiempay);
+                        $subtotal1 += $subtotal2;
+                    }
+                    }
+                $chart[$group->project_cost_group_name] = $subtotal1;
+                $total += $subtotal1;
+            }
         return view('auth.project-budget.budget-detail', [
             'dataCost' => $dataCost,
             'dataCostGroup' => $dataCostGroup,
-            'dataCostGroupData' => $dataCostGroupData,
             'id' => $id,
             'contingency_price' => $contingency_price,
             'total' => $total,
             'chart' => $chart
         ]);
     }
+    
+    public function budget_import(Request $request) {
+        // Decode the JSON data from the request
+        $dataExcel = json_decode($request->input('dataExcel'), true);
+    
+        // Check if decoding was successful and $dataExcel is an array
+       
+        $num_row = 0;
+        $successfulRows = [];
+        $errorRows = [];
+        if (!is_array($dataExcel)) {
+            return response()->json([
+                'error' => 'Invalid data format. Please ensure the JSON data is correctly formatted.'
+            ], 400);
+        }
+    
+        foreach ($dataExcel as $item) {
+            $num_row++;
+            if ($num_row == 1) {
+                continue; // Skip header row
+            }
+    
+            $project_cost_description = trim($item['project_cost_description']);
+            $project_cost_labor_qty = isset($item['project_cost_labor_qty']) ? (int) $item['project_cost_labor_qty'] : null;
+            $project_cost_labor_unit = trim($item['project_cost_labor_unit']);
+            $project_cost_budget_qty = isset($item['project_cost_budget_qty']) ? (int) $item['project_cost_budget_qty'] : null;
+            $project_budget_unit = trim($item['project_budget_unit']);
+            $project_cost_labor_cost = isset($item['project_cost_labor_cost']) ? (int) $item['project_cost_labor_cost'] : null;
+            $project_cost_misc_cost = isset($item['project_cost_misc_cost']) ? (int) $item['project_cost_misc_cost'] : null;
+            $project_cost_perdiempay = isset($item['project_cost_perdiempay']) ? (int) $item['project_cost_perdiempay'] : null;
+            $project_cost_remaks = trim($item['project_cost_remaks']);
+            $project_cost_group_name = trim($item['project_cost_group_name']);
+            $project_cost_ot_budget = isset($item['project_cost_ot_budget']) ? (int) $item['project_cost_ot_budget'] : null;
+            $create_date = isset($item['create_date']) ? $item['create_date'] : null;
+    
+            // Check if required fields are missing
+            if (strlen($project_cost_description) === 0 || strlen($project_cost_group_name) === 0) {
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => 'Missing required fields',
+                ];
+                continue;
+            }
+    
+            try {
+                DB::beginTransaction();
+    
+                // Find or create the cost group
+                $costGroup = ProjectCostGroup::firstOrCreate([
+                    'project_cost_group_name' => $project_cost_group_name,
+                ]);
+    
+                // Insert or update the project cost
+                ProjectCost::updateOrCreate(
+                    [
+                        'project_id' => $projectId, // Ensure $projectId is defined somewhere
+                        'project_cost_description' => $project_cost_description,
+                    ],
+                    [
+                        'project_cost_labor_qty'   => $project_cost_labor_qty,
+                        'project_cost_labor_unit'  => $project_cost_labor_unit,
+                        'project_cost_budget_qty'  => $project_cost_budget_qty,
+                        'project_budget_unit'      => $project_budget_unit,
+                        'project_cost_labor_cost'  => $project_cost_labor_cost,
+                        'project_cost_misc_cost'   => $project_cost_misc_cost,
+                        'project_cost_perdiempay'  => $project_cost_perdiempay,
+                        'project_cost_remaks'      => $project_cost_remaks,
+                        'project_cost_group_id'    => $costGroup->id,
+                        'project_cost_ot_budget'   => $project_cost_ot_budget,
+                        'create_date'              => $create_date ? \Carbon\Carbon::parse($create_date)->format('Y-m-d') : null,
+                    ]
+                );
+    
+                DB::commit();
+    
+                $successfulRows[] = [
+                    'project_cost_description' => $project_cost_description,
+                    'project_cost_labor_qty'   => $project_cost_labor_qty,
+                    'project_cost_labor_unit'  => $project_cost_labor_unit,
+                    'project_cost_budget_qty'  => $project_cost_budget_qty,
+                    'project_budget_unit'      => $project_budget_unit,
+                    'project_cost_labor_cost'  => $project_cost_labor_cost,
+                    'project_cost_misc_cost'   => $project_cost_misc_cost,
+                    'project_cost_perdiempay'  => $project_cost_perdiempay,
+                    'project_cost_remaks'      => $project_cost_remaks,
+                    'project_cost_group_name'  => $project_cost_group_name,
+                    'project_cost_ot_budget'   => $project_cost_ot_budget,
+                    'create_date'              => $create_date,
+                ];
+    
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => $e->getMessage(),
+                ];
+                continue;
+            }
+        }
+    
+        // Return results
+        return response()->json([
+            'successful' => $successfulRows,
+            'errors' => $errorRows
+        ]);
+    }
+    
 
     public function showProjects()
     {
@@ -67,20 +187,14 @@ class ProjectBudgetController extends Controller
     // Validate the request
     $request->validate([
         'project_name' => 'nullable|string',
-        'project_description' => 'nullable|string',
-        'project_address' => 'nullable|string',
-        'project_date_start' => 'nullable|date',
-        'project_date_end' => 'nullable|date',
+        'project_description' => 'nullable|string'
     ]);
 
     try {
         // Update the project using raw SQL
         DB::table('projects')->where('project_id', $id)->update([
             'project_name' => $request->input('project_name'),
-            'project_description' => $request->input('project_description'),
-            'project_address' => $request->input('project_address'),
-            'project_date_start' => $request->input('project_date_start'),
-            'project_date_end' => $request->input('project_date_end'),
+            'project_description' => $request->input('project_description')
         ]);
 
         return response()->json([
@@ -98,8 +212,9 @@ class ProjectBudgetController extends Controller
     }
 }
 
-public function showProjectDetail($id)
+public function showProjectDetail(Request $request,$id)
 {
+    $keyword = $request->input('location', '');
     AccountController::setRecentProject($id);
     $data = DB::table('projects')->where('project_id', $id)->first();
     $prj = ProjectModel::find($id);
@@ -112,6 +227,22 @@ public function showProjectDetail($id)
     $total = 0;
     $subtotal1 = 0;
     $items = DB::table('project_costs')->where('project_id', $id)->get();
+
+    if(!empty($keyword)){
+        $dataLoca = DB::table('project_locations')
+        ->join('projects', 'projects.project_id','=','project_locations.project_id')
+        ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->where('project_locations.project_location_id', $keyword)->first();
+        
+    }else{
+        $dataLoca = DB::table('project_locations')
+        ->join('projects', 'projects.project_id','=','project_locations.project_id')
+        ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->first();
+    }
+
+    
+    $locations = DB::table('project_locations')
+    ->join('projects', 'projects.project_id','=','project_locations.project_id')
+    ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->get();
     foreach ($items as $item) {
         $subtotal2 = $item->project_cost_labor_qty *
                     $item->project_cost_budget_qty *
@@ -129,7 +260,10 @@ public function showProjectDetail($id)
         'total' => $total,
         'contract' => $contract,
         'contactEmployee' => $contactEmployee,
-        'customer' => $customer
+        'customer' => $customer,
+        'locations' => $locations,
+        'dataLoca' => $dataLoca,
+        'keyword' => $keyword
     ]);
 }
     public function viewCost($id, $group_id){

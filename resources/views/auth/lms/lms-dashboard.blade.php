@@ -55,7 +55,7 @@
 </div>
 <div class="card p-2 rounded-4 border">
     <div class="card-body">
-        <ul class="nav nav-tabs" id="lmsTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-bordered mb-4" id="lmsTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="view-summary-tab" data-bs-toggle="tab" href="#view-summary" role="tab" aria-controls="view-summary" aria-selected="true">Your Courses</a>
             </li>
@@ -75,7 +75,7 @@
                             Export
                         </a>
                     </div>
-                    
+
                 </div>
                 <table id="CourseTable" class="table table-hover table-borderless">
                     <thead class="table-light">
@@ -92,13 +92,13 @@
                     </thead>
                     <tbody id="CourseTableBody">
                         @foreach($data as $course)
-                        <tr class="clickable-row" data-href="/lms/course/{{ $course->course_id }}">
+                        <tr class="clickable-row" style="cursor: pointer" data-href="/lms/course/{{ $course->course_id }}/view">
                             <td class="text-center">{{$course->course_id}}</td>
                             <td>{{$course->course_name}}</td>
                             <td>{{$course->progress}}%</td>
                             <td>{{\Carbon\Carbon::parse($course->start_date)->format('d M Y')}}</td>
                             <td>{{\Carbon\Carbon::parse($course->end_date)->format('d M Y')}}</td>
-                            <td></td>
+                            <td>{{ $course->progress==100 ? "YES" : "NO" }}</td>
                             <td>{{$course->course_type}}</td>
                             <td class="align-center text-center">
                                 <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
@@ -128,13 +128,13 @@
                             </thead>
                             <tbody id="completed-courses-table">
                                 @foreach($data as $course)
-                                <tr class="course-row" data-progress="{{ $course->progress }}">
+                                <tr class="course-row clickable-row" data-progress="{{ $course->progress }}" style="cursor: pointer" data-href="/lms/course/{{ $course->course_id }}/view">
                                     <td class="text-center">{{ $course->course_id }}</td>
                                     <td>{{ $course->course_name }}</td>
                                     <td>{{ $course->progress }}%</td>
                                     <td>{{ \Carbon\Carbon::parse($course->start_date)->format('d M Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->end_date)->format('d M Y') }}</td>
-                                    <td></td>
+                                    <td>YES</td>
                                     <td>{{ $course->course_type }}</td>
                                     <td class="align-center text-center">
                                         <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
@@ -166,13 +166,13 @@
                             </thead>
                             <tbody id="not-completed-courses-table">
                                 @foreach($data as $course)
-                                <tr class="course-row" data-progress="{{ $course->progress }}">
+                                <tr class="course-row clickable-row" data-progress="{{ $course->progress }}" style="cursor: pointer" data-href="/lms/course/{{ $course->course_id }}/view">
                                     <td class="text-center">{{ $course->course_id }}</td>
                                     <td>{{ $course->course_name }}</td>
                                     <td>{{ $course->progress }}%</td>
                                     <td>{{ \Carbon\Carbon::parse($course->start_date)->format('d M Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($course->end_date)->format('d M Y') }}</td>
-                                    <td></td>
+                                    <td>NO</td>
                                     <td>{{ $course->course_type }}</td>
                                     <td class="align-center text-center">
                                         <button class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none at4">
@@ -186,53 +186,77 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
-    
+
 
 @endsection
 
 @section('script')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Filter completed courses based on progress
-        function filterCompletedCourses() {
-            var rows = document.querySelectorAll('#completed-courses-table .course-row');
-            rows.forEach(function (row) {
-                var progress = row.getAttribute('data-progress');
-                if (progress == 100) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
+$(document).ready(function() {
+    // Initialize DataTables
+    var courseTable = new DataTable('#CourseTable');
+    var coursesCompletedTable = new DataTable('#coursesCompleted');
+    var coursesNotCompletedTable = new DataTable('#coursesNotCompleted');
 
-        // Filter not completed courses based on progress
-        function filterNotCompletedCourses() {
-            var rows = document.querySelectorAll('#not-completed-courses-table .course-row');
-            rows.forEach(function (row) {
-                var progress = row.getAttribute('data-progress');
-                if (progress < 100) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // Event listeners for tab changes
-        $('#course-completed-tab').on('shown.bs.tab', function () {
-            filterCompletedCourses();
+    // Filter completed courses based on progress
+    function filterCompletedCourses() {
+        var rows = document.querySelectorAll('#completed-courses-table .course-row');
+        rows.forEach(function (row) {
+            var progress = row.getAttribute('data-progress');
+            if (progress == 100) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         });
+    }
 
-        $('#course-not-completed-tab').on('shown.bs.tab', function () {
-            filterNotCompletedCourses();
+    // Filter not completed courses based on progress
+    function filterNotCompletedCourses() {
+        var rows = document.querySelectorAll('#not-completed-courses-table .course-row');
+        rows.forEach(function (row) {
+            var progress = row.getAttribute('data-progress');
+            if (progress < 100) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         });
-        new DataTable('#CourseTable');
-        new DataTable('#coursesCompleted');
-        new DataTable('#coursesNotCompleted');
+    }
+
+    // Event listeners for tab changes
+    $('#course-completed-tab').on('shown.bs.tab', function () {
+        filterCompletedCourses();
     });
+
+    $('#course-not-completed-tab').on('shown.bs.tab', function () {
+        filterNotCompletedCourses();
+    });
+
+    // Use event delegation to handle clicks on dynamically created rows
+    $('#CourseTableBody').on('click', '.clickable-row', function() {
+        var href = $(this).data('href');
+        if (href) {
+            window.location = href;
+        }
+    });
+
+    $('#completed-courses-table').on('click', '.clickable-row', function() {
+        var href = $(this).data('href');
+        if (href) {
+            window.location = href;
+        }
+    });
+
+    $('#not-completed-courses-table').on('click', '.clickable-row', function() {
+        var href = $(this).data('href');
+        if (href) {
+            window.location = href;
+        }
+    });
+});
 </script>
 @endsection

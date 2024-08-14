@@ -95,4 +95,6 @@ return [
 
     'full_name' => 'Họ và tên',
     'gender' => 'Giới tính',
+    'male' => 'Nam',
+    'female' => 'Nữ',
 ];

@@ -157,7 +157,7 @@
                 var lineHeight = 16;
                 wrapText(context, description, canvas.width / 2, canvas.height / 2 + 70, maxWidth, lineHeight);
 
-                var namedescription = 'of achievement'.toUpperCase();
+                var namedescription = 'of internship'.toUpperCase();
                 context.font = "bold 34px 'Lora', serif";
                 wrapText(context, namedescription, canvas.width / 2, canvas.height / 2 - 85, maxWidth, lineHeight);
 
@@ -171,12 +171,14 @@
                         signaturePositionRight.width, signaturePositionRight.height);
                 }
 
-                var leftName = "{{ $director->last_name . ' ' . $director->first_name }}";
+                var leftName = capitalizeFirstLetterOfEachWord(
+                    "{{ $director->last_name . ' ' . $director->first_name }}");
                 context.font = "bold 11px 'Lora', serif";
                 var leftWidth = canvas.width / 4 + 80;
                 context.fillText(leftName, leftWidth, canvas.height - 80);
 
-                var rightName = "{{ $teacher->last_name . ' ' . $teacher->first_name  }}";
+                var rightName = capitalizeFirstLetterOfEachWord(
+                    "{{ $teacher->last_name . ' ' . $teacher->first_name }}");
                 var rightWidth = canvas.width / 2 + 160;
                 context.fillText(rightName, rightWidth, canvas.height - 80);
             }

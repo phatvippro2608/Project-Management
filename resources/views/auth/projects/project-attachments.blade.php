@@ -73,6 +73,7 @@
             <div class="col-lg">
                 <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="date" class="form-control form-control-lg date-of-file-attachment mb-2">
                     <input type="file"
                            id="fileAttachment"
                            name="fileAttachment[]"
@@ -98,12 +99,13 @@
             <div class="col-lg">
                 <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="date" class="form-control form-control-lg date-of-image-attachment mb-2">
                     <input type="file"
                            id="imageAttachment"
                            name="imageAttachment[]"
                            multiple="multiple"
-                           accept="image/png, image/jpeg, image/gif">
-                    <button class="btn btn-primary mx-auto d-none filepond-upload1 btn-upload-image" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                           accept="image/png, image/jpeg, image/gif" disabled>
+                    <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                 </form>
             </div>
         </div>
@@ -127,6 +129,7 @@
 @endsection
 @section('script')
     <script>
+
         $(document).on('click', '.btn-preview-image img', function () {
             var src = $(this).attr('src');
             console.log(src)
@@ -156,8 +159,8 @@
                         $select.append(fisrtOption);
                         $.each(result, function(index) {
                             var $option = $('<option></option>')
-                                .val(result[index])
-                                .text(result[index]);
+                                .val(result[index].date)
+                                .text(result[index].date);
 
                             $select.append($option);
                         });
@@ -165,6 +168,8 @@
                     }
                 });
             }
+
+
 
             function updateAttachments(selectedDate) {
                 var locationId = $('.location_select').val();
@@ -224,6 +229,10 @@
             // Event handler for location change
             $('.location_select').change(function() {
                 var locationId = $(this).val();
+                var body = $('.filesTableBody');
+                body.empty();
+                let bodyImage = $('.content_image');
+                bodyImage.empty();
                 updateDates(locationId);
             });
 
@@ -246,32 +255,25 @@
             const dateSelect = $('.date_select');
 
             $('.btn-left').on('click', function(event) {
-                event.preventDefault(); // Prevent the default anchor behavior
+                event.preventDefault();
 
-                // Get the current selected index
                 let currentIndex = dateSelect.prop('selectedIndex');
 
-                // Decrement the index to move to the previous option
                 let newIndex = currentIndex - 1;
 
-                // Ensure the new index is within bounds
                 if (newIndex >= 0) {
-                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                    dateSelect.prop('selectedIndex', newIndex).change();
                 }
             });
-            // Handle click for the right button (next)
             $('.btn-right').on('click', function(event) {
-                event.preventDefault(); // Prevent the default anchor behavior
+                event.preventDefault();
 
-                // Get the current selected index
                 let currentIndex = dateSelect.prop('selectedIndex');
 
-                // Increment the index to move to the next option
                 let newIndex = currentIndex + 1;
 
-                // Ensure the new index is within bounds
                 if (newIndex < dateSelect.children('option').length) {
-                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                    dateSelect.prop('selectedIndex', newIndex).change();
                 }
             });
         });
@@ -283,6 +285,18 @@
             FilePondPluginFileValidateType
         );
 
+        function removeVietnameseAccents(str) {
+            const accents = 'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÛÝàáâãèéêìíòóôõùúûý';
+            const accentsOut = 'AAAAEEEIIOOOOUUUYaaaaeeeiiioooouuuuy';
+            str = str.split('');
+            for (let i = 0; i < str.length; i++) {
+                const index = accents.indexOf(str[i]);
+                if (index !== -1) {
+                    str[i] = accentsOut[index];
+                }
+            }
+            return str.join('');
+        }
 
         const fileAttachmentPond = FilePond.create(
             document.querySelector('#fileAttachment'),
@@ -298,12 +312,17 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            formData.append('_token', csrfToken);
-                            formData.append('project_location_id', document.querySelector('.location_select').value);
-                            formData.append('date', document.querySelector('.date_select').value);
-                            formData.append('type', 'file');
+                            if($('.date-of-file-attachment').val().length != 0){
+                                formData.append('_token', csrfToken);
+                                formData.append('project_location_id', document.querySelector('.location_select').value);
+                                formData.append('date', document.querySelector('.date-of-file-attachment').value);
+                                formData.append('type', 'file');
 
-                            return formData;
+                                return formData;
+                            }else{
+                                toastr.error('Please choose date!', 'Error');
+                            }
+
                         },
                     },
                     revert: {
@@ -313,6 +332,7 @@
                         },
                     }
                 },
+
             }
         );
 
@@ -330,12 +350,16 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            formData.append('_token', csrfToken);
-                            formData.append('project_location_id', document.querySelector('.location_select').value);
-                            formData.append('date', document.querySelector('.date_select').value);
-                            formData.append('type', 'image');
+                            if($('.date-of-image-attachment').val().length != 0){
+                                formData.append('_token', csrfToken);
+                                formData.append('project_location_id', document.querySelector('.location_select').value);
+                                formData.append('date', document.querySelector('.date-of-image-attachment').value);
+                                formData.append('type', 'image');
 
-                            return formData;
+                                return formData;
+                            }else{
+                                toastr.error('Please choose date!', 'Error');
+                            }
                         },
                     },
                     revert: {
@@ -376,9 +400,48 @@
         })
 
 
+        function toggleUploadButton() {
+            const dateValue = $('.date-of-file-attachment').val();
+            const fileInput = $('#fileAttachment');
+            const uploadButton = $('.filepond-upload');
 
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                fileAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                fileAttachmentPond.setOptions({disabled: false});
+            }
+        }
+        function toggleUploadButton1() {
+            const dateValue = $('.date-of-image-attachment').val();
+            const fileInput = $('#imageAttachment');
+            const uploadButton = $('.filepond-upload1');
+
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                imageAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                imageAttachmentPond.setOptions({disabled: false});
+            }
+        }
+
+        toggleUploadButton();
+        toggleUploadButton1();
+
+        $('.date-of-file-attachment').on('change', function() {
+            toggleUploadButton();
+        });
+
+        $('.date-of-image-attachment').on('change', function() {
+            toggleUploadButton1();
+        });
 
 
     </script>
-    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

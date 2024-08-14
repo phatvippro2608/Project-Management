@@ -373,7 +373,19 @@
                             </tr>
                             </thead>
                             <tbody class="employment_contract_list">
-
+                            @php
+                                $data_employment_contract = json_decode($data_employment_contract);
+                            @endphp
+                            @if($data_employment_contract)
+                                @foreach($data_employment_contract as $index => $item)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><a target="_blank" href="{{ asset('/uploads/' . $item->employee_id . '/' . $item->employment_contract) }}">{{ $item->employment_contract }}</a></td>
+                                        <td>{{ $item->start_date}}</td>
+                                        <td>{{ $item->end_date }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>

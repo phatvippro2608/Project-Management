@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 class CreateQuizController extends Controller
 {
      function getView() {
-         $model = new CreateQuizModel();
-        return view('auth.quiz.create-quiz',['courses' => $model->getCourse()]);
+        return view('auth.quiz.create-quiz');
     }
 
     function add(Request $request)
