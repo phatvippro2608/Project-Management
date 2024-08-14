@@ -1,6 +1,9 @@
 @extends('auth.main')
 
 @section('head')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         #signatureTable tbody td {
             padding-right: 30px;
@@ -23,6 +26,23 @@
             color: var(--bs-primary);
             transform: rotate(90deg);
         }
+
+        .btn-close-custom {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .btn-close-custom:hover {
+            color: #ff6b6b;
+        }
+
+        #signaturePreview {
+            max-width: 100%;
+            max-height: 100px;
+            object-fit: contain;
+        }
     </style>
 @endsection
 
@@ -37,9 +57,20 @@
         </nav>
     </div>
 
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary mx-2 btn-add">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+                    Add Certificate
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header py-0">
-            <div class="card-title my-3 p-0">
+            <div class="card-title m-3 p-0">
                 List of Signatures
             </div>
         </div>
@@ -74,8 +105,12 @@
                                     alt="{{ $item->first_name }}'s signature">
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn text-primary btn-sm edit-btn" data-toggle="modal"
-                                    data-target="#exampleModal" data-id="{{ $item->employee_signature_id }}">
+                                <button class="btn text-primary btn-sm edit-btn"
+                                    data-id="{{ $item->employee_signature_id }}"
+                                    data-employee_code="{{ $item->employee_code }}"
+                                    data-full_name="{{ $item->last_name . ' ' . $item->first_name }}"
+                                    data-en_name="{{ $item->en_name }}"
+                                    data-signature="{{ asset($item->employee_signature_img) }}">
                                     <i class="bi bi-gear-fill"></i>
                                 </button>
                             </td>
@@ -90,22 +125,44 @@
         </div>
     </div>
 
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                <div class="modal-header justify-content-between">
+                    <h5 class="modal-title" id="editModalLabel">Edit Employee Signature</h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form id="editForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="employeeId" class="form-label">Employee ID</label>
+                            <input type="text" class="form-control" id="employeeId" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="enName" class="form-label">EN Name</label>
+                            <input type="text" class="form-control" id="enName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signature" class="form-label">Signature</label>
+                            <div class="d-flex flex-column align-items-center">
+                                <img id="signaturePreview" src="" alt="Signature Image" class="img-thumbnail mb-2"
+                                    style="max: 100px; object-fit: contain;">
+                                <input type="file" id="signatureInput" class="form-control mt-2">
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">Save changes</button>
                 </div>
             </div>
         </div>
@@ -123,27 +180,42 @@
             });
 
             $('.edit-btn').on('click', function() {
+                // Lấy dữ liệu từ các thuộc tính data- của nút bấm
                 var employeeId = $(this).data('id');
+                var employeeCode = $(this).data('employee_code');
+                var fullName = $(this).data('full_name');
+                var enName = $(this).data('en_name');
+                var signature = $(this).data('signature');
 
-                $.ajax({
-                    url: '/employee/' + employeeId,
-                    method: 'GET',
-                    success: function(response) {
-                        $('#employeeDetails').html(`
-                        <p><strong>Employee Code:</strong> ${response.employee_code}</p>
-                        <p><strong>Full Name:</strong> ${response.full_name}</p>
-                        <p><strong>EN Name:</strong> ${response.en_name}</p>
-                        <p><strong>Signature:</strong> <img src="${response.employee_signature_img}" style="height: 50px; object-fit: contain;"></p>
-                    `);
+                // Cập nhật các trường input trong modal
+                $('#employeeId').val(employeeCode);
+                $('#fullName').val(fullName);
+                $('#enName').val(enName);
+                $('#signaturePreview').attr('src', signature);
 
-                        // Hiển thị modal
-                        $('#editModal').modal('show');
-                    },
-                    error: function() {
-                        $('#employeeDetails').html(
-                            '<p class="text-danger">Failed to load employee details.</p>');
-                    }
+                // Hiển thị modal
+                $('#editModal').modal('show');
+            });
+
+            $('#saveBtn').on('click', function() {
+                // Xử lý lưu thay đổi nếu cần
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Changes saved successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
                 });
+            });
+
+            $('#signatureInput').on('change', function(event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#signaturePreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         });
     </script>
