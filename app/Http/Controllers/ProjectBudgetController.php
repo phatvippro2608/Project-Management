@@ -29,9 +29,11 @@ class ProjectBudgetController extends Controller
             else{
                 $dataCost = DB::table('project_costs')
                 ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
-                ->join('project_location.project_location_id', '=' , 'project_cost_group.project_location_id')
-                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
-                ->where('project_cost_group.project_location_id', $index)->get();
+                ->join('project_locations', 'project_cost_group.project_location_id', '=', 'project_locations.project_location_id') // Corrected join
+                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')
+                ->where('project_costs.project_id', $id)
+                ->where('project_cost_group.project_location_id', $index)
+                ->get();
                 $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $index)->get();
             }
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
@@ -63,6 +65,115 @@ class ProjectBudgetController extends Controller
             'chart' => $chart
         ]);
     }
+    
+    public function budget_import(Request $request) {
+        // Decode the JSON data from the request
+        $dataExcel = json_decode($request->input('dataExcel'), true);
+    
+        // Check if decoding was successful and $dataExcel is an array
+       
+        $num_row = 0;
+        $successfulRows = [];
+        $errorRows = [];
+        if (!is_array($dataExcel)) {
+            return response()->json([
+                'error' => 'Invalid data format. Please ensure the JSON data is correctly formatted.'
+            ], 400);
+        }
+    
+        foreach ($dataExcel as $item) {
+            $num_row++;
+            if ($num_row == 1) {
+                continue; // Skip header row
+            }
+    
+            $project_cost_description = trim($item['project_cost_description']);
+            $project_cost_labor_qty = isset($item['project_cost_labor_qty']) ? (int) $item['project_cost_labor_qty'] : null;
+            $project_cost_labor_unit = trim($item['project_cost_labor_unit']);
+            $project_cost_budget_qty = isset($item['project_cost_budget_qty']) ? (int) $item['project_cost_budget_qty'] : null;
+            $project_budget_unit = trim($item['project_budget_unit']);
+            $project_cost_labor_cost = isset($item['project_cost_labor_cost']) ? (int) $item['project_cost_labor_cost'] : null;
+            $project_cost_misc_cost = isset($item['project_cost_misc_cost']) ? (int) $item['project_cost_misc_cost'] : null;
+            $project_cost_perdiempay = isset($item['project_cost_perdiempay']) ? (int) $item['project_cost_perdiempay'] : null;
+            $project_cost_remaks = trim($item['project_cost_remaks']);
+            $project_cost_group_name = trim($item['project_cost_group_name']);
+            $project_cost_ot_budget = isset($item['project_cost_ot_budget']) ? (int) $item['project_cost_ot_budget'] : null;
+            $create_date = isset($item['create_date']) ? $item['create_date'] : null;
+    
+            // Check if required fields are missing
+            if (strlen($project_cost_description) === 0 || strlen($project_cost_group_name) === 0) {
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => 'Missing required fields',
+                ];
+                continue;
+            }
+    
+            try {
+                DB::beginTransaction();
+    
+                // Find or create the cost group
+                $costGroup = ProjectCostGroup::firstOrCreate([
+                    'project_cost_group_name' => $project_cost_group_name,
+                ]);
+    
+                // Insert or update the project cost
+                ProjectCost::updateOrCreate(
+                    [
+                        'project_id' => $projectId, // Ensure $projectId is defined somewhere
+                        'project_cost_description' => $project_cost_description,
+                    ],
+                    [
+                        'project_cost_labor_qty'   => $project_cost_labor_qty,
+                        'project_cost_labor_unit'  => $project_cost_labor_unit,
+                        'project_cost_budget_qty'  => $project_cost_budget_qty,
+                        'project_budget_unit'      => $project_budget_unit,
+                        'project_cost_labor_cost'  => $project_cost_labor_cost,
+                        'project_cost_misc_cost'   => $project_cost_misc_cost,
+                        'project_cost_perdiempay'  => $project_cost_perdiempay,
+                        'project_cost_remaks'      => $project_cost_remaks,
+                        'project_cost_group_id'    => $costGroup->id,
+                        'project_cost_ot_budget'   => $project_cost_ot_budget,
+                        'create_date'              => $create_date ? \Carbon\Carbon::parse($create_date)->format('Y-m-d') : null,
+                    ]
+                );
+    
+                DB::commit();
+    
+                $successfulRows[] = [
+                    'project_cost_description' => $project_cost_description,
+                    'project_cost_labor_qty'   => $project_cost_labor_qty,
+                    'project_cost_labor_unit'  => $project_cost_labor_unit,
+                    'project_cost_budget_qty'  => $project_cost_budget_qty,
+                    'project_budget_unit'      => $project_budget_unit,
+                    'project_cost_labor_cost'  => $project_cost_labor_cost,
+                    'project_cost_misc_cost'   => $project_cost_misc_cost,
+                    'project_cost_perdiempay'  => $project_cost_perdiempay,
+                    'project_cost_remaks'      => $project_cost_remaks,
+                    'project_cost_group_name'  => $project_cost_group_name,
+                    'project_cost_ot_budget'   => $project_cost_ot_budget,
+                    'create_date'              => $create_date,
+                ];
+    
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => $e->getMessage(),
+                ];
+                continue;
+            }
+        }
+    
+        // Return results
+        return response()->json([
+            'successful' => $successfulRows,
+            'errors' => $errorRows
+        ]);
+    }
+    
 
     public function showProjects()
     {

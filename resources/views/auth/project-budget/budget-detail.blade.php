@@ -26,14 +26,26 @@
     </div>
 
     <section class="sectionBudget">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3>Budget Estimates of Project: <b>{{ $contingency_price->project_name }}</b></h3>
-            <div class="d-flex ms-auto">
-                <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-                    data-bs-target="#chooseGroupModal">Add New Cost</button>
-                <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center">
+    <h3>Budget Estimates of Project: <b>{{ $contingency_price->project_name }}</b></h3>
+    <div class="d-flex ms-auto">
+        <!-- Import Form -->
+        <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
+
+        <!-- Hidden Import Form -->
+        <form id="importForm" action="{{ route('budget.import', $id) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+            @csrf
+            <input type="file" name="file" id="fileInput" required>
+            <button type="submit" id="submitButton">Submit</button>
+        </form>
+
+        <!-- Add New Cost Button -->
+        <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#chooseGroupModal">Add New Cost</button>
+
+        <!-- Export CSV Button -->
+        <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
+    </div>
+</div>
 
         <h5>LIST OF EXPENSES</h5>
         <div class="col-md-12">
@@ -260,6 +272,44 @@
 
 
     <script>
+        document.getElementById('importButton').addEventListener('click', function() {
+        document.getElementById('fileInput').click(); // Trigger file input click
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function() {
+        document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
+    });
+    document.getElementById('importForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+    var data = e.target.result;
+    console.log(data); // Log the data to verify its contents
+    var json = JSON.stringify({ dataExcel: data });
+
+    fetch('{{ route('budget.import', $id) }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: json
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Log the response to check if data is received correctly
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+};
+
+    reader.readAsText(file);
+});
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
             var labelsData = [];

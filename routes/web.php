@@ -251,29 +251,29 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/project'], function () {
         //show details and update project
-        Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
-        Route::put('/{id}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'update'])->name('project.update');
+        Route::get('/{id}', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+        Route::put('/{id}/update', [ProjectBudgetController::class, 'update'])->name('project.update');
         //List of Expenses
-        Route::get('/{id}/budget', '\App\Http\Controllers\ProjectBudgetController@getView')->name('budget');
-        Route::get('/project/{id}/budget/group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'viewCost'])->name('budget.viewCost');
-        Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
-        Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
-        Route::post('/budget/rename-cost-group', [\App\Http\Controllers\ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
-        Route::post('/{id}/budget/create-group', [\App\Http\Controllers\ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
-        Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
-        Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
-        Route::get('/project/{id}/budget/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
+        Route::get('/{id}/budget', [ProjectBudgetController::class, 'getView'])->name('budget');
+        Route::get('/project/{id}/budget/group-details/{group_id}', [ProjectBudgetController::class, 'viewCost'])->name('budget.viewCost');
+        Route::get('/{id}/budget/data/{costGroupId}/{costId}', [ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
+        Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
+        Route::post('/budget/rename-cost-group', [ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
+        Route::post('/{id}/budget/create-group', [ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
+        Route::get('/{id}/budget/cost-group-details/{group_id}', [ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
+        Route::post('/{id}/budget/add-new-cost', [ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
+        Route::get('/project/{id}/budget/export-csv', [ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
+        Route::post('/project/{id}/budget/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
 
         //List of Commission
-        Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-        Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-        Route::get('/{id}/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-        Route::delete('/{project_id}/commission/{cost_commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-        Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
-        Route::post('/{project_id}/commission/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
-        Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-
-        Route::get('/{project_id}/commission/commision-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
+        Route::get('/{id}/commission', [ProjectBudgetController::class, 'getViewCommission'])->name('commission');
+        Route::post('/{id}/commission/details', [ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
+        Route::get('/{id}/export-csv', [ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
+        Route::delete('/{project_id}/commission/{cost_commission_id}', [ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
+        Route::put('/{project_id}/commission/{commission_id}', [ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
+        Route::post('/{project_id}/commission/add-new-commission', [ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
+        Route::put('/{project_id}/commission/{group_id}/edit', [ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
+        Route::get('/{project_id}/commission/commision-group-details/{group_id}', [ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
 
         Route::get('/{project_id}/report', [ProjectBudgetController::class, 'report'])->name('project.report');
     });
