@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EarnLeaveController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\ProposalTypesController;
@@ -94,8 +95,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
-        ;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
 
@@ -146,6 +146,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
         Route::get('/update/{employee_id}', 'App\Http\Controllers\EmployeesController@updateView');
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
+        Route::post('/reactive/{employee_id}', 'App\Http\Controllers\EmployeesController@reactiveEmployee');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
@@ -350,7 +351,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+
+
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+        Route::post('/save-answer', [TestQuizController::class, 'saveAnswer'])->name('test-quiz.saveAnswer');
+        Route::post('/submit-quiz', [TestQuizController::class, 'submitQuiz'])->name('submit-quiz');
+
+
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
         Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
@@ -359,8 +366,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/question-bank/{id}', [QuizController::class, 'destroy'])->name('question-bank.destroy');
         Route::get('/question-bank/{id}/edit', [QuizController::class, 'edit'])->name('question-bank.edit');
         Route::post('/question-bank/{id}/update', [QuizController::class, 'update'])->name('question-bank.update');
+        Route::post('/question-bank/{course_id}/import', [QuizController::class, 'import'])->name('question-bank.import');
+        Route::get('/question-bank/{course_id}/export', [QuizController::class, 'export'])->name('question-bank.export');
+        Route::post('/question-bank/delete-file', [QuizController::class, 'deleteExportedFile'])->name('question-bank.deleteFile');
 
-
+        Route::get('/exam', [ExamController::class, 'getView'])->name('exams.index');
+        Route::post('/exam/add', [ExamController::class, 'store'])->name('exams.store');
+        Route::delete('/exam/{id}', [ExamController::class, 'destroy'])->name('exams.destroy');
+        Route::get('/exam/{id}/edit', [ExamController::class, 'edit'])->name('exams.edit');
+        Route::put('/exam/{id}/update', [ExamController::class, 'update'])->name('exams.update');
+        Route::get('/exam/{id}/questions', [ExamController::class, 'getQuestionsByCourse'])->name('exams.questions');
     });
 
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
@@ -376,7 +391,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
     Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
     Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
-    
+
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);
