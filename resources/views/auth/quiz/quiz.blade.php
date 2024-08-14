@@ -58,9 +58,13 @@
                                 @endphp
                                 @foreach ($completed_courses as $course)
                                     @php
+                                        // Kiểm tra xem course_id có tồn tại trong bảng exams
+                                        $course_has_exam = DB::table('exams')
+                                            ->where('course_id', $course->course_id)
+                                            ->exists();
                                         $exam_result = $exam_results->firstWhere('course_name', $course->course_name);
                                     @endphp
-                                    @if (!$exam_result || ($exam_result && !$exam_result->passed))
+                                    @if ($course_has_exam && (!$exam_result || ($exam_result && !$exam_result->passed)))
                                         @php
                                             $hasAvailableExams = true;
                                         @endphp
@@ -86,6 +90,7 @@
                             @endif
                         </div>
                     </div>
+
                     <div class="card-footer d-flex align-items-center">
                         @if ($data->permission == 11)
                             <a href="{{ route('exams.index') }}" class="btn btn-success mx-2">Create exam</a>
