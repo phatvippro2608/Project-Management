@@ -510,7 +510,7 @@ $token = 'position';
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
 
-                    @if($data->permission === 1 || $data->permission === 2)
+                    @if($data->permission === 4)
                         <li>
                             <a class="nav-sub-link" href="{{ route('holidays.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.holiday') }}</span>
@@ -521,7 +521,6 @@ $token = 'position';
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_type') }}</span>
                             </a>
                         </li>
-                    @elseif($data->permission === 4)
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_report') }}</span>
