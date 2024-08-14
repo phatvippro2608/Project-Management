@@ -61,10 +61,7 @@ class ProjectController extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            // Gán các lỗi vào một biến
             $errors = $validator->errors();
-
-            \Log::error('Validation errors:', $errors->toArray());
             return response()->json(['status' => 422, 'message' => json_encode($errors->toArray())]);
         }
 

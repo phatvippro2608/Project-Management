@@ -28,7 +28,7 @@ class TeamController extends Controller
             'created_by' => $employee_id,
         ];
         if($team_id=DB::table('teams')->insertGetId($data)){
-            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_position_id'=>1])){
+            if(DB::table('team_details')->insert(['employee_id'=>$employee_id, 'team_id'=>$team_id, 'team_permission'=>1])){
                 return AccountController::status('Added a new team', 200);
             }else{
                 DB::table('team_details')->where('employee_id', $employee_id)->where('team_id', $team_id)->delete();

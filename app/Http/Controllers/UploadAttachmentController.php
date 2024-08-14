@@ -121,7 +121,7 @@ class UploadAttachmentController extends Controller
                     'file' => $image_name,
                 ]);
 
-                // Store uploaded image information for the response
+
                 $uploadedFiles[] = [
                     'folder' => $folder,
                     'file' => $image_name,
@@ -129,7 +129,7 @@ class UploadAttachmentController extends Controller
             }
         }
 
-        // Return the response with all uploaded files
+
         if (!empty($uploadedFiles)) {
             return json_encode([
                 'uploaded_files' => $uploadedFiles,

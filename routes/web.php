@@ -83,11 +83,19 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
         Route::get('/query', 'App\Http\Controllers\CustomerController@query');
     });
+
+    //Contract
     Route::group(['prefix' => '/contract'], function () {
         Route::get('/', 'App\Http\Controllers\ContractController@getView');
+        Route::post('/add', 'App\Http\Controllers\ContractController@addContract');
+        Route::post('/update', 'App\Http\Controllers\ContractController@updateContract');
+        Route::delete('/delete', 'App\Http\Controllers\ContractController@deleteContract');
+
+        //FILE
+        Route::post('/contract-upload', 'App\Http\Controllers\ContractController@uploadContractFile');
+        Route::delete('/delete-file-contract', 'App\Http\Controllers\ContractController@deleteFileContract');
     });
-
-
+    //Team
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');
@@ -374,7 +382,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
     Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
-    
+
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);
