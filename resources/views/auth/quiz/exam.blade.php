@@ -249,7 +249,7 @@
                             updateQuestionSelectionWithExisting(exam.questions);
                             $('#quizModalLabel').text('Edit exam');
                             $('#quizModal').modal('show');
-                        }, 500);
+                        }, 200);
                     },
                     error: function(xhr) {
                         alert('Error, please try again');
@@ -303,6 +303,7 @@
             });
 
             function updateQuestionSelectionWithExisting(questions) {
+                console.log(questions);
                 const quizForm = document.getElementById('quizForm');
                 const existingInputs = quizForm.querySelectorAll('input[name="questions[]"]');
                 existingInputs.forEach(input => quizForm.removeChild(input));
