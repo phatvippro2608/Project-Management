@@ -196,7 +196,6 @@ class EmployeesController extends Controller
         $data_certificate = DB::table('certificates')
             ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->where('certificates.employee_id',$employee_id)->get();
-        Log::info(json_encode($data_job_detail));
         $data = new EmployeeModel();
         $jobdetails = DB::table('job_details')
             ->join('job_titles', 'job_titles.job_title_id', '=', 'job_details.job_title_id')
