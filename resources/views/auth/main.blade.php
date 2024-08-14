@@ -526,15 +526,15 @@ $token = 'position';
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_report') }}</span>
                             </a>
                         </li>
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
+                                <i class="bi bi-circle"></i><span>{{ __('messages.earned_leave') }}</span>
+                            </a>
+                        </li>
                     @else
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_application') }}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
-                                <i class="bi bi-circle"></i><span>{{ __('messages.earned_leave') }}</span>
                             </a>
                         </li>
                     @endif
