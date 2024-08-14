@@ -23,8 +23,8 @@ class DashboardController extends Controller
         $team_c = count(TeamModel::all());
         $project_c = count(ProjectModel::all());
 
-        $task_c = DB::table('tasks')->count();
-        $sub_c = DB::table('sub_tasks')->count();
+        $task_c = DB::table('tasks')->where('parent_id',null)->count();
+        $sub_c = DB::table('tasks')->whereNot('parent_id',null)->count();
 
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
         FROM accounts, recent_project, projects

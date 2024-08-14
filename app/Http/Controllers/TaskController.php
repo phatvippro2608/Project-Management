@@ -27,14 +27,27 @@ class TaskController extends Controller
         return view('auth.task.task-subtask');
     }
     // Của Bình
-    public function getTasksData()
+    public function showTask(Request $request)
     {
-        $tasks = DB::table('tasks')->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->select('sub_tasks.*')
+        $tasks = DB::table('tasks')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name')
+            ->where('project_id', $request->id)
             ->get();
-        return response()->json(['tasks' => $tasks, 'subtasks' => $subtasks]);
+        return response()->json(['success' => true,'tasks' => $tasks]);
+    }
+
+    public function getTask(Request $request)
+    {
+        $tasks = DB::table('tasks')
+            ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
+            ->select('tasks.*', 'employees.last_name', 'employees.first_name', 'employees.employee_code')
+            ->where('task_id', $request->id)
+            ->get();
+        $subtasks = DB::table('tasks')
+            ->where('parent_id', $request->id)
+            ->get();
+        return response()->json(['success' => true,'tasks' => $tasks, 'subtasks' => $subtasks]);
     }
 
     public function create(Request $request)
@@ -49,7 +62,7 @@ class TaskController extends Controller
         ]);
         $progress = 0;
         if($request->has('allmarkdone')){
-            $progress = 100;
+            $progress = 1;
         }
 
         $task = TaskModel::create([
@@ -65,11 +78,14 @@ class TaskController extends Controller
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
                 $progress = 0;
                 if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
-                    $progress = 100;
+                    $progress = 1;
                 }
                 TaskModel::create([
                     'task_name' => $value,
+                    'employee_id' => $validatedData['employee_id'],
                     'project_id' => $validatedData['id'],
+                    'start_date' => $validatedData['s_date'],
+                    'end_date' => $validatedData['s_date'],
                     'parent_id' => $task->task_id,
                     'progress' => $progress,
                 ]);
@@ -112,7 +128,7 @@ class TaskController extends Controller
         //nếu tồn tại markdone thì progress = 100
         $progress = 0;
         if($request->has('allmarkdone')){
-            $progress = 100;
+            $progress = 1;
         }
 
         TaskModel::where('task_id', $validatedData['task_id'])->update([
@@ -131,7 +147,7 @@ class TaskController extends Controller
             if (strpos($key, 'subtask') === 0 && !empty($value)) {
                 $progress = 0;
                 if($request->has('allmarkdone') || $request->has('markdone_'.explode('_', $key)[1])){
-                    $progress = 100;
+                    $progress = 1;
                 }
                 if (strpos(explode('_', $key)[1], 'n') === 0) {
                     $sub=TaskModel::create([
@@ -176,10 +192,10 @@ class TaskController extends Controller
         return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks]);
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
-        TaskModel::find($id)->delete();
-        TaskModel::where('parent_id', $id)->delete();
+        TaskModel::find($request->id)->delete();
+        TaskModel::where('parent_id', $request->id)->delete();
 
         return response()->json(['success' => true,'message' => 'Delete task success']);
     }
