@@ -104,7 +104,7 @@
                            id="imageAttachment"
                            name="imageAttachment[]"
                            multiple="multiple"
-                           accept="image/png, image/jpeg, image/gif">
+                           accept="image/png, image/jpeg, image/gif" disabled>
                     <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                 </form>
             </div>
@@ -168,37 +168,7 @@
                     }
                 });
             }
-            function toggleUploadButton() {
-                const dateValue = $('.date-of-file-attachment').val();
-                const $uploadButton = $('.filepond-upload');
 
-                if (dateValue.length === 0) {
-                    $uploadButton.prop('disabled', true);
-                } else {
-                    $uploadButton.prop('disabled', false);
-                }
-            }
-            function toggleUploadButton1() {
-                const dateValue = $('.date-of-image-attachment').val();
-                const $uploadButton = $('.filepond-upload1');
-
-                if (dateValue.length === 0) {
-                    $uploadButton.prop('disabled', true);
-                } else {
-                    $uploadButton.prop('disabled', false);
-                }
-            }
-
-            toggleUploadButton();
-            toggleUploadButton1();
-
-            $('.date-of-file-attachment').on('change', function() {
-                toggleUploadButton();
-            });
-
-            $('.date-of-image-attachment').on('change', function() {
-                toggleUploadButton1();
-            });
 
 
             function updateAttachments(selectedDate) {
@@ -362,6 +332,7 @@
                         },
                     }
                 },
+
             }
         );
 
@@ -429,7 +400,47 @@
         })
 
 
+        function toggleUploadButton() {
+            const dateValue = $('.date-of-file-attachment').val();
+            const fileInput = $('#fileAttachment');
+            const uploadButton = $('.filepond-upload');
 
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                fileAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                fileAttachmentPond.setOptions({disabled: false});
+            }
+        }
+        function toggleUploadButton1() {
+            const dateValue = $('.date-of-image-attachment').val();
+            const fileInput = $('#imageAttachment');
+            const uploadButton = $('.filepond-upload1');
+
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                imageAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                imageAttachmentPond.setOptions({disabled: false});
+            }
+        }
+
+        toggleUploadButton();
+        toggleUploadButton1();
+
+        $('.date-of-file-attachment').on('change', function() {
+            toggleUploadButton();
+        });
+
+        $('.date-of-image-attachment').on('change', function() {
+            toggleUploadButton1();
+        });
 
 
     </script>
