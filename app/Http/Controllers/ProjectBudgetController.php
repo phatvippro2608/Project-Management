@@ -16,33 +16,44 @@ class ProjectBudgetController extends Controller
 {
 
 
-    public function getView($id)
+    public function getView(Request $request, $id)
     {
-        $dataCost = DB::table('project_costs')
-        ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
-        ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
-        ->get();
-        $dataCostGroup = DB::table('project_cost_group')->get();
+        $index = $request->input('location', '');
+        if(empty($index)){
+            $dataCost = DB::table('project_costs')
+            ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+            ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
+            ->get();
+            $dataCostGroup = DB::table('project_cost_group')->get();
+        }
+            else{
+                $dataCost = DB::table('project_costs')
+                ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+                ->join('project_location.project_location_id', '=' , 'project_cost_group.project_location_id')
+                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
+                ->where('project_cost_group.project_location_id', $index)->get();
+                $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $index)->get();
+            }
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
         $total=0;
-        $subtotal2=0;
-        $chart=[];
-        foreach($dataCostGroup as $group){
-            $subtotal1=0;
-            foreach ($dataCost as $data) {
-                if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id){
-                    $subtotal2 = $data->project_cost_labor_qty *
-                                $data->project_cost_budget_qty *
-                                ($data->project_cost_labor_cost +
-                                    $data->project_cost_misc_cost +
-                                    $data->project_cost_ot_budget +
-                                    $data->project_cost_perdiempay);
-                    $subtotal1 += $subtotal2;
-                }
-                }
-            $chart[$group->project_cost_group_name] = $subtotal1;
-            $total += $subtotal1;
-        }
+            $subtotal2=0;
+            $chart=[];
+            foreach($dataCostGroup as $group){
+                $subtotal1=0;
+                foreach ($dataCost as $data) {
+                    if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id){
+                        $subtotal2 = $data->project_cost_labor_qty *
+                                    $data->project_cost_budget_qty *
+                                    ($data->project_cost_labor_cost +
+                                        $data->project_cost_misc_cost +
+                                        $data->project_cost_ot_budget +
+                                        $data->project_cost_perdiempay);
+                        $subtotal1 += $subtotal2;
+                    }
+                    }
+                $chart[$group->project_cost_group_name] = $subtotal1;
+                $total += $subtotal1;
+            }
         return view('auth.project-budget.budget-detail', [
             'dataCost' => $dataCost,
             'dataCostGroup' => $dataCostGroup,

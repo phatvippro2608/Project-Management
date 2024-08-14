@@ -34,7 +34,7 @@
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
                         <a href="{{ route('project.progress', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">Progress</a>
-                        <a href="{{ route('budget', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
+                        <a href="{{ route('budget', ['id' => $id, 'location' => $location->project_location_id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
                         <a href="{{ route('commission', ['id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
                     </div>
                 </div>
