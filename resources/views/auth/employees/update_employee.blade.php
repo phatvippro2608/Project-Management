@@ -12,6 +12,7 @@
     </div>
     @php
         $employee_id = $item->employee_id;
+        $fired = $item->fired;
         $employment_contract = json_decode($item->employment_contract);
         @endphp
 
@@ -140,7 +141,8 @@
             </div>
         </div>
     </div>
-    <div class="card mb-0 shadow-none">
+    <div class="card mb-0 shadow-none
+">
         <div class="card-header bg-light fw-semibold">
             Personal Contacts
         </div>
@@ -220,7 +222,8 @@
             </form>
         </div>
     </div>
-    <div class="card mb-0 shadow-none">
+    <div class="card mb-0 shadow-none
+">
         <div class="card-header bg-light fw-semibold">
             Job Details
         </div>
@@ -343,7 +346,8 @@
             </form>
         </div>
     </div>
-    <div class="row gx-0">
+    <div class="row gx-0
+">
         <div class="col-6">
             <div class="card mb-0 shadow-none">
                 <div class="card-header bg-light fw-semibold">Personal Details</div>
@@ -459,7 +463,8 @@
             </div>
         </div>
     </div>
-    <div class="card mb-5 shadow-none">
+    <div class="card mb-0 shadow-none
+">
         <div class="card-header bg-light fw-semibold">Certificate</div>
         <div class="card-body p-3 table-overflow">
             <table class="table table-hover table-borderless">
@@ -507,7 +512,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">
+        <div class="card-footer ">
             <div class="row g-4">
                 <div class="col-2" style="width: 139px;">
                     <span class="fw-bold">File upload</span>
@@ -529,7 +534,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-header bg-light fw-semibold">Employment Contract</div>
+        <div class="card-header bg-light fw-semibold" >Employment Contract</div>
         <div class="card-body p-3 table-overflow">
             <table class="table table-hover table-borderless">
                 <thead>
@@ -571,7 +576,7 @@
                     <span class="fw-bold">File upload</span>
                 </div>
                 <div class="col-4 text-center upload-section border rounded-4 p-3">
-                    <input id="employment_contract_file" class="form-control visually-hidden employment_contract_file" type="file">
+                    <input id="employment_contract_file" class="form-control visually-hidden employment_contract_file" type="file" accept=".application/pdf" >
                     <div file-input-target="employment_contract_file" class="file-selector">
                         <i class="bi bi-file-earmark fs-1"></i>
                     </div>
@@ -585,10 +590,10 @@
                 </div>
             </div>
         </div>
-        <div class="card mb-0 shadow-none">
-            <div class="card-header text-end">
-                <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
-            </div>
+    </div>
+    <div class="card mb-5 shadow-none">
+        <div class="card-header text-end">
+            <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
         </div>
     </div>
     <div class="modal modal-preview" tabindex="-1">
@@ -722,9 +727,19 @@
 
         $('.btn_upload_employment_contract').click(function () {
             event.preventDefault();
-            let file = $('.employment_contract_file')[0].files[0];
+            let fileInput = $('.employment_contract_file')[0];
+            let file = fileInput.files[0];
             if(!file){
                 toastr.error('Please choose file!','Error');
+                return;
+            }
+            if (file && file.type !== "application/pdf") {
+                fileInput.value = '';
+                toastr.error('Only PDF files are allowed.');
+                return;
+            }
+            if (!$('.employment_contract_start_date').val() || !$('.employment_contract_end_date').val()) {
+                toastr.error('Please choose a date!', 'Error');
                 return;
             }
             let formData = new FormData();
@@ -743,12 +758,12 @@
                 processData: false,
                 success: function (result) {
                     if (result.status === 200) {
-                        toastr.success(result.message, "Thao tác thành công");
+                        toastr.success(result.message, "Successful");
                         setTimeout(function () {
                             window.location.reload();
                         }, 500);
                     } else {
-                        toastr.error(result.message, "Thao tác thất bại");
+                        toastr.error(result.message, "Error");
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

@@ -146,6 +146,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
         Route::get('/update/{employee_id}', 'App\Http\Controllers\EmployeesController@updateView');
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
+        Route::post('/reactive/{employee_id}', 'App\Http\Controllers\EmployeesController@reactiveEmployee');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
@@ -376,7 +377,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
     Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
     Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
-    
+
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);

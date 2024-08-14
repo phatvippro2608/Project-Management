@@ -105,7 +105,7 @@
                            name="imageAttachment[]"
                            multiple="multiple"
                            accept="image/png, image/jpeg, image/gif">
-                    <button class="btn btn-primary mx-auto d-none filepond-upload1 btn-upload-image" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                    <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                 </form>
             </div>
         </div>
@@ -129,6 +129,7 @@
 @endsection
 @section('script')
     <script>
+
         $(document).on('click', '.btn-preview-image img', function () {
             var src = $(this).attr('src');
             console.log(src)
@@ -167,6 +168,38 @@
                     }
                 });
             }
+            function toggleUploadButton() {
+                const dateValue = $('.date-of-file-attachment').val();
+                const $uploadButton = $('.filepond-upload');
+
+                if (dateValue.length === 0) {
+                    $uploadButton.prop('disabled', true);
+                } else {
+                    $uploadButton.prop('disabled', false);
+                }
+            }
+            function toggleUploadButton1() {
+                const dateValue = $('.date-of-image-attachment').val();
+                const $uploadButton = $('.filepond-upload1');
+
+                if (dateValue.length === 0) {
+                    $uploadButton.prop('disabled', true);
+                } else {
+                    $uploadButton.prop('disabled', false);
+                }
+            }
+
+            toggleUploadButton();
+            toggleUploadButton1();
+
+            $('.date-of-file-attachment').on('change', function() {
+                toggleUploadButton();
+            });
+
+            $('.date-of-image-attachment').on('change', function() {
+                toggleUploadButton1();
+            });
+
 
             function updateAttachments(selectedDate) {
                 var locationId = $('.location_select').val();
@@ -252,32 +285,25 @@
             const dateSelect = $('.date_select');
 
             $('.btn-left').on('click', function(event) {
-                event.preventDefault(); // Prevent the default anchor behavior
+                event.preventDefault();
 
-                // Get the current selected index
                 let currentIndex = dateSelect.prop('selectedIndex');
 
-                // Decrement the index to move to the previous option
                 let newIndex = currentIndex - 1;
 
-                // Ensure the new index is within bounds
                 if (newIndex >= 0) {
-                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                    dateSelect.prop('selectedIndex', newIndex).change();
                 }
             });
-            // Handle click for the right button (next)
             $('.btn-right').on('click', function(event) {
-                event.preventDefault(); // Prevent the default anchor behavior
+                event.preventDefault();
 
-                // Get the current selected index
                 let currentIndex = dateSelect.prop('selectedIndex');
 
-                // Increment the index to move to the next option
                 let newIndex = currentIndex + 1;
 
-                // Ensure the new index is within bounds
                 if (newIndex < dateSelect.children('option').length) {
-                    dateSelect.prop('selectedIndex', newIndex).change(); // Update and trigger change event
+                    dateSelect.prop('selectedIndex', newIndex).change();
                 }
             });
         });
@@ -289,6 +315,18 @@
             FilePondPluginFileValidateType
         );
 
+        function removeVietnameseAccents(str) {
+            const accents = 'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÛÝàáâãèéêìíòóôõùúûý';
+            const accentsOut = 'AAAAEEEIIOOOOUUUYaaaaeeeiiioooouuuuy';
+            str = str.split('');
+            for (let i = 0; i < str.length; i++) {
+                const index = accents.indexOf(str[i]);
+                if (index !== -1) {
+                    str[i] = accentsOut[index];
+                }
+            }
+            return str.join('');
+        }
 
         const fileAttachmentPond = FilePond.create(
             document.querySelector('#fileAttachment'),
@@ -395,5 +433,4 @@
 
 
     </script>
-    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection
