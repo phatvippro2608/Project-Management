@@ -125,7 +125,7 @@
 
                             <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
                                 <!-- Profile Edit Form -->
-                                <div class="row mb-3">
+                                <div class="row mb-3 gy-3">
                                     <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                     <div class="col-lg-2 text-center">
                                         <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{$photoExists ? $photoPath : $defaultPhoto}}" alt="Profile">
