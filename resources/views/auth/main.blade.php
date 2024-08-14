@@ -5,7 +5,7 @@ use App\Http\Controllers\AccountController;
 
 $token = 'position';
 ?>
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,51 +18,7 @@ $token = 'position';
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{ asset('assets/img/logo2.png') }}" rel="icon">
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
-
-    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/account_custom.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/filepond.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/filepond-plugin-image-preview.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/filepond-plugin-image-overlay.min.css') }}" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.esc.js') }}"></script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="{{ asset('assets/js/toastr.min.js') }}"></script>
-
-    <script src="{{asset('assets/js/datatables.js')}}"></script>
-    <script src="{{asset('assets/js/filepond.min.js')}}"></script>
-    <script src="{{asset('assets/js/filepond-plugin-image-preview.min.js')}}"></script>
-    <script src="{{asset('assets/js/filepond-plugin-image-overlay.min.js')}}"></script>
-    <script src="{{asset('assets/js/filepond-plugin-file-validate-type.min.js')}}"></script>
-
-    <script type="text/javascript"
-            src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js">
-    </script>
-
-    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
-          type="text/css"/>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    @include('auth/links')
     @yield('head')
 </head>
 
@@ -228,10 +184,10 @@ $token = 'position';
             {{--     Change language      --}}
             <li class="nav-item dropdown-center my-2">
                 <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#" data-bs-toggle="dropdown">
-                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'en')
-                        <img src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
-                    @else
+                    @if(\Illuminate\Support\Facades\Session::get('locale') === 'vi')
                         <img src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">
+                    @else
+                        <img src="{{asset('assets/img/united-states.png')}}" width="36" alt="">
                     @endif
                 </a>
                 <div class="dropdown-menu">
