@@ -6,6 +6,7 @@ use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use App\StaticString;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -120,20 +121,57 @@ class InternalCertificatesController extends Controller
         }
     }
 
-    public function getViewSignature() {
-
-        return view('auth.certificate.InternalCertificateSignature');
+    protected function updateCreatePermissions()
+    {
+        // Cập nhật quyền tạo chứng chỉ cho super admin và giám đốc
+        DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->where('permissions.permission_name', '=', 'Director')
+            ->orWhere('permissions.permission_name', '=', 'Super Admin')
+            ->update(['certificate_creation_permission' => 1]);
     }
 
-    public function getViewCreate() {
+    public function getViewSignature()
+    {
+        $this->updateCreatePermissions();
+
+        $permission = DB::table('permissions')
+            ->where('permissions.permission_num', '=', session()->get(StaticString::PERMISSION))
+            ->where(function ($query) {
+                $query->where('permissions.permission_name', '=', 'Director')
+                    ->orWhere('permissions.permission_name', '=', 'Super Admin');
+            })
+            ->exists();
+
+        $employeeQuery = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id');
+
+        if (!$permission) {
+            $employeeQuery->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID));
+        }
+
+        $employee = $employeeQuery->get();
+        // dd($employee);
+        return view('auth.certificate.InternalCertificateSignature', [
+            'employee' => $employee,
+        ]);
+    }
+
+
+    public function getViewCreate()
+    {
+        $this->updateCreatePermissions();
         return view('auth.certificate.InternalCertificateCreate');
     }
 
     public function temp()
     {
 
-        $employee = DB::table('employees')->where('employee_id','=','3')->first();
-    
+        $employee = DB::table('employees')->where('employee_id', '=', '3')->first();
+
         $director = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('employment_contract', 'employment_contract.employee_id', '=', 'employees.employee_id')
