@@ -49,8 +49,16 @@ class ExamController extends Controller
     public function edit($id)
     {
         $exam = ExamModel::with('questions')->findOrFail($id);
-        return response()->json(['exam' => $exam]);
+        $course_id = $exam->course_id;
+
+        $questions = QuizModel::where('course_id', $course_id)->get();
+
+        return response()->json([
+            'exam' => $exam,
+            'questions' => $questions
+        ]);
     }
+
 
     public function update(Request $request, $id)
     {

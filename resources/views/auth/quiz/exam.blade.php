@@ -135,18 +135,20 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 
 @section('script')
     <script>
-        var table = $('#quizTable').DataTable();
         document.addEventListener('DOMContentLoaded', function() {
+            var table = $('#quizTable').DataTable();
             const courseSelect = document.getElementById('course_id');
             const totalQuestionsInput = document.getElementById('total_questions');
             const randomCheckbox = document.getElementById('random_questions');
             const questionCountInfo = document.getElementById('question_count_info');
             let allQuestions = [];
+            let currentExamQuestions = [];
 
             courseSelect.addEventListener('change', fetchQuestions);
             randomCheckbox.addEventListener('change', updateQuestionSelection);
@@ -194,6 +196,8 @@
                     hiddenInput.value = question.question_bank_id;
                     quizForm.appendChild(hiddenInput);
                 });
+
+                // questionCountInfo.textContent = `Selected number of questions: ${selectedQuestions.length}`;
             }
 
             function getRandomQuestions(count) {
@@ -232,15 +236,20 @@
                     method: 'GET',
                     success: function(response) {
                         var exam = response.exam;
+                        allQuestions = response.questions;
+
                         $('#exam_id').val(exam.exam_id);
                         $('#course_id').val(exam.course_id).change();
-                        $('#exam_name').val(exam.exam_name);
-                        $('#exam_date').val(exam.exam_date);
-                        $('#duration').val(exam.time);
-                        $('#total_questions').val(exam.questions.length);
-                        updateQuestionSelectionWithExisting(exam.questions);
-                        $('#quizModalLabel').text('Edit exam');
-                        $('#quizModal').modal('show');
+
+                        setTimeout(() => {
+                            $('#exam_name').val(exam.exam_name);
+                            $('#exam_date').val(exam.exam_date);
+                            $('#duration').val(exam.time);
+                            $('#total_questions').val(exam.questions.length);
+                            updateQuestionSelectionWithExisting(exam.questions);
+                            $('#quizModalLabel').text('Edit exam');
+                            $('#quizModal').modal('show');
+                        }, 500);
                     },
                     error: function(xhr) {
                         alert('Error, please try again');
@@ -270,22 +279,20 @@
                             },
                             success: function(response) {
                                 Swal.fire(
-                                        'Deleted!',
-                                        'Your exam has been deleted.',
-                                        'success'
-                                    )
-                                    .then((result) => {
-                                        if (result.isConfirmed) {
-                                            setTimeout(function() {
-                                                    location.reload();
-                                                },
-                                                300);
-                                        }
-                                    });
+                                    'Deleted!',
+                                    'Your exam has been deleted.',
+                                    'success'
+                                ).then((result) => {
+                                    if (result.isConfirmed) {
+                                        setTimeout(function() {
+                                            location.reload();
+                                        }, 300);
+                                    }
+                                });
                             },
                             error: function(xhr) {
                                 Swal.fire(
-                                    'Lỗi!',
+                                    'Error!',
                                     'Please try again.',
                                     'error'
                                 )
@@ -307,9 +314,13 @@
                     hiddenInput.value = question.question_bank_id;
                     quizForm.appendChild(hiddenInput);
                 });
+
+                totalQuestionsInput.value = questions.length;
+                questionCountInfo.textContent = `Selected number of questions: ${questions.length}`;
             }
 
-            courseSelect.dispatchEvent(new Event('change'));
+            // Gọi hàm fetchQuestions ngay lập tức khi tải trang để cập nhật danh sách câu hỏi ban đầu
+            fetchQuestions();
         });
     </script>
 @endsection
