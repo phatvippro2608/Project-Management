@@ -28,7 +28,10 @@
                                 </div>
                             </div>
                             <input type="file" hidden="hidden" id="fileInput">
-                            <div class="d-flex align-items-center m-0"><span>Lưu ý các trường bắt buộc : </span><span class="text-warning"> &nbsp;Email, Điện thoại, Tên thành viên &nbsp;</span><span> Mật khẩu mặc định là 123456</span></div>
+                            <div class="d-flex flex-column m-0">
+                                <span><span>Note the required fields: </span><span class="text-warning">&nbsp;Email, Phone number, Member name&nbsp;</span><span> The default password is 123456</span></span>
+                                <a href="{{asset('excel-example/import_employee.xlsx')}}" target="_blank">Download the template file</a>
+                            </div>
                         </div>
                     </div>
                     <table id="employeesTable" class="table table-hover table-borderless">
