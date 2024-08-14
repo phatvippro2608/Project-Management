@@ -15,19 +15,20 @@
                 <div class="card-title my-3 p-0">Inactive List</div>
             </div>
             <div class="card-body">
-                <table id="employeesTable" class="table table-hover table-borderless">
-                    <thead class="table-light">
-                    <tr>
-                        <th class="text-center">{{ __('messages.employee_code') }}</th>
-                        <th class="text-center">Photo</th>
-                        <th class="text-center">{{ __('messages.full_name') }}</th>
-                        <th class="text-center">English Name</th>
-                        <th class="text-center">{{ __('messages.gender') }}</th>
-                        <th class="text-center">Phone</th>
-                        <th class="text-center">{{ __('messages.action') }}</th>
-                    </tr>
-                    </thead>
-                    <tbody id="inactiveEmployeesTableBody">
+                <div class="table-responsive">
+                    <table id="employeesTable" class="table table-hover table-borderless">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="text-center">{{ __('messages.employee_code') }}</th>
+                            <th class="text-center">Photo</th>
+                            <th class="text-center">{{ __('messages.full_name') }}</th>
+                            <th class="text-center">English Name</th>
+                            <th class="text-center">{{ __('messages.gender') }}</th>
+                            <th class="text-center">Phone</th>
+                            <th class="text-center">{{ __('messages.action') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody id="inactiveEmployeesTableBody">
                         @foreach($data as $index => $item)
                             <tr>
                                 <td class="text-center"><a href="{{action('App\Http\Controllers\EmployeesController@getEmployee',$item->employee_id)}}">{{$item->employee_code ?? ''}}</a></td>
@@ -43,8 +44,9 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
     </div>
 @endsection
