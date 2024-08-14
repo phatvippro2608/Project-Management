@@ -59,13 +59,13 @@
             var signatureCanvasRight = document.createElement('canvas');
             var signatureHeight = canvas.height / 2 + 135;
             var signaturePositionLeft = {
-                x: (canvas.width / 2 - 230),
+                x: (canvas.width / 4),
                 y: signatureHeight,
                 width: 150,
                 height: 75
             };
             var signaturePositionRight = {
-                x: (canvas.width / 2 + 90),
+                x: (canvas.width / 2 + 80),
                 y: signatureHeight,
                 width: 150,
                 height: 75
@@ -170,17 +170,17 @@
                     context.drawImage(signatureCanvasRight, signaturePositionRight.x, signaturePositionRight.y,
                         signaturePositionRight.width, signaturePositionRight.height);
                 }
-
+                var height = canvas.height - 70;
                 var leftName = capitalizeFirstLetterOfEachWord(
                     "{{ $director->last_name . ' ' . $director->first_name }}");
                 context.font = "bold 11px 'Lora', serif";
                 var leftWidth = canvas.width / 4 + 80;
-                context.fillText(leftName, leftWidth, canvas.height - 80);
+                context.fillText(leftName, leftWidth, height);
 
                 var rightName = capitalizeFirstLetterOfEachWord(
                     "{{ $teacher->last_name . ' ' . $teacher->first_name }}");
                 var rightWidth = canvas.width / 2 + 160;
-                context.fillText(rightName, rightWidth, canvas.height - 80);
+                context.fillText(rightName, rightWidth, height);
             }
 
             $('.text').remove();

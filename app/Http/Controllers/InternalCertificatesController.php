@@ -6,6 +6,8 @@ use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use App\StaticString;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -155,10 +157,52 @@ class InternalCertificatesController extends Controller
 
         $employee = $employeeQuery->get();
         return view('auth.certificate.InternalCertificateSignature', [
-            'employee'=>$employee,
+            'employee' => $employee,
         ]);
     }
 
+    public function updateSignatureCertificate(Request $request)
+    {
+        // Xác thực dữ liệu yêu cầu
+        $request->validate([
+            'signatureId' => 'required|integer|exists:employee_signatures,employee_signature_id',
+            'signature' => 'required|string', // Đây là dữ liệu Base64
+        ]);
+
+        // Lấy dữ liệu từ yêu cầu
+        $signatureId = $request->input('signatureId');
+        $signatureData = $request->input('signature');
+
+        // Xử lý dữ liệu Base64
+        $data = explode(',', $signatureData);
+        $imageData = base64_decode(end($data));
+
+        // Tạo tên file chữ ký mới với mã hóa
+        $hashedFileName = md5(uniqid($signatureId, true)) . '.png';
+
+        // Xác định đường dẫn để lưu file
+        $directory = public_path('assets/img/signature/');
+        $filePath = $directory . $hashedFileName;
+
+        // Tạo thư mục nếu không tồn tại
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory, 0755, true);
+        }
+
+        // Lưu file vào thư mục public/assets/img/signature
+        File::put($filePath, $imageData);
+
+        // Cập nhật đường dẫn mới vào cơ sở dữ liệu
+        DB::table('employee_signatures')
+            ->where('employee_signature_id', $signatureId)
+            ->update([
+                'employee_signature_img' => 'assets/img/signature/' . $hashedFileName,
+                'updated_at' => now()
+        ]);
+
+        // Trả về phản hồi thành công
+        return response()->json(['message' => 'Signature updated successfully'], 200);
+    }
 
     public function getViewCreate()
     {

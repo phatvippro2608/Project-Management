@@ -180,32 +180,78 @@
             });
 
             $('.edit-btn').on('click', function() {
-                // Lấy dữ liệu từ các thuộc tính data- của nút bấm
-                var employeeId = $(this).data('id');
+                var signatureID = $(this).data('id');
                 var employeeCode = $(this).data('employee_code');
                 var fullName = $(this).data('full_name');
                 var enName = $(this).data('en_name');
                 var signature = $(this).data('signature');
 
-                // Cập nhật các trường input trong modal
                 $('#employeeId').val(employeeCode);
                 $('#fullName').val(fullName);
                 $('#enName').val(enName);
                 $('#signaturePreview').attr('src', signature);
+                $('#signatureInput').val('');
 
-                // Hiển thị modal
+                $('#saveBtn').data('id', signatureID);
+
                 $('#editModal').modal('show');
             });
 
             $('#saveBtn').on('click', function() {
-                // Xử lý lưu thay đổi nếu cần
-                Swal.fire({
-                    title: 'Success',
-                    text: 'Changes saved successfully!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
+                var employeeId = $(this).data('id');
+                var signature = $('#signatureInput')[0].files[0];
+
+                if (signature) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var signatureDataUrl = event.target.result;
+                        var data = {
+                            signatureId: employeeId,
+                            signature: signatureDataUrl
+                        };
+                        $.ajax({
+                            url: '{{ route('certificate.signature.edit') }}',
+                            type: 'POST',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            processData: false,
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'Changes saved successfully!',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(function() {
+                                    window.location.reload();
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'There was an error saving the changes.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        });
+                    };
+
+                    reader.readAsDataURL(signature);
+                } else {
+                    // Handle the case where no file is selected
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please select a signature image.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
             });
+
 
             $('#signatureInput').on('change', function(event) {
                 var file = event.target.files[0];
