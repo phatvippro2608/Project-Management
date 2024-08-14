@@ -154,9 +154,8 @@ class InternalCertificatesController extends Controller
         }
 
         $employee = $employeeQuery->get();
-        // dd($employee);
         return view('auth.certificate.InternalCertificateSignature', [
-            'employee' => $employee,
+            'employee'=>$employee,
         ]);
     }
 

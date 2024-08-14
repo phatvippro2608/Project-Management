@@ -95,7 +95,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
+        ;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
 
@@ -384,13 +385,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
     Route::delete('certificate', [InternalCertificatesController::class, 'deleteViewUser'])->name('certificate.user.delete');
-    Route::get('certificateType', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
-    Route::delete('certificateType', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
-    Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
-    Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
-    Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
-    Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
-    Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+    Route::group(['prefix' => '/certificateType'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
+        Route::delete('', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
+        Route::post('/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
+        Route::post('/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
+        Route::get('/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
+    });
+    Route::get('certificateSignature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
+    Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+
 
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
