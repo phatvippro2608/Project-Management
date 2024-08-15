@@ -525,7 +525,7 @@ $token = 'position';
             <li class="nav-item">
                 <a class="nav-link"
                    href="{{action('App\Http\Controllers\ContractController@getView')}}">
-                    <i class="bi bi-journal-bookmark"></i><span>Contracts</span>
+                    <i class="bi bi-journal-bookmark"></i><span>{{ __('messages.contract') }}</span>
                 </a>
             </li>
 
