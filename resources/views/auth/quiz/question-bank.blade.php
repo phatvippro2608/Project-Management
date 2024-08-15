@@ -14,32 +14,28 @@
         <h1>Create Quiz</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="">Home</a></li>
-                <li class="breadcrumb-item"><a href="">Quiz</a></li>
+                <li class="breadcrumb-item"><a href="../../">Home</a></li>
+                <li class="breadcrumb-item"><a href="../quiz">Quiz</a></li>
                 <li class="breadcrumb-item active">Question bank</li>
             </ol>
         </nav>
     </div>
     <div class="row gx-3 my-3">
-        <div class="col-md-6 m-0">
+        <div class="col-md-6 m-0 d-flex">
             <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
                 <div class="d-flex align-items-center at1">
                     <i class="bi bi-file-earmark-plus pe-2"></i>
                     Add question
                 </div>
             </div>
-            <div class="btn btn-success mx-2">
-                <div class="d-flex align-items-center at2 text-white btnExcel">
-                    <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
-                    Import
-                </div>
+            <div class="btn btn-success d-flex align-items-center at2 text-white btnExcel mx-2">
+                <i class="bi bi-file-earmark-arrow-up pe-2 "></i>
+                Import
             </div>
-            <div class="btn btn-success mx-2">
-                <a href="" class="d-flex align-items-center at2 text-white">
-                    <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                    Export
-                </a>
-            </div>
+            <button class="btn btn-success d-flex align-items-center at2 text-white btnExportExcel mx-2">
+                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                Export
+            </button>
         </div>
     </div>
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
@@ -48,9 +44,8 @@
             <div class="col-md-12">
                 <label for="courseSelect">Select course</label>
                 <select class="form-control" id="courseSelect">
-                    <option value="">No select</option>
-                    @foreach($courses as $item)
-                        <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                    @foreach ($courses as $item)
+                        <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -89,8 +84,8 @@
                         <div class="mb-3">
                             <label for="course_name" class="form-label">Course name</label>
                             <select class="form-control" id="add_course_name" name="add_course_name" required>
-                                @foreach($courses as $item)
-                                    <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                                @foreach ($courses as $item)
+                                    <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -153,8 +148,8 @@
                         <div class="mb-3">
                             <label for="course_name" class="form-label">Course name</label>
                             <select class="form-control" id="course_name" name="course_id" required>
-                                @foreach($courses as $item)
-                                    <option value="{{$item->course_id}}">{{$item->course_name}}</option>
+                                @foreach ($courses as $item)
+                                    <option value="{{ $item->course_id }}">{{ $item->course_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -223,7 +218,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="">Select file (*.xlsx) or download
-                                <a target="_blank" href="">
+                                <a target="_blank" href="{{asset('excel-example/question-bank-import.xlsx')}}">
                                     Example file
                                 </a>
                             </label>
@@ -244,15 +239,16 @@
         var table = $('#questionsTable').DataTable();
 
         $('.btnExcel').click(function () {
-            $('.md2 .modal-title').text('Import question');
+            let course_name = $("#courseSelect option:selected").text();
+            let course_id = $("#courseSelect option:selected").val();
+            $('.md2 .modal-title').text('Import question for ' + course_name);
             $('.md2').modal('show');
             $('.luuTT').click(function () {
                 var fileInput = $('input[name="file-excel"]')[0].files[0];
-
                 var formData = new FormData();
                 formData.append('file-excel', fileInput);
                 $.ajax({
-                    url: '',
+                    url: '{{route('question-bank.import', ':id')}}'.replace(':id', course_id),
                     type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -308,59 +304,70 @@
             });
         });
 
-        $(document).ready(function() {
-            let questionsTable = $('#questionsTable').DataTable(); // Khởi tạo DataTables
+        $(document).ready(function () {
+            let questionsTable = $('#questionsTable').DataTable();
 
-            $('#courseSelect').on("change", function() {
-                let course_id = $("#courseSelect option:selected").val();
+            function loadQuestions(course_id) {
                 let tableBody = $("#questionsTable tbody");
 
                 if (course_id === "") {
                     tableBody.empty();
-                    questionsTable.clear().draw(); // Xóa dữ liệu trong DataTables
+                    questionsTable.clear().draw();
                     return;
                 }
 
                 $.ajax({
                     url: '{{ route('question-bank.list', ':id') }}'.replace(':id', course_id),
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         const data = response.question_list;
-                        tableBody.empty();  // Clear existing data
-                        questionsTable.clear(); // Clear DataTables data
+                        tableBody.empty();
+                        questionsTable.clear();
 
                         data.forEach((question, index) => {
                             let row =
                                 `
-                            <tr>
-                                <td class="text-start">${index + 1}</td>
-                                <td> <textarea readonly>${question.question}</textarea></td>
-                                <td> <textarea readonly>${question.question_a}</textarea></td>
-                                <td> <textarea readonly>${question.question_b}</textarea></td>
-                                <td> <textarea readonly>${question.question_c}</textarea></td>
-                                <td> <textarea readonly>${question.question_d}</textarea></td>
-                                <td>${question.correct}</td>
-                                <td>
-                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="${question.question_bank_id}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="${question.question_bank_id}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                            questionsTable.row.add($(row)).draw(false); // Add row to DataTables and draw
+                        <tr>
+                            <td class="text-start">${index + 1}</td>
+                            <td> <textarea readonly>${question.question}</textarea></td>
+                            <td> <textarea readonly>${question.question_a}</textarea></td>
+                            <td> <textarea readonly>${question.question_b}</textarea></td>
+                            <td> <textarea readonly>${question.question_c}</textarea></td>
+                            <td> <textarea readonly>${question.question_d}</textarea></td>
+                            <td>${question.correct}</td>
+                            <td>
+                                <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="${question.question_bank_id}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="${question.question_bank_id}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                            questionsTable.row.add($(row)).draw(
+                                false);
                         });
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         toastr.error(xhr.responseJSON.message, "Error");
                     }
                 });
+            }
+
+            $('#courseSelect').on("change", function () {
+                let course_id = $("#courseSelect option:selected").val();
+                loadQuestions(course_id);
             });
-        });
+
+
+            let initialCourseId = $("#courseSelect option:first").val();
+            if (initialCourseId) {
+                $("#courseSelect").val(initialCourseId).change();
+            }
+        })
 
         $('#questionsTable').on('click', '.delete-btn', function () {
             var question_id = $(this).data('id');
@@ -376,8 +383,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route('question-bank.destroy', ':id') }}'.replace(':id',
-                            question_id),
+                        url: '{{ route('question-bank.destroy', ':id') }}'.replace(':id', question_id),
                         method: 'DELETE',
                         data: {
                             _token: '{{ csrf_token() }}'
@@ -385,12 +391,12 @@
                         success: function (response) {
                             if (response.success) {
                                 toastr.success(response.message, "Deleted successfully");
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 500);
+
+                                // Xóa dòng tương ứng trong bảng mà không cần tải lại trang
+                                var row = $('#questionsTable').find(`button[data-id='${question_id}']`).closest('tr');
+                                row.remove();
                             } else {
-                                toastr.error("Failed to delete the proposal application.",
-                                    "Operation Failed");
+                                toastr.error("Failed to delete the question.", "Operation Failed");
                             }
                         },
                         error: function (xhr) {
@@ -400,6 +406,7 @@
                 }
             });
         });
+
 
         $('#questionsTable').on('click', '.edit-btn', function () {
             var question_id = $(this).data('id');
@@ -415,11 +422,13 @@
                     $('#question_bank_id').val(data.question_bank_id);
                     $('#course_name').val(data.course_id);
                     $('#question').val(data.question);
-                    {{--var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;--}}
+                    {{-- var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image; --}}
 
                     if (data.question_image) {
-                        var imagePath = '{{asset('question_bank_image')}}' + '/' + data.question_image;
-                        $('#preview_img').attr('href', imagePath).text('Click to preview image question');
+                        var imagePath = '{{ asset('question_bank_image') }}' + '/' + data
+                            .question_image;
+                        $('#preview_img').attr('href', imagePath).text(
+                            'Click to preview image question');
                     } else {
                         $('#preview_img').removeAttr('href').text('No Image Available');
                     }
@@ -436,7 +445,6 @@
             });
         });
 
-
         $('#editQuestionForm').submit(function (e) {
             e.preventDefault();
             var question_id = $(this).data('id'); // Lấy ID từ form
@@ -452,10 +460,22 @@
                 success: function (response) {
                     if (response.success) {
                         $('#editQuestionModal').modal('hide');
-                        toastr.success(response.response, "Edit successful");
+                        toastr.success(response.message, "Edit successful");
+
+                        var row = $('#questionsTable').find(`button[data-id='${question_id}']`).closest('tr');
+
+                        row.find('textarea').eq(0).val(response.question.question);
+                        row.find('textarea').eq(1).val(response.question.question_a);
+                        row.find('textarea').eq(2).val(response.question.question_b);
+                        row.find('textarea').eq(3).val(response.question.question_c);
+                        row.find('textarea').eq(4).val(response.question.question_d);
+                        row.find('td').eq(6).text(response.question.correct);
+
+                        //Make color :))
+                        row.addClass('table-success');
                         setTimeout(function () {
-                            location.reload()
-                        }, 500);
+                            row.removeClass('table-success');
+                        }, 2000);
                     }
                 },
                 error: function (xhr) {
@@ -463,5 +483,64 @@
                 }
             });
         });
+
+
+        $('.btnExportExcel').click(function () {
+            let course_name = $("#courseSelect option:selected").text();
+            let course_id = $("#courseSelect option:selected").val();
+            Swal.fire({
+                title: 'Export excel',
+                text: "Do you want to export " + course_name + " course?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('question-bank.export', ':id') }}'.replace(':id', course_id),
+                        method: 'GET',
+                        success: function (response) {
+                            console.log(response); // Log the response for debugging
+                            if (response.status === 200) {
+                                toastr.success(response.message, "Export excel successfully");
+                                // Create a link to download the file
+                                let link = document.createElement('a');
+                                link.href = '/' + response.file;
+                                link.download = response.file;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+
+                                // Delete the file after download
+                                $.ajax({
+                                    url: '{{ route('question-bank.deleteFile') }}',
+                                    method: 'POST',
+                                    data: { file: response.file },
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function (deleteResponse) {
+                                        console.log(deleteResponse.message);
+                                        if (!deleteResponse.success) {
+                                            toastr.error("Failed to delete file.", "Operation Failed");
+                                        }
+                                    }
+                                });
+                            } else {
+                                toastr.error("Failed to export excel.", "Operation Failed");
+                            }
+                        },
+                        error: function (xhr) {
+                            toastr.error("An error occurred.", "Operation Failed");
+                        }
+                    });
+                }
+            });
+        });
+
+
+
     </script>
 @endsection

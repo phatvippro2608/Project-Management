@@ -55,7 +55,7 @@
 </div>
 <div class="card p-2 rounded-4 border">
     <div class="card-body">
-        <ul class="nav nav-tabs" id="lmsTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-bordered mb-4" id="lmsTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="view-summary-tab" data-bs-toggle="tab" href="#view-summary" role="tab" aria-controls="view-summary" aria-selected="true">Your Courses</a>
             </li>
@@ -75,7 +75,7 @@
                             Export
                         </a>
                     </div>
-                    
+
                 </div>
                 <table id="CourseTable" class="table table-hover table-borderless">
                     <thead class="table-light">
@@ -186,9 +186,9 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
-    
+
 
 @endsection
 

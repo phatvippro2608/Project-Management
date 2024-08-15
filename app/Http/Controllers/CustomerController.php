@@ -15,8 +15,11 @@ class CustomerController extends Controller
 
     function getView()
     {
-        $customer = DB::table('customers')->join('contracts', 'customers.customer_id', 'contracts.customer_id')->get();
-        return view('auth.customer.customer', ['customer' => $customer, 'status' => $this->status]);
+        $sql = "SELECT customers.*, count(contracts.contract_id) as contract_count,sum(amount) as tong_phi
+        FROM customers, contracts
+        WHERE customers.customer_id = contracts.customer_id
+        GROUP BY customers.customer_id, customers.last_name, customers.first_name, customers.date_of_birth, customers.address, customers.email, customers.phone_number, customers.company_name, customers.status, customers.created_at, customers.updated_at, customers.website";
+        return view('auth.customer.customer', ['customer' => DB::select($sql), 'status' => $this->status]);
     }
 
     function getUpdateView(Request $request)

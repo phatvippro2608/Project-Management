@@ -175,7 +175,7 @@ $token = 'position';
     </nav>
 
 </header>
-<main id="main" class="main p-5 m-5">
+<main id="main" style="margin-left: 0px">
     @yield('contents')
 </main>
 
