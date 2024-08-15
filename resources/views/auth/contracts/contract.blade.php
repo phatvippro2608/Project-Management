@@ -164,7 +164,7 @@
                                                 type="submit"><i class="bi bi-upload me-2"></i>Upload
                                         </button>
                                         <div class="files-of-contract" style="max-height: 120px">
-
+                                            
                                         </div>
                                     </div>
                                 </div>

@@ -19,29 +19,29 @@
                     Select Location
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('project.details', ['id' => $id]) }}">All</a></li>
+                    <li><a class="dropdown-item" href="{{ route('project.details', ['project_id' => $id]) }}">All</a></li>
                     @foreach($locations as $location)
-                        <li><a class="dropdown-item" href="{{ route('project.details', ['id' => $id, 'location' => $location->project_location_id]) }}">{{ $location->project_location_name }}</a></li>
+                        <li><a class="dropdown-item" href="{{ route('project.details', ['project_id' => $id, 'location' => $location->project_location_id]) }}">{{ $location->project_location_name }}</a></li>
                     @endforeach
                 </ul>
             </div>
         </div>
-        
+
         <h5>Project Budget Summary</h5>
         <div class="card rounded-4 p-2 mt-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
-                        <a href="{{ route('project.progress', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">Progress</a>
-                        <a href="{{ !empty($keyword) ? route('budget', ['id' => $id, 'location' => $keyword]) : route('budget', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
-                        <a href="{{ route('commission', ['id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
+                        <a href="{{ route('project.progress', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">Progress</a>
+                        <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
+                        <a href="{{ route('commission', ['project_id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
                     </div>
                 </div>
                 <table class="table">
                     <tbody>
                         <tr>
-                            
+
                             <td scope="row" id="amount">{{!empty($keyword) ? "AMOUNT" : "AMOUNT OF CONTRACT"}}</td>
                             <td id="valAmount">
                                 {{ number_format(!empty($keyword) ? $dataLoca->location_amount : $contract->amount, 0, ',', '.') }} VND
@@ -149,7 +149,7 @@
                             <label for="edit_project_description" class="form-label">Project Description</label>
                             <textarea class="form-control" id="edit_project_description" name="project_description" required>{{ $data->project_description }}</textarea>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </form>
                 </div>
@@ -162,7 +162,7 @@
     function parseCurrency(value) {
         return parseInt(value.replace(/\./g, '').replace(' VND', ''), 10);
     }
-    
+
     let amount = parseCurrency(document.getElementById('valAmount').textContent);
     let risk = parseCurrency(document.getElementById('valRisk').textContent);
     let subtotal = parseCurrency(document.getElementById('valSubtotal').textContent);
@@ -170,14 +170,14 @@
     let fundsRemaining = amount - subtotal - risk;
 
     document.getElementById('remain').innerHTML = `${number_format(fundsRemaining, 0, ',', '.')} VND`;
-        
+
     document.getElementById('editProjectForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const form = event.target;
         const formData = new FormData(form);
         const id = "{{ $id }}";
-        const url = "{{ route('project.update', ['id' => $id]) }}";
+        const url = "{{ route('project.update', ['project_id' => $id]) }}";
 
         fetch(url, {
             method: 'POST',

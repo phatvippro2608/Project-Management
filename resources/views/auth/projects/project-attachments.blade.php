@@ -71,7 +71,7 @@
                 </tbody>
             </table>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="date" class="form-control form-control-lg date-of-file-attachment mb-2">
                     <input type="file"
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="date" class="form-control form-control-lg date-of-image-attachment mb-2">
                     <input type="file"
@@ -306,7 +306,7 @@
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
-                        url: '{{route('attachment-upload')}}',
+                        url: '{{route('attachment-upload', ['project_id', $project_id])}}',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -326,7 +326,7 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id', $project_id])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
@@ -344,7 +344,7 @@
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
-                        url: '{{route('attachment-upload')}}',
+                        url: '{{route('attachment-upload', ['project_id', $project_id])}}',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -363,7 +363,7 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id', $project_id])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
