@@ -180,10 +180,6 @@
                         </div>
                     </div>
                 </div>
-{{--                <div class="modal-footer">--}}
-{{--                    <button type="button" class="btn btn-primary btn-upload reload">Reload</button>--}}
-{{--                    <button type="button" class="btn btn-primary btn-upload at1">Update</button>--}}
-{{--                </div>--}}
             </div>
         </div>
     </div>

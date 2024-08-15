@@ -115,9 +115,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
 
+        //Project location
+        Route::group(['prefix' => '/project-location'], function () {
+            Route::put('/add', 'App\Http\Controllers\ProjectLocationController@addLocation');
+        });
+
         //Detaill
         Route::group(['prefix' => '/{project_id}'], function () {
             Route::get('/', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+
+
 
             //File attachments
             Route::group(['prefix' => '/attachments'], function () {

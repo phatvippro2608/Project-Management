@@ -495,12 +495,6 @@ $token = 'position';
                 </ul>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>{{ __('messages.team') }}</span>
-                </a>
-            </li>
-
             <li class="nav-heading">{{ __('messages.customer_manager') }}</li>
             <li class="nav-item">
                 <a class="nav-link"
@@ -523,13 +517,8 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.task_list') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.field_visit') }}</span>
+                        <a href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                            <i class="bi bi-circle"></i><span>{{ __('messages.team') }}</span>
                         </a>
                     </li>
                 </ul>

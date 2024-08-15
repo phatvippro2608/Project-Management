@@ -135,9 +135,12 @@
 
                                 @endif
                                 <div
-                                    class="d-flex align-items-center justify-content-center ms-1"
-                                    style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer">
-                                    <i class="bi bi-person-fill-add fs-4 "></i>
+                                    class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
+                                    style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
+                                    data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
+                                    team-id="{{$item->team_id}}"
+                                >
+                                    <i class="bi bi-person-fill-add fs-4" ></i>
                                 </div>
                             </div>
                         </td>
@@ -179,7 +182,7 @@
 
                                 <ul class="dropdown-menu">
                                     <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">
-                                        <a class="dropdown-item bg-hover add-location d-flex align-items-center">
+                                        <a class="dropdown-item bg-hover add-location d-flex align-items-center" data="{{$item->project_id}}">
                                             <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>
                                     </li>
                                     <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover"
@@ -382,16 +385,52 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade team-project-modal modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-bold"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12" style="margin-top: 1rem">
+
+
+                            <div class="table-responsive">
+                                <table id="eListTable" class="table table-hover table-borderless">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 112px">Avatar</th>
+                                        <th class="text-center">Employee Code</th>
+                                        <th class="text-center">Full Name</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">Position</th>
+                                        <th class="text-center" data-orderable="false"><input type="checkbox" name="" id="" class="custom-checkbox-lg check-all"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="team-manager-list">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
     <script>
         $('.add-location').off('click').click(function () {
+            var id = $(this).attr('data');
             $('.location-modal .modal-title').text('Add New Location');
             $('.location-modal').modal('show');
             $('.btn-create-location').off('click').click(function () {
                 $.ajax({
-                    url: `{{action('App\Http\Controllers\TeamController@addFromProject')}}`,
+                    url: `{{action('App\Http\Controllers\ProjectLocationController@addLocation')}}`,
                     type: "PUT",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -401,12 +440,15 @@
                         'start_date': $('.location-start-date').val(),
                         'end_date': $('.location-end-date').val(),
                         'location_amount': $('.location-amount').val(),
+                        'project_id': id
                     },
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
                             toastr.success(result.message, "Successfully");
-
+                            setTimeout(function () {
+                                location.reload();
+                            }, 500);
                         } else {
                             toastr.error(result.message, "Failed Action");
                         }
@@ -414,6 +456,127 @@
                 });
             });
         });
+    </script>
+    <script>
+        function renderEmployeeList(employees, positions) {
+            var listHtml = '';
+
+            employees.forEach(function (item) {
+                var positionOptions = '<option value="100">Member</option>';
+
+                positions.forEach(function (position) {
+                    if (position.team_permission !== 100) {
+                        var selected = item.team_permission === position.team_permission ? 'selected' : '';
+                        positionOptions += `<option value="${position.team_permission}" ${selected}>${position.position_name}</option>`;
+                    }
+                });
+
+                listHtml += `
+                <tr class="account-item">
+                    <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img src="${item?.photo?item?.photo: ""}" alt="" onerror="this.onerror=null;this.src='/assets/img/not-found.svg'" class="account-photo2 rounded-circle p-0 m-0">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        ${item.employee_code}
+                    </td>
+                    <td class="text-left">
+                        ${item.first_name} ${item.last_name}
+                    </td>
+                    <td class="text-left">
+                        ${item.email}
+                    </td>
+                    <td class="text-left">
+                        <select class="form-select position" data="${item.employee_id}">
+                            ${positionOptions}
+                        </select>
+                    </td>
+                    <td class="text-center">
+                        <input type="checkbox" class="custom-checkbox-lg check-item" data="${item.employee_id}" ${item.isAtTeam ? 'checked' : ''}>
+                    </td>
+                </tr>
+            `;
+            });
+            $('.team-manager-list').html(listHtml);
+        }
+        $('.team-select-employee').off('click').click(function () {
+            var all_employees = JSON.parse($(this).attr('data'));
+            var team_id = JSON.parse($(this).attr('team-id'));
+            console.log(all_employees);
+            var team_positions = @json($team_positions);
+            //** them vào day
+            renderEmployeeList(all_employees, team_positions);
+
+            $('.team-project-modal .modal-title').text('Team Manager');
+            $('.team-project-modal').modal('show');
+
+
+
+
+            $('.check-all').change(function () {
+                $('.check-item').prop('checked', $('.check-all').prop('checked')).trigger('change');
+            });
+
+            $('.check-item').change(function (){
+                let employee_id = $(this).attr('data');
+                let team_permission = $('select.form-select.position[data="' + employee_id + '"]').val();
+                console.log(employee_id)
+                console.log(team_permission)
+                $.ajax({
+                    url: `{{action('App\Http\Controllers\TeamDetailsController@update')}}`,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'employee_id': employee_id,
+                        'team_id': team_id,
+                        'team_permission': team_permission,
+                        'checked': $(this).prop('checked')?1:0
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Successfully");
+                        } else {
+                            toastr.error(result.message, "Failed");
+                        }
+                    }
+                });
+            })
+
+            $('.team-project-modal').on('hidden.bs.modal', function () {
+                window.location.reload();
+            });
+
+            $('.position').change(function (){
+                let employee_id = $(this).attr('data');
+                let team_permission = $(this).val();
+                $.ajax({
+                    url: `{{action('App\Http\Controllers\TeamDetailsController@updatePosition')}}`,
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'employee_id': employee_id,
+                        'team_id': team_id,
+                        'team_permission': team_permission,
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Successfully");
+                        } else {
+                            toastr.error(result.message, "Failed");
+                        }
+                    }
+                });
+            })
+        });
+
+
     </script>
     <script>
         var table = $('#projectListTable').DataTable({
