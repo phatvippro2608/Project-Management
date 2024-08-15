@@ -164,7 +164,8 @@
                     <div class="modal-header d-flex justify-content-between">
                         <h5 class="modal-title">Edit course</h5>
                         <div class="dropdown">
-                            <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
@@ -216,6 +217,36 @@
         </div>
     </div>
     <script>
+        $('#modalEditCourse').on('shown.bs.modal', function() {
+            $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+            $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+            $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                $('#modalEditCourse').modal('hide');
+            });
+            $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                setTimeout(function() {
+                    if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                        $('#modalEditCourse').modal('show');
+                    }
+                }, 200);
+            });
+        });
+        $('#modalAddCourse').on('shown.bs.modal', function() {
+            $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+            $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+            $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                $('#modalAddCourse').modal('hide');
+            });
+            $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                setTimeout(function() {
+                    if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                        $('#modalAddCourse').modal('show');
+                    }
+                }, 200);
+            });
+        });
+
+
         $('#course_img').change(function() {
             var file = $(this)[0].files[0];
             var reader = new FileReader();
@@ -238,19 +269,12 @@
             plugins: [
                 'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
                 'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-                'table', 'emoticons', 'template', 'codesample'
+                'table', 'emoticons', 'codesample'
             ],
             toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
                 'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
                 'forecolor backcolor emoticons',
-            menu: {
-                favs: {
-                    title: 'menu',
-                    items: 'code visualaid | searchreplace | emoticons'
-                }
-            },
-            menubar: 'favs file edit view insert format tools table',
-            content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}',
+            menubar: 'file edit view insert format tools',
             branding: false,
         });
         tinymce.init({
@@ -259,19 +283,12 @@
             plugins: [
                 'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
                 'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-                'table', 'emoticons', 'template', 'codesample'
+                'table', 'emoticons', 'codesample'
             ],
             toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
                 'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
                 'forecolor backcolor emoticons',
-            menu: {
-                favs: {
-                    title: 'menu',
-                    items: 'code visualaid | searchreplace | emoticons'
-                }
-            },
-            menubar: 'favs file edit view insert format tools table',
-            content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}',
+            menubar: 'file edit view insert format tools',
             branding: false,
         });
         $('#formAddCourse').submit(function(e) {
@@ -321,7 +338,9 @@
                                     </div>
                                 </div>`
                             );
-                            $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
+                            $('#select_data').append(
+                                `<option value="${course.course_id}">${course.course_name}</option>`
+                            );
                         });
                     } else {
                         toastr.error(data.message);
@@ -411,7 +430,9 @@
                                     </div>
                                 </div>`
                             );
-                            $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
+                            $('#select_data').append(
+                                `<option value="${course.course_id}">${course.course_name}</option>`
+                            );
                         });
                     } else {
                         toastr.error(data.message);
@@ -433,16 +454,16 @@
             }).parent().parent().show();
         }
 
-        function deleteCourse(){
+        function deleteCourse() {
             var course_id = $('#course_id').val();
             Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -463,9 +484,11 @@
                                     if (course.course_name.length > 30) {
                                         planinName += '...';
                                     }
-                                    let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g,
+                                    let plainDescription = course.description.replace(
+                                        /<\/?[^>]+(>|$)/g,
                                         "").substring(0, 30);
-                                    if (course.description.replace(/<\/?[^>]+(>|$)/g, "").length > 30) {
+                                    if (course.description.replace(/<\/?[^>]+(>|$)/g, "")
+                                        .length > 30) {
                                         plainDescription += '...';
                                     }
 
@@ -485,7 +508,9 @@
                                             </div>
                                         </div>`
                                     );
-                                    $('#select_data').append(`<option value="${course.course_id}">${course.course_name}</option>`);
+                                    $('#select_data').append(
+                                        `<option value="${course.course_id}">${course.course_name}</option>`
+                                    );
                                 });
                             } else {
                                 toastr.error(data.message);

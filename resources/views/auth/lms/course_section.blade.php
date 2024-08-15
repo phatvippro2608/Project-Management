@@ -111,7 +111,8 @@
                         <div class="modal-header d-flex justify-content-between">
                             <h5 class="modal-title">Edit section</h5>
                             <div class="dropdown">
-                                <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                     <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
@@ -179,15 +180,45 @@
                                 }
                             }
                         });
-                    }
-                    else{
+                    } else {
                         //go back to course list
-                        window.location.href = '{{ action('App\Http\Controllers\CourseController@getViewCourses') }}';
+                        window.location.href =
+                            '{{ action('App\Http\Controllers\CourseController@getViewCourses') }}';
                     }
                 });
             }
         @endif
         @if ($show)
+            $('#modalEditSection').on('shown.bs.modal', function() {
+                $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                    $('#modalEditSection').modal('hide');
+                });
+                $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                    setTimeout(function() {
+                        if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                            $('#modalEditSection').modal('show');
+                        }
+                    }, 200);
+                });
+            });
+            $('#modalEditCourse').on('shown.bs.modal', function() {
+                $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                    $('#modalEditCourse').modal('hide');
+                });
+                $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                    setTimeout(function() {
+                        if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                            $('#modalEditCourse').modal('show');
+                        }
+                    }, 200);
+                });
+            });
+
+
             $('#course_img_e').change(function() {
                 var file = $(this)[0].files[0];
                 var reader = new FileReader();
@@ -273,7 +304,7 @@
                     toastr.error('Description is required');
                     return;
                 }
-                if (tinymce.get('course_description').getContent().includes('base64')) {
+                if (tinymce.get('course_description_e').getContent().includes('base64')) {
                     toastr.error('Upload image is not allowed please use source image');
                     return;
                 }
@@ -420,8 +451,7 @@
                     toastr.error('Description is required');
                     return;
                 }
-                formData.append('section_description', tinymce.get('section_description_e')
-                    .getContent());
+                formData.append('section_description', tinymce.get('section_description_e').getContent());
                 $.ajax({
                     url: '{{ action('App\Http\Controllers\CourseController@updateSection') }}',
                     type: 'post',
