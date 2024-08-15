@@ -69,7 +69,10 @@ class TaskController extends Controller
                 ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
                 ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
                 ->where('project_teams.project_id', $validatedData['id'])->get()->toArray();
-            if(!in_array($validatedData['employee_id'], $empl_allow)){
+            $empl_allow_ids = array_map(function($empl) {
+                    return $empl->employee_id;
+            }, $empl_allow);
+            if(!in_array($validatedData['employee_id'], $empl_allow_ids)){
                 return response()->json(['success' => false,'message' => 'Employee is not in this project']);
             }
 
@@ -140,10 +143,13 @@ class TaskController extends Controller
                 $progress = 1;
             }
             $empl_allow = DB::table('employees')->select('employees.employee_id')
-            ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
-            ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
-            ->where('project_teams.project_id', $validatedData['id'])->get()->toArray();
-            if(!in_array($validatedData['employee_id'], $empl_allow)){
+                ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
+                ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
+                ->where('project_teams.project_id', $validatedData['id'])->get()->toArray();
+            $empl_allow_ids = array_map(function($empl) {
+                    return $empl->employee_id;
+            }, $empl_allow);
+            if(!in_array($validatedData['employee_id'], $empl_allow_ids)){
                 return response()->json(['success' => false,'message' => 'Employee is not in this project']);
             }
 
