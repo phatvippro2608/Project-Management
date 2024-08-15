@@ -12,53 +12,78 @@
     </div>
 
     <section class="sectionBudget">
-        <h3>Budget Estimates of Project</h3>
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Budget Estimates of Project</h3>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Select Location
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ route('project.details', ['project_id' => $id]) }}">All</a></li>
+                    @foreach ($locations as $location)
+                        <li><a class="dropdown-item"
+                                href="{{ route('project.details', ['project_id' => $id, 'location' => $location->project_location_id]) }}">{{ $location->project_location_name }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+
         <h5>Project Budget Summary</h5>
         <div class="card rounded-4 p-2 mt-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
-                        <a href="{{ route('project.progress', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">Progress</a>
-                        <a href="{{ route('budget', ['id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
-                        <a href="{{ route('commission', ['id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
+                        <a href="{{ route('project.progress', ['project_id' => $id, 'location_id' => $keyword]) }}"
+                            class="btn btn-sm btn-primary me-2">Progress</a>
+                        <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}"
+                            class="btn btn-sm btn-primary me-2">List Of Expenses</a>
+                        <a href="{{ route('commission', ['project_id' => $id]) }}" class="btn btn-sm btn-primary">List Of
+                            Commission</a>
                     </div>
                 </div>
-                <!-- Default Table -->
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td scope="row">AMOUNT OF CONTRACT</td>
-                            <td>{{ number_format($contract->amount, 0, ',', '.') }} VND</td>
+
+                            <td scope="row" id="amount">{{ !empty($keyword) ? 'AMOUNT' : 'AMOUNT OF CONTRACT' }}</td>
+                            <td id="valAmount">
+                                {{ number_format(!empty($keyword) ? $dataLoca->location_amount : $contract->amount, 0, ',', '.') }}
+                                VND
+                            </td>
                         </tr>
                         <tr>
                             <td scope="row">SUBTOTAL (Budget)</td>
-                            <td>{{ number_format($total, 0, ',', '.') }} VND</td>
+                            <td id="valSubtotal">{{ number_format($total, 0, ',', '.') }} VND</td>
                         </tr>
                         <tr>
                             <td scope="row">RISK (CONTINGENCY)</td>
-                            <td>{{ number_format($data->project_price_contingency, 0, ',', '.') }} VND</td>
+                            <td id="valRisk">{{ number_format($contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
                         </tr>
                         <tr>
                             <td scope="row">COMMISSION</td>
-                            <td>0 VND</td>
+                            <td id="valCommission">0 VND</td>
                         </tr>
                         <tr class="table-primary">
                             <th scope="row">FUNDS REMAINING</th>
-                            <td>{{ number_format($contract->amount - $total - $data->project_price_contingency, 0, ',', '.') }} VND</td>
+                            <td id="remain"></td>
                         </tr>
                     </tbody>
                 </table>
+
                 <div class="card shadow-none">
                     <div class="card-body px-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title">PROJECT INFORMATION</h5>
                             <div class="d-flex ms-auto">
-                                <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProjectModal"><i class="bi bi-pencil-square"></i> Edit Information</button>
+                                <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                                    data-bs-target="#editProjectModal"><i class="bi bi-pencil-square"></i> Edit
+                                    Information</button>
                             </div>
                         </div>
 
-                        <!-- Table with stripped rows -->
                         <table class="table datatable">
                             <tbody id="project-info">
                                 <tr>
@@ -70,26 +95,22 @@
                                     <td id="project_description">{{ $data->project_description }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Project Address</th>
-                                    <td id="project_address">{{ $data->project_address }}</td>
-                                </tr>
-                                <tr>
                                     <th>Contract</th>
-                                    <td id="Contract">{{$contract->contract_name}}</td>
+                                    <td id="Contract">{{ $contract->contract_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Main Contractor Company</th>
-                                    <td id="project_contractor">
-                                        {{ $customer->company_name}}
-                                    </td>
+                                    <td id="project_contractor">{{ $customer->company_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Contact Name</th>
-                                    <td id="project_contact_name">{{ $customer->first_name}} {{$customer->last_name}} </td>
+                                    <td id="project_contact_name">{{ $customer->first_name }} {{ $customer->last_name }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Contact Website</th>
-                                    <td id="project_contact_website"><a href="{{ $customer->website }}">{{ $customer->website }}</a></td>
+                                    <td id="project_contact_website"><a href="{{ $customer->website }}"
+                                            target="_blank">{{ $customer->website }}</a></td>
                                 </tr>
                                 <tr>
                                     <th>Contact Phone</th>
@@ -101,15 +122,18 @@
                                 </tr>
                                 <tr>
                                     <th>Leader Of Project</th>
-                                    <td id="project_lead">{{ $contactEmployee->first_name }} {{ $contactEmployee->last_name }}</td>
+                                    <td id="project_lead">{{ $contactEmployee->first_name }}
+                                        {{ $contactEmployee->last_name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Start Date</th>
-                                    <td id="project_date_start">{{ \Carbon\Carbon::parse($data->project_date_start)->format('d M Y') }}</td>
+                                    <td id="project_date_start">
+                                        {{ \Carbon\Carbon::parse($data->project_date_start)->format('d M Y') }}</td>
                                 </tr>
                                 <tr>
                                     <th>End Date</th>
-                                    <td id="project_date_end">{{ \Carbon\Carbon::parse($data->project_date_end)->format('d M Y') }}</td>
+                                    <td id="project_date_end">
+                                        {{ \Carbon\Carbon::parse($data->project_date_end)->format('d M Y') }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -133,24 +157,14 @@
                         @method('PUT')
                         <div class="mb-3">
                             <label for="edit_project_name" class="form-label">Project Name</label>
-                            <input type="text" class="form-control" id="edit_project_name" name="project_name" value="{{ $data->project_name }}">
+                            <input type="text" class="form-control" id="edit_project_name" name="project_name"
+                                value="{{ $data->project_name }}" required>
                         </div>
                         <div class="mb-3">
                             <label for="edit_project_description" class="form-label">Project Description</label>
-                            <textarea class="form-control" id="edit_project_description" name="project_description">{{ $data->project_description }}</textarea>
+                            <textarea class="form-control" id="edit_project_description" name="project_description" required>{{ $data->project_description }}</textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="edit_project_address" class="form-label">Project Address</label>
-                            <input type="text" class="form-control" id="edit_project_address" name="project_address" value="{{ $data->project_address }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_date_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="edit_project_date_start" name="project_date_start" value="{{ $data->project_date_start }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_project_date_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="edit_project_date_end" name="project_date_end" value="{{ $data->project_date_end }}">
-                        </div>
+
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </form>
                 </div>
@@ -159,54 +173,82 @@
     </div>
 
     <script>
-    // Assuming contracts data is passed as JSON
-
-    document.getElementById('editProjectForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const form = event.target;
-        const formData = new FormData(form);
-        const id = "{{ $id }}";
-        const url = "{{ route('project.update', ['id' => $id]) }}";
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'X-HTTP-Method-Override': 'PUT',
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update the UI with the new values
-                document.getElementById('project_name').textContent = formData.get('project_name');
-                document.getElementById('project_description').textContent = formData.get('project_description');
-                document.getElementById('project_address').textContent = formData.get('project_address');
-
-
-                document.getElementById('project_date_start').textContent = formData.get('project_date_start');
-                document.getElementById('project_date_end').textContent = formData.get('project_date_end');
-
-                // Close the modal
-                const modal = document.getElementById('editProjectModal');
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
-                toastr.success('Update Successful!');
-            } else if (data.errors) {
-                // Handle validation errors
-                console.log(data.errors);
-                alert('Validation errors occurred. Please check the form fields.');
-            } else {
-                alert('Error updating project');
+        document.addEventListener('DOMContentLoaded', function() {
+            function parseCurrency(value) {
+                return parseInt(value.replace(/\./g, '').replace(' VND', ''), 10);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating the project.');
-        });
-    });
-</script>
 
+            let amount = parseCurrency(document.getElementById('valAmount').textContent);
+            let risk = parseCurrency(document.getElementById('valRisk').textContent);
+            let subtotal = parseCurrency(document.getElementById('valSubtotal').textContent);
+
+            let fundsRemaining = amount - subtotal - risk;
+
+            document.getElementById('remain').innerHTML = `${number_format(fundsRemaining, 0, ',', '.')} VND`;
+
+            document.getElementById('editProjectForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const formData = new FormData(form);
+                const id = "{{ $id }}";
+                const url = "{{ route('project.update', ['project_id' => $id]) }}";
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            'X-HTTP-Method-Override': 'PUT',
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update the UI with the new values
+                            document.getElementById('project_name').textContent = formData.get(
+                                'project_name');
+                            document.getElementById('project_description').textContent = formData.get(
+                                'project_description');
+                            // Close the modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(
+                                'editProjectModal'));
+                            modal.hide();
+                            toastr.success('Update Successful!');
+                        } else if (data.errors) {
+                            console.log(data.errors);
+                            alert('Validation errors occurred. Please check the form fields.');
+                        } else {
+                            alert('Error updating project');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the project.');
+                    });
+            });
+        });
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '').replace(',', '').replace(' ', '');
+            const n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                toFixedFix = function(n, prec) {
+                    const k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            const s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+    </script>
 @endsection

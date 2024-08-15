@@ -1,4 +1,4 @@
-@extends('auth.main');
+@extends('auth.main')
 @section('contents')
     <div class="pagetitle">
         <h1>Project</h1>
@@ -52,8 +52,8 @@
     </div>
     <div class="card p-2 rounded-4 border mt-4">
         <div class="card-header">
-            <div class="card-title p-0 m-0">
-                File
+            <div class="card-title p-0 m-0 title-box-file">
+                File attachment of day
             </div>
         </div>
         <div class="card-body p-2">
@@ -71,9 +71,12 @@
                 </tbody>
             </table>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="date" class="form-control form-control-lg date-of-file-attachment mb-2">
+                    <div class="text-start">
+                        <label for="date_file" class="fs-5 m-2">Choose the date of the attachment</label>
+                        <input type="date" id="date_file" class="form-control form-control-lg date-of-file-attachment mb-2">
+                    </div>
                     <input type="file"
                            id="fileAttachment"
                            name="fileAttachment[]"
@@ -86,25 +89,28 @@
     </div>
     <div class="card p-2 rounded-4 border mt-4">
         <div class="card-header">
-            <div class="card-title p-0 m-0">
-                Image
+            <div class="card-title p-0 m-0 title-box-image">
+                Image attachment of day
             </div>
         </div>
         <div class="card-body p-2">
-            <div class="border rounded-4 p-3 mb-2 ">
+            <div class="border rounded-4 p-3 mb-2 image-box d-none">
                 <div class="row gy-3 content_image">
 
                 </div>
             </div>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store')}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="date" class="form-control form-control-lg date-of-image-attachment mb-2">
+                    <div class="text-start">
+                        <label for="date_image" class="fs-5 m-2">Choose the date of the attachment</label>
+                        <input type="date" id="date_image" class="form-control form-control-lg date-of-image-attachment mb-2">
+                    </div>
                     <input type="file"
                            id="imageAttachment"
                            name="imageAttachment[]"
                            multiple="multiple"
-                           accept="image/png, image/jpeg, image/gif">
+                           accept="image/png, image/jpeg, image/gif" disabled>
                     <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
                 </form>
             </div>
@@ -114,14 +120,14 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
+                    <h5 class="modal-title">Preview Image</h5>
                 </div>
                 <div class="modal-body">
                     <img src="" alt="" class="w-100 h-100 img_preview12" >
                 </div>
                 <div class="modal-footer">
                     <a href="" target="_blank" class="btn btn-primary btn-lg btn-download" download><i class="bi bi-download"></i></a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -168,37 +174,7 @@
                     }
                 });
             }
-            function toggleUploadButton() {
-                const dateValue = $('.date-of-file-attachment').val();
-                const $uploadButton = $('.filepond-upload');
 
-                if (dateValue.length === 0) {
-                    $uploadButton.prop('disabled', true);
-                } else {
-                    $uploadButton.prop('disabled', false);
-                }
-            }
-            function toggleUploadButton1() {
-                const dateValue = $('.date-of-image-attachment').val();
-                const $uploadButton = $('.filepond-upload1');
-
-                if (dateValue.length === 0) {
-                    $uploadButton.prop('disabled', true);
-                } else {
-                    $uploadButton.prop('disabled', false);
-                }
-            }
-
-            toggleUploadButton();
-            toggleUploadButton1();
-
-            $('.date-of-file-attachment').on('change', function() {
-                toggleUploadButton();
-            });
-
-            $('.date-of-image-attachment').on('change', function() {
-                toggleUploadButton1();
-            });
 
 
             function updateAttachments(selectedDate) {
@@ -234,24 +210,30 @@
 
                         let bodyImage = $('.content_image');
                         bodyImage.empty();
+                        if(images.length !== 0){
+                            $.each(images, function(index, image) {
+                                let div = $('<div></div>').addClass('col-1 text-center btn btn-preview-image');
 
-                        $.each(images, function(index, image) {
-                            let div = $('<div></div>').addClass('col-1 text-center btn btn-preview-image');
+                                let img = $('<img/>')
+                                    .attr('src', '{{asset('attachments/')}}/' + $('.location_select').val() + '/' + image.image_name)
+                                    .attr('alt', 'Image preview')
+                                    .attr('width', '100')
+                                    .attr('height', '100')
+                                    .addClass('border rounded-4');
 
-                            let img = $('<img/>')
-                                .attr('src', '{{asset('attachments/')}}/' + $('.location_select').val() + '/' + image.image_name)
-                                .attr('alt', 'Image preview')
-                                .attr('width', '75')
-                                .attr('height', '75')
-                                .addClass('border rounded-4');
+                                let label = $('<label></label>').text(image.image_name);
 
-                            let label = $('<label></label>').text(image.image_name);
+                                div.append(img);
+                                div.append(label);
 
-                            div.append(img);
-                            div.append(label);
+                                bodyImage.append(div);
+                                $('.image-box').removeClass('d-none');
 
-                            bodyImage.append(div);
-                        });
+                            });
+                        }else{
+                            $('.image-box').addClass('d-none');
+                        }
+
                     }
                 });
             }
@@ -270,8 +252,24 @@
             $('.date_select').change(function() {
                 var selectedDate = $(this).val();
                 updateAttachments(selectedDate);
-            });
+                selectedDate = new Date(selectedDate);
 
+                selectedDate = selectedDate.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                $('.title-box-image').text('Image attachment of day ' + selectedDate);
+                $('.title-box-file').text('File attachment of day ' + selectedDate);
+            });
+            document.querySelector('.date-of-image-attachment').addEventListener('click', function() {
+                this.value = new Date().toISOString().split('T')[0];
+                toggleUploadButton1();
+            });
+            document.querySelector('.date-of-file-attachment').addEventListener('click', function() {
+                this.value = new Date().toISOString().split('T')[0];
+                toggleUploadButton();
+            });
             // Initial load
             var initialLocationId = $('.location_select').val();
             if (initialLocationId) {
@@ -336,7 +334,7 @@
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
-                        url: '{{route('attachment-upload')}}',
+                        url: '{{route('attachment-upload', ['project_id', $project_id])}}',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -356,12 +354,13 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id', $project_id])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
                     }
                 },
+
             }
         );
 
@@ -373,7 +372,7 @@
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
-                        url: '{{route('attachment-upload')}}',
+                        url: '{{route('attachment-upload', ['project_id', $project_id])}}',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
@@ -392,7 +391,7 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id', $project_id])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
@@ -429,7 +428,47 @@
         })
 
 
+        function toggleUploadButton() {
+            const dateValue = $('.date-of-file-attachment').val();
+            const fileInput = $('#fileAttachment');
+            const uploadButton = $('.filepond-upload');
 
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                fileAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                fileAttachmentPond.setOptions({disabled: false});
+            }
+        }
+        function toggleUploadButton1() {
+            const dateValue = $('.date-of-image-attachment').val();
+            const fileInput = $('#imageAttachment');
+            const uploadButton = $('.filepond-upload1');
+
+            if (dateValue.length === 0) {
+                fileInput.prop('disabled', true);
+                uploadButton.prop('disabled', true);
+                imageAttachmentPond.setOptions({disabled: true});
+            } else {
+                fileInput.prop('disabled', false);
+                uploadButton.prop('disabled', false);
+                imageAttachmentPond.setOptions({disabled: false});
+            }
+        }
+
+        toggleUploadButton();
+        toggleUploadButton1();
+
+        $('.date-of-file-attachment').on('change', function() {
+            toggleUploadButton();
+        });
+
+        $('.date-of-image-attachment').on('change', function() {
+            toggleUploadButton1();
+        });
 
 
     </script>

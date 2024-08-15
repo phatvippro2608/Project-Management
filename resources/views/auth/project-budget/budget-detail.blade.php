@@ -26,14 +26,25 @@
     </div>
 
     <section class="sectionBudget">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3>Budget Estimates of Project: <b>{{ $contingency_price->project_name }}</b></h3>
-            <div class="d-flex ms-auto">
-                <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-                    data-bs-target="#chooseGroupModal">Add New Cost</button>
-                <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center">
+    <h3>Budget Estimates of Project: <b>{{ $contingency_price->project_name }}</b></h3>
+    <div class="d-flex ms-auto">
+        <!-- Import Form -->
+        <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
+        <!-- Hidden Import Form -->
+        <form id="importForm" action="{{ !empty($location) ? route('budget.import', ['project_id' => $id, 'location' => $location ]) : route('budget.import', ['project_id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+            @csrf
+            <input type="file" name="file" id="fileInput" required>
+            <button type="button" id="submitButton">Submit</button>
+        </form>
+
+        <!-- Add New Cost Button -->
+        <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#chooseGroupModal">Add New Cost</button>
+
+        <!-- Export CSV Button -->
+        <a href="{{ route('budget.cost-export-csv', $id) }}" class="btn btn-primary btn-sm">Export CSV</a>
+    </div>
+</div>
 
         <h5>LIST OF EXPENSES</h5>
         <div class="col-md-12">
@@ -76,7 +87,7 @@
                         <table id="total" class="table table-hover table-borderless">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Group Name</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -142,7 +153,7 @@
                     <thead class="table-light">
                         <tr>
                             <th class="text-center" data-sort="id_source">#<i class="bi bi-sort"></i></th>
-                            <th data-sort="name">NAME<i class="bi bi-sort"></i></th>
+                            <th data-sort="name">GROUP NAME<i class="bi bi-sort"></i></th>
                             <th data-sort="description" style="width:15%">DESCRIPTION<i class="bi bi-sort"></i></th>
                             <th data-sort="laborqty">LABOR QTY<i class="bi bi-sort"></i></th>
                             <th data-sort="budgetqty">BUDGET QTY <i class="bi bi-sort"></i></th>
@@ -203,13 +214,13 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="chooseGroupModalLabel">Add New Cost</h5>
                 </div>
-                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['id' => $id]) }}">
+                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="existingGroup">Select Existing Cost Group</label>
+                            <label for="existingGroup">Select Existing Cost Group Name</label>
                             <select class="form-control" id="existingGroup" name="existingGroup">
-                                <option value="">-- Select a Cost Group --</option>
+                                <option value="">-- Select a Cost Group Name --</option>
                                 @foreach ($dataCostGroup as $costGroup)
                                     <option value="{{ $costGroup->project_cost_group_id }}">
                                         {{ $costGroup->project_cost_group_name }}</option>
@@ -221,7 +232,7 @@
                         </div>
                         <div class="form-group mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#addNewGroupModal">Or Add New Group</button>
+                                data-bs-target="#addNewGroupModal">Or Add New Group Name</button>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -239,9 +250,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group</h5>
+                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group Name</h5>
                 </div>
-                <form id="addNewGroupForm" method="POST" action="{{ route('budget.createCostGroup', ['id' => $id]) }}">
+                <form id="addNewGroupForm" method="POST" action="{{ !empty($location) ? route('budget.createCostGroup', ['project_id' => $id, 'location' => $location]) : route('budget.createCostGroup', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -260,6 +271,54 @@
 
 
     <script>
+        document.getElementById('importButton').addEventListener('click', function() {
+            document.getElementById('fileInput').click(); 
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function() {
+            document.getElementById('submitButton').click(); 
+        });
+
+        $('#submitButton').on('click', function(event) {
+            event.preventDefault(); 
+
+            var fileInput = $('#fileInput')[0];
+            var file = fileInput.files[0];
+            
+            if (!file) {
+                toastr.error('Please select a file before submitting.');
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            var url = $('#importForm').attr('action');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data.success) {
+                        toastr.success('Import successful!');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error('Import failed: ' + (data.message || 'Unknown error'));
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error('Error: ' + errorThrown);
+                }
+            });
+        });
+
+
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
             var labelsData = [];
@@ -299,7 +358,7 @@
             });
             $('#selectGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
-                var url = '{{ route('budget.viewCost', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                var url = '{{ route('budget.viewCost', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {
@@ -388,7 +447,7 @@
             $('#existingGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
                 var url =
-                    '{{ route('budget.getCostGroupDetails', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                    '{{ route('budget.getCostGroupDetails', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {

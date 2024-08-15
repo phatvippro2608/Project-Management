@@ -1,6 +1,8 @@
 <?php
-    use App\Http\Controllers\AccountController;
-    ?>
+
+use App\Http\Controllers\AccountController;
+
+?>
 
 @extends('auth.main')
 
@@ -37,37 +39,40 @@
             <div class="col">
                 <div class="card p-2 border rounded-4">
                     <div class="card-body m-1">
-                        <table id="accountsTable" class="table table-borderless table-hover">
-                            <thead class="table-light">
-                            <tr>
-                                <th style="width: 112px"></th>
-                                <th class="text-center">Employee Code</th>
-                                <th class="text-center">Full Name</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Username</th>
-                                <th class="text-center">Permission</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Last Updated</th>
-                            </tr>
+                        <div class="table-responsive">
+                            <table id="accountsTable" class="table table-borderless table-hover">
+                                <thead class="table-light">
+                                <tr>
+                                    <th style="width: 112px"></th>
+                                    <th class="text-center">Employee Code</th>
+                                    <th class="text-center">Full Name</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Username</th>
+                                    <th class="text-center">Permission</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Last Updated</th>
+                                </tr>
 
-                            </thead>
-                            <tbody class="account-list">
-                            @foreach($account as $item)
-                                <tr class="account-item">
-                                    <td class="text-center">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <div class="action-buttons ">
-                                                <a class=" edit">
-                                                    <i class="bi bi-pencil-square ic-update ic-btn"
-                                                       data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
-                                                </a>
-                                                <a class="delete me-2">
-                                                    <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
-                                                       data="{{ $item->account_id }}"></i>
-                                                </a>
+                                </thead>
+                                <tbody class="account-list">
+                                @foreach($account as $item)
+                                    <tr class="account-item">
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <div class="action-buttons ">
+                                                    <a class=" edit">
+                                                        <i class="bi bi-pencil-square ic-update ic-btn"
+                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson($item))}}"></i>
+                                                    </a>
+                                                    <a class="delete me-2">
+                                                        <i class="bi bi-trash ic-delete ic-btn" aria-hidden="true"
+                                                           data="{{ $item->account_id }}"></i>
+                                                    </a>
+                                                </div>
+                                                <img src="{{$item->photo}}" alt=""
+                                                     onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';"
+                                                     class="account-photo rounded-circle p-0 m-0">
                                             </div>
-                                            <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
-                                        </div>
 
                                         </td>
                                         <td class="text-center">
@@ -94,15 +99,16 @@
                                                 <i class="bi bi-circle-fill account-status"></i>
                                             @endif
 
-                                        {{$status[$item->status]}}
-                                    </td>
-                                    <td class="text-center">
-                                        {{$item->updated_at}}
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                            {{$status[$item->status]}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{$item->updated_at}}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,7 +203,7 @@
         }
 
         var table = $('#accountsTable').DataTable({
-            language: { search: "" },
+            language: {search: ""},
             lengthMenu: [
                 [10, 30, 50, 100, -1],
                 [10, 30, 50, 100, "All"]
@@ -221,10 +227,12 @@
             else
                 $('.name3').val('');
         })
+
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
+
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add Account');
             $('.md1 .passName').text('Password');
@@ -280,8 +288,8 @@
             $('.name2').val(data.username);
             $('.email').val(data.email);
             $('.name3').val('');
-            $('.name3').prop('disabled',false);
-            $('.auto_pwd').prop('checked',false);
+            $('.name3').prop('disabled', false);
+            $('.auto_pwd').prop('checked', false);
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
             $('.at2').text('Update')

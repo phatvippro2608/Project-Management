@@ -33,12 +33,30 @@ class ProjectController extends Controller
                 ->where('team_id', $item->team_id)
                 ->orderBy('team_permission', 'asc')
                 ->get();
+
+
+            $sql = "SELECT
+                    employees.*, accounts.*,team_details.team_permission as team_permission,
+                    CASE
+                        WHEN team_details.employee_id IS NOT NULL THEN 1
+                        ELSE 0
+                    END AS isAtTeam
+                FROM
+                    employees
+                JOIN
+                    accounts ON accounts.employee_id = employees.employee_id
+                LEFT JOIN
+                    team_details ON team_details.employee_id = employees.employee_id AND team_details.team_id = $item->team_id
+                ";
+
+            $item->all_employees = DB::select($sql);
         }
         $teams = DB::table('teams')->get();
+        $team_positions = DB::table("team_positions")->get();
         $contracts = DB::table('contracts')
             ->leftjoin('projects', 'contracts.contract_id', '=', 'projects.contract_id')
             ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
-        return view('auth.projects.project-list', compact('project', 'teams', 'contracts'));
+        return view('auth.projects.project-list', compact('project', 'teams', 'contracts', 'team_positions'));
     }
 
 
@@ -61,10 +79,7 @@ class ProjectController extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            // Gán các lỗi vào một biến
             $errors = $validator->errors();
-
-            \Log::error('Validation errors:', $errors->toArray());
             return response()->json(['status' => 422, 'message' => json_encode($errors->toArray())]);
         }
 
@@ -93,6 +108,8 @@ class ProjectController extends Controller
             return response()->json(['status' => 500, 'message' => 'Failed to add a new project', 'error' => $e->getMessage()]);
         }
     }
+
+
 
     public function getAttachmentView(Request $request, $project_id){
         $contracts_id = DB::table('projects')->where('project_id', $project_id)->value('contract_id');

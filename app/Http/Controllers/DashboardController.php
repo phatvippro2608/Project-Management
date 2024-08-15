@@ -19,12 +19,12 @@ class DashboardController extends Controller
         $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
-        $em_c = count(EmployeeModel::all());
+        $em_c = count(DB::table('employees')->where('fired','false')->get());
         $team_c = count(TeamModel::all());
         $project_c = count(ProjectModel::all());
 
-        $task_c = DB::table('tasks')->count();
-        $sub_c = DB::table('sub_tasks')->count();
+        $task_c = DB::table('tasks')->where('parent_id',null)->count();
+        $sub_c = DB::table('tasks')->whereNot('parent_id',null)->count();
 
         $sql = "SELECT projects.project_id,projects.project_name, TIME(recent_project.created_at) as created_at
         FROM accounts, recent_project, projects

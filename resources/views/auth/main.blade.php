@@ -448,7 +448,7 @@ $token = 'position';
                 </a>
                 <ul id="leave-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
 
-                    @if($data->permission === 1 || $data->permission === 2)
+                    @if($data->permission === 4)
                         <li>
                             <a class="nav-sub-link" href="{{ route('holidays.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.holiday') }}</span>
@@ -459,21 +459,20 @@ $token = 'position';
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_type') }}</span>
                             </a>
                         </li>
-                    @elseif($data->permission === 4)
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-report.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_report') }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
+                                <i class="bi bi-circle"></i><span>{{ __('messages.earned_leave') }}</span>
                             </a>
                         </li>
                     @else
                         <li>
                             <a class="nav-sub-link" href="{{ route('leave-application.index') }}">
                                 <i class="bi bi-circle"></i><span>{{ __('messages.leave_application') }}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-sub-link" href="{{ route('earn-leave.index') }}">
-                                <i class="bi bi-circle"></i><span>{{ __('messages.earned_leave') }}</span>
                             </a>
                         </li>
                     @endif
@@ -493,12 +492,6 @@ $token = 'position';
                         </a>
                     </li>
                 </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
-                    <i class="bi bi-people"></i><span>{{ __('messages.team') }}</span>
-                </a>
             </li>
 
             <li class="nav-heading">{{ __('messages.customer_manager') }}</li>
@@ -523,13 +516,8 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.task_list') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.field_visit') }}</span>
+                        <a href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                            <i class="bi bi-circle"></i><span>{{ __('messages.team') }}</span>
                         </a>
                     </li>
                 </ul>

@@ -78,34 +78,36 @@
 
     <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
         {{--        <h3 class="text-left mb-4">Departments List</h3> --}}
-        <table id="departmentsTable" class="table table-hover table-borderless">
-            <thead class="table-light">
+        <div class="table-responsive">
+            <table id="departmentsTable" class="table table-hover table-borderless">
+                <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Department Name</th>
-                    <th>Action</th>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Department Name</th>
+                    <th class="text-center">Action</th>
                 </tr>
-            </thead>
-            <tbody id="departmentsTableBody">
+                </thead>
+                <tbody id="departmentsTableBody">
                 @foreach ($departments as $department)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $department->department_name }}</td>
-                        <td>
+                        <td align="center">
                             <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                data-id="{{ $department->department_id }}">
+                                    data-id="{{ $department->department_id }}">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             |
                             <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                data-id="{{ $department->department_id }}">
+                                    data-id="{{ $department->department_id }}">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </td>
                     </tr>
                 @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 

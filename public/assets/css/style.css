@@ -1358,7 +1358,9 @@ h6 {
     outline: none;
     cursor: pointer;
 }
-
+.border-admin {
+    border: 3px solid red;
+}
 .rounded-checkbox:checked {
     background-image: url("../img/check.png");
     background-repeat: no-repeat;
