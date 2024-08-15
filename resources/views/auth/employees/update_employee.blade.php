@@ -91,13 +91,13 @@
                         <div class="col-sm-8">
                             <div class="d-flex">
                                 <div class="form-check me-3">
-                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" @if($item->marital_status ?? '' == "Single") checked @endif>
+                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" @if($item->marital_status == "Single") checked @endif>
                                     <label class="form-check-label" for="single">
                                         Single
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married" @if($item->marital_status ?? '' == "Married") checked @endif>
+                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married" @if($item->marital_status == "Married") checked @endif>
                                     <label class="form-check-label" for="married">
                                         Married
                                     </label>
@@ -1005,6 +1005,7 @@
                 'date_of_birth': $('.date_of_birth').val(),
                 'national': $('.national :checked').val()
             };
+            console.log(dataEmployee);
             let dataPassport = {
                 'passport_number': $('.passport_number').val(),
                 'passport_place_issue': $('.passport_place_issue').val(),
