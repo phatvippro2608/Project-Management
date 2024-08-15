@@ -13,14 +13,12 @@ class ProgressController extends Controller
 {
     function getViewHasID($id)
     {
-        $project = DB::table('projects')->where('project_id', $id)->exists();
-        if (!$project) {
-            abort(404, 'Project not found');
-        }
+
         $employees = DB::table('employees')->select('employees.employee_id','employee_code', 'photo', 'last_name', 'first_name')
         ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
         ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
-        ->where('project_teams.project_id', $id)
+        ->join('project_locations', 'project_teams.project_id', '=', 'project_locations.project_id')
+        ->where('project_locations.project_location_id', $id)
         ->get();
         return view('auth.progress.progress', compact('employees', 'id'));
     }

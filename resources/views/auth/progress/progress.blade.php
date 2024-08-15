@@ -22,7 +22,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('project.projects') }}">Projects</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('project.details', ['id' => $id]) }}">Details</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $id]) }}">Details</a></li>
                 <li class="breadcrumb-item active">Progress</li>
             </ol>
         </nav>
@@ -292,7 +292,7 @@
             gantt.clearAll();
             $.ajax({
                 type: 'post',
-                url: '{{ route('tasks.getTasks') }}',
+                url: "{{ route('tasks.getTasks',['project_id' => $id]) }}",
                 data: {
                     id: {{ $id }},
                     _token: '{{ csrf_token() }}'
@@ -323,7 +323,7 @@
             if (column == 'task') {
                 $.ajax({
                     type: 'post',
-                    url: '{{ route('task.getTask') }}',
+                    url: "{{ route('task.getTask',['project_id' => $id]) }}",
                     data: {
                         id: id,
                         _token: '{{ csrf_token() }}'
@@ -357,9 +357,9 @@
                                 subtask.style.marginTop = '1%';
                                 subtask.style.marginBottom = '1%';
                                 subtask.innerHTML = `
-                            <input name="markdone_n${subtask_data.task_id}" type="checkbox" class="btn-check" id="btn-check-${subtask_data.task_id}" autocomplete="off" ${subtask_data.progress == 1 ? 'checked' : ''}>
+                            <input name="markdone_${subtask_data.task_id}" type="checkbox" class="btn-check" id="btn-check-${subtask_data.task_id}" autocomplete="off" ${subtask_data.progress == 1 ? 'checked' : ''}>
                             <label class="btn btn-outline-success me-2" for="btn-check-${subtask_data.task_id}"><i class="bi bi-check"></i></label>
-                            <input name="subtask_n${subtask_data.task_id}" type="text" class="form-control" placeholder="What need to be done?" value="${subtask_data.task_name}">
+                            <input name="subtask_${subtask_data.task_id}" type="text" class="form-control" placeholder="What need to be done?" value="${subtask_data.task_name}">
                             <a class="btn btn-danger" onclick="removeSubTask(this)"><i class="bi bi-x"></i></a>`;
                                 document.getElementById('e-subtasks-holder').appendChild(
                                     subtask);
@@ -378,7 +378,7 @@
             data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
-                url: '{{ route('task.create') }}',
+                url: "{{ route('task.create',['project_id' => $id]) }}",
                 data: data,
                 success: function(response) {
                     if (response.success) {
@@ -398,9 +398,10 @@
             data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
-                url: '{{ route('task.update') }}',
+                url: "{{ route('task.update',['project_id' => $id]) }}",
                 data: data,
                 success: function(response) {
+                    console.log(response);
                     if (response.success) {
                         toastr.success(response.message);
                         loadData();
@@ -426,7 +427,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: 'post',
-                        url: '{{ route('task.delete') }}',
+                        url: "{{ route('task.delete',['project_id' => $id]) }}",
                         data: {
                             id: task_id,
                             _token: '{{ csrf_token() }}'
