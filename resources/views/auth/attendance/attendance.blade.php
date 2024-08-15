@@ -85,7 +85,7 @@
                         @endphp
                         <tr>
                             <td>{{ $data->attendance_id }}</td>
-                            <td>{{ $name }}</td>
+                            <td class="text-start">{{ $name }}</td>
                             <td>{{ $data->employee_id }}</td>
                             <td>{{ $data->date }}</td>
                             <td>{{ $data->sign_in }}</td>

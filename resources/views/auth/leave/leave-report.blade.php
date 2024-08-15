@@ -96,11 +96,13 @@
                     method: 'GET',
                     success: function(response) {
                         response.forEach(function(report) {
-                            var applyDate = new Date(report.apply_date);
-                            var formattedApplyDate = applyDate.getFullYear() + '-' +
-                                ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' +
-                                ('0' + applyDate.getDate()).slice(-2);
-
+                            console.log(report.apply_date);
+                            if(report.apply_date === null){
+                                var formattedApplyDate = ""
+                            }else{
+                                var applyDate = new Date(report.apply_date);
+                                formattedApplyDate = applyDate.getFullYear() + '-' + ('0' + (applyDate.getMonth() + 1)).slice(-2) + '-' + ('0' + applyDate.getDate()).slice(-2);
+                            }
                             var statusClass = report.leave_status === 'Approved' ?
                                 'text-success' : 'text-danger';
                             var statusText = report.leave_status === 'Approved' ?
@@ -108,8 +110,7 @@
 
                             table.row.add([
                                 report.employee.employee_code,
-                                report.employee.last_name + ' ' + report.employee
-                                .first_name,
+                                report.employee.last_name + ' ' + report.employee.first_name,
                                 report.leave_type.leave_type,
                                 formattedApplyDate,
                                 report.duration,
