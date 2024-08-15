@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -87,13 +88,13 @@ class ProposalApplicationModel extends Model
             ->first();
 
         $list_proposal = [];
-        if ($permission == 0) {
+        if (in_array(AccountController::permissionStr(), ['employee','super','admin','director','hr_manager','project_manager','customer_manager','mentor','customer','teacher'])) {
             $list_proposal = DB::table('proposal_applications')
                 ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
                 ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')
                 ->where('employees.employee_id', $employee_id)
                 ->get();
-        } else if ($permission == 9) {
+        } else if (in_array(AccountController::permissionStr(), ['direct_department'])) {
             $department_id = DB::table('employees')
                 ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
                 ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
@@ -106,7 +107,7 @@ class ProposalApplicationModel extends Model
                 ->join('departments', 'job_details.department_id', '=', 'departments.department_id')
                 ->where('departments.department_id', $department_id)
                 ->get();
-        } else if ($permission == 10) {
+        } else if (in_array(AccountController::permissionStr(), ['direct_manager'])) {
             $list_proposal = DB::table('proposal_applications')
                 ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
                 ->join('proposal_types', 'proposal_applications.proposal_id', '=', 'proposal_types.proposal_type_id')
