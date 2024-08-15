@@ -31,9 +31,8 @@
     <div class="d-flex ms-auto">
         <!-- Import Form -->
         <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
-
         <!-- Hidden Import Form -->
-        <form id="importForm" action="{{ route('budget.import', $id) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+        <form id="importForm" action="{{ route('budget.import', ['id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
             @csrf
             <input type="file" name="file" id="fileInput" required>
             <button type="submit" id="submitButton">Submit</button>
@@ -273,13 +272,14 @@
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-        document.getElementById('fileInput').click(); // Trigger file input click
-    });
+    document.getElementById('fileInput').click(); // Trigger file input click
+});
 
-    document.getElementById('fileInput').addEventListener('change', function() {
-        document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
-    });
-    document.getElementById('importForm').addEventListener('submit', function(event) {
+document.getElementById('fileInput').addEventListener('change', function() {
+    document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
+});
+
+document.getElementById('importForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
     var fileInput = document.getElementById('fileInput');
@@ -287,28 +287,33 @@
     var reader = new FileReader();
 
     reader.onload = function(e) {
-    var data = e.target.result;
-    console.log(data); // Log the data to verify its contents
-    var json = JSON.stringify({ dataExcel: data });
+        var data = e.target.result;
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-    fetch('{{ route('budget.import', $id) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: json
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Log the response to check if data is received correctly
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
+        fetch('{{ route('budget.import', $id) }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                toastr.success('Import successful!');
+                // Optionally reload or update the page content
+                setTimeout(function() {
+                    location.reload();
+                }, 500);
+            } else {
+                toastr.error('Import failed: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            toastr.error('Error: ' + error.message);
+        });
+    };
 
-    reader.readAsText(file);
+    reader.readAsDataURL(file);
 });
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
