@@ -88,6 +88,7 @@ class ProposalApplicationModel extends Model
             ->first();
 
         $list_proposal = [];
+        //Bao thang lam chuc nang nay: 21KHMT 
         if (in_array(AccountController::permissionStr(), ['employee','super','admin','director','hr_manager','project_manager','customer_manager','mentor','customer','teacher'])) {
             $list_proposal = DB::table('proposal_applications')
                 ->join('employees', 'employees.employee_id', '=', 'proposal_applications.employee_id')
