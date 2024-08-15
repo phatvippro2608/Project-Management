@@ -145,7 +145,7 @@ class InternalCertificatesController extends Controller
                     ->orWhere('permissions.permission_name', '=', 'Super Admin');
             })
             ->exists();
-
+        $btnEdit = true;
         $employeeQuery = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
@@ -153,11 +153,13 @@ class InternalCertificatesController extends Controller
 
         if (!$permission) {
             $employeeQuery->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID));
+            $btnEdit = false;
         }
 
         $employee = $employeeQuery->get();
         return view('auth.certificate.InternalCertificateSignature', [
             'employee' => $employee,
+            'btnEdit' => $btnEdit,
         ]);
     }
 
@@ -198,10 +200,15 @@ class InternalCertificatesController extends Controller
             ->update([
                 'employee_signature_img' => 'assets/img/signature/' . $hashedFileName,
                 'updated_at' => now()
-        ]);
+            ]);
 
         // Trả về phản hồi thành công
         return response()->json(['message' => 'Signature updated successfully'], 200);
+    }
+
+    public function addSignatureCertificate(Request $request)
+    {
+
     }
 
     public function getViewCreate()
@@ -209,7 +216,7 @@ class InternalCertificatesController extends Controller
         $this->updateCreatePermissions();
         return view('auth.certificate.InternalCertificateCreate');
     }
-                                                       
+
     public function temp()
     {
 

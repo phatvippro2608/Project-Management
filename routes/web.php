@@ -394,6 +394,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
     Route::get('certificateSignature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
     Route::post('certificateSignature/edit',[InternalCertificatesController::class, 'updateSignatureCertificate'])->name('certificate.signature.edit');
+    Route::post('certificateSignature/add',[InternalCertificatesController::class, 'addSignatureCertificate'])->name('certificate.signature.add');
     Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
 
 

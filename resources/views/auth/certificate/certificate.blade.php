@@ -117,11 +117,10 @@
                 context.font = "13px 'Lora', serif";
                 var maxWidth = canvas.width - 500;
                 var lineHeight = 16;
-                wrapText(context, description, canvas.width / 2, canvas.height * 10 / 16 , maxWidth, lineHeight);
+                wrapText(context, description, canvas.width / 2, canvas.height * 10 / 16, maxWidth, lineHeight);
 
                 var namedescription = 'of internship'.toUpperCase();
                 context.font = "bold 34px 'Lora', serif";
-                // wrapText(context, namedescription, canvas.width / 2, canvas.height * 23 / 64, maxWidth, lineHeight);
                 context.fillText(namedescription, canvas.width / 2, canvas.height * 23 / 64);
 
                 if (signatureLoadedLeft) {

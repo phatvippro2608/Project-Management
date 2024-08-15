@@ -63,7 +63,7 @@
             <div class="btn btn-primary mx-2 btn-add">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                    Add Certificate
+                    Add Signature
                 </div>
             </div>
         </div>
@@ -85,7 +85,9 @@
                         <th scope="col">Full Name</th>
                         <th scope="col">EN Name</th>
                         <th class="text-center" scope="col">Signature</th>
-                        <th class="text-center" scope="col">Action</th>
+                        @if ($btnEdit)
+                            <th class="text-center" scope="col">Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -105,16 +107,18 @@
                                     src="{{ asset($item->employee_signature_img) }}"
                                     alt="{{ $item->first_name }}'s signature">
                             </td>
-                            <td class="text-center">
-                                <button class="btn text-primary btn-sm edit-btn"
-                                    data-id="{{ $item->employee_signature_id }}"
-                                    data-employee_code="{{ $item->employee_code }}"
-                                    data-full_name="{{ $item->last_name . ' ' . $item->first_name }}"
-                                    data-en_name="{{ $item->en_name }}"
-                                    data-signature="{{ asset($item->employee_signature_img) }}">
-                                    <i class="bi bi-gear-fill"></i>
-                                </button>
-                            </td>
+                            @if ($btnEdit)
+                                <td class="text-center">
+                                    <button class="btn text-primary btn-sm edit-btn"
+                                        data-id="{{ $item->employee_signature_id }}"
+                                        data-employee_code="{{ $item->employee_code }}"
+                                        data-full_name="{{ $item->last_name . ' ' . $item->first_name }}"
+                                        data-en_name="{{ $item->en_name }}"
+                                        data-signature="{{ asset($item->employee_signature_img) }}">
+                                        <i class="bi bi-gear-fill"></i>
+                                    </button>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
@@ -127,45 +131,85 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    @if ($btnEdit)
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-between">
+                        <h5 class="modal-title" id="editModalLabel">Edit Employee Signature</h5>
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="employeeId" class="form-label">Employee ID</label>
+                                <input type="text" class="form-control" id="employeeId" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="enName" class="form-label">EN Name</label>
+                                <input type="text" class="form-control" id="enName" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="signature" class="form-label">Signature</label>
+                                <div class="d-flex flex-column align-items-center">
+                                    <img id="signaturePreview" src="" alt="Signature Image"
+                                        class="img-thumbnail mb-2" style="max: 100px; object-fit: contain;">
+                                    <canvas id="signatureCanvas" style="display:none;"></canvas>
+
+                                    <input type="file" id="signatureInput" class="form-control mt-2">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveBtn">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <div class="modal fade" id="addSignatureModal" tabindex="-1" aria-labelledby="addSignatureModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header justify-content-between">
-                    <h5 class="modal-title" id="editModalLabel">Edit Employee Signature</h5>
-                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="bi bi-x"></i>
-                    </button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSignatureModalLabel">Add New Signature</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm">
+                    <form id="addSignatureForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="employeeId" class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" id="employeeId" readonly>
+                            <label for="employeeCode" class="form-label">Employee Code</label>
+                            <input type="text" class="form-control" id="employeeCode" name="employeeCode" required>
                         </div>
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" readonly>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required>
                         </div>
                         <div class="mb-3">
                             <label for="enName" class="form-label">EN Name</label>
-                            <input type="text" class="form-control" id="enName" readonly>
+                            <input type="text" class="form-control" id="enName" name="enName" required>
                         </div>
                         <div class="mb-3">
-                            <label for="signature" class="form-label">Signature</label>
-                            <div class="d-flex flex-column align-items-center">
-                                <img id="signaturePreview" src="" alt="Signature Image" class="img-thumbnail mb-2"
-                                    style="max: 100px; object-fit: contain;">
-                                <canvas id="signatureCanvas" style="display:none;"></canvas>
-
-                                <input type="file" id="signatureInput" class="form-control mt-2">
-                            </div>
+                            <label for="signatureImage" class="form-label">Signature Image</label>
+                            <input type="file" class="form-control" id="signatureImage" name="signatureImage"
+                                accept="image/*" required>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveBtn">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="saveSignatureBtn">Save Signature</button>
                 </div>
             </div>
         </div>
@@ -301,7 +345,7 @@
                                     }
                                 }
 
-                                sharpen(ctx, canvas.width, canvas.height, 1.0); 
+                                sharpen(ctx, canvas.width, canvas.height, 1.0);
                                 ctx.putImageData(imageData, 0, 0);
 
                                 var transparentImage = canvas.toDataURL('image/png');
@@ -349,6 +393,44 @@
                     };
                     reader.readAsDataURL(file);
                 }
+            });
+
+            $('.btn-add').on('click', function() {
+                $('#addSignatureModal').modal('show');
+            });
+
+            $('#saveSignatureBtn').on('click', function() {
+                var formData = new FormData($('#addSignatureForm')[0]);
+
+                $.ajax({
+                    url: '{{ route('certificate.signature.add') }}',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Signature added successfully!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(function() {
+                            $('#addSignatureModal').modal('hide');
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'There was an error adding the signature.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
 
         });
