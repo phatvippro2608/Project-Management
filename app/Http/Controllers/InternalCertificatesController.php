@@ -209,7 +209,7 @@ class InternalCertificatesController extends Controller
         $this->updateCreatePermissions();
         return view('auth.certificate.InternalCertificateCreate');
     }
-
+                                                       
     public function temp()
     {
 

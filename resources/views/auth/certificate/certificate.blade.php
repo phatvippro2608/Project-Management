@@ -8,7 +8,7 @@
 @section('contents')
     <h1 class="text" style="font-family: Great Vibes">Hello</h1>
     <h1 class="text" style="font-family: Lora">Hello</h1>
-    <canvas id="certificateCanvas" width="1000" height="600"></canvas>
+    <canvas id="certificateCanvas" width="1100" height="600"></canvas>
     <button type="button" id="downloadBtn" class="btn btn-success">Download Certificate</button>
 @endsection
 
@@ -57,15 +57,15 @@
             var signatureLoadedRight = false;
             var signatureCanvasLeft = document.createElement('canvas');
             var signatureCanvasRight = document.createElement('canvas');
-            var signatureHeight = canvas.height / 2 + 135;
+            var signatureHeight = canvas.height * 23 / 32;
             var signaturePositionLeft = {
-                x: (canvas.width / 4),
+                x: (canvas.width * 17 / 64),
                 y: signatureHeight,
                 width: 150,
                 height: 75
             };
             var signaturePositionRight = {
-                x: (canvas.width / 2 + 80),
+                x: (canvas.width * 19 / 32),
                 y: signatureHeight,
                 width: 150,
                 height: 75
@@ -87,26 +87,7 @@
                 signatureCanvasLeft.height = signatureImgLeft.height;
                 var tempContext = signatureCanvasLeft.getContext('2d');
                 tempContext.drawImage(signatureImgLeft, 0, 0);
-
-                var imageData = tempContext.getImageData(0, 0, signatureCanvasLeft.width,
-                    signatureCanvasLeft.height);
-                var data = imageData.data;
-
-                for (var i = 0; i < data.length; i += 4) {
-                    var r = data[i];
-                    var g = data[i + 1];
-                    var b = data[i + 2];
-
-                    if (r > 200 && g > 200 && b > 200) {
-                        data[i + 3] = 0;
-                    }
-                }
-
-                tempContext.putImageData(imageData, 0, 0);
                 signatureLoadedLeft = true;
-                context.drawImage(signatureCanvasLeft, signaturePositionLeft.x,
-                    signaturePositionLeft.y, signaturePositionLeft.width,
-                    signaturePositionLeft.height);
             };
             signatureImgLeft.src = signatureLeftSrc;
 
@@ -115,26 +96,7 @@
                 signatureCanvasRight.height = signatureImgRight.height;
                 var tempContext = signatureCanvasRight.getContext('2d');
                 tempContext.drawImage(signatureImgRight, 0, 0);
-
-                var imageData = tempContext.getImageData(0, 0, signatureCanvasRight.width,
-                    signatureCanvasRight.height);
-                var data = imageData.data;
-
-                for (var i = 0; i < data.length; i += 4) {
-                    var r = data[i];
-                    var g = data[i + 1];
-                    var b = data[i + 2];
-
-                    if (r > 200 && g > 200 && b > 200) {
-                        data[i + 3] = 0;
-                    }
-                }
-
-                tempContext.putImageData(imageData, 0, 0);
                 signatureLoadedRight = true;
-                context.drawImage(signatureCanvasRight, signaturePositionRight.x,
-                    signaturePositionRight.y, signaturePositionRight.width,
-                    signaturePositionRight.height);
             };
             signatureImgRight.src = signatureRightSrc;
 
@@ -148,18 +110,19 @@
                 var name = capitalizeFirstLetterOfEachWord(
                     '{{ $employee->last_name . ' ' . $employee->first_name }}');
                 context.font = "46.7px 'Great Vibes', cursive";
-                context.fillText(name, canvas.width / 2, (canvas.height / 2) + 40);
+                context.fillText(name, canvas.width / 2, (canvas.height * 9 / 16));
 
                 var description =
                     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.';
                 context.font = "13px 'Lora', serif";
-                var maxWidth = canvas.width - 400;
+                var maxWidth = canvas.width - 500;
                 var lineHeight = 16;
-                wrapText(context, description, canvas.width / 2, canvas.height / 2 + 70, maxWidth, lineHeight);
+                wrapText(context, description, canvas.width / 2, canvas.height * 10 / 16 , maxWidth, lineHeight);
 
                 var namedescription = 'of internship'.toUpperCase();
                 context.font = "bold 34px 'Lora', serif";
-                wrapText(context, namedescription, canvas.width / 2, canvas.height / 2 - 85, maxWidth, lineHeight);
+                // wrapText(context, namedescription, canvas.width / 2, canvas.height * 23 / 64, maxWidth, lineHeight);
+                context.fillText(namedescription, canvas.width / 2, canvas.height * 23 / 64);
 
                 if (signatureLoadedLeft) {
                     context.drawImage(signatureCanvasLeft, signaturePositionLeft.x, signaturePositionLeft.y,
@@ -170,16 +133,16 @@
                     context.drawImage(signatureCanvasRight, signaturePositionRight.x, signaturePositionRight.y,
                         signaturePositionRight.width, signaturePositionRight.height);
                 }
-                var height = canvas.height - 70;
+                var height = canvas.height * 14 / 16;
                 var leftName = capitalizeFirstLetterOfEachWord(
                     "{{ $director->last_name . ' ' . $director->first_name }}");
                 context.font = "bold 11px 'Lora', serif";
-                var leftWidth = canvas.width / 4 + 80;
+                var leftWidth = canvas.width * 21 / 64;
                 context.fillText(leftName, leftWidth, height);
 
                 var rightName = capitalizeFirstLetterOfEachWord(
                     "{{ $teacher->last_name . ' ' . $teacher->first_name }}");
-                var rightWidth = canvas.width / 2 + 160;
+                var rightWidth = canvas.width * 42 / 64;
                 context.fillText(rightName, rightWidth, height);
             }
 

@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
     <style>
         #signatureTable tbody td {
             padding-right: 30px;
@@ -155,6 +156,8 @@
                             <div class="d-flex flex-column align-items-center">
                                 <img id="signaturePreview" src="" alt="Signature Image" class="img-thumbnail mb-2"
                                     style="max: 100px; object-fit: contain;">
+                                <canvas id="signatureCanvas" style="display:none;"></canvas>
+
                                 <input type="file" id="signatureInput" class="form-control mt-2">
                             </div>
                         </div>
@@ -201,48 +204,7 @@
                 var employeeId = $(this).data('id');
                 var signature = $('#signatureInput')[0].files[0];
 
-                if (signature) {
-                    var reader = new FileReader();
-                    reader.onload = function(event) {
-                        var signatureDataUrl = event.target.result;
-                        var data = {
-                            signatureId: employeeId,
-                            signature: signatureDataUrl
-                        };
-                        $.ajax({
-                            url: '{{ route('certificate.signature.edit') }}',
-                            type: 'POST',
-                            data: JSON.stringify(data),
-                            contentType: 'application/json',
-                            processData: false,
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                console.log(response);
-                                Swal.fire({
-                                    title: 'Success',
-                                    text: 'Changes saved successfully!',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                }).then(function() {
-                                    window.location.reload();
-                                });
-                            },
-                            error: function(xhr, status, error) {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: 'There was an error saving the changes.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        });
-                    };
-
-                    reader.readAsDataURL(signature);
-                } else {
-                    // Handle the case where no file is selected
+                if (!signature) {
                     Swal.fire({
                         title: 'Error',
                         text: 'Please select a signature image.',
@@ -252,17 +214,143 @@
                 }
             });
 
+            function sharpen(ctx, width, height, mix) {
+                var weights = [0, -1, 0, -1, 5, -1, 0, -1, 0],
+                    katet = Math.round(Math.sqrt(weights.length)),
+                    half = (katet * 0.5) | 0,
+                    dstData = ctx.createImageData(width, height),
+                    dstBuff = dstData.data,
+                    srcBuff = ctx.getImageData(0, 0, width, height).data,
+                    y = height;
+
+                while (y--) {
+                    var x = width;
+                    while (x--) {
+                        var sy = y,
+                            sx = x,
+                            dstOff = (y * width + x) * 4,
+                            r = 0,
+                            g = 0,
+                            b = 0,
+                            a = 0;
+
+                        for (var cy = 0; cy < katet; cy++) {
+                            for (var cx = 0; cx < katet; cx++) {
+                                var scy = sy + cy - half;
+                                var scx = sx + cx - half;
+
+                                if (scy >= 0 && scy < height && scx >= 0 && scx < width) {
+                                    var srcOff = (scy * width + scx) * 4;
+                                    var wt = weights[cy * katet + cx];
+                                    r += srcBuff[srcOff] * wt;
+                                    g += srcBuff[srcOff + 1] * wt;
+                                    b += srcBuff[srcOff + 2] * wt;
+                                    a += srcBuff[srcOff + 3] * wt;
+                                }
+                            }
+                        }
+
+                        dstBuff[dstOff] = r * mix + srcBuff[dstOff] * (1 - mix);
+                        dstBuff[dstOff + 1] = g * mix + srcBuff[dstOff + 1] * (1 - mix);
+                        dstBuff[dstOff + 2] = b * mix + srcBuff[dstOff + 2] * (1 - mix);
+                        dstBuff[dstOff + 3] = srcBuff[dstOff + 3];
+                    }
+                }
+
+                ctx.putImageData(dstData, 0, 0);
+            }
 
             $('#signatureInput').on('change', function(event) {
                 var file = event.target.files[0];
                 if (file) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        $('#signaturePreview').attr('src', e.target.result);
+                        var img = new Image();
+                        img.src = e.target.result;
+
+                        img.onload = function() {
+                            var canvas = document.getElementById('signatureCanvas');
+                            var ctx = canvas.getContext('2d');
+
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+
+                            // Kiểm tra xem có điểm nào trong suốt không
+                            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            var data = imageData.data;
+                            var hasTransparentPixel = false;
+
+                            for (var i = 3; i < data.length; i += 4) {
+                                if (data[i] < 255) {
+                                    hasTransparentPixel = true;
+                                    break;
+                                }
+                            }
+
+                            if (hasTransparentPixel) {
+                                // Nếu hình ảnh đã có nền trong suốt, không cần xử lý thêm
+                                $('#signaturePreview').attr('src', img.src);
+                            } else {
+                                // Nếu không có nền trong suốt, xử lý để tạo nền trong suốt
+                                ctx.drawImage(img, 0, 0);
+                                for (var i = 0; i < data.length; i += 4) {
+                                    // Nếu điểm ảnh là màu trắng, thì làm cho nó trong suốt
+                                    if (data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200) {
+                                        data[i + 3] = 0;
+                                    }
+                                }
+
+                                sharpen(ctx, canvas.width, canvas.height, 1.0); 
+                                ctx.putImageData(imageData, 0, 0);
+
+                                var transparentImage = canvas.toDataURL('image/png');
+                                $('#signaturePreview').attr('src', transparentImage);
+                            }
+
+                            $('#saveBtn').on('click', function() {
+                                var employeeId = $(this).data('id');
+                                var data = {
+                                    signatureId: employeeId,
+                                    signature: $('#signaturePreview').attr(
+                                        'src') // sử dụng hình ảnh trong suốt
+                                };
+                                $.ajax({
+                                    url: '{{ route('certificate.signature.edit') }}',
+                                    type: 'POST',
+                                    data: JSON.stringify(data),
+                                    contentType: 'application/json',
+                                    processData: false,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    success: function(response) {
+                                        Swal.fire({
+                                            title: 'Success',
+                                            text: 'Changes saved successfully!',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        }).then(function() {
+                                            window.location.reload();
+                                        });
+                                    },
+                                    error: function(xhr, status, error) {
+                                        Swal.fire({
+                                            title: 'Error',
+                                            text: 'There was an error saving the changes.',
+                                            icon: 'error',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                });
+                            });
+                        };
                     };
                     reader.readAsDataURL(file);
                 }
             });
+
         });
     </script>
 @endsection
