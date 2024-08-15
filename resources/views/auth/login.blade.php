@@ -14,14 +14,14 @@
 </head>
 <style>
     .anh-nen {
-        /*background: linear-gradient(45deg, rgba(66, 183, 245, 0.8) 0%, rgba(66, 245, 189, 0.4) 100%);*/
         background-image: url("{{asset('assets/img/background.jpg')}}");
         background-repeat: no-repeat;
         background-size: cover;
     }
 
     .box-shadow {
-        box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.1) -6px -2px 16px 0px;
+        box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(0, 0, 0, 0.1) -6px -2px 16px 0px;
+        background: rgba(0,0,0,0.4);
     }
 
     .form-floating > .form-control:focus ~ label {

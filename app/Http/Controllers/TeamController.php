@@ -80,7 +80,7 @@ class TeamController extends Controller
                 DB::table('team_details')->insert([
                     'team_id' => $id,
                     'employee_id' => AccountController::getEmployeeId(),
-                    'team_position_id' => 1,
+                    'team_permission' => 1,
                 ]);
                 return AccountController::status($id, 200);
             }
@@ -89,6 +89,4 @@ class TeamController extends Controller
             return AccountController::status('Failed to add a team', 500);
         }
     }
-
-
 }
