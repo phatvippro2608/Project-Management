@@ -164,16 +164,21 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
             });
             //Progress
-            Route::group(['prefix' => '/task'], function () {
-                Route::post('/', [TaskController::class, 'getTask'])->name('task.getTask');
-                Route::post('/update', [TaskController::class, 'update'])->name('task.update');
-                Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
-                Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
-
-                Route::post('/update-item', [ProgressController::class, 'updateItem']);
-                Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
-                Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+            Route::group(['prefix' => '/location'], function () {
+                Route::group(['prefix' => '/{location_id}'], function () {
+                    Route::group(['prefix' => '/task'], function () {
+                        Route::post('/', [TaskController::class, 'getTask'])->name('task.getTask');
+                        Route::post('/update', [TaskController::class, 'update'])->name('task.update');
+                        Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
+                        Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
+        
+                        Route::post('/update-item', [ProgressController::class, 'updateItem']);
+                        Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+                        Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+                    });
+                });
             });
+            
 
 
         });

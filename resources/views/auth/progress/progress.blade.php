@@ -22,7 +22,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('project.projects') }}">Projects</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $id]) }}">Details</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $p_id]) }}">Details</a></li>
                 <li class="breadcrumb-item active">Progress</li>
             </ol>
         </nav>
@@ -292,7 +292,7 @@
             gantt.clearAll();
             $.ajax({
                 type: 'post',
-                url: "{{ route('tasks.getTasks',['project_id' => $id]) }}",
+                url: "{{ route('tasks.getTasks',['project_id' => $p_id,'location_id'=>$id]) }}",
                 data: {
                     id: {{ $id }},
                     _token: '{{ csrf_token() }}'
@@ -323,7 +323,7 @@
             if (column == 'task') {
                 $.ajax({
                     type: 'post',
-                    url: "{{ route('task.getTask',['project_id' => $id]) }}",
+                    url: "{{ route('task.getTask',['project_id' => $p_id,'location_id'=>$id]) }}",
                     data: {
                         id: id,
                         _token: '{{ csrf_token() }}'
@@ -378,7 +378,7 @@
             data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
-                url: "{{ route('task.create',['project_id' => $id]) }}",
+                url: "{{ route('task.create',['project_id' => $p_id,'location_id'=>$id]) }}",
                 data: data,
                 success: function(response) {
                     if (response.success) {
@@ -398,7 +398,7 @@
             data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
-                url: "{{ route('task.update',['project_id' => $id]) }}",
+                url: "{{ route('task.update',['project_id' => $p_id,'location_id'=>$id]) }}",
                 data: data,
                 success: function(response) {
                     console.log(response);
@@ -427,7 +427,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: 'post',
-                        url: "{{ route('task.delete',['project_id' => $id]) }}",
+                        url: "{{ route('task.delete',['project_id' => $p_id,'location_id'=>$id]) }}",
                         data: {
                             id: task_id,
                             _token: '{{ csrf_token() }}'

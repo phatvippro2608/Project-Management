@@ -11,16 +11,16 @@ use Illuminate\Http\Request;
 
 class ProgressController extends Controller
 {
-    function getViewHasID($id)
+    function getViewHasID($p_id,$id)
     {
-
         $employees = DB::table('employees')->select('employees.employee_id','employee_code', 'photo', 'last_name', 'first_name')
         ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
         ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
         ->join('project_locations', 'project_teams.project_id', '=', 'project_locations.project_id')
         ->where('project_locations.project_location_id', $id)
         ->get();
-        return view('auth.progress.progress', compact('employees', 'id'));
+
+        return view('auth.progress.progress', compact('employees', 'p_id', 'id'));
     }
 
     public function updateItem(Request $request)
