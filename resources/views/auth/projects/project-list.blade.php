@@ -55,134 +55,132 @@
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
         <div class="card-body">
-            <div class="table-responsive">
-                <table id="projectListTable" class="table table-hover table-borderless">
-                    <thead class="table-light">
-                    <tr>
+            <table id="projectListTable" class="table table-hover table-borderless">
+                <thead class="table-light">
+                <tr>
 
-                        <th class="text-center">#</th>
-                        <th scope="col" class="text-center">{{ __('messages.project_name') }}</th>
-                        <th scope="col" class="text-center">{{ __('messages.customer') }}</th>
-                        <th scope="col" class="text-center">{{ __('messages.team_members') }}</th>
+                    <th class="text-center">#</th>
+                    <th scope="col" class="text-center">{{ __('messages.project_name') }}</th>
+                    <th scope="col" class="text-center">{{ __('messages.customer') }}</th>
+                    <th scope="col" class="text-center">{{ __('messages.team_members') }}</th>
 
-                        <th scope="col" class="text-center">{{ __('messages.status') }}</th>
-                        <th scope="col" class="text-center">{{ __('messages.action') }}</th>
+                    <th scope="col" class="text-center">{{ __('messages.status') }}</th>
+                    <th scope="col" class="text-center">{{ __('messages.action') }}</th>
 {{--                        <th scope="col">StartDate</th>--}}
 {{--                        <th scope="col">EndDate</th>--}}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @php $d = 1@endphp
-                    @foreach($project as $item)
-                        <tr style="height: 80px;">
+                </tr>
+                </thead>
+                <tbody>
+                @php $d = 1@endphp
+                @foreach($project as $item)
+                    <tr style="height: 80px;">
 
-                            <td class="text-center">{{ $d }}</td>
-                            @php $d++ @endphp
-                            <td class="w-25">
-                                <span class="text-truncate fw-bold">{{ $item->project_name }}</span><br>
-                                <span>{{ \Carbon\Carbon::parse($item->project_date_start)->format('d M Y') }} - {{ \Carbon\Carbon::parse($item->project_date_end)->format('d M Y') }}</span>
-                            </td>
+                        <td class="text-center">{{ $d }}</td>
+                        @php $d++ @endphp
+                        <td class="w-25">
+                            <span class="text-truncate fw-bold">{{ $item->project_name }}</span><br>
+                            <span>{{ \Carbon\Carbon::parse($item->project_date_start)->format('d M Y') }} - {{ \Carbon\Carbon::parse($item->project_date_end)->format('d M Y') }}</span>
+                        </td>
 
-                            <td>{{ $item->customer_info }}</td>
-                            <td>
-                                <div style="display: flex; align-items: center">
-                                    @php $i = 1 @endphp
-                                    @foreach($item->team_members as $employee)
-                                        @php $i++ @endphp
-                                        @if($i>4) @break @endif
-                                        @php
-                                            $photoPath = asset($employee->photo);
-                                            $defaultPhoto = asset('assets/img/avt.png');
-                                            $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-                                        @endphp
-                                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
-                                             class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
-                                             width="36" height="36"
-                                             title="{{$employee->last_name." ".$employee->first_name}}"
-                                             style="cursor:pointer">
-                                    @endforeach
-                                    @if(count($item->team_members)>3)
-                                    <div
-                                        class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
-                                        style="width: 36px; height: 36px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
-                                        <i class="bi bi-plus position-absolute center" style="left: 1px;"></i>
-                                        <span class="position-absolute center" style="left:15px; ">{{count($item->team_members)-3}}</span>
-                                        <div class="more-em" style="">
-                                            @php $i=1 @endphp
-                                            @foreach($item->team_members as $employee)
-                                                @php $i++ @endphp
-                                                @if($i>4)
-                                                    @php
-                                                        $photoPath = asset($employee->photo);
-                                                        $defaultPhoto = asset('assets/img/avt.png');
-                                                        $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-                                                    @endphp
-                                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
-                                                         class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
-                                                         width="36" height="36"
-                                                         title="{{$employee->last_name." ".$employee->first_name}}"
-                                                         style="cursor:pointer">
-                                                @endif
-                                            @endforeach
-                                            <div class="arrow-f"></div>
-                                        </div>
-                                    </div>
-
-                                    @endif
-                                    <div
-                                        class="d-flex align-items-center justify-content-center ms-1"
-                                        style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer">
-                                        <i class="bi bi-person-fill-add fs-4 "></i>
+                        <td>{{ $item->customer_info }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center">
+                                @php $i = 1 @endphp
+                                @foreach($item->team_members as $employee)
+                                    @php $i++ @endphp
+                                    @if($i>4) @break @endif
+                                    @php
+                                        $photoPath = asset($employee->photo);
+                                        $defaultPhoto = asset('assets/img/avt.png');
+                                        $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                    @endphp
+                                    <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                                         class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
+                                         width="36" height="36"
+                                         title="{{$employee->last_name." ".$employee->first_name}}"
+                                         style="cursor:pointer">
+                                @endforeach
+                                @if(count($item->team_members)>3)
+                                <div
+                                    class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
+                                    style="width: 36px; height: 36px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
+                                    <i class="bi bi-plus position-absolute center" style="left: 1px;"></i>
+                                    <span class="position-absolute center" style="left:15px; ">{{count($item->team_members)-3}}</span>
+                                    <div class="more-em" style="">
+                                        @php $i=1 @endphp
+                                        @foreach($item->team_members as $employee)
+                                            @php $i++ @endphp
+                                            @if($i>4)
+                                                @php
+                                                    $photoPath = asset($employee->photo);
+                                                    $defaultPhoto = asset('assets/img/avt.png');
+                                                    $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                                @endphp
+                                                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                                                     class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
+                                                     width="36" height="36"
+                                                     title="{{$employee->last_name." ".$employee->first_name}}"
+                                                     style="cursor:pointer">
+                                            @endif
+                                        @endforeach
+                                        <div class="arrow-f"></div>
                                     </div>
                                 </div>
-                            </td>
+
+                                @endif
+                                <div
+                                    class="d-flex align-items-center justify-content-center ms-1"
+                                    style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer">
+                                    <i class="bi bi-person-fill-add fs-4 "></i>
+                                </div>
+                            </div>
+                        </td>
 
 {{--                            <td>{{ \Carbon\Carbon::parse($project->project_date_start)->format('d M Y') }}</td>--}}
 {{--                            <td>{{ \Carbon\Carbon::parse($project->project_date_end)->format('d M Y') }}</td>--}}
 
-                            <td class="text-center">
-                                <span class="badge rounded-pill
-                                    @switch($item->phase_id)
-                                        @case(1)
-                                            bg-primary
-                                            @break
-                                        @case(2)
-                                            bg-info
-                                            @break
-                                        @case(3)
-                                            bg-success
-                                            @break
-                                        @case(4)
-                                            bg-warning
-                                            @break
-                                        @case(5)
-                                            bg-danger
-                                            @break
-                                        @default
-                                            bg-secondary
-                                    @endswitch">
-                                    {{ $item->phase_name_eng }}
-                                </span>
-                            </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill
+                                @switch($item->phase_id)
+                                    @case(1)
+                                        bg-primary
+                                        @break
+                                    @case(2)
+                                        bg-info
+                                        @break
+                                    @case(3)
+                                        bg-success
+                                        @break
+                                    @case(4)
+                                        bg-warning
+                                        @break
+                                    @case(5)
+                                        bg-danger
+                                        @break
+                                    @default
+                                        bg-secondary
+                                @endswitch">
+                                {{ $item->phase_name_eng }}
+                            </span>
+                        </td>
 
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <div class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="/assets/icons/settings.ico" alt="">
-                                    </div>
-
-                                    <ul class="dropdown-menu">
-                                        <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.details', ['id' => $item->project_id]) }}">Details and Cost</a></li>
-                                        <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.report', ['project_id' => $item->project_id]) }}">Report</a></li>
-                                        <li><a class="dropdown-item bg-hover" href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $item->project_id) }}">Attachments</a></li>
-                                    </ul>
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <div class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="/assets/icons/settings.ico" alt="">
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+
+                                <ul class="dropdown-menu">
+                                    <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.details', ['id' => $item->project_id]) }}">Details and Cost</a></li>
+                                    <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.report', ['project_id' => $item->project_id]) }}">Report</a></li>
+                                    <li><a class="dropdown-item bg-hover" href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $item->project_id) }}">Attachments</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 
