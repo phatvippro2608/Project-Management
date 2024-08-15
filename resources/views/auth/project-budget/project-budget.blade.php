@@ -36,8 +36,10 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
+                        @if(!empty($keyword))
                         <a href="{{ route('project.progress', ['project_id' => $id, 'location_id' => $keyword]) }}"
                             class="btn btn-sm btn-primary me-2">Progress</a>
+                        @endif
                         <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}"
                             class="btn btn-sm btn-primary me-2">List Of Expenses</a>
                         <a href="{{ route('commission', ['project_id' => $id]) }}" class="btn btn-sm btn-primary">List Of
