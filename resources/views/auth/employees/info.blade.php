@@ -199,31 +199,31 @@
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Title</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTitles'][$data_job_detail->id_job_title]) ? $jobdetails['jobTitles'][$data_job_detail->id_job_title - 1 ]->job_title : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->job_title : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Job Category</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" data="" value="{{ isset($jobdetails['jobCategories'][$data_job_detail->id_job_category-1]) ? $jobdetails['jobCategories'][$data_job_detail->id_job_category - 1 ]->job_category_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" data="" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->job_category_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Position</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobPositions'][$data_job_detail->id_job_position]) ? $jobdetails['jobPositions'][$data_job_detail->id_job_position - 1]->position_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->position_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Team</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTeams'][$data_job_detail->id_job_team-12]) ? $jobdetails['jobTeams'][$data_job_detail->id_job_team - 12]->team_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->team_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Level</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLevels'][$data_job_detail->id_job_level]) ? $jobdetails['jobLevels'][$data_job_detail->id_job_level - 1]->level_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->level_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -235,38 +235,38 @@
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">Start Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control start_date" name="" value="{{ \Carbon\Carbon::parse($data_job_detail->start_date)->format('Y-m-d') }}">
+                        <input type="date" class="form-control start_date" name="" value="{{ optional($data_job_detail)->start_date ? \Carbon\Carbon::parse(optional($data_job_detail)->start_date)->format('Y-m-d') : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="inputDate" class="col-sm-4 col-form-label">End Date</label>
                     <div class="col-sm-8">
-                        <input type="date" class="form-control end_date" name="" value="{{ \Carbon\Carbon::parse($data_job_detail->end_date)->format('Y-m-d') }}">
+                        <input type="date" class="form-control end_date" name="" value="{{ optional($data_job_detail)->end_date ? \Carbon\Carbon::parse(optional($data_job_detail)->end_date)->format('Y-m-d') : '' }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Type of Contract</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobTypeContract'][$data_job_detail->id_job_type_contract]) ? $jobdetails['jobTypeContract'][$data_job_detail->id_job_type_contract - 1]->type_contract_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->type_contract_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Country</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobCountry'][$data_job_detail->id_job_country]) ? $jobdetails['jobCountry'][$data_job_detail->id_job_country - 1]->country_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->country_name : ''}}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-4 col-form-label">Location</label>
                     <div class="col-sm-8">
-                        <input type="text" name="" id="" class="form-control" value="{{ isset($jobdetails['jobLocation'][$data_job_detail->id_job_location-3]) ? $jobdetails['jobLocation'][$data_job_detail->id_job_location - 3]->location_name : '' }}">
+                        <input type="text" name="" id="" class="form-control" value="{{ $jobdetails->isNotEmpty() ? $jobdetails->first()->location_name : ''}}">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row g-0">
-            <div class="col-6">
-                <div class="card mb-0 shadow-none">
+            <div class="col-6 d-flex flex-column">
+                <div class="card mb-0 shadow-none flex-grow-1">
                     <div class="card-header fw-semibold text-white border-4 rounded-start-4 rounded-end-0" style="background: var(--clr-1)">Personal Profile</div>
                     <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
@@ -293,10 +293,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="card mb-0 shadow-none">
+            <div class="col-6 d-flex flex-column">
+                <div class="card mb-0 shadow-none flex-grow-1">
                     <div class="card-header fw-semibold text-white border-4 rounded-end-4 rounded-start-0" style="background: var(--clr-1)">Medical CheckUp</div>
-                    <div class="card-body p-3 table-overflow">
+                    <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
                             <thead class="table-light">
                             <tr>
@@ -328,11 +328,11 @@
             <div class="col">
                 <div class="card mb-0 shadow-none">
                     <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Certificates</div>
-                    <div class="card-body p-3 table-overflow">
+                    <div class="card-body p-3">
                         <table class="table table-hover table-borderless">
                             <thead class="table-light">
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">No.</th>
                                 <th scope="col">File Name</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Expiry Date</th>
@@ -352,6 +352,40 @@
                                         </tr>
                                     @endforeach
                                 @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-0 shadow-none">
+                    <div class="card-header fw-semibold text-white border-4 border-secondary-subtle rounded-4" style="background: var(--clr-1)">Employment Contract</div>
+                    <div class="card-body p-3">
+                        <table class="table table-hover table-borderless">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Employment Contract</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                            </tr>
+                            </thead>
+                            <tbody class="employment_contract_list">
+                            @php
+                                $data_employment_contract = json_decode($data_employment_contract);
+                            @endphp
+                            @if($data_employment_contract)
+                                @foreach($data_employment_contract as $index => $item)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><a target="_blank" href="{{ asset('/uploads/' . $item->employee_id . '/' . $item->employment_contract) }}">{{ $item->employment_contract }}</a></td>
+                                        <td>{{ $item->start_date}}</td>
+                                        <td>{{ $item->end_date }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>

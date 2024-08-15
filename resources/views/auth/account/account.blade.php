@@ -1,3 +1,9 @@
+<?php
+
+use App\Http\Controllers\AccountController;
+
+?>
+
 @extends('auth.main')
 
 @section('contents')
@@ -11,43 +17,38 @@
         </nav>
     </div>
 
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary mx-2 btn-add">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+                    Add Account
+                </div>
+            </div>
+            <a class="btn btn-danger mx-2" href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-flower3 pe-2"></i>
+                    Log History
+                </div>
+            </a>
+        </div>
+    </div>
+
     <section class="section employees">
         <div class="row">
             <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-inline-flex align-items-center">
-                            <div class="btn btn-primary mx-2 btn-add">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Add Account
-                                </div>
-                            </div>
-                            <div class="ms-auto text-secondary">
-                                <div class="search-container w-100">
-                                    <form method="GET"
-                                          action="{{ action('App\Http\Controllers\AccountController@getView') }}"
-                                          class="d-flex w-100">
-                                        <input name="keyw" type="text"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i
-                                                class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card p-2 border rounded-4">
                     <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
+                        <div class="table-responsive">
+                            <table id="accountsTable" class="table table-borderless table-hover">
+                                <thead class="table-light">
                                 <tr>
                                     <th style="width: 112px"></th>
+                                    <th class="text-center">Employee Code</th>
                                     <th class="text-center">Full Name</th>
                                     <th class="text-center">Email</th>
                                     <th class="text-center">Username</th>
+                                    <th class="text-center">Permission</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Last Updated</th>
                                 </tr>
@@ -68,18 +69,26 @@
                                                            data="{{ $item->account_id }}"></i>
                                                     </a>
                                                 </div>
-                                                <img src="{{$item->photo}}" alt="" onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';" class="account-photo rounded-circle p-0 m-0">
+                                                <img src="{{$item->photo}}" alt=""
+                                                     onerror="this.onerror=null;this.src='{{ asset('assets/img/not-found.svg') }}';"
+                                                     class="account-photo rounded-circle p-0 m-0">
                                             </div>
 
                                         </td>
                                         <td class="text-center">
-                                            {{$item->employee_code}} - {{$item->first_name}} {{$item->last_name}}
+                                            {{$item->employee_code}}
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-left">
+                                            {{$item->first_name}} {{$item->last_name}}
+                                        </td>
+                                        <td class="text-left">
                                             {{$item->email}}
                                         </td>
                                         <td class="text-center">
                                             {{$item->username}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{AccountController::getPermissionName($item->permission)}}
                                         </td>
                                         <td class="text-center">
                                             @if($status[$item->status] == 'Offine')
@@ -160,8 +169,8 @@
                                 Permission
                             </label>
                             <select class="form-select name5" aria-label="Default">
-                                @foreach($permission as $key => $val)
-                                    <option value="{{$key}}">{{$val}}</option>
+                                @foreach($permission as $item)
+                                    <option value="{{$item->permission_num}}">{{$item->permission_name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -193,6 +202,22 @@
             return password;
         }
 
+        var table = $('#accountsTable').DataTable({
+            language: {search: ""},
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
+
         $('.name3').val(generatePassword(20));
         $('.name3').prop('disabled', $('.auto_pwd').is(':checked'));
         $('.auto_pwd').change(function () {
@@ -202,14 +227,15 @@
             else
                 $('.name3').val('');
         })
+
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
+
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add Account');
             $('.md1 .passName').text('Password');
-            $('.name5').val(0);
             $('.md1').modal('show');
 
             $('.at2').click(function () {
@@ -262,8 +288,8 @@
             $('.name2').val(data.username);
             $('.email').val(data.email);
             $('.name3').val('');
-            $('.name3').prop('disabled',false);
-            $('.auto_pwd').prop('checked',false);
+            $('.name3').prop('disabled', false);
+            $('.auto_pwd').prop('checked', false);
             $('.name4').val(data.status);
             $('.name5').val(data.permission);
             $('.at2').text('Update')

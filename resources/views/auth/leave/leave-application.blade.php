@@ -1,112 +1,126 @@
 @extends('auth.main')
 
 @section('contents')
-    <style>
-        .folded-corner {
-            position: relative;
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .folded-corner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            background-color: #1472e5;
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-    </style>
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 mb-3">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-megaphone text-primary me-2"></i>
-                <h3 class="text-primary m-0">Application</h3>
-            </div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a
-                            href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Application</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <button class="btn btn-primary" id="addApplicationBtn" data-bs-toggle="modal"
+    <div class="pagetitle">
+        <h1>Leave Application</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Leave Application</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <button class="btn btn-primary me-2" id="addApplicationBtn" data-bs-toggle="modal"
                     data-bs-target="#addApplicationModal">
-                    <i class="bi bi-plus-circle"></i> Add Application
-                </button>
-                {{--                <button class="btn btn-secondary" id="leaveApplicationBtn"><i class="bi bi-list"></i> Leave --}}
-                {{--                    Application</button> --}}
-            </div>
-
+                <i class="bi bi-plus-lg me-2"></i> Add Application
+            </button>
         </div>
-        <div class="folded-corner bg-white p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Application List</h5>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-start mb-3">
-                <button class="btn btn-primary me-2" id="exportExcelBtn">Excel</button>
-            </div>
-            <div style="height: 100vh;">
-                <table id="applicationTable" class="table table-bordered mt-3 mb-3">
-                    <thead>
+    </div>
+    <div class="card p-2 rounded-4 border">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">Application List</div>
+        </div>
+        <div class="card-body">
+            <table id="applicationTable" class="table table-hover table-borderless">
+                <thead class="table-light">
+                <tr>
+                    <th>Employee Name</th>
+                    <th>PIN</th>
+                    <th>Leave Type</th>
+                    <th>Apply Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Duration</th>
+                    <th>Leave Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @php
+                    $data = \Illuminate\Support\Facades\DB::table('accounts')
+                        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                        ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                        ->where(
+                            'account_id',
+                            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                        )
+                        ->first();
+
+//                    dd($data);
+                @endphp
+                @foreach ($leave_applications as $item)
+                    @if($item->employee_id == $data->employee_id && $data->permission == 0)
                         <tr>
-                            <th>Employee Name</th>
-                            <th>PIN</th>
-                            <th>Leave Type</th>
-                            <th>Apply Type</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Duration</th>
-                            <th>Leave Status</th>
-                            <th>Action</th>
+                            <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                            <td>{{ $item->employee->employee_code }}</td>
+                            <td>{{ $item->leaveType->leave_type }}</td>
+                            <td>{{ $item->apply_date }}</td>
+                            <td>{{ $item->start_date }}</td>
+                            <td>{{ $item->end_date }}</td>
+                            <td>{{ $item->duration }} days</td>
+                            <td>{{ $item->leave_status }}</td>
+                            <td>
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                |
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($leave_applications as $item)
-                            <tr>
-                                <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
-                                <td>{{ $item->employee->employee_code }}</td>
-                                <td>{{ $item->leaveType->leave_type }}</td>
-                                <td>{{ $item->apply_date }}</td>
-                                <td>{{ $item->start_date }}</td>
-                                <td>{{ $item->end_date }}</td>
-                                <td>{{ $item->duration }} days</td>
-                                <td>{{ $item->leave_status }}</td>
-                                <td>
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
-                                        data-id="{{ $item->id }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    |
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
-                                        data-id="{{ $item->id }}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @elseif($data->permission != 0)
+                        <tr>
+                            <td>{{ $item->employee->first_name }} {{ $item->employee->last_name }}</td>
+                            <td>{{ $item->employee->employee_code }}</td>
+                            <td>{{ $item->leaveType->leave_type }}</td>
+                            <td>{{ $item->apply_date }}</td>
+                            <td>{{ $item->start_date }}</td>
+                            <td>{{ $item->end_date }}</td>
+                            <td>{{ $item->duration }} days</td>
+                            <td>{{ $item->leave_status }}</td>
+                            <td>
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                |
+                                <button
+                                    class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                    data-id="{{ $item->leave_application_id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @elseif($item->employee_id == null)
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    @endif
+                @endforeach
+                </tbody>
+            </table>
         </div>
-
-
     </div>
 
     <!-- Add Application Modal -->
     <div class="modal fade" id="addApplicationModal" tabindex="-1" aria-labelledby="addApplicationModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -119,18 +133,19 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Employee Name</label>
                             {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required> --}}
-                            <select class="form-select" aria-label="Default" name="employee_id">
-                                <option value="">No select</option>
-                                @foreach ($employee_name as $item)
-                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
-                                        - {{ $item->first_name }} {{ $item->last_name }}</option>
-                                @endforeach
+                            <select class="form-select" aria-label="Default" name="employee_id" id="add_employee_id">
+                                @if($data->permission != 0)
+                                    @foreach ($employee_name as $item)
+                                        <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
+                                            - {{ $item->first_name }} {{ $item->last_name }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="{{ $data->employee_id }}">{{ $data->first_name }} {{ $data->last_name }}</option>
+                                @endif
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="start_date" class="form-label">PIN</label>
-                            <input type="text" class="form-control" id="pin" name="pin" readonly>
-                        </div>
+
+
                         <div class="mb-3">
                             <label for="end_date" class="form-label">Leave Type</label>
                             {{--                            <input type="text" class="form-control" id="leave_type" name="leave_type" required> --}}
@@ -140,10 +155,6 @@
                                     <option value="{{ $item->leave_type_id }}">{{ $item->leave_type }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="end_date" class="form-label">Apply Date</label>
-                            <input type="date" class="form-control" id="apply_date" name="apply_date" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Start Date</label>
@@ -157,10 +168,6 @@
                             <label for="end_date" class="form-label">Duration</label>
                             <input type="text" class="form-control" id="duration" name="duration" readonly>
                         </div>
-                        <div class="mb-3">
-                            <label for="days" class="form-label">Leaves Status</label>
-                            <input type="number" class="form-control" id="leave_status" name="leave_status" readonly>
-                        </div>
                         <button type="submit" class="btn btn-primary">Add Application</button>
                     </form>
                 </div>
@@ -171,7 +178,7 @@
 
 
     <div class="modal fade" id="editApplicationModal" tabindex="-1" aria-labelledby="editApplicationModal"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -183,6 +190,7 @@
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
+
                             <label for="edit_employee_id" class="form-label">Employee Name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
                                 <option value="">No select</option>
@@ -191,11 +199,13 @@
                                         {{ $item->first_name }} {{ $item->last_name }}</option>
                                 @endforeach
                             </select>
+
                         </div>
                         <div class="mb-3">
-                            <label for="edit_pin" class="form-label">PIN</label>
+                            <label for="edit_pin" class="form-label">Employee Code</label>
                             <input type="text" class="form-control" id="edit_pin" name="pin" readonly>
                         </div>
+
                         <div class="mb-3">
                             <label for="edit_leave_type" class="form-label">Leave Type</label>
                             <select class="form-select" aria-label="Default" name="leave_type" id="edit_leave_type">
@@ -224,7 +234,7 @@
                         <div class="mb-3">
                             <label for="edit_leave_status" class="form-label">Leave Status</label>
                             <input type="text" class="form-control" id="edit_leave_status" name="leave_status"
-                                readonly>
+                                   readonly>
                         </div>
                         <button type="submit" class="btn btn-primary">Edit Application</button>
                     </form>
@@ -236,28 +246,48 @@
 
 @section('script')
     <script>
-        $(document).ready(function() {
-            var table = $('#applicationTable').DataTable();
+        // $('#edit_employee_id').val(data.employee_id);
+        $(document).ready(function () {
+            $('#add_employee_id').on('change', function () {
+                var selectedOption = $(this).find('option:selected');
+                var pin = selectedOption.data('');
+                $('#pin').val(pin);
+            });
+        });
 
-            $('#addApplicationForm').submit(function(e) {
+        $(document).ready(function () {
+            var table = $('#applicationTable').DataTable({
+                language: {
+                    search: ""
+                },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
+                responsive: true
+            });
+
+            $('#addApplicationForm').submit(function (e) {
                 e.preventDefault();
 
                 $.ajax({
                     url: '{{ route('leave-application.add') }}',
                     method: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             $('#addApplicationModal').modal('hide');
                             toastr.success(response.message, "Successful");
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 location.reload()
                             }, 500);
                         } else {
                             toastr.error(response.message, "Error");
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         if (xhr.status === 400) {
                             var response = xhr.responseJSON;
                             toastr.error(response.message, "Error");
@@ -268,7 +298,7 @@
                 });
             });
 
-            $('#applicationTable').on('click', '.edit-btn', function() {
+            $('#applicationTable').on('click', '.edit-btn', function () {
                 var applicationID = $(this).data('id');
 
                 $('#editApplicationForm').data('id', applicationID);
@@ -277,11 +307,11 @@
                 $.ajax({
                     url: url,
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         var data = response.leave_app;
                         $('#edit_employee_id').val(data.employee_id);
                         $('#edit_pin').val(data.employee.employee_code);
-                        $('#edit_leave_type').val(data.leave_type.id);
+                        $('#edit_leave_type').val(data.leave_type.leave_type_id);
                         $('#edit_apply_date').val(data.apply_date);
                         $('#edit_start_date').val(data.start_date);
                         $('#edit_end_date').val(data.end_date);
@@ -289,12 +319,13 @@
                         $('#edit_leave_status').val(data.leave_status);
                         $('#editApplicationModal').modal('show');
                     },
-                    error: function(xhr) {}
+                    error: function (xhr) {
+                    }
                 });
             });
 
 
-            $('#editApplicationForm').submit(function(e) {
+            $('#editApplicationForm').submit(function (e) {
                 e.preventDefault();
                 var applicationID = $(this).data('id'); // Lấy ID từ form
                 var url = "{{ route('leave-application.update', ':id') }}";
@@ -304,23 +335,23 @@
                     url: url,
                     method: 'PUT',
                     data: $(this).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
                             $('#editApplicationModal').modal('hide');
                             $('#successModal').modal('show');
                             toastr.success(response.response, "Edit successful");
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 location.reload()
                             }, 500);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         toastr.error("Error");
                     }
                 });
             });
 
-            $('#applicationTable').on('click', '.delete-btn', function() {
+            $('#applicationTable').on('click', '.delete-btn', function () {
                 var applicationID = $(this).data('id');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -340,11 +371,11 @@
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.success) {
                                     toastr.success(response.message,
                                         "Deleted successfully");
-                                    setTimeout(function() {
+                                    setTimeout(function () {
                                         location.reload()
                                     }, 500);
                                 } else {
@@ -352,7 +383,7 @@
                                         "Operation Failed");
                                 }
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 toastr.error("An error occurred.", "Operation Failed");
                             }
                         });
@@ -416,23 +447,24 @@
                 document.getElementById('edit_end_date'),
                 document.getElementById('edit_duration')
             );
-
-
         });
     </script>
 @endsection
 @section('head')
     <link rel="stylesheet" type="text/css"
-        href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+          href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
     <script type="text/javascript" charset="utf8"
-        src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
+            src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.flash.min.js">
     </script>
     <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js">
     </script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js">
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js">
     </script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js">
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

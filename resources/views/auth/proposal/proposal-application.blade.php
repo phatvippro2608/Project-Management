@@ -1,684 +1,614 @@
-@extends('auth.main')
-
+@extends('auth.main');
 @section('contents')
+    <style>
+        .table-responsive {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .modal-body {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+            border-bottom: 2px solid #ccc;
+        }
+    </style>
     <div class="pagetitle">
-        <h1>Proposal</h1>
+        <h1>{{ __('messages.proposal') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active">Proposal Application</li>
+                <li class="breadcrumb-item active">{{ __('messages.proposal') }}</li>
             </ol>
         </nav>
     </div>
 
-    <section class="section employees">
-        <div class="card">
-            <div class="card-header py-0">
-                <div class="card-title my-3 p-0">Proposal Application</div>
-            </div>
-            <div class="card-body">
-                <div class="row gx-3 my-3">
-                    <div class="col-md-6 m-0">
-                        <div class="btn btn-primary mx-2">
-                            <div class="d-flex align-items-center at1">
-                                <i class="bi bi-file-earmark-plus pe-2"></i>
-                                Add
-                            </div>
-                        </div>
-                        <div class="btn btn-success mx-2 btn-export">
-                            <a href="" class="d-flex align-items-center text-white">
-                                <i class="bi bi-file-earmark-arrow-down pe-2"></i>
-                                Export
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-6 m-0">
-                        <div class="input-group ms-sm-auto w-50">
-                            <button class="input-group-text bg-transparent border-secondary rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>
-                            <input type="text" class="form-control border-start-0 border-secondary rounded-end-4">
-                        </div>
-                    </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addProposalApplicationModal">
+                <div class="d-flex align-items-center at1">
+                    <i class="bi bi-file-earmark-plus pe-2"></i>
+                    {{ __('messages.add') }}
                 </div>
-                <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable table-hover table-borderless">
-                        <thead>
-                        <tr>
-                            <th style="width: 10%">No</th>
-                            <th class="text-center">Employee Name</th>
-                            <th>Proposal Name Type</th>
-                            <th>Description</th>
-                            <th>Progress</th>
-                        </tr>
+            </div>
+            @if ($data['permission'] == 9)
+                <div class="btn btn-primary mx-2 btn-export">
+                    <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
+                                                                    'employee_id' => $data['employee_current']->employee_id
+                                                                    ])}}"
+                       class="d-flex align-items-center text-white">
+                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        {{ __('messages.import') }}
+                    </a>
+                </div>
+            @elseif($data['permission'] == 10)
+                <div class="btn btn-primary mx-2 btn-export">
+                    <a href="{{route('proposal-application.export',['permission'  => $data['permission'],
+                                                                    'employee_id' => $data['employee_current']->employee_id])}}" class="d-flex align-items-center text-white">
+                        <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+                        {{ __('messages.export') }}
+                    </a>
+                </div>
+            @endif
 
-                        </thead>
-                        <tbody>
-{{--                        @foreach($data as $item)--}}
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-{{--                        @endforeach--}}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer">
-                @if ($data->hasPages())
-                    <div class="">
-                        {{$data->links('auth.component.pagination')}}
-                    </div>
-                @endif
-            </div>
-        </div>
-    </section>
-    <div class="modal fade md1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Add employee</h5>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-                <div class="modal-body bg-white p-0">
-                    <div class="card mb-0">
-                        <div class="card-body p-4">
-                            <form>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control employee_code" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control first_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control last_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control en_name" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                            <div class="col-sm-8">
-                                                <input type="file" class="form-control photo" name="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Gender</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked>
-                                                        <label class="form-check-label" for="male">
-                                                            Male
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="gender" id="female" value="1">
-                                                        <label class="form-check-label" for="female">
-                                                            Female
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Marital Status</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" checked>
-                                                        <label class="form-check-label" for="single">
-                                                            Single
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
-                                                        <label class="form-check-label" for="married">
-                                                            Married
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <fieldset class="row mb-3">
-                                            <legend class="col-form-label col-sm-4 pt-0">Military Service</legend>
-                                            <div class="col-sm-8">
-                                                <div class="d-flex">
-                                                    <div class="form-check me-3">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" checked>
-                                                        <label class="form-check-label" for="Done">
-                                                            Done
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet">
-                                                        <label class="form-check-label" for="Noyet">
-                                                            No yet
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                        <div class="row mb-3">
-                                            <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
-                                            <div class="col-sm-8">
-                                                <input type="date" class="form-control date_of_birth" name="">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label class="col-sm-4 col-form-label">Nation</label>
-                                            <div class="col-sm-8">
-                                                <select class="form-select selectpicker national" aria-label="Default select example" id="countrySelect" name="">
-                                                    <!-- Danh sách các quốc gia sẽ được thêm vào đây -->
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" class="form-control phone_number" name="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form><!-- End General Form Elements -->
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-add">
-                        <i class="bi bi-plus-lg me-2"></i>Add
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
-    <div class="modal fade md2">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+    <div class="modal fade" id="addProposalApplicationModal">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-bold"></h4>
+                    <h4 class="modal-title">Add Proposal Application</h4>
+                    @component('auth.component.btnCloseModal')
+                    @endcomponent
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="">Choose file (*.xlsx) or download
-                            </label>
-                            <a href="">Example</a>
-                            <input accept=".xlsx" name="file-excel" type="file" class="form-control">
-                            <br>
+                    <form id="addProposalApplicationForm" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="department_name" class="form-label">Employee name</label>
+                            <select class="form-select" aria-label="Default" name="employee_id" id="employee_id">
+                                @if ($data['permission'] == 0)
+                                    @if (isset($data['employee_current']))
+                                        <option value="{{ $data['employee_current']->employee_id }}">
+                                            {{ $data['employee_current']->first_name }}
+                                            {{ $data['employee_current']->last_name }}
+                                        </option>
+                                    @else
+                                        <option value="">No Employee Found</option>
+                                    @endif
+
+                                @elseif($data['permission'] == 9)
+                                    @foreach ($data['employee_of_depart'] as $item)
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
+                                    @endforeach
+                                @elseif($data['permission'] == 10)
+                                    @foreach ($employee_name as $item)
+                                        <option value="{{ $item->employee_id }}">{{ $item->first_name }}
+                                            {{ $item->last_name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
-                    </div>
+
+                        <div class="mb-3">
+                            <label for="department_name" class="form-label">Proposal Type</label>
+                            <select class="form-select" aria-label="Default" name="proposal_id" id="proposal_id">
+                                @foreach ($proposal_types as $item)
+                                    <option value="{{ $item->proposal_type_id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="proposal_description">Description</label>
+                            <textarea class="form-control" placeholder="Leave a Description here" id="proposal_description"
+                                name="proposal_description" style="height: 100px"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Upload your files</label>
+                            <input class="form-control" type="file" id="file" name="files[]" multiple>
+                            <ul id="fileList" class="list-unstyled mt-2"></ul>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Proposal Application</button>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-upload">Upload</button>
-                </div>
+
             </div>
         </div>
     </div>
 
-    <div class="modal fade md3">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-            <div class="modal-content rounded-4">
+    <div class="modal fade" id="editProposalModal" tabindex="-1" aria-labelledby="editProposalModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Update Employee</h5>
-                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+                    <h5 class="modal-title" id="editProposalModalLabel">Edit Proposal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body bg-light p-0">
-                    <div class="card mb-0 shadow-none">
-                        <div class="card-header bg-light fw-semibold">Personal Details</div>
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Employee Code</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control employee_code" name="" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">First Name</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control first_name" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Last Name</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control last_name" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">English Name</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control en_name" name="">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label for="inputText" class="col-sm-4 col-form-label">Photo</label>
-                                        <div class="col-sm-8">
-                                            <div class="row">
-                                                <div class="col-md-2 position-relative text-center">
-                                                    <img
-                                                        id="profileImage"
-                                                        src="{{asset('/assets/img/avt.png')}}"
-                                                        alt="Profile" class="rounded-pill object-fit-cover photo_show" width="100"
-                                                        height="100">
-                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 mt-2 text-center">
-                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                        Upload
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <fieldset class="row mb-3">
-                                        <legend class="col-form-label col-sm-4 pt-0">Gender</legend>
-                                        <div class="col-sm-8">
-                                            <div class="d-flex">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked>
-                                                    <label class="form-check-label" for="male">
-                                                        Male
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="gender" id="female" value="1">
-                                                    <label class="form-check-label" for="female">
-                                                        Female
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="row mb-3">
-                                        <legend class="col-form-label col-sm-4 pt-0">Marital Status</legend>
-                                        <div class="col-sm-8">
-                                            <div class="d-flex">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="radio" name="marital_status" id="single" value="Single" checked>
-                                                    <label class="form-check-label" for="single">
-                                                        Single
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="marital_status" id="married" value="Married">
-                                                    <label class="form-check-label" for="married">
-                                                        Married
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="row mb-3">
-                                        <legend class="col-form-label col-sm-4 pt-0">Military Service</legend>
-                                        <div class="col-sm-8">
-                                            <div class="d-flex">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="radio" name="military_service" id="Done" value="Done" checked>
-                                                    <label class="form-check-label" for="Done">
-                                                        Done
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="military_service" id="Noyet" value="No yet">
-                                                    <label class="form-check-label" for="Noyet">
-                                                        No yet
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <div class="row mb-3">
-                                        <label for="inputDate" class="col-sm-4 col-form-label">Date of Birth</label>
-                                        <div class="col-sm-8">
-                                            <input type="date" class="form-control date_of_birth" name="date_of_birth">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <label class="col-sm-4 col-form-label">Nation</label>
-                                        <div class="col-sm-8">
-                                            <select class="form-select selectpicker national" aria-label="Default select example" id="national" name="">
-                                                <!-- Danh sách các quốc gia sẽ được thêm vào đây -->
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="modal-body">
+                    <form id="editProposalForm">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" id="editProposalId" name="proposal_application_id">
+                        <div class="mb-3">
+                            <label for="employee_id" class="form-label">Employee name</label>
+                            <input type="text" class="form-control" id="employee_name" readonly>
+                            <input type="hidden" id="edit_employee_id" name="employee_id">
                         </div>
-                    </div>
-                    <div class="card mb-0 shadow-none">
-                        <div class="card-header bg-light fw-semibold">
-                            Personal Contacts
+                        <div class="mb-3">
+                            <label for="proposal_id" class="form-label">Proposal Type</label>
+                            <select class="form-select" aria-label="Default" name="proposal_id" id="edit_proposal_id">
+                            </select>
                         </div>
-                        <div class="card-body bg-white p-3">
-                            <form>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Phone Number</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control phone_number" name="">
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Passport Number</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control passport_number" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Passport place of Issue</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control passport_place_issue" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Issue</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control passport_issue_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">Passport date of Expiry</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control passport_expiry_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Citizen identity Card Number</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control cic_number" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Citizen place of issue</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control cic_place_issue" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Issue</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control cic_issue_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">CIC date of Expiry</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control cic_expiry_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Place of Residence</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control current_residence" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="inputText" class="col-sm-4 col-form-label">Permanent Address</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" class="form-control permanent_address" name="">
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="mb-3">
+                            <label for="edit_proposal_description">Description</label>
+                            <textarea class="form-control" placeholder="Leave a Description here" id="edit_proposal_description"
+                                name="proposal_description" style="height: 100px"></textarea>
                         </div>
-                    </div>
-                    <div class="card mb-0 shadow-none">
-                        <div class="card-header bg-light fw-semibold">
-                            Job Details
-                        </div>
-                        <div class="card-body p-3">
-                            <form>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Job Title</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_title" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTitles'] as $item)
-                                                <option value="{{$item->id_job_title}}">{{$item->job_title}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Job Category</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_category" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobCategories'] as $item)
-                                                <option value="{{$item->id_job_category}}">{{$item->job_category_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Position</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_position" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobPositions'] as $item)
-                                                <option value="{{$item->id_position}}">{{$item->position_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Team</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_team" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTeams'] as $item)
-                                                <option value="{{$item->id_team}}">{{$item->team_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Level</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_level" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobLevels'] as $item)
-                                                <option value="{{$item->id_level}}">{{$item->level_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputEmail" class="col-sm-4 col-form-label">Email</label>
-                                    <div class="col-sm-8">
-                                        <input type="email" class="form-control email" name="" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">Start Date</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control start_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputDate" class="col-sm-4 col-form-label">End Date</label>
-                                    <div class="col-sm-8">
-                                        <input type="date" class="form-control end_date" name="">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Type of Contract</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_type_contract" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobTypeContract'] as $item)
-                                                <option value="{{$item->id_type_contract}}">{{$item->type_contract_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Country</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_country" aria-label="Default select example" name="">
-                                            @foreach($jobdetails['jobCountry'] as $item)
-                                                <option value="{{$item->id_country}}">{{$item->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-4 col-form-label">Location</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select job_location" aria-label="Default select example">
-                                            @foreach($jobdetails['jobLocation'] as $item)
-                                                <option value="{{$item->id_location}}">{{$item->location_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="row gx-0">
-                        <div class="col-6">
-                            <div class="card mb-0 shadow-none">
-                                <div class="card-header bg-light fw-semibold">Personal Details</div>
-                                <div class="card-body p-3 pb-0 table-overflow">
-                                    <table class="table table-hover mb-0 table-borderless">
-                                        <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Filename</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody class="cv-list"></tbody>
-                                    </table>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <span class="fw-bold">File upload</span>
-                                        </div>
-                                        <div class="col-8 text-center upload-section border rounded-4 p-3" style="margin-top: 46px;">
-                                            <input id="personal" class="form-control visually-hidden personal" type="file" multiple="multiple">
-                                            <div file-input-target="personal" class="file-selector">
-                                                <i class="bi bi-file-earmark fs-1"></i>
-                                            </div>
-                                            <button class="btn btn-primary mt-3 btn_upload_personal_profile"><i class="bi bi-file-earmark-arrow-up me-3"></i>Upload</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="card mb-0 shadow-none">
-                                <div class="card-header bg-light fw-semibold">Medical CheckUp</div>
-                                <div class="card-body p-3 pb-0 table-overflow">
-                                    <table class="table table-hover mb-0 table-borderless">
-                                        <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Filename</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody class="medical_list"></tbody>
-                                    </table>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <span class="fw-bold">File upload</span>
-                                        </div>
-                                        <div class="col-8 text-center upload-section ">
-                                            <input type="date" class="form-control medical_checkupdate mb-2">
-                                            <div class="border rounded-4 p-3">
-                                                <input id="medical_checkup" class="form-control visually-hidden medical_checkup" type="file" multiple="multiple">
-                                                <div file-input-target="medical_checkup" class="file-selector">
-                                                    <i class="bi bi-file-earmark fs-1"></i>
-                                                </div>
-                                                <button class="btn btn-primary mt-3 btn_upload_medical"><i class="bi bi-file-earmark-arrow-up me-3"></i>Upload</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card mb-0 shadow-none">
-                        <div class="card-header bg-light fw-semibold">Certificate</div>
-                        <div class="card-body p-3 table-overflow">
-                            <table class="table table-hover table-borderless">
+                        <label for="proposal_files">Proposal File Uploaded</label>
+                        <div class="mb-3 table-responsive">
+                            <table class="table">
                                 <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">File Name</th>
-                                    <th scope="col">Type</th>
-                                    <th scope="col">Expiry Date</th>
-                                    <th scope="col">Action</th>
-                                </tr>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Proposal File Name</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
-                                <tbody class="certificate_list"></tbody>
+                                <tbody class="overflow-y-scroll">
+                                </tbody>
                             </table>
                         </div>
-                        <div class="card-footer">
-                            <div class="row g-4">
-                                <div class="col-2" style="width: 139px;">
-                                    <span class="fw-bold">File upload</span>
-                                </div>
-                                <div class="col-4 text-center upload-section border rounded-4 p-3">
-                                    <input id="certificate_file" class="form-control visually-hidden certificate_file" type="file" multiple="multiple">
-                                    <div file-input-target="certificate_file" class="file-selector">
-                                        <i class="bi bi-file-earmark fs-1"></i>
-                                    </div>
-                                    <button class="btn btn-primary mt-3 btn_upload_certificate"><i class="bi bi-file-earmark-arrow-up me-3"></i>Upload</button>
-                                </div>
-                                <div class="col-4">
-                                    <select class="form-select type_certificate mb-3" aria-label="Default select example">
-                                        @foreach($type_certificate as $item)
-                                            <option value="{{$item->id_certificate_type}}">{{$item->certificate_type_name}}</option>
-                                        @endforeach
-                                    </select>
-                                    <input class="form-control certificate_end_date" type="date" id="">
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="edit_files" class="form-label">Add more files</label>
+                            <input class="form-control" type="file" id="edit_files" name="files[]" multiple>
+                            <ul id="editFileList" class="list-unstyled mt-2"></ul>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
-                    </div>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="card shadow-sm p-3 mb-5 bg-white rounded-4">
+        <h3 class="text-left mb-4">{{ __('messages.proposal_list') }}</h3>
+        <table id="proposalApplicationsTable" class="table table-hover table-borderless">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">{{ __('messages.employee_name') }}</th>
+                    <th class="text-center">{{ __('messages.proposal_type') }}</th>
+                    <th class="text-center">{{ __('messages.description') }}</th>
+                    <th class='text-center w-25 '>Progress</th>
+                    @if ($data['permission'] == 9)
+                        <th class="text-center">Direct Department</th>
+                    @endif
+                    @if ($data['permission'] == 10)
+                        <th class="text-center">Direct Manager</th>
+                    @endif
+                    <th>{{ __('messages.action') }}</th>
+                </tr>
+            </thead>
+            <tbody id="proposalTableBody">
+                @php($stt = 0)
+                @foreach ($data['list_proposal'] as $item)
+                    <tr>
+                        <td class="text-center">{{ ++$stt }}</td>
+                        <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>
+                            <textarea readonly class="border border-light w-100" rows="1" name="" id="">{{ $item->proposal_description }}</textarea>
+                        </td>
+                        <td>
+                            <div class="progress">
+                                @if ($item->progress == 0)
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 33%;"
+                                        aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
+                                        Not approve
+                                    </div>
+                                @elseif($item->progress == 1)
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 66%;"
+                                        aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
+                                        Direct Derpartment approved
+                                    </div>
+                                @elseif($item->progress == 2)
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                        Done
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                        @if ($data['permission'] == 9)
+                            <td class="text-center">
+                                @if ($item->progress == 0)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}">
+                                        <i class="bi bi-check-circle"></i>
+                                        Not approve
+                                    </button>
+                                @elseif($item->progress == 1)
+                                    <button
+                                        class="text-warning btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none"
+                                        data-id="{{ $item->proposal_application_id }}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Direct Derpartment approved
+                                    </button>
+                                @elseif($item->progress == 2)
+                                    <button
+                                        class="text-success btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Done
+                                    </button>
+                                @endif
+                            </td>
+                        @endif
+
+                        @if ($data['permission'] == 10)
+                            <td class="text-center">
+                                @if ($item->progress == 0)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}" disabled>
+                                        <i class="bi bi-check-circle"></i>
+                                        Direct Department not approve
+                                    </button>
+                                @elseif($item->progress == 1)
+                                    <button
+                                        class="text-secondary btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}">
+                                        <i class="bi bi-check-circle"></i>
+                                        Not approve
+                                    </button>
+                                @elseif($item->progress == 2)
+                                    <button
+                                        class="text-success btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none btn_approved"
+                                        data-id="{{ $item->proposal_application_id }}"
+                                        data-permission="{{$data['permission']}}" disabled>
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Done
+                                    </button>
+                                @endif
+                            </td>
+                        @endif
+                        <td>
+                            <button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                data-id="{{ $item->proposal_application_id }}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            |
+                            <button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                data-id="{{ $item->proposal_application_id }}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+
+        </table>
+    </div>
 @endsection
+
 @section('script')
     <script>
+        var table = $('#proposalApplicationsTable').DataTable({
+            language: {
+                search: ""
+            },
+            initComplete: function(settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            }
+        });
+
+        const fileArray = [];
+        const input = document.getElementById('file');
+
+        input.addEventListener('change', function(event) {
+            const fileList = document.getElementById('fileList');
+
+            for (let i = 0; i < input.files.length; i++) {
+                fileArray.push(input.files[i]);
+            }
+
+            updateFileList();
+        });
+
+        function updateFileList() {
+            const dataTransfer = new DataTransfer();
+            fileArray.forEach(file => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
+
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            fileArray.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.className =
+                    'mb-3 d-flex justify-content-between align-items-center text-truncate file-list-item';
+                let displayName = file.name;
+                const extension = displayName.split('.').pop();
+                const baseName = displayName.substring(0, displayName.lastIndexOf('.'));
+
+                if (baseName.length > 30) {
+                    displayName = baseName.substring(0, 25) + '...' + '.' + extension;
+                } else {
+                    displayName = baseName + '.' + extension;
+                }
+
+                li.textContent = displayName + ' ';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.className = 'text-right btn btn-danger btn-sm ms-2';
+                removeBtn.onclick = function() {
+                    fileArray.splice(index, 1);
+                    updateFileList();
+                };
+
+                li.appendChild(removeBtn);
+                fileList.appendChild(li);
+            });
+        }
+
+        $('#addProposalApplicationForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '{{ route('proposal-application.add') }}',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#addProposalApplicationModal').modal('hide');
+                        toastr.success(response.message, "Successful");
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        '</td><td><a href="{{ asset('proposal_files') }}' + '/' + data.employee
+                            .employee_id + '/' + file.proposal_file_name + '" download>' + file
+                            .proposal_file_name + '</a></td></tr>';
+                        toastr.error("An error occurred", "Error");
+                    }
+                }
+            });
+        });
+
+        const EditfileArray = [];
+        const editInput = document.getElementById('edit_files');
+
+        editInput.addEventListener('change', function(event) {
+            for (let i = 0; i < editInput.files.length; i++) {
+                EditfileArray.push(editInput.files[i]);
+            }
+            updateEditFileList();
+        });
+
+        function updateEditFileList() {
+            const fileList = document.getElementById('editFileList');
+            fileList.innerHTML = '';
+
+            EditfileArray.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-3 d-flex justify-content-between align-items-center text-truncate';
+                listItem.textContent = file.name;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
+                removeButton.onclick = () => {
+                    EditfileArray.splice(index, 1);
+                    updateEditFileList();
+                };
+                listItem.appendChild(removeButton);
+                fileList.appendChild(listItem);
+            });
+        }
+
+        $('#proposalApplicationsTable').on('click', '.edit-btn', function() {
+            const proposalAppId = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route('proposal-application.edit', ':id') }}'.replace(':id', proposalAppId),
+                method: 'GET',
+                success: function(response) {
+                    const data = response.proposal_app;
+
+                    $('#editProposalId').val(data.proposal_application_id);
+                    $('#edit_employee_id').val(data.employee.employee_id);
+                    $('#employee_name').val(data.employee.first_name + ' ' + data.employee.last_name);
+
+                    const proposalTypeSelect = $('#edit_proposal_id');
+                    proposalTypeSelect.empty();
+                    response.proposal_types.forEach(function(type) {
+                        const option = new Option(type.name, type.proposal_type_id);
+                        if (type.proposal_type_id === data.proposal_id) {
+                            option.selected = true;
+                        }
+                        proposalTypeSelect.append(option);
+                    });
+
+                    $('#edit_proposal_description').val(data.proposal_description);
+
+                    let fileListHtml = '';
+                    if (data.files) {
+                        data.files.forEach(function(file, index) {
+                            fileListHtml +=
+                                `<tr>
+                                    <td>${index + 1}</td>
+                                    <td><a href="{{ asset('proposal_files') }}/${data.employee.employee_id}/${file.proposal_file_name}" download>${file.proposal_file_name}</a></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm remove-file" data-id="${file.proposal_file_id}">Remove</button></td>
+                                </tr>`;
+                        });
+                    } else {
+                        console.error('No files in response');
+                    }
+                    $('#editProposalModal table tbody').html(fileListHtml);
+
+                    $('#editProposalModal').modal('show');
+                },
+                error: function(xhr) {
+                    toastr.error(xhr.responseJSON.message, "Error");
+                }
+            });
+        });
+
+        $(document).on('click', '.remove-file', function() {
+            var fileId = $(this).data('id');
+            var row = $(this).closest('tr');
+
+            $.ajax({
+                url: '{{ route('proposal-application.removeFile', ':id') }}'.replace(':id', fileId),
+                method: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        row.remove();
+                        toastr.success(response.message, "File Removed");
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("An error occurred.", "Error");
+                }
+            });
+        });
+
+
+        $('#editProposalForm').submit(function(e) {
+            e.preventDefault();
+
+            var proposalAppId = $('#editProposalId').val();
+            var formData = new FormData(this);
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '{{ route('proposal-application.update', ':id') }}'.replace(':id', proposalAppId),
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message, "Updated successfully");
+                        $('#editProposalModal').modal('hide');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error(response.message, "Error");
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error("An error occurred.", "Operation Failed");
+                }
+            });
+        });
+
+        $('#proposalApplicationsTable').on('click', '.delete-btn', function() {
+            var proposalAppId = $(this).data('id');
+            var row = $(this).closest('tr');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to delete this proposal application?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('proposal-application.destroy', ':id') }}'.replace(':id',
+                            proposalAppId),
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                table.row(row).remove().draw();
+                                toastr.success(response.message, "Deleted successfully");
+                            } else {
+                                toastr.error("Failed to delete the proposal application.",
+                                    "Operation Failed");
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error("An error occurred.", "Operation Failed");
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#proposalApplicationsTable').on('click', '.btn_approved', function() {
+            var proposalAppId = $(this).data('id');
+            var permis = $(this).data('permission');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to approve this proposal application?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, approve'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('proposal-application.approve', ['id' => ':id', 'permission' => ':permission']) }}'
+                            .replace(':id', proposalAppId)
+                            .replace(':permission', permis),
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success(response.message, "Approved successfully");
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 250);
+                            } else {
+                                toastr.error("Failed to approve the proposal application.",
+                                    "Operation Failed");
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error("An error occurred.", "Operation Failed");
+                        }
+                    });
+                }
+            });
+        });
 
     </script>
 @endsection

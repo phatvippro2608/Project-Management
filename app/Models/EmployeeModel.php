@@ -23,14 +23,14 @@ class EmployeeModel extends Model
     }
     public function getAllJobDetails()
     {
-        $jobTitles = DB::table('job_title')->get();
-        $jobCategories = DB::table('job_category')->get();
-        $jobPositions = DB::table('job_position')->get();
-        $jobTeams = DB::table('job_team')->get();
-        $jobLevels = DB::table('job_level')->get();
-        $jobTypeContract = DB::table('job_type_contract')->get();
-        $jobCountry = DB::table('job_country')->get();
-        $jobLocation = DB::table('job_location')->get();
+        $jobTitles = DB::table('job_titles')->get();
+        $jobCategories = DB::table('job_categories')->get();
+        $jobPositions = DB::table('job_positions')->get();
+        $jobTeams = DB::table('job_teams')->get();
+        $jobLevels = DB::table('job_levels')->get();
+        $jobTypeContract = DB::table('job_type_contracts')->get();
+        $jobCountry = DB::table('job_countries')->get();
+        $jobLocation = DB::table('job_locations')->get();
 
 
         return [
@@ -45,7 +45,7 @@ class EmployeeModel extends Model
         ];
     }
     public function getTypeCertificate(){
-        return DB::table('certificate_type')->get();
+        return DB::table('certificate_types')->where('status','show')->get();
     }
     public static function getMedicalCheckUp(){
         return DB::table('medical_checkup')->get();
@@ -56,14 +56,14 @@ class EmployeeModel extends Model
     {
         $data = DB::table('employees')
             ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
-            ->join('account', 'employees.employee_id', '=', 'account.employee_id')
+            ->where('employees.fired', 'false')
             ->select(
+                'employees.employee_id', // Ensure this is the common key
                 'employees.employee_code',
                 'employees.first_name',
                 'employees.last_name',
                 'employees.en_name',
                 'contacts.phone_number',
-                'account.email',
                 'employees.gender',
                 'employees.marital_status',
                 'employees.date_of_birth',
@@ -77,6 +77,31 @@ class EmployeeModel extends Model
                 'contacts.permanent_address'
             )
             ->get();
+
+        $accounts = DB::table('accounts')
+            ->whereIn('employee_id', function($query) {
+                $query->select('employee_id')
+                    ->from('employees')
+                    ->where('fired', false);
+            })
+            ->get();
+
+        $dataArray = $data->mapWithKeys(function ($item) {
+            return [$item->employee_id => (array) $item]; // Changed to 'employee_id'
+        })->toArray();
+
+        $accountsArray = $accounts->mapWithKeys(function ($item) {
+            return [$item->employee_id => (array) $item]; // Ensure you use 'employee_id'
+        })->toArray();
+
+        foreach ($dataArray as $employeeId => $employeeData) {
+            if (isset($accountsArray[$employeeId])) {
+                $dataArray[$employeeId] = array_merge($employeeData, $accountsArray[$employeeId]);
+            }
+        }
+
+        $data = (object) $dataArray;
+
         return $data;
     }
 

@@ -2,7 +2,12 @@
 /node_modules
 /public/build
 /public/hot
+/public/proposal_files
 /public/storage
+/public/contracts
+/public/attachments
+/storage/app/public
+/storage/app/uploads
 /storage/*.key
 /vendor
 .env

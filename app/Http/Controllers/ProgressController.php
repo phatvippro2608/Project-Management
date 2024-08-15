@@ -11,47 +11,28 @@ use Illuminate\Http\Request;
 
 class ProgressController extends Controller
 {
-    function getView()
-    {
-        $tasks = DB::table('tasks')->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->select('sub_tasks.*')
-            ->get();
-
-        return view('auth.progress.progress', compact('tasks', 'subtasks'));
-    }
-
     function getViewHasID($id)
     {
-        $projectExists = DB::table('projects')->where('project_id', $id)->exists();
-        if (!$projectExists) {
+        $project = DB::table('projects')->where('project_id', $id)->exists();
+        if (!$project) {
             abort(404, 'Project not found');
         }
-
-        $phases = DB::table("phases")->where('project_id', $id)->get();
-
-        $tasks = DB::table('tasks')->whereIn('phase_id', $phases->pluck('phase_id'))->get();
-        $subtasks = DB::table('sub_tasks')
-            ->join('tasks', 'sub_tasks.task_id', '=', 'tasks.task_id')
-            ->whereIn('tasks.task_id', $tasks->pluck('task_id'))
-            ->select('sub_tasks.*')
-            ->get();
-
-        $employees = DB::table('employees')->select('employee_id', 'photo', 'last_name', 'first_name')->get();
-        return view('auth.progress.progress', compact('tasks', 'subtasks', 'id', 'employees'));
+        $employees = DB::table('employees')->select('employees.employee_id','employee_code', 'photo', 'last_name', 'first_name')
+        ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
+        ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
+        ->where('project_teams.project_id', $id)
+        ->get();
+        return view('auth.progress.progress', compact('employees', 'id'));
     }
 
     public function updateItem(Request $request)
     {
-        // Xác thực dữ liệu đầu vào
         $request->validate([
             'item_id' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
         ]);
 
-        // Tách loại mục và ID từ item_id
         $parts = explode('_', $request->item_id);
         if (count($parts) !== 2) {
             return response()->json(['success' => false, 'message' => 'Invalid item ID format']);

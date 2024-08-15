@@ -34,7 +34,7 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Customer List</h1>
+        <h1>{{ __('messages.customer') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -42,101 +42,74 @@
             </ol>
         </nav>
     </div>
+    <div class="btn btn-primary mb-3 btn-add">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-plus pe-2"></i>
+            {{ __('messages.add') }}
+        </div>
+    </div>
+    <div class="card border rounded-4 p-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="customerTable" class="table table-borderless table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 112px"></th>
+                            <th class="text-center">{{ __('messages.full_name') }}</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">{{ __('messages.company') }}</th>
+                            <th class="text-center">{{ __('messages.address') }}</th>
+                            <th class="text-center">{{ __('messages.contract') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="account-list">
+                    @php($i=1)
+                    @foreach($customer as $item)
+                        <tr class="account-item">
+{{--                            <td class="text-center">--}}
+{{--                                <div class="d-flex align-items-center justify-content-center">--}}
+{{--                                    <div class="d-flex align-items-center">--}}
+{{--                                        <a class=" edit">--}}
+{{--                                            <i class="bi bi-pencil-square ic-update ic-btn at2"--}}
+{{--                                               data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>--}}
+{{--                                        </a>--}}
+{{--                                        <a class=" delete">--}}
+{{--                                            <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"--}}
+{{--                                               data="id"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </div>--}}
 
-    <section class="section employees">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-inline-flex align-items-center">
-                            <div class="btn btn-primary mx-2 btn-add">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Add Customer
-                                </div>
-                            </div>
-                            <div class="ms-auto text-secondary">
-                                <div class="search-container w-100">
-                                    <form method="GET"
-                                          action="{{ action('App\Http\Controllers\AccountController@getView') }}"
-                                          class="d-flex w-100">
-                                        <input name="keyw" type="text"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i
-                                                class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
-                                <tr>
-                                    <th style="width: 112px"></th>
-                                    <th class="text-center">Full name</th>
-                                    <th class="text-center">Email</th>
-                                    <th class="text-center">Company</th>
-                                    <th class="text-center">Address</th>
-                                    <th class="text-center">Contract</th>
-                                </tr>
+{{--                                </div>--}}
 
-                                </thead>
-                                <tbody class="account-list">
-                                @foreach($customer as $item)
-                                    <tr class="account-item">
-                                        <td class="text-center">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <div class="d-flex align-items-center">
-                                                    <a class=" edit">
-                                                        <i class="bi bi-pencil-square ic-update ic-btn at2"
-                                                           data="{{(\App\Http\Controllers\AccountController::toAttrJson([]))}}"></i>
-                                                    </a>
-                                                    <a class=" delete">
-                                                        <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                                           data="id"></i>
-                                                    </a>
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->first_name}} {{$item->last_name}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->email}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->company_name}}
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->address}}
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="contract">
-                                                Contract Detail
-                                            </a>
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                        <td class="text-center">
-
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+{{--                            </td>--}}
+                            <td class="text-center">
+                                {{$i}}@php($i++)
+                            </td>
+                            <td class="text-left">
+                                {{$item->last_name}} {{$item->first_name}}
+                            </td>
+                            <td class="text-left">
+                                {{$item->email}}
+                            </td>
+                            <td class="text-center">
+                                {{$item->company_name}}
+                            </td>
+                            <td class="text-left">
+                                {{$item->address}}
+                            </td>
+                            <td class="text-center">
+                                <a href="{{action('App\Http\Controllers\CustomerController@getUpdateView', ['customer_id'=>$item->customer_id])}}"
+                                   class="contract btn btn-primary p-1" style="font-size: 12px">
+                                    Contract Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    </section>
+    </div>
     <div class="modal modal-xl fade md1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
@@ -175,7 +148,7 @@
                                     <label for="">
                                         Phone number
                                     </label>
-                                    <input type="text" class="form-control name8">
+                                    <input type="number" class="form-control name8">
                                 </div>
                             </div>
 
@@ -261,15 +234,77 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#customerTable').DataTable({
+            language: { search: "" },
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
+        function validateForm() {
+            let isValid = true;
+
+            const validCharRegex = /^[\p{L}\s]+$/u; // Matches letters (including those with diacritics), numbers, and spaces
+            const firstName = $('.name1').val();
+            const lastName = $('.name2').val();
+
+            if (!validCharRegex.test(firstName)) {
+                toastr.error("First Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+            if (!validCharRegex.test(lastName)) {
+                toastr.error("Last Name contains special characters", "Failed Action");
+                isValid = false;
+            }
+
+
+            const dob = new Date($('.name4').val());
+            const age = (new Date().getFullYear()) - dob.getFullYear();
+            if (isNaN(dob.getTime()) || age < 18) {
+                toastr.error("Date of Birth must indicate an age of 18 years or older", "Failed Action");
+                isValid = false;
+            }
+
+            const phoneNumber = $('.name8').val();
+            const phoneRegex = /^[0-9]+$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                toastr.error("Phone Number can only contain numbers", "Failed Action");
+                isValid = false;
+            }
+
+            const email = $('.name3').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                toastr.error("Invalid email format", "Failed Action");
+                isValid = false;
+            }
+
+            const contractDate = new Date($('.name22').val());
+            const contractEndDay = new Date($('.name23').val());
+            if (isNaN(contractDate.getTime()) || isNaN(contractEndDay.getTime()) || contractDate > contractEndDay) {
+                toastr.error("Contract Date must be less than or equal to Contract End Day", "Failed Action");
+                isValid = false;
+            }
+
+            return isValid;
+        }
         $('.btn-add').click(function () {
             $('.md1 .modal-title').text('Add New Customer');
             $('.md1').modal('show');
 
             $('.at1').click(function () {
-                // if ($('.name1').val().trim() === '') {
-                //     alert('Please enter a team name.');
-                //     return;
-                // }
+                if (!validateForm()) {
+                    return;
+                }
 
                 $.ajax({
                     url: `{{action('App\Http\Controllers\CustomerController@add')}}`,
@@ -295,85 +330,16 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
+                            toastr.success(result.message, "Successfully");
                             setTimeout(function () {
                                 window.location.reload();
                             }, 300);
                         } else {
-                            toastr.error(result.message, "Thao tác thất bại");
+                            toastr.error(result.message, "Failed Action");
                         }
                     }
                 });
             });
         });
-        {{--$('.at2').click(function () {--}}
-        {{--    $('.md1 .modal-title').text('Update Team');--}}
-        {{--    var data = JSON.parse($(this).attr('data'));--}}
-        {{--    $('.name1').val(data.team_name);--}}
-        {{--    $('.name2').val(data.status);--}}
-        {{--    $('.name3').val(data.team_description);--}}
-        {{--    $('.md1').modal('show');--}}
-
-        {{--    $('.at1').click(function () {--}}
-        {{--        if ($('.name1').val().trim() === '') {--}}
-        {{--            alert('Please enter a team name.');--}}
-        {{--            return;--}}
-        {{--        }--}}
-
-        {{--        $.ajax({--}}
-        {{--            url: `{{action('App\Http\Controllers\TeamController@update')}}`,--}}
-        {{--            type: "POST",--}}
-        {{--            headers: {--}}
-        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--            },--}}
-        {{--            data: {--}}
-        {{--                'id_team' : data.id_team,--}}
-        {{--                'team_name': $('.name1').val(),--}}
-        {{--                'status': $('.name2').val(),--}}
-        {{--                'team_description': $('.name3').val(),--}}
-        {{--            },--}}
-        {{--            success: function (result) {--}}
-        {{--                result = JSON.parse(result);--}}
-        {{--                if (result.status === 200) {--}}
-        {{--                    toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                    setTimeout(function () {--}}
-        {{--                        window.location.reload();--}}
-        {{--                    }, 300);--}}
-        {{--                } else {--}}
-        {{--                    toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    });--}}
-        {{--});--}}
-
-        {{--$('.at3').click(function () {--}}
-        {{--    if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {--}}
-        {{--        return;--}}
-        {{--    }--}}
-        {{--    var id = $(this).attr('data');--}}
-        {{--    $.ajax({--}}
-        {{--        url: `{{action('App\Http\Controllers\TeamController@delete')}}`,--}}
-        {{--        type: "DELETE",--}}
-        {{--        headers: {--}}
-        {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
-        {{--        },--}}
-        {{--        data: {--}}
-        {{--            'id_team': id,--}}
-        {{--        },--}}
-        {{--        success: function (result) {--}}
-        {{--            result = JSON.parse(result);--}}
-        {{--            if (result.status === 200) {--}}
-        {{--                toastr.success(result.message, "Thao tác thành công");--}}
-        {{--                setTimeout(function () {--}}
-        {{--                    window.location.reload();--}}
-        {{--                }, 300);--}}
-        {{--            } else {--}}
-        {{--                toastr.error(result.message, "Thao tác thất bại");--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--})--}}
-
     </script>
 @endsection

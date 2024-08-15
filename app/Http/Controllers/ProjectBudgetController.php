@@ -2,35 +2,178 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostComissionModel;
 use App\Models\CostModel;
 use App\Models\CostGroupModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use App\Models\ProjectModel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class ProjectBudgetController extends Controller
 {
 
 
-    public function getView($id)
+    public function getView(Request $request, $id)
     {
-
-        $dataCost = DB::table('project_costs')->where('project_id', $id)->get();
-        $dataCostGroup = DB::table('project_cost_group')->get();
+        $index = $request->input('location', '');
+        if (empty($index)) {
+            $dataCost = DB::table('project_costs')
+                ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
+                ->get();
+            $dataCostGroup = DB::table('project_cost_group')->get();
+        } else {
+            $dataCost = DB::table('project_costs')
+                ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
+                ->join('project_locations', 'project_cost_group.project_location_id', '=', 'project_locations.project_location_id') // Corrected join
+                ->select('project_costs.*', 'project_cost_group.project_cost_group_name')
+                ->where('project_costs.project_id', $id)
+                ->where('project_cost_group.project_location_id', $index)
+                ->get();
+            $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $index)->get();
+        }
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
-        $dataCostGroupData = DB::table('project_cost_datagroup')->get();
-
-
+        $total = 0;
+        $subtotal2 = 0;
+        $chart = [];
+        foreach ($dataCostGroup as $group) {
+            $subtotal1 = 0;
+            foreach ($dataCost as $data) {
+                if ($data->project_id == $id && $data->project_cost_group_id == $group->project_cost_group_id) {
+                    $subtotal2 = $data->project_cost_labor_qty *
+                        $data->project_cost_budget_qty *
+                        ($data->project_cost_labor_cost +
+                            $data->project_cost_misc_cost +
+                            $data->project_cost_ot_budget +
+                            $data->project_cost_perdiempay);
+                    $subtotal1 += $subtotal2;
+                }
+            }
+            $chart[$group->project_cost_group_name] = $subtotal1;
+            $total += $subtotal1;
+        }
         return view('auth.project-budget.budget-detail', [
             'dataCost' => $dataCost,
             'dataCostGroup' => $dataCostGroup,
-            'dataCostGroupData' => $dataCostGroupData,
             'id' => $id,
-            'contingency_price' => $contingency_price
+            'contingency_price' => $contingency_price,
+            'total' => $total,
+            'chart' => $chart
         ]);
     }
+
+    public function budget_import(Request $request)
+    {
+        // Decode the JSON data from the request
+        $dataExcel = json_decode($request->input('dataExcel'), true);
+
+        // Check if decoding was successful and $dataExcel is an array
+
+        $num_row = 0;
+        $successfulRows = [];
+        $errorRows = [];
+        if (!is_array($dataExcel)) {
+            return response()->json([
+                'error' => 'Invalid data format. Please ensure the JSON data is correctly formatted.'
+            ], 400);
+        }
+
+        foreach ($dataExcel as $item) {
+            $num_row++;
+            if ($num_row == 1) {
+                continue; // Skip header row
+            }
+
+            $project_cost_description = trim($item['project_cost_description']);
+            $project_cost_labor_qty = isset($item['project_cost_labor_qty']) ? (int)$item['project_cost_labor_qty'] : null;
+            $project_cost_labor_unit = trim($item['project_cost_labor_unit']);
+            $project_cost_budget_qty = isset($item['project_cost_budget_qty']) ? (int)$item['project_cost_budget_qty'] : null;
+            $project_budget_unit = trim($item['project_budget_unit']);
+            $project_cost_labor_cost = isset($item['project_cost_labor_cost']) ? (int)$item['project_cost_labor_cost'] : null;
+            $project_cost_misc_cost = isset($item['project_cost_misc_cost']) ? (int)$item['project_cost_misc_cost'] : null;
+            $project_cost_perdiempay = isset($item['project_cost_perdiempay']) ? (int)$item['project_cost_perdiempay'] : null;
+            $project_cost_remaks = trim($item['project_cost_remaks']);
+            $project_cost_group_name = trim($item['project_cost_group_name']);
+            $project_cost_ot_budget = isset($item['project_cost_ot_budget']) ? (int)$item['project_cost_ot_budget'] : null;
+            $create_date = isset($item['create_date']) ? $item['create_date'] : null;
+
+            // Check if required fields are missing
+            if (strlen($project_cost_description) === 0 || strlen($project_cost_group_name) === 0) {
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => 'Missing required fields',
+                ];
+                continue;
+            }
+
+            try {
+                DB::beginTransaction();
+
+                // Find or create the cost group
+                $costGroup = ProjectCostGroup::firstOrCreate([
+                    'project_cost_group_name' => $project_cost_group_name,
+                ]);
+
+                // Insert or update the project cost
+                ProjectCost::updateOrCreate(
+                    [
+                        'project_id' => $projectId, // Ensure $projectId is defined somewhere
+                        'project_cost_description' => $project_cost_description,
+                    ],
+                    [
+                        'project_cost_labor_qty' => $project_cost_labor_qty,
+                        'project_cost_labor_unit' => $project_cost_labor_unit,
+                        'project_cost_budget_qty' => $project_cost_budget_qty,
+                        'project_budget_unit' => $project_budget_unit,
+                        'project_cost_labor_cost' => $project_cost_labor_cost,
+                        'project_cost_misc_cost' => $project_cost_misc_cost,
+                        'project_cost_perdiempay' => $project_cost_perdiempay,
+                        'project_cost_remaks' => $project_cost_remaks,
+                        'project_cost_group_id' => $costGroup->id,
+                        'project_cost_ot_budget' => $project_cost_ot_budget,
+                        'create_date' => $create_date ? \Carbon\Carbon::parse($create_date)->format('Y-m-d') : null,
+                    ]
+                );
+
+                DB::commit();
+
+                $successfulRows[] = [
+                    'project_cost_description' => $project_cost_description,
+                    'project_cost_labor_qty' => $project_cost_labor_qty,
+                    'project_cost_labor_unit' => $project_cost_labor_unit,
+                    'project_cost_budget_qty' => $project_cost_budget_qty,
+                    'project_budget_unit' => $project_budget_unit,
+                    'project_cost_labor_cost' => $project_cost_labor_cost,
+                    'project_cost_misc_cost' => $project_cost_misc_cost,
+                    'project_cost_perdiempay' => $project_cost_perdiempay,
+                    'project_cost_remaks' => $project_cost_remaks,
+                    'project_cost_group_name' => $project_cost_group_name,
+                    'project_cost_ot_budget' => $project_cost_ot_budget,
+                    'create_date' => $create_date,
+                ];
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $errorRows[] = [
+                    'row' => $num_row,
+                    'data' => $item,
+                    'error' => $e->getMessage(),
+                ];
+                continue;
+            }
+        }
+
+        // Return results
+        return response()->json([
+            'successful' => $successfulRows,
+            'errors' => $errorRows
+        ]);
+    }
+
 
     public function showProjects()
     {
@@ -40,101 +183,93 @@ class ProjectBudgetController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    // Validate the request
-    $request->validate([
-        'project_name' => 'nullable|string',
-        'project_description' => 'nullable|string',
-        'project_address' => 'nullable|string',
-        'project_contact_name' => 'nullable|string',
-        'project_contact_website' => 'nullable|string',
-        'project_contact_phone' => 'nullable|string',
-        'project_contact_address' => 'nullable|string',
-        'project_date_start' => 'nullable|date',
-        'project_date_end' => 'nullable|date',
-        'project_contract_id' => 'nullable|exists:contracts,contract_id',
-        'project_contract_amount' => 'nullable|numeric',
-        'project_price_contingency' => 'nullable|numeric',
-        'contract_id' => 'nullable|integer',
-        'project_main_contractor' => 'nullable|string',
-    ]);
-
-    try {
-        // Update the project using raw SQL
-        DB::table('projects')->where('project_id', $id)->update([
-            'project_name' => $request->input('project_name'),
-            'project_description' => $request->input('project_description'),
-            'project_address' => $request->input('project_address'),
-            'project_contact_name' => $request->input('project_contact_name'),
-            'project_contact_website' => $request->input('project_contact_website'),
-            'project_contact_phone' => $request->input('project_contact_phone'),
-            'project_contact_address' => $request->input('project_contact_address'),
-            'project_date_start' => $request->input('project_date_start'),
-            'project_date_end' => $request->input('project_date_end'),
-            'project_contract_id' => $request->input('project_contract_id'),
-            'project_contract_amount' => $request->input('project_contract_amount'),
-            'project_price_contingency' => $request->input('project_price_contingency'),
-            'contract_id' => $request->input('contract_id'),
-            'project_main_contractor' => $request->input('project_main_contractor'),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Project updated successfully!',
-        ]);
-    } catch (\Exception $e) {
-        // Log the error and return an error response
-        \Log::error('Error updating project: ' . $e->getMessage());
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Error updating project.',
-        ]);
-    }
-}
-
-public function showProjectDetail($id)
-{
-    $data = DB::table('projects')->where('project_id', $id)->first();
-    $total = 0;
-    $subtotal1 = 0;
-    $items = DB::table('project_costs')->where('project_id', $id)->get();
-    $contracts = DB::table('contracts')->get();
-
-    foreach ($items as $item) {
-        $subtotal2 = $item->project_cost_labor_qty *
-                    $item->project_cost_budget_qty *
-                    ($item->project_cost_labor_cost +
-                        $item->project_cost_misc_cost +
-                        $item->project_cost_ot_budget +
-                        $item->project_cost_perdiempay);
-        $subtotal1 += $subtotal2;
-    }
-    $total += $subtotal1;
-
-    return view('auth.project-budget.project-budget', [
-        'data' => $data,
-        'id' => $id,
-        'total' => $total,
-        'contracts' => $contracts,
-        'contractsJson' => $contracts->toJson()
-    ]);
-}
-
-
-    public function editBudget($id)
     {
-        $dataCost = DB::table('project_cost')->where('project_id', $id)->get();
-        $dataCostGroup = DB::table('project_cost_group')->get();
-        $contingency_price = DB::table('projects')->where('project_id', $id)->first();
-        $dataCostGroupData = DB::table('project_cost_datagroup')->get();
-        return view('auth.project-budget.budget-edit', [
-            'dataCost' => $dataCost,
-            'dataCostGroup' => $dataCostGroup,
-            'dataCostGroupData' => $dataCostGroupData,
-            'id' => $id,
-            'contingency_price' => $contingency_price
+        // Validate the request
+        $request->validate([
+            'project_name' => 'nullable|string',
+            'project_description' => 'nullable|string'
         ]);
+
+        try {
+            // Update the project using raw SQL
+            DB::table('projects')->where('project_id', $id)->update([
+                'project_name' => $request->input('project_name'),
+                'project_description' => $request->input('project_description')
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Project updated successfully!',
+            ]);
+        } catch (\Exception $e) {
+            // Log the error and return an error response
+            \Log::error('Error updating project: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating project.',
+            ]);
+        }
+    }
+
+    public function showProjectDetail(Request $request, $id)
+    {
+        $keyword = $request->input('location', '');
+        AccountController::setRecentProject($id);
+        $data = DB::table('projects')->where('project_id', $id)->first();
+        $prj = ProjectModel::find($id);
+        if ($prj) {
+            // Gọi phương thức getCustomer để lấy thông tin khách hàng
+            $customer = $prj->getCustomer();
+            $contract = $prj->getContract();
+            $contactEmployee = $prj->getEmployee();
+        }
+        $total = 0;
+        $subtotal1 = 0;
+        $items = DB::table('project_costs')->where('project_id', $id)->get();
+
+        if (!empty($keyword)) {
+            $dataLoca = DB::table('project_locations')
+                ->join('projects', 'projects.project_id', '=', 'project_locations.project_id')
+                ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->where('project_locations.project_location_id', $keyword)->first();
+
+        } else {
+            $dataLoca = DB::table('project_locations')
+                ->join('projects', 'projects.project_id', '=', 'project_locations.project_id')
+                ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->first();
+        }
+
+
+        $locations = DB::table('project_locations')
+            ->join('projects', 'projects.project_id', '=', 'project_locations.project_id')
+            ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->get();
+        foreach ($items as $item) {
+            $subtotal2 = $item->project_cost_labor_qty *
+                $item->project_cost_budget_qty *
+                ($item->project_cost_labor_cost +
+                    $item->project_cost_misc_cost +
+                    $item->project_cost_ot_budget +
+                    $item->project_cost_perdiempay);
+            $subtotal1 += $subtotal2;
+        }
+        $total += $subtotal1;
+
+        return view('auth.project-budget.project-budget', [
+            'data' => $data,
+            'id' => $id,
+            'total' => $total,
+            'contract' => $contract,
+            'contactEmployee' => $contactEmployee,
+            'customer' => $customer,
+            'locations' => $locations,
+            'dataLoca' => $dataLoca,
+            'keyword' => $keyword
+        ]);
+    }
+
+    public function viewCost($id, $group_id)
+    {
+
     }
 
 
@@ -147,9 +282,9 @@ public function showProjectDetail($id)
 
         try {
             // Lấy dữ liệu ngân sách
-            $budgetData = DB::table('project_cost')
-            ->where('project_cost_id', $costId)
-            ->get();
+            $budgetData = DB::table('project_costs')
+                ->where('project_cost_id', $costId)
+                ->get();
             return response()->json($budgetData);
         } catch (\Exception $e) {
             // Xử lý lỗi và ghi nhật ký
@@ -157,69 +292,72 @@ public function showProjectDetail($id)
             return response()->json(['error' => 'Đã xảy ra lỗi khi xử lý yêu cầu'], 500);
         }
     }
+
     public function updateBudget(Request $request, $id, $costGroupId, $costId)
-{
-    // Kiểm tra tham số
-    if (!is_numeric($id) || !is_numeric($costGroupId) || !is_numeric($costId)) {
-        return response()->json(['error' => 'Tham số không hợp lệ'], 400);
+    {
+        // Kiểm tra tham số
+        if (!is_numeric($id) || !is_numeric($costGroupId) || !is_numeric($costId)) {
+            return response()->json(['error' => 'Tham số không hợp lệ'], 400);
+        }
+
+        // Validate dữ liệu đầu vào
+        $validatedData = Validator::make($request->all(), [
+            'description' => 'required|string|max:255',
+            'labor_qty' => 'nullable|numeric|min:0',
+            'labor_unit' => 'nullable|string|max:100',
+            'budget_qty' => 'nullable|numeric|min:0',
+            'budget_unit' => 'nullable|string|max:100',
+            'labor_cost' => 'nullable|numeric|min:0',
+            'misc_cost' => 'nullable|numeric|min:0',
+            'ot_budget' => 'nullable|numeric|min:0',
+            'perdiem_pay' => 'nullable|numeric|min:0',
+            'remarks' => 'nullable|string|max:255'
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json([
+                'errors' => $validatedData->errors()
+            ], 422);
+        }
+
+        // Dữ liệu cần cập nhật
+        $data = [
+            'project_cost_description' => $request->input('description'),
+            'project_cost_labor_qty' => $request->input('labor_qty'),
+            'project_cost_labor_unit' => $request->input('labor_unit'),
+            'project_cost_budget_qty' => $request->input('budget_qty'),
+            'project_budget_unit' => $request->input('budget_unit'),
+            'project_cost_labor_cost' => $request->input('labor_cost'),
+            'project_cost_misc_cost' => $request->input('misc_cost'),
+            'project_cost_ot_budget' => $request->input('ot_budget'),
+            'project_cost_perdiempay' => $request->input('perdiem_pay'),
+            'project_cost_remaks' => $request->input('remarks')
+        ];
+
+        try {
+            // Cập nhật dữ liệu ngân sách
+            DB::table('project_costs')
+                ->where('project_cost_id', $costId)
+                ->update($data);
+
+            return response()->json(['success' => 'Budget updated successfully']);
+        } catch (\Exception $e) {
+            // Xử lý lỗi và ghi nhật ký
+            \Log::error($e->getMessage());
+            return response()->json(['error' => 'Đã xảy ra lỗi khi xử lý yêu cầu'], 500);
+        }
     }
 
-    // Validate dữ liệu đầu vào
-    $validatedData = Validator::make($request->all(), [
-        'description' => 'required|string|max:255',
-        'labor_qty' => 'nullable|numeric|min:0',
-        'labor_unit' => 'nullable|string|max:100',
-        'budget_qty' => 'nullable|numeric|min:0',
-        'budget_unit' => 'nullable|string|max:100',
-        'labor_cost' => 'nullable|numeric|min:0',
-        'misc_cost' => 'nullable|numeric|min:0',
-        'ot_budget' => 'nullable|numeric|min:0',
-        'perdiem_pay' => 'nullable|numeric|min:0',
-        'remarks' => 'nullable|string|max:255'
-    ]);
-
-    if ($validatedData->fails()) {
-        return response()->json([
-            'errors' => $validatedData->errors()
-        ], 422);
-    }
-
-    // Dữ liệu cần cập nhật
-    $data = [
-        'project_cost_description' => $request->input('description'),
-        'project_cost_labor_qty' => $request->input('labor_qty'),
-        'project_cost_labor_unit' => $request->input('labor_unit'),
-        'project_cost_budget_qty' => $request->input('budget_qty'),
-        'project_budget_unit' => $request->input('budget_unit'),
-        'project_cost_labor_cost' => $request->input('labor_cost'),
-        'project_cost_misc_cost' => $request->input('misc_cost'),
-        'project_cost_ot_budget' => $request->input('ot_budget'),
-        'project_cost_perdiempay' => $request->input('perdiem_pay'),
-        'project_cost_remaks' => $request->input('remarks')
-    ];
-
-    try {
-        // Cập nhật dữ liệu ngân sách
-        DB::table('project_cost')
-            ->where('project_cost_id', $costId)
-            ->update($data);
-
-        return response()->json(['success' => 'Budget updated successfully']);
-    } catch (\Exception $e) {
-        // Xử lý lỗi và ghi nhật ký
-        \Log::error($e->getMessage());
-        return response()->json(['error' => 'Đã xảy ra lỗi khi xử lý yêu cầu'], 500);
-    }
-}
     public function deleteBudget($project_id, $cost_id)
     {
         try {
-            DB::table('project_cost')->where('project_cost_id', $cost_id)->delete();
+            DB::table('project_costs')->where('project_cost_id', $cost_id)->delete();
             return response()->json(['success' => true, 'message' => 'Cost item deleted successfully.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to delete cost item.']);
         }
     }
+
     public function renameCostGroup(Request $request)
     {
         $costGroupId = $request->input('costGroupId');
@@ -235,47 +373,47 @@ public function showProjectDetail($id)
 
 
     public function addNewGroupCost(Request $request, $id)
-{
-    $groupSelect = $request->input('groupSelect');
+    {
+        $groupSelect = $request->input('groupSelect');
 
-    $newCost = new CostModel();
-    $newCost->project_cost_group_id = $groupSelect;
-    $newCost->project_id = $id;
-    // Assign other fields for the cost here
-    $newCost->save();
+        $newCost = new CostModel();
+        $newCost->project_cost_group_id = $groupSelect;
+        $newCost->project_id = $id;
+        // Assign other fields for the cost here
+        $newCost->save();
 
-    return redirect()->back()->with('success', 'New group cost added successfully.');
-}
+        return redirect()->back()->with('success', 'New group cost added successfully.');
+    }
 
 
-public function createCostGroup(Request $request, $id)
-{
-    $request->validate([
-        'newGroupName' => 'required|string|max:255',
-    ]);
+    public function createCostGroup(Request $request, $id)
+    {
+        $request->validate([
+            'newGroupName' => 'required|string|max:255',
+        ]);
 
-    $newGroup = new CostGroupModel();
-    $newGroup->project_cost_group_name = $request->input('newGroupName');
-    $newGroup->save();
+        $newGroup = new CostGroupModel();
+        $newGroup->project_cost_group_name = $request->input('newGroupName');
+        $newGroup->save();
 
-    return response()->json([
-        'success' => true,
-        'message' => 'New cost group added successfully.'
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'New cost group added successfully.'
+        ]);
+    }
 
-public function getCostGroupDetails(Request $request, $id, $group_id)
-{
-    $costGroup = CostGroupModel::find($group_id);
+    public function getCostGroupDetails(Request $request, $id, $group_id)
+    {
+        $costGroup = CostGroupModel::find($group_id);
 
-    if ($costGroup) {
-        $html = '
+        if ($costGroup) {
+            $html = '
         <div class="form-group">
             <label for="description">DESCRIPTION</label>
             <input type="text" class="form-control" id="description" name="description" value="' . htmlspecialchars($costGroup->description) . '">
         </div>
         <div class="form-group">
-            <label for="labor_qty">LABOR QTY</label>
+            <label for="labor_qty">LABOR QTY</label>s
             <input type="number" class="form-control" id="labor_qty" name="labor_qty" value="' . htmlspecialchars($costGroup->labor_qty) . '">
         </div>
         <div class="form-group">
@@ -296,7 +434,7 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
         </div>
         <div class="form-group">
             <label for="misc_cost">MISC. COST</label>
-            <input type="number" class="form-control" id="misc_cost" name="misc_cost" value="' . htmlspecialchars($costGroup->misc_cost) . '">
+            <input type="number" class="form-control" id="misc_cost" name="misc_cot" value="' . htmlspecialchars($costGroup->misc_cost) . '">
         </div>
         <div class="form-group">
             <label for="ot_budget">OT BUDGET</label>
@@ -310,60 +448,63 @@ public function getCostGroupDetails(Request $request, $id, $group_id)
             <label for="remark">REMARK</label>
             <textarea class="form-control" id="remark" name="remark">' . htmlspecialchars($costGroup->remark) . '</textarea>
         </div>';
-        return response()->json(['success' => true, 'html' => $html]);
-    } else {
-        return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            return response()->json(['success' => true, 'html' => $html]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to delete cost item.']);
+        }
     }
-}
 
-public function addNewCost(Request $request, $id)
-{
-    // Validation can be added here
-    $validatedData = $request->validate([
-        'existingGroup' => 'required|integer',
-        'description' => 'required|string|max:255',
-        'labor_qty' => 'nullable|numeric|min:0',
-        'labor_unit' => 'nullable|string|max:100',
-        'budget_qty' => 'nullable|numeric|min:0',
-        'budget_unit' => 'nullable|string|max:100',
-        'labor_cost' => 'nullable|numeric|min:0',
-        'misc_cost' => 'nullable|numeric|min:0',
-        'ot_budget' => 'nullable|numeric|min:0',
-        'perdiem_pay' => 'nullable|numeric|min:0',
-        'remarks' => 'nullable|string|max:255'
-    ]);
+    public function addNewCost(Request $request, $id)
+    {
+        // Validation can be added here
+        $validatedData = $request->validate([
+            'existingGroup' => 'required|integer',
+            'description' => 'required|string|max:255',
+            'labor_qty' => 'nullable|numeric|min:0',
+            'labor_unit' => 'nullable|string|max:100',
+            'budget_qty' => 'nullable|numeric|min:0',
+            'budget_unit' => 'nullable|string|max:100',
+            'labor_cost' => 'nullable|numeric|min:0',
+            'misc_cost' => 'nullable|numeric|min:0',
+            'ot_budget' => 'nullable|numeric|min:0',
+            'perdiem_pay' => 'nullable|numeric|min:0',
+            'remarks' => 'nullable|string|max:255'
+        ]);
 
-    $newCost = new CostModel();
-    $newCost->project_cost_group_id = $request->input('existingGroup');
-    $newCost->project_id = $id;
-    $newCost->project_cost_description = $request->input('description');
-    $newCost->project_cost_labor_qty = $request->input('labor_qty');
-    $newCost->project_cost_labor_unit = $request->input('labor_unit');
-    $newCost->project_cost_budget_qty = $request->input('budget_qty');
-    $newCost->project_budget_unit = $request->input('budget_unit');
-    $newCost->project_cost_labor_cost = $request->input('labor_cost');
-    $newCost->project_cost_misc_cost = $request->input('misc_cost');
-    $newCost->project_cost_ot_budget = $request->input('ot_budget');
-    $newCost->project_cost_perdiempay = $request->input('perdiem_pay');
-    $newCost->project_cost_remaks = $request->input('remarks');
-    $newCost->save();
+        $newCost = new CostModel();
+        $newCost->project_cost_group_id = $request->input('existingGroup');
+        $newCost->project_id = $id;
+        $newCost->project_cost_description = $request->input('description');
+        $newCost->project_cost_labor_qty = $request->input('labor_qty');
+        $newCost->project_cost_labor_unit = $request->input('labor_unit');
+        $newCost->project_cost_budget_qty = $request->input('budget_qty');
+        $newCost->project_budget_unit = $request->input('budget_unit');
+        $newCost->project_cost_labor_cost = $request->input('labor_cost');
+        $newCost->project_cost_misc_cost = $request->input('misc_cost');
+        $newCost->project_cost_ot_budget = $request->input('ot_budget');
+        $newCost->project_cost_perdiempay = $request->input('perdiem_pay');
+        $newCost->project_cost_remaks = $request->input('remarks');
+        $newCost->save();
 
-    return redirect()->back()->with('success', 'New cost added successfully.');
-}
-public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
-{
-    $costGroup = CostGroupModel::find($cost_group_id);
-
-    if ($costGroup) {
-        // Optional: Check if the cost group is used in other places and handle it accordingly
-        $costGroup->delete();
-
-        return response()->json(['success' => true]);
-    } else {
-        return response()->json(['success' => false, 'message' => 'Cost group not found.']);
+        return redirect()->back()->with('success', 'New cost added successfully.');
     }
-}
-    public function getViewCommission($id){
+
+    public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
+    {
+        $costGroup = CostGroupModel::find($cost_group_id);
+
+        if ($costGroup) {
+            // Optional: Check if the cost group is used in other places and handle it accordingly
+            $costGroup->delete();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Cost group not found.']);
+        }
+    }
+
+    public function getViewCommission($id)
+    {
         $dataCommission = DB::table('project_cost_commission')->where('project_id', $id)->get();
         $dataGroupCommission = DB::table('project_group_cost_commission')->get();
         $project = DB::table('projects')->where('project_id', $id)->first();
@@ -371,32 +512,33 @@ public function deleteCostGroup(Request $request, $project_id, $cost_group_id)
             'dataCommission' => $dataCommission,
             'dataGroupCommission' => $dataGroupCommission,
             'id' => $id,
-            'project'=>$project
+            'project' => $project
         ]);
     }
 
     public function getCommissionDetails(Request $request, $id)
-{
-    $groupId = $request->input('group_id');
+    {
+        $groupId = $request->input('group_id');
 
-    // Fetch commission details based on groupId and projectId
-    $commissionDetails = DB::table('project_cost_commission')->where('project_id', $id)
-                                    ->where('groupcommission_id', $groupId)
-                                    ->get();
+        // Fetch commission details based on groupId and projectId
+        $commissionDetails = DB::table('project_cost_commission')->where('project_id', $id)
+            ->where('groupcommission_id', $groupId)
+            ->get();
 
-    if ($commissionDetails) {
-        return response()->json([
-            'success' => true,
-            'data' => $commissionDetails
-        ]);
-    } else {
-        return response()->json([
-            'success' => false,
-            'message' => 'No details found.'
-        ]);
+        if ($commissionDetails) {
+            return response()->json([
+                'success' => true,
+                'data' => $commissionDetails
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No details found.'
+            ]);
+        }
     }
-}
-public function exportCsv($id)
+
+    public function exportCsv($id)
     {
         $project = DB::table('projects')->where('project_id', $id)->first();
         $dataGroupCommission = DB::table('project_group_cost_commission')->get();
@@ -433,49 +575,150 @@ public function exportCsv($id)
             return response()->json(['success' => false, 'message' => 'Failed to delete cost commission item.']);
         }
     }
+
     public function updateCommission(Request $request, $project_id, $commission_id)
-{
-    dd($request);
-    // Validate the incoming request data
-    $validated = $request->validate([
-        'description' => 'required|string|max:255',
-        'amount' => 'required|numeric',
-    ]);
+    {
+        $costCommission = CostComissionModel::find($commission_id);
 
-    try {
-        // Find the commission by ID
-        $commission = DB::table('project_cost_commissions')->where('commission_id', $commission_id)->first();
-
-        // Check if the commission exists
-        if (!$commission) {
+        if (!$costCommission) {
             return response()->json([
                 'success' => false,
-                'message' => 'Commission not found'
+                'message' => 'Commission not found.'
             ], 404);
         }
 
-        // Update the commission
-        DB::table('project_cost_commissions')->where('commission_id', $commission_id)->update([
-            'description' => $validated['description'],
-            'amount' => $validated['amount']
-        ]);
+        $costCommission->description = $request->input('description');
+        $costCommission->amount = $request->input('amount');
+        $costCommission->save();
 
-        // Return success response
         return response()->json([
             'success' => true,
-            'message' => 'Commission updated successfully!'
+            'message' => 'Cost commission updated successfully.'
         ]);
-    } catch (\Exception $e) {
-        // Log the error for debugging
-        \Log::error('Error updating commission: ' . $e->getMessage());
-
-        // Return a generic error response
-        return response()->json([
-            'success' => false,
-            'message' => 'An error occurred while updating the commission.'
-        ], 500);
     }
+
+    public function addNewCommission(Request $request, $project_id)
+    {
+        try {
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'group_id' => 'required|integer',
+                'description' => 'required|string|max:255',
+                'amount' => 'required|numeric|min:0'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ]);
+            }
+
+            // Create new commission entry
+            $CommissionCost = new CostComissionModel();
+            $CommissionCost->project_id = $project_id;
+            $CommissionCost->groupcommission_id = $request->input('group_id');
+            $CommissionCost->description = $request->input('description');
+            $CommissionCost->amount = $request->input('amount');
+
+            // Save and check if successful
+            if ($CommissionCost->save()) {
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add commission.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error adding commission: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error. Please try again later.'
+            ]);
+        }
+    }
+
+    public function editNameGroup(Request $request, $project_id, $group_id)
+    {
+        $request->validate([
+            'groupName' => 'required|string|max:255',
+        ]);
+
+        $groupName = $request->input('groupName');
+
+        DB::table('project_group_cost_commission')
+            ->where('group_id', $group_id)
+            ->update(['groupcommission_name' => $groupName]);
+
+        return response()->json(['success' => true, 'message' => 'Cost group name updated successfully.']);
+    }
+
+    public function cost_exportCsv($id)
+    {
+        $costs = CostModel::where('project_id', $id)->get();
+
+        $response = new StreamedResponse(function () use ($costs) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Add CSV headers
+            fputcsv($handle, [
+                'Description', 'Labor Qty', 'Labor Unit', 'Budget Qty', 'Budget Unit', 'Labor Cost',
+                'Misc. Cost', 'OT Budget', 'Per Diem Pay', 'Subtotal', 'Remark'
+            ]);
+
+            // Add CSV rows
+            foreach ($costs as $cost) {
+                $subtotal = $cost->project_cost_labor_qty * $cost->project_cost_budget_qty *
+                    ($cost->project_cost_labor_cost + $cost->project_cost_misc_cost +
+                        $cost->project_cost_ot_budget + $cost->project_cost_perdiempay);
+
+                fputcsv($handle, [
+                    $cost->project_cost_description, $cost->project_cost_labor_qty, $cost->project_cost_labor_unit,
+                    $cost->project_cost_budget_qty, $cost->project_budget_unit, $cost->project_cost_labor_cost,
+                    $cost->project_cost_misc_cost, $cost->project_cost_ot_budget, $cost->project_cost_perdiempay,
+                    $subtotal, $cost->project_cost_remaks
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="project_budget.csv"');
+
+        return $response;
+    }
+
+    public function addNewCommissionGroup(Request $request, $project_id)
+    {
+        // Validate the request data
+        $request->validate([
+            'groupcommission_name' => 'required|string|max:255',
+        ]);
+
+        // Insert the new group into the database and get the inserted ID
+        $insertedId = DB::table('project_group_cost_commission')->insertGetId([
+            'groupcommission_name' => $request->input('groupcommission_name'),
+        ]);
+
+        // Check if the insertion was successful
+        if ($insertedId) {
+            // Return a success response with the new group ID
+            return response()->json([
+                'success' => true,
+                'message' => 'Group added successfully!',
+                'group_id' => $insertedId // Return the new group ID
+            ]);
+        } else {
+            // Return an error response if the insertion failed
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add group.'
+            ]);
+        }
+    }
+
 }
 
-
-}

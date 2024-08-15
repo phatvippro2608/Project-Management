@@ -30,12 +30,16 @@ class LoginController extends Controller
                 ->with('msg', 'Username or password is incorrect');
         }
 
-        if (password_verify($request->password, $account[0]->password)) {
+        if (password_verify($request->password, $account[0]->password) && $account[0]->status!==3) {
             $request->session()->put(StaticString::SESSION_ISLOGIN, true);
             $request->session()->put(StaticString::PERMISSION, $account[0]->permission);
             $request->session()->put(StaticString::ACCOUNT_ID, $account[0]->account_id);
             DB::table('login_history')->insert(['status'=>1,'desc'=>'success', 'username'=>$request->username, 'ip'=>\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::POSITION)]);
             return redirect()->action('App\Http\Controllers\DashboardController@getViewDashboard');
+        }else{
+            return redirect()
+                ->action('App\Http\Controllers\LoginController@postLogin')
+                ->with('msg', 'Account is locked');
         }
 
         DB::table('login_history')->insert(['status'=>0,'desc'=>'fail', 'username'=>$request->username, 'ip'=>\Illuminate\Support\Facades\Request::session()->get(\App\StaticString::POSITION)]);

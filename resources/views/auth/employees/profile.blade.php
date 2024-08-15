@@ -14,42 +14,37 @@
     <section class="section profile">
         <div class="row">
             <div class="col-xl-4">
-
                 <div class="card">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
                         @php
-                            $data = \Illuminate\Support\Facades\DB::table('account')
-                                        ->join('employees', 'account.employee_id', '=', 'employees.employee_id')
-                                        ->join('contacts', 'employees.id_contact', '=', 'contacts.id_contact')
-                                        ->join('job_detail', 'job_detail.employee_id', '=', 'employees.employee_id')
+                            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                                        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                                        ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                                        ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
 
                                         ->where(
-                                        'account.id_account',
+                                        'accounts.account_id',
                                         \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
                                         )
                                         ->first();
-                            $info = \Illuminate\Support\Facades\DB::table('job_detail')
-                                        ->join('job_position', 'job_detail.id_job_position', '=', 'job_position.id_position')
+                            $info = \Illuminate\Support\Facades\DB::table('job_details')
+                                        ->join('job_positions', 'job_details.job_position_id', '=', 'job_positions.position_id')
                                         ->where(
-                                            'job_detail.employee_id', $data->employee_id
+                                            'job_details.employee_id', $data->employee_id
                                         )
                                         ->first();
-                            $country = \Illuminate\Support\Facades\DB::table('job_detail')
-                                        ->join('job_country', 'job_detail.id_job_country', '=', 'job_country.id_country')
+                            $country = \Illuminate\Support\Facades\DB::table('job_details')
+                                        ->join('job_countries', 'job_details.job_country_id', '=', 'job_countries.country_id')
                                         ->where(
-                                            'job_detail.employee_id', $data->employee_id
+                                            'job_details.employee_id', $data->employee_id
                                         )
                                         ->first();
 
                                     $photoPath = asset($data->photo);
                                     $defaultPhoto = asset('assets/img/avt.png');
                                     $photoExists = !empty($data->photo) && file_exists(public_path($data->photo));
-
-
                             @endphp
-                        <img
-                            src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
-                            class="rounded-circle object-fit-cover" width="100" height="100">
+                        <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" class="rounded-circle object-fit-cover" width="100" height="100">
                         <h2>{{$data->first_name  . ' ' . $data->last_name }}</h2>
                         <h3>@if($info){{$info->position_name}}@endif</h3>
                     </div>
@@ -129,109 +124,95 @@
                             </div>
 
                             <div class="tab-pane fade profile-edit pt-3" id="profile-edit" role="tabpanel">
-
                                 <!-- Profile Edit Form -->
-                                <form>
-                                    <div class="row mb-3">
-                                        <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile
-                                            Image</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <div class="row">
-                                                <div class="col-md-2 position-relative text-center">
-                                                    <img
-                                                        id="profileImage"
-                                                        src="{{$photoExists ? $photoPath : $defaultPhoto}}"
-                                                        alt="Profile"
-                                                        class="rounded-pill object-fit-cover"
-                                                        width="100"
-                                                        height="100">
-                                                    <div class="overlay-upload position-absolute d-flex justify-content-center align-items-center">
-                                                        <i class="bi bi-camera text-white fw-bold fs-2"></i>
-                                                        <input type="file" id="fileInput" class="form-control photo visually-hidden" name="">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 mt-2 text-center">
-                                                    <button class="btn btn-primary btn_photo rounded-4 d-none">
-                                                        Upload
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="row mb-3 gy-3">
+                                    <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                                    <div class="col-lg-2 text-center">
+                                        <img class="border rounded-pill object-fit-cover" width="100px" height="100px" id="profileImage" src="{{$photoExists ? $photoPath : $defaultPhoto}}" alt="Profile">
                                     </div>
-
-                                    <div class="row mb-3">
-                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First
-                                            Name</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="" type="text" class="form-control" id="first_name"
-                                                   value="{{$data->first_name}}">
-                                        </div>
+                                    <div class="col-lg-6">
+                                        <form class="border rounded-4 p-2 text-center" action="{{route('img-store')}}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file"
+                                                   id="image"
+                                                   name="image"
+                                                   data-max-files="1"
+                                                   accept="image/png, image/jpeg, image/gif"
+                                            >
+                                            <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                                        </form>
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="" type="text" class="form-control" id="last_name"
-                                                   value="{{$data->last_name}}">
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First
+                                        Name</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="" type="text" class="form-control" id="first_name"
+                                               value="{{$data->first_name}}">
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <select class="form-select" id="position_name" aria-label="Default select example">
-                                                <option value="">No Select</option>
-                                                @foreach( $dataEmployee['jobPositions'] as $item)
-                                                    <option value="{{$item->id_position}}"  @if($info){{ $item->id_position == $info->id_job_position ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="" type="text" class="form-control" id="last_name"
+                                               value="{{$data->last_name}}">
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <select class="form-select" id="country_name" aria-label="Default select example">
-                                                <option value="">No Select</option>
-                                                @foreach($dataEmployee['jobCountry'] as $item)
-                                                    <option value="{{$item->id_country}}" @if($country){{ $item->id_country == $country->id_job_country ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-select" id="position_name" aria-label="Default select example">
+                                            <option value="">No Select</option>
+                                            @foreach( $dataEmployee['jobPositions'] as $item)
+                                                <option value="{{$item->position_id}}"  @if($info){{ $item->position_id == $info->job_position_id ? 'selected' : '' }}@endif>{{$item->position_name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="address" type="text" class="form-control"
-                                                   id="permanent_address"
-                                                   value="{{$data->permanent_address}}">
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <select class="form-select" id="country_name" aria-label="Default select example">
+                                            <option value="">No Select</option>
+                                            @foreach($dataEmployee['jobCountry'] as $item)
+                                                <option value="{{$item->country_id}}" @if($country){{ $item->country_id == $country->job_country_id ? 'selected' : '' }}@endif>{{$item->country_name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="phone" type="text" class="form-control" id="phone_number"
-                                                   value="{{$data->phone_number}}">
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="address" type="text" class="form-control"
+                                               id="permanent_address"
+                                               value="{{$data->permanent_address}}">
                                     </div>
+                                </div>
 
-                                    <div class="row mb-3">
-                                        <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                                        <div class="col-md-8 col-lg-9">
-                                            <input name="email" type="text" class="form-control" id="email"
-                                                   value="{{$data->email}}">
-                                        </div>
+                                <div class="row mb-3">
+                                    <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="phone" type="text" class="form-control" id="phone_number"
+                                               value="{{$data->phone_number}}">
                                     </div>
+                                </div>
 
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-primary btnLuu">Save Changes</button>
+                                <div class="row mb-3">
+                                    <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                    <div class="col-md-8 col-lg-9">
+                                        <input name="email" type="text" class="form-control" id="email"
+                                               value="{{$data->email}}">
                                     </div>
-                                </form><!-- End Profile Edit Form -->
+                                </div>
 
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-primary btnLuu"><i class="bi bi-floppy me-3"></i>Save Changes</button>
+                                </div>
                             </div>
 
 
@@ -267,7 +248,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -311,8 +291,7 @@
 
         $('.btn_photo').click(function (event) {
             event.preventDefault();
-
-            let filePhoto = $('.photo')[0].files[0];
+            let filePhoto = $('#photo')[0].files[0];
             let formData = new FormData();
 
             if (filePhoto) {
@@ -372,6 +351,57 @@
                 }
             });
         });
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        FilePond.registerPlugin(
+            FilePondPluginImagePreview,
+            FilePondPluginFileValidateType
+        );
+
+        FilePond.create(
+            document.querySelector('#image'),
+            {
+                allowPdfPreview: true,
+                pdfPreviewHeight: 320,
+                pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
+                server: {
+                    process: {
+                        url: '{{route('img-upload')}}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        ondata: (formData) => {
+                            formData.append('_token', csrfToken);
+                            formData.append('employee_id',{{$employ_detail['employee_id']}})
+                            return formData;
+                        },
+                    },
+                    revert:{
+                        url: '{{route('img-delete')}}',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    }
+                },
+
+            }
+        );
+
+        const filePond = document.querySelector("#image")
+        const filepondUpload = document.querySelector('.filepond-upload')
+        filePond.addEventListener('FilePond:processfile', e => {
+            if (e.returnValue) {
+                filepondUpload.classList.remove('d-none')
+            }
+        });
+
+        filePond.addEventListener('FilePond:removefile',e=>{
+            if (e.returnValue) {
+                filepondUpload.classList.add('d-none')
+            }
+        })
+
+
     </script>
-    <script src="{{asset('assets/js/upload.js')}}"></script>
 @endsection

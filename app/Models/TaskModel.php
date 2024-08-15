@@ -14,12 +14,15 @@ class TaskModel extends Model
 
     protected $fillable = [
         'task_name',
-        'phase_id',
         'project_id',
+        'phase_id',
+        'progress',
         'request',
         'engineers',
         'start_date',
         'end_date',
+        'employee_id',
+        'parent_id',
     ];
 
     public $timestamps = false;

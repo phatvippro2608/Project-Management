@@ -14,28 +14,38 @@
             white-space: normal;
         }
     </style>
-    <div class="container mt-5">
-        <h1 class="mb-4">Material Management</h1>
 
+    <div class="container-fluid">
+        <div class="pagetitle">
+            <h1>Material Management</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Material Management</li>
+                </ol>
+            </nav>
+        </div>
         {{-- @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>	
+        </div>
     @endif --}}
         <!-- Button to open the modal to add new material -->
         <button type="button" id="add-material-btn" class="btn btn-primary mb-4" data-bs-toggle="modal"
             data-bs-target="#addMaterialModal">
-            Add New Material
+            <i class="bi bi-plus-lg me-2"></i>Add New Material
         </button>
 
         <!-- Table to display materials -->
-        <div class="card">
+        <div class="card p-2 border rounded-4">
+            <div class="card-header py-0">
+                <div class="card-title my-3 p-0">Material Management Table</div>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Material Management Table</h5>
                 <div class="table-responsive">
-                    <table id="materialsTable" class="display">
-                        <thead>
+                    <table id="materialsTable" class="table table-borderless table-hover">
+                        <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
@@ -61,19 +71,19 @@
                                     <td>{{ number_format($material->vat, 2, ',', '.') }}%</td>
                                     <td>
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
                                         |
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                         |
                                         <button
-                                            class="btn p-0 btn-primary border-0 bg-transparent text-info shadow-none detail-btn"
+                                            class="btn p-1 btn-primary border-0 bg-transparent text-info shadow-none detail-btn"
                                             data-id="{{ $material->material_id }}">
                                             <i class="bi bi-info-circle"></i>
                                         </button>
@@ -107,41 +117,53 @@
 
         <div class="row mt-4">
             <div class="col-md-8">
-                <table class="table" style="border-radius: 10px; overflow: hidden;">
-                    <tbody>
-                        <tr>
-                            <td>Payment term</td>
-                            <td>- First payment: Deposit 30% of the Contract value included VAT within 7 working days</td>
-                        </tr>
-                        <tr>
-                            <td>Warranty term</td>
-                            <td>- All Goods of the Contract shall be warranted As</td>
-                        </tr>
-                        <tr>
-                            <td>Delivery & Installation</td>
-                            <td>For all the site at Quang Nam </br>
-                                Following the - Standard for cabling</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card border rounded-4 p-3">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td>Payment term</td>
+                                        <td>- First payment: Deposit 30% of the Contract value included VAT within 7 working days</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Warranty term</td>
+                                        <td>- All Goods of the Contract shall be warranted As</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Delivery & Installation</td>
+                                        <td>For all the site at Quang Nam </br>
+                                            Following the - Standard for cabling</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <table class="table" style="border-radius: 10px; overflow: hidden;">
-                    <tbody>
-                        <tr>
-                            <td><strong>Sub Total</strong></td>
-                            <td id="subTotal"><strong>{{ number_format($sub_total, 0, ',', '.') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>VAT of GOODS</td>
-                            <td id="vatOfGoods">{{ number_format($vat_of_goods, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>GRAND TOTAL</strong></td>
-                            <td id="grandTotal"><strong>{{ number_format($grand_total, 0, ',', '.') }}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card border rounded-4 p-3">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0">
+                                <tbody>
+                                <tr>
+                                    <td><strong>Sub Total</strong></td>
+                                    <td id="subTotal"><strong>{{ number_format($sub_total, 0, ',', '.') }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>VAT of GOODS</td>
+                                    <td id="vatOfGoods">{{ number_format($vat_of_goods, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GRAND TOTAL</strong></td>
+                                    <td id="grandTotal"><strong>{{ number_format($grand_total, 0, ',', '.') }}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -244,6 +266,13 @@
     <script>
         $(document).ready(function() {
             var table = $('#materialsTable').DataTable({
+                language: { search: "" },
+                initComplete: function (settings, json) {
+                    $('.dt-search').addClass('input-group');
+                    $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+                },
                 responsive: true
             });
 

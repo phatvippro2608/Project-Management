@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeModel;
+use App\Models\PostFile;
+use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UploadFileController extends Controller
 {
@@ -70,9 +74,9 @@ class UploadFileController extends Controller
 
         if (count($failedFiles) > 0) {
             // Xóa dữ liệu liên quan nếu có lỗi upload
-            $id_contact = DB::table('employees')->where('employee_id', $employee_id)->value('id_contact');
+            $contact_id = DB::table('employees')->where('employee_id', $employee_id)->value('contact_id');
             DB::table('employees')->where('employee_id', $employee_id)->delete();
-            DB::table('contacts')->where('id_contact', $id_contact)->delete();
+            DB::table('contacts')->where('contact_id', $contact_id)->delete();
             DB::table('job_detail')->where('employee_id', $employee_id)->delete();
             return json_encode((object)["status" => 500, "message" => "Action Failed"]);
         }
@@ -91,11 +95,19 @@ class UploadFileController extends Controller
 
     public function uploadPhoto(Request $request)
     {
-        $request->validate([
-            'photo' => 'nullable|file|max:1048576', // 10MB
-        ]);
+        try {
+            $request->validate([
+                'photo' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:1048576', // 1MB
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation failure
+            return response()->json([
+                'status' => 422,
+                'message' => 'File is not Image File please choose again!',
+            ], 422);
+        }
         $photo = $request->file('photo');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
@@ -156,7 +168,7 @@ class UploadFileController extends Controller
         ]);
 
         $personalProfiles = $request->file('personal_profile');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $directoryPath = public_path('uploads/' . $employee_id);
 
         if (!file_exists($directoryPath)) {
@@ -212,6 +224,8 @@ class UploadFileController extends Controller
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
     }
 
+
+
     public function uploadMedicalCheckUp(Request $request)
     {
         $request->validate([
@@ -219,7 +233,7 @@ class UploadFileController extends Controller
         ]);
 
         $medicalFile = $request->file('medical_file');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $medical_checkup_date = $request->input('medical_checkup_date');
         $directoryPath = public_path('uploads/' . $employee_id);
 
@@ -260,7 +274,7 @@ class UploadFileController extends Controller
             'certificate_file' => 'nullable|file|max:1048576', // 10MB
         ]);
         $certificate_file = $request->file('certificate_file');
-        $employee_id = $request->input('employee_id');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
         $certificate_end_date = $request->input('certificate_end_date');
         $type_certificate = $request->input('type_certificate');
         $directoryPath = public_path('uploads/' . $employee_id);
@@ -286,7 +300,7 @@ class UploadFileController extends Controller
         DB::table('certificates')->insert([
             'employee_id' => $employee_id,
             'certificate' => $uploadedFile,
-            'id_type_certificate' => $type_certificate,
+            'type_certificate_id' => $type_certificate,
             'end_date_certificate' => $certificate_end_date
         ]);
 
@@ -295,5 +309,100 @@ class UploadFileController extends Controller
         }
 
         return json_encode((object)["status" => 200, "message" => "Action Successful"]);
+    }
+
+    public function imgStore(Request $request)
+    {
+        $imageData = json_decode($request->input('image'), true);
+        $employee_id = $imageData['employee_id'];
+        $folder = $imageData['folder'];
+        $tmp_file = TemporaryFile::where('folder', $folder)->first();
+        if($tmp_file){
+            $path = 'uploads/'.$employee_id.'/'.$tmp_file->file;
+            $fileContentPath = 'uploads/img/'. $tmp_file->folder .'/'. $tmp_file->file;
+            $fileContent = Storage::disk('public')->get($fileContentPath);
+            Storage::disk('public_uploads')->put($path, $fileContent);
+            DB::table('employees')->where('employee_id', $employee_id)->update(['photo' => $path]);
+            Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_file->folder);
+            return redirect()->back();
+        }
+        return '';
+    }
+    public function imgUpload(Request $request)
+    {
+        if($request->employee_code){
+            $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        }else{
+            $employee_id = $request->employee_id;
+        }
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $file_name = $image->getClientOriginalName();
+            $folder = uniqid('image-', true);
+            $image->storeAs('uploads/img/'.$folder, $file_name);
+            TemporaryFile::create([
+                'folder'=>$folder,
+                'file'=>$file_name,
+            ]);
+            return response()->json([
+                'folder' => $folder,
+                'employee_id' => $employee_id
+            ]);
+        }
+        return '';
+    }
+
+    public function imgDelete(Request $request)
+    {
+        $tmp_image = TemporaryFile::where('folder', $request->getContent())->first();
+        if($tmp_image){
+            Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_image->folder);
+            TemporaryFile::where('folder', $request->getContent())->delete();
+        }
+        return '';
+    }
+
+    public function uploadEmploymentContract(Request $request)
+    {
+        $request->validate([
+            'employment_contract_file' => 'nullable|file|max:1048576', // 10MB
+        ]);
+
+        $employment_contract = $request->file('employment_contract_file');
+        $employee_id = DB::table('employees')->where('employee_code', $request->employee_code)->value('employee_id');
+        $employment_contract_start_date = $request->input('start_date');
+        $employment_contract_end_date = $request->input('end_date');
+        $directoryPath = public_path('uploads/' . $employee_id);
+
+        if (!file_exists($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
+        }
+
+        $uploadedFile = null;
+        $failedFile = null;
+
+        // Handle file upload
+        if ($employment_contract) {
+            try {
+                $filename = $employment_contract->getClientOriginalName();
+                $employment_contract->move($directoryPath, $filename);
+                $uploadedFile = $filename;
+            } catch (\Exception $e) {
+                $failedFile = $filename;
+            }
+        }
+
+        DB::table('employment_contract')->insert([
+            'employee_id' => $employee_id,
+            'employment_contract' => $uploadedFile,
+            'start_date' => $employment_contract_start_date,
+            'end_date' => $employment_contract_end_date
+        ]);
+
+        if ($failedFile) {
+            return response()->json(['status' => 400,'Action Failed']);
+        }
+
+        return response()->json(['status' => 200,'Action Successful']);
     }
 }

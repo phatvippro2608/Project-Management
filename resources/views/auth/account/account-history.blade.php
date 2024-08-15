@@ -10,66 +10,47 @@
             </ol>
         </nav>
     </div>
-
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+                @if(\App\Http\Controllers\AccountController::permission())
+                    <div class="btn btn-danger btn-add">
+                        <div class="d-flex align-items-center clear-btn">
+                            <i class="bi bi-x-lg pe-2"></i>
+                            Clear Log
+                        </div>
+                    </div>
+                @endif
+        </div>
+    </div>
     <section class="section employees">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="w-100 d-flex justify-content-between">
-                            <div class="ms-2 text-secondary">
-                                <div class="search-container">
-                                    <form method="GET"
-                                          action="{{ action('App\Http\Controllers\AccountController@loginHistory') }}"
-                                          class="d-flex">
-                                        <input name="keyw" type="date"
-                                               value="{{ request()->input('keyw') }}"
-                                               class="form-control form-control-md" aria-label="Search invoice"
-                                               placeholder="Search ...">
-                                        <button type="submit" class="btn btn-link p-0"><i
-                                                class="bi bi-search search-button"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                            @if(\App\Http\Controllers\AccountController::permission())
-                            <div class="btn btn-danger mx-2 btn-add">
-                                <div class="d-flex align-items-center clear-btn">
-                                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
-                                    Clear Log
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="card-body m-1">
-                        <div class="table-responsive mt-4">
-                            <table class="table card-table table-vcenter text-nowrap datatable">
-                                <thead>
-                                <tr>
-                                    <th class="text-left">Description</th>
-                                    <th class="text-center">Date</th>
-                                </tr>
+        <div class="card border rounded-4 p-2">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table id="logTable" class="table table-borderless table-hover datatable">
+                        <thead class="table-light">
+                        <tr>
+                            <th class="text-left">Description</th>
+                            <th class="text-center">Date</th>
+                        </tr>
 
-                                </thead>
-                                <tbody class="account-list">
-                                @foreach($history as $item)
-                                    <tr class="account-item">
-                                        <td class="text-right">
-                                            @if($item->status == 1)
-                                                User Successfully Logged In (IP: {{$item->ip}})
-                                            @else
-                                                Failed Login Attempt (IP: {{$item->ip}})
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            {{$item->created_at}}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                        </thead>
+                        <tbody class="account-list">
+                        @foreach($history as $item)
+                            <tr class="account-item">
+                                <td class="text-right">
+                                    @if($item->status == 1)
+                                        User Successfully Logged In (IP: {{$item->ip}})
+                                    @else
+                                        Failed Login Attempt (IP: {{$item->ip}})
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{$item->created_at}}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -77,6 +58,22 @@
 @endsection
 @section('script')
     <script>
+        var table = $('#logTable').DataTable({
+            language: { search: "" },
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
+            initComplete: function (settings, json) {
+                $('.dt-search').addClass('input-group');
+                $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
+                                <i class="bi bi-search"></i>
+                            </button>`)
+            },
+            responsive: true
+        });
+
         $('.clear-btn').click(function () {
             if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
                 return;
