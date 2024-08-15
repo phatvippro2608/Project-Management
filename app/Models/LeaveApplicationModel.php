@@ -48,4 +48,5 @@ class LeaveApplicationModel extends Model
     {
         return $this->belongsTo(LeaveTypeModel::class, 'leave_type', 'leave_type_id');
     }
+
 }

@@ -401,7 +401,6 @@
                 url: '{{ route('task.update') }}',
                 data: data,
                 success: function(response) {
-                    console.log(response);
                     if (response.success) {
                         toastr.success(response.message);
                         loadData();

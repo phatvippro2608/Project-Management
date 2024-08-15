@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $sql_get_employee_id = "SELECT * FROM employees, accounts WHERE employees.employee_id = accounts.employee_id AND account_id = $account_id";
         $employee_id = DB::selectOne($sql_get_employee_id)->employee_id;
 
-        $em_c = count(EmployeeModel::all());
+        $em_c = count(DB::table('employees')->where('fired','false')->get());
         $team_c = count(TeamModel::all());
         $project_c = count(ProjectModel::all());
 

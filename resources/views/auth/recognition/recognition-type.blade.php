@@ -14,14 +14,14 @@
 
 @section('contents')
 <style>
-    #recognitionTypeTable th {
-        text-align: center !important;
-    }
+    /*#recognitionTypeTable td:nth-child(3),*/
+    /*#recognitionTypeTable td:nth-child(4) {*/
+    /*    text-align: left !important;*/
+    /*}*/
 
-    #recognitionTypeTable td:nth-child(3),
-    #recognitionTypeTable td:nth-child(4) {
-        text-align: left !important;
-    }
+    /*#recognitionTypeTable th {*/
+    /*    text-align: center !important;*/
+    /*}*/
 </style>
 <div class="pagetitle">
     <h1>Recognition Types</h1>
@@ -63,15 +63,15 @@
                 <table id="recognitionTypeTable" class="table-hover table-borderless display">
                     <thead class="table-light">
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Employee Code</th>
-                        <th class="text-center" scope="col">Actions</th>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col" class="text-center">Employee Code</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($recognition_types as $recognition_type)
                         <tr class="{{ $recognition_type->recognition_type_hidden ? 'hidden-row' : '' }}">
-                            <th scope="col">{{ $recognition_type->recognition_type_id }}</th>
+                            <th scope="col" class="text-center">{{ $recognition_type->recognition_type_id }}</th>
                             <th scope="col">{{ $recognition_type->recognition_type_name }}</th>
                             <td class="text-center">
                                 <button data-recognition="{{ $recognition_type->drecognition_type_id }}" class="btn p-1 text-primary" onclick="editRecognitionType(this)">

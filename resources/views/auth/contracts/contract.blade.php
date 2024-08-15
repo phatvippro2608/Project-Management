@@ -292,7 +292,7 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id'=>-1])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
