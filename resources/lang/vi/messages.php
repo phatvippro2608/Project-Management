@@ -63,6 +63,8 @@ return [
     'lms' => 'LMS',
     'internal_certificates' => 'Chứng chỉ nội bộ',
     'internal_certificates_types' => 'Loại chứng chỉ nội bộ',
+    'internal_certificates_signature' => 'Chứng chỉ nội bộ ký tên',
+    'internal_certificates_create' => 'Tạo ký tên',
     'page' => 'Trang',
     'proposal' => 'Đề xuất',
     'proposal_application' => 'Đơn đề xuất',

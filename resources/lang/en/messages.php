@@ -62,6 +62,8 @@ return [
     'lms' => 'LMS',
     'internal_certificates' => 'Internal Certificates',
     'internal_certificates_types' => 'Internal Certificates Types',
+    'internal_certificates_signature' => 'Internal Certificates Signature',
+    'internal_certificates_create' => 'Internal Certificates Create',
     'proposal' => 'Proposal',
     'proposal_application' => 'Proposal Application',
     'proposal_type' => 'Proposal Type',

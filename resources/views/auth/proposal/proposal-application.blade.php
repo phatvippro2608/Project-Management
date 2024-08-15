@@ -74,7 +74,7 @@
                         <div class="mb-3">
                             <label for="department_name" class="form-label">Employee name</label>
                             <select class="form-select" aria-label="Default" name="employee_id" id="employee_id">
-                                @if ($data['permission'] == 0)
+                                @if (($data['permission'] != 9 && $data['permission'] != 10))
                                     @if (isset($data['employee_current']))
                                         <option value="{{ $data['employee_current']->employee_id }}">
                                             {{ $data['employee_current']->first_name }}

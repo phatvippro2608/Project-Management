@@ -164,16 +164,21 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
             });
             //Progress
-            Route::group(['prefix' => '/task'], function () {
-                Route::post('/', [TaskController::class, 'getTask'])->name('task.getTask');
-                Route::post('/update', [TaskController::class, 'update'])->name('task.update');
-                Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
-                Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
-
-                Route::post('/update-item', [ProgressController::class, 'updateItem']);
-                Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
-                Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+            Route::group(['prefix' => '/location'], function () {
+                Route::group(['prefix' => '/{location_id}'], function () {
+                    Route::group(['prefix' => '/task'], function () {
+                        Route::post('/', [TaskController::class, 'getTask'])->name('task.getTask');
+                        Route::post('/update', [TaskController::class, 'update'])->name('task.update');
+                        Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
+                        Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
+        
+                        Route::post('/update-item', [ProgressController::class, 'updateItem']);
+                        Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+                        Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+                    });
+                });
             });
+            
 
 
         });
@@ -385,8 +390,10 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+
         Route::post('/save-answer', [TestQuizController::class, 'saveAnswer'])->name('test-quiz.saveAnswer');
-        Route::post('/submit-quiz', [TestQuizController::class, 'submitQuiz'])->name('submit-quiz');
+        Route::post('/test-quiz/calculateScore', [TestQuizController::class, 'calculateScore'])->name('test-quiz.calculateScore');
+        Route::post('/test-quiz/markExamAsZero', [TestQuizController::class, 'markExamAsZero'])->name('test-quiz.markExamAsZero');
 
 
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');

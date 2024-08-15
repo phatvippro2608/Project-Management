@@ -84,7 +84,17 @@
                             <td>{{ $item->start_date }}</td>
                             <td>{{ $item->end_date }}</td>
                             <td>{{ $item->duration }} days</td>
-                            <td>{{ $item->leave_status }}</td>
+                            <td>
+                                @if($item->leave_status === "Not Approved")
+                                    <span class="badge rounded-pill bg-danger">
+                                    Not Approved
+                                </span>
+                                @else
+                                    <span class="badge rounded-pill bg-success">
+                                    Approved
+                                </span>
+                                @endif
+                            </td>
                             <td>
                                 <button
                                     class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
@@ -134,14 +144,8 @@
                             <label for="name" class="form-label">Employee Name</label>
                             {{--                            <input type="text" class="form-control" id="employee_name" name="employee_name" required> --}}
                             <select class="form-select" aria-label="Default" name="employee_id" id="add_employee_id">
-                                @if($data->permission != 0)
-                                    @foreach ($employee_name as $item)
-                                        <option value="{{ $item->employee_id }}">{{ $item->employee_code }}
-                                            - {{ $item->first_name }} {{ $item->last_name }}</option>
-                                    @endforeach
-                                @else
-                                    <option value="{{ $data->employee_id }}">{{ $data->first_name }} {{ $data->last_name }}</option>
-                                @endif
+                                <option
+                                    value="{{ $data->employee_id }}">{{ $data->first_name }} {{ $data->last_name }}</option>
                             </select>
                         </div>
 
@@ -192,12 +196,9 @@
                         <div class="mb-3">
 
                             <label for="edit_employee_id" class="form-label">Employee Name</label>
-                            <select class="form-select" aria-label="Default" name="employee_id" id="edit_employee_id">
-                                <option value="">No select</option>
-                                @foreach ($employee_name as $item)
-                                    <option value="{{ $item->employee_id }}">{{ $item->employee_code }} -
-                                        {{ $item->first_name }} {{ $item->last_name }}</option>
-                                @endforeach
+                            <select class="form-select" aria-label="Default" name="employee_id" id="add_employee_id">
+                                <option
+                                    value="{{ $data->employee_id }}">{{ $data->first_name }} {{ $data->last_name }}</option>
                             </select>
 
                         </div>
