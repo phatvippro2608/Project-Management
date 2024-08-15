@@ -32,10 +32,10 @@
         <!-- Import Form -->
         <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
         <!-- Hidden Import Form -->
-        <form id="importForm" action="{{ route('budget.import', ['id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+        <form id="importForm" action="{{ !empty($location) ? route('budget.import', ['id' => $id, 'location' => $location ]) :   route('budget.import', ['id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
             @csrf
             <input type="file" name="file" id="fileInput" required>
-            <button type="submit" id="submitButton">Submit</button>
+            <button type="button" id="submitButton">Submit</button>
         </form>
 
         <!-- Add New Cost Button -->
@@ -272,49 +272,53 @@
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-    document.getElementById('fileInput').click(); // Trigger file input click
+    document.getElementById('fileInput').click(); 
 });
 
 document.getElementById('fileInput').addEventListener('change', function() {
-    document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
+    document.getElementById('importForm').submit(); 
 });
 
-document.getElementById('importForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    var fileInput = document.getElementById('fileInput');
+$('#submitButton').on('click', function(event) {
+    event.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+
+    var fileInput = $('#fileInput')[0];
     var file = fileInput.files[0];
-    var reader = new FileReader();
+    
+    if (!file) {
+        toastr.error('Please select a file before submitting.');
+        return;
+    }
 
-    reader.onload = function(e) {
-        var data = e.target.result;
-        var formData = new FormData();
-        formData.append('file', file);
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-        fetch('{{ route('budget.import', $id) }}', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
+    var url = $('#importForm').attr('action');
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
             if (data.success) {
                 toastr.success('Import successful!');
-                // Optionally reload or update the page content
                 setTimeout(function() {
                     location.reload();
                 }, 500);
             } else {
                 toastr.error('Import failed: ' + (data.message || 'Unknown error'));
             }
-        })
-        .catch(error => {
-            toastr.error('Error: ' + error.message);
-        });
-    };
-
-    reader.readAsDataURL(file);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            toastr.error('Error: ' + errorThrown);
+        }
+    });
 });
+
+
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
             var labelsData = [];

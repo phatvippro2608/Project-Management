@@ -70,116 +70,102 @@ class ProjectBudgetController extends Controller
     }
     
     public function budget_import(Request $request, $id) {
-        try {
-            // Read Excel data
-            $dataExcel = SpreadsheetModel::readExcel($request->file('file'));
+        // try {
+        //     // Read Excel data
+        //     $dataExcel = SpreadsheetModel::readExcel($request->file('file'));
+        //     $location = $request->input('location', '');
+        //     // Fetch project name
+        //     $project = DB::table('projects')->select('project_name')
+        //         ->where('project_id', $id)
+        //         ->first();
+
+        //     $prjNameCurrent = $project->project_name;
+        //     $prjName = $dataExcel['data'][1][1];
+        //     $prjLocationName = $dataExcel['data'][2][1];
+
+        //     $prjLocationNameCurrent = DB::table('project_locations')->where('project_id', $id)->where('project_location_id', $location)->first()->project_location_name;
+
+        //     if ($prjNameCurrent != $prjName) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'why did you import project ' . $prjNameCurrent . ' instead on project ' . $prjLocationName,
+        //         ]);
+        //     }
+
+        //     // Fetch project location
+        //     if ($prjLocationName != $prjLocationNameCurrent) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
+        //         ]);
+        //     }
     
-            // Fetch project name
-            $project = DB::table('projects')->select('project_name')
-                ->where('project_id', $id)
-                ->first();
+        //     $num_row = 4; // Start reading from row 3
+        //     while ($num_row < count($dataExcel['data'])) {
+        //         if (strpos(trim($dataExcel['data'][$num_row][0]), "NAME: ") !== false) {
+        //             $name = str_replace("NAME: ", "", trim($dataExcel['data'][$num_row][0]));
     
-            if (!$project) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Project not found',
-                ]);
-            }
+        //             // Insert a new cost group and get its ID
+        //             $group_id = DB::table('project_cost_group')->insertGetId([
+        //                 'project_cost_group_name' => $name,
+        //                 'project_location_id' => $location
+        //             ]);
+        //         } else {
+        //             $description = trim($dataExcel['data'][$num_row][0] ?? '');
+        //             $laborQTY = trim($dataExcel['data'][$num_row][1] ?? '');
+        //             $laborUnit = trim($dataExcel['data'][$num_row][2] ?? '');
+        //             $budgetQTY = trim($dataExcel['data'][$num_row][3] ?? '');
+        //             $budgetUnit = trim($dataExcel['data'][$num_row][4] ?? '');
+        //             $laborCost = trim($dataExcel['data'][$num_row][5] ?? '');
+        //             $miscCost = trim($dataExcel['data'][$num_row][6] ?? '');
+        //             $otBudget = trim($dataExcel['data'][$num_row][7] ?? '');
+        //             $perDiemPay = trim($dataExcel['data'][$num_row][8] ?? '');
+        //             $remark = trim($dataExcel['data'][$num_row][9] ?? '');
     
-            $prjNameCurrent = $project->project_name;
+        //             // Check if all required fields are not empty
+        //             if (!empty($description) || !empty($laborQTY) || !empty($laborUnit) ||
+        //                 !empty($budgetQTY) || !empty($budgetUnit) || !empty($laborCost) ||
+        //                 !empty($miscCost) || !empty($otBudget) || !empty($perDiemPay) || !empty($remark)) {
     
-            // Fetch project location
-            $prjLocationName = $dataExcel['data'][2][1];
-            $prjLocation = DB::table('project_locations')->select('project_location_id')
-                ->where('project_id', $id)
-                ->where('project_location_name', $prjLocationName)
-                ->first();
+        //                 // Insert project costs
+        //                 DB::table('project_costs')->insert([
+        //                     'project_id' => $id,
+        //                     'project_cost_description' => $description,
+        //                     'project_cost_labor_qty' => intval($laborQTY),
+        //                     'project_cost_labor_unit' => $laborUnit,
+        //                     'project_cost_budget_qty' => intval($budgetQTY),
+        //                     'project_budget_unit' => $budgetUnit,
+        //                     'project_cost_labor_cost' => intval($laborCost),
+        //                     'project_cost_misc_cost' => intval($miscCost),
+        //                     'project_cost_perdiempay' => intval($perDiemPay),
+        //                     'project_cost_ot_budget' => intval($otBudget),
+        //                     'project_cost_remaks' => $remark,
+        //                     'project_cost_group_id' => $group_id,
+        //                     'create_date' => today()
+        //                 ]);
+        //             }
+        //             $num_row++;
+        //             continue;
+        //         }
     
-            if (!$prjLocation) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Project location not found',
-                ]);
-            }
+        //         $num_row++;
+        //     }
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'Import successfully!',
+        //     ]);
     
-            $prjLocationId = $prjLocation->project_location_id;
-    
-            $num_row = 4; // Start reading from row 3
-            while ($num_row < count($dataExcel['data'])) {
-                if (strpos(trim($dataExcel['data'][$num_row][0]), "NAME: ") !== false) {
-                    $name = str_replace("NAME: ", "", trim($dataExcel['data'][$num_row][0]));
-    
-                    // Insert a new cost group and get its ID
-                    $group_id = DB::table('project_cost_group')->insertGetId([
-                        'project_cost_group_name' => $name,
-                        'project_location_id' => $prjLocationId
-                    ]);
-                } else {
-                    $description = trim($dataExcel['data'][$num_row][0] ?? '');
-                    $laborQTY = trim($dataExcel['data'][$num_row][1] ?? '');
-                    $laborUnit = trim($dataExcel['data'][$num_row][2] ?? '');
-                    $budgetQTY = trim($dataExcel['data'][$num_row][3] ?? '');
-                    $budgetUnit = trim($dataExcel['data'][$num_row][4] ?? '');
-                    $laborCost = trim($dataExcel['data'][$num_row][5] ?? '');
-                    $miscCost = trim($dataExcel['data'][$num_row][6] ?? '');
-                    $otBudget = trim($dataExcel['data'][$num_row][7] ?? '');
-                    $perDiemPay = trim($dataExcel['data'][$num_row][8] ?? '');
-                    $remark = trim($dataExcel['data'][$num_row][9] ?? '');
-                    // Log values for debugging
-                    Log::info('Description: ' . $description);
-                    Log::info('Labor QTY: ' . $laborQTY);
-                    Log::info('Labor Unit: ' . $laborUnit);
-                    Log::info('Budget QTY: ' . $budgetQTY);
-                    Log::info('Budget Unit: ' . $budgetUnit);
-                    Log::info('Labor Cost: ' . $laborCost);
-                    Log::info('Misc Cost: ' . $miscCost);
-                    Log::info('OT Budget: ' . $otBudget);
-                    Log::info('Per Diem Pay: ' . $perDiemPay);
-                    Log::info('Remark: ' . $remark);
-    
-                    // Check if all required fields are not empty
-                    if (!empty($description) || !empty($laborQTY) || !empty($laborUnit) ||
-                        !empty($budgetQTY) || !empty($budgetUnit) || !empty($laborCost) ||
-                        !empty($miscCost) || !empty($otBudget) || !empty($perDiemPay) || !empty($remark)) {
-    
-                        // Insert project costs
-                        DB::table('project_costs')->insert([
-                            'project_id' => $id,
-                            'project_cost_description' => $description,
-                            'project_cost_labor_qty' => $laborQTY,
-                            'project_cost_labor_unit' => $laborUnit,
-                            'project_cost_budget_qty' => $budgetQTY,
-                            'project_budget_unit' => $budgetUnit,
-                            'project_cost_labor_cost' => $laborCost,
-                            'project_cost_misc_cost' => $miscCost,
-                            'project_cost_perdiempay' => $perDiemPay,
-                            'project_cost_ot_budget' => $otBudget,
-                            'project_cost_remaks' => $remark,
-                            'project_cost_group_id' => $group_id,
-                            'create_date' => today()
-                        ]);
-                    }
-    
-                    // Skip to the next row
-                    $num_row++;
-                    continue;
-                }
-    
-                $num_row++;
-            }
-    
-            // Check if import was successful
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Import failed: ' . $e->getMessage(),
+        //     ]);
+        // }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Import successfully!',
             ]);
-    
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Import failed: ' . $e->getMessage(),
-            ]);
-        }
     }
     
     
