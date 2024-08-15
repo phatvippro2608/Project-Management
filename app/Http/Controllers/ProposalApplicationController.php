@@ -43,6 +43,7 @@ class ProposalApplicationController extends Controller
         $validated['progress'] = 0;
         $proposalApplication = ProposalApplicationModel::create($validated);
 
+
         if ($request->hasFile('files')) {
             $folderName = $request->employee_id;
 

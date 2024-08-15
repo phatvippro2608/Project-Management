@@ -35,7 +35,11 @@ class TestQuizController extends Controller
             ->join('question_bank', 'question_bank.question_bank_id', '=', 'exam_questions.question_bank_id')
             ->where('exam_questions.exam_id', $exam->exam_id)
             ->select('question_bank.*', 'exam_questions.*')
-            ->get();
+            ->get()
+            ->toArray();
+
+        // Trộn các câu hỏi
+        shuffle($questions);
 
         return view('auth.quiz.test-quiz', [
             'exam' => $exam,
@@ -43,6 +47,7 @@ class TestQuizController extends Controller
             'employee_id' => $employee_id,
         ]);
     }
+
 
     public function saveAnswer(Request $request)
     {
@@ -82,5 +87,59 @@ class TestQuizController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function calculateScore(Request $request)
+    {
+        $validated = $request->validate([
+            'exam_id' => 'required|int',
+            'employee_id' => 'required|int',
+        ]);
+
+        $exam_result = ExamResultModel::where('exam_id', $validated['exam_id'])
+            ->where('employee_id', $validated['employee_id'])
+            ->first();
+
+        if (!$exam_result) {
+            return response()->json(['success' => false, 'message' => 'Exam result not found']);
+        }
+
+        $correctAnswers = ExamAnswerModel::where('exam_result_id', $exam_result->exam_result_id)
+            ->where('is_correct', 1)
+            ->count();
+
+        $totalQuestions = ExamAnswerModel::where('exam_result_id', $exam_result->exam_result_id)->count();
+
+        $score = ($correctAnswers / $totalQuestions) * 10;
+        $score = round($score * 2) / 2;  
+
+        $exam_result->score = $score;
+        $exam_result->passed = $score >= 5 ? 1 : 0; 
+        $exam_result->save();
+
+        return response()->json(['success' => true, 'score' => $score]);
+    }
+
+
+
+    public function markExamAsZero(Request $request)
+    {
+        $validated = $request->validate([
+            'exam_id' => 'required|int',
+            'employee_id' => 'required|int',
+        ]);
+
+        $exam_result = ExamResultModel::updateOrCreate(
+            [
+                'exam_id' => $validated['exam_id'],
+                'employee_id' => $validated['employee_id']
+            ],
+            [
+                'score' => 0,
+                'exam_date' => now()
+            ]
+        );
+
+        return response()->json(['success' => true]);
     }
 }
