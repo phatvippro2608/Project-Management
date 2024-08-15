@@ -318,6 +318,7 @@ class AccountController extends Controller
     static function setRecentProject($project_id)
     {
         try {
+            DB::table('recent_project')->where(['account_id' => self::getAccountId(), 'project_id' => $project_id])->delete();
             return DB::table('recent_project')->insert(['account_id' => self::getAccountId(), 'project_id' => $project_id]);
         } catch (\Exception $e) {
             return $e;

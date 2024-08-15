@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EarnLeaveController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\ProposalApplicationController;
 use App\Http\Controllers\ProposalTypesController;
@@ -83,24 +84,96 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
         Route::get('/query', 'App\Http\Controllers\CustomerController@query');
     });
+
+    //Contract
     Route::group(['prefix' => '/contract'], function () {
         Route::get('/', 'App\Http\Controllers\ContractController@getView');
+        Route::post('/add', 'App\Http\Controllers\ContractController@addContract');
+        Route::post('/update', 'App\Http\Controllers\ContractController@updateContract');
+        Route::delete('/delete', 'App\Http\Controllers\ContractController@deleteContract');
+
+        //FILE
+        Route::post('/contract-upload', 'App\Http\Controllers\ContractController@uploadContractFile');
+        Route::delete('/delete-file-contract', 'App\Http\Controllers\ContractController@deleteFileContract');
     });
-
-
+    //Team
     Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('/', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
-        ;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
 
         Route::put('/add-from-project', 'App\Http\Controllers\TeamController@addFromProject');
     });
+    //Project
+    Route::group(['prefix' => '/project'], function () {
+        //Project
+        Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
+        Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+
+        //Detaill
+        Route::group(['prefix' => '/{project_id}'], function () {
+            Route::get('/', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+
+            //File attachments
+            Route::group(['prefix' => '/attachments'], function () {
+                Route::get('/', 'App\Http\Controllers\ProjectController@getAttachmentView');
+                Route::get('/{location_id}', 'App\Http\Controllers\ProjectController@getDateAttachments');
+                Route::get('/{location_id}/{date}', 'App\Http\Controllers\ProjectController@getFileAttachments');
+
+                Route::post('/upload', 'App\Http\Controllers\UploadAttachmentController@attachmentUpload')->name('attachment-upload');
+                Route::post('/store', 'App\Http\Controllers\UploadAttachmentController@attachmentStore')->name('attachment-store');
+                Route::delete('/delete', 'App\Http\Controllers\UploadAttachmentController@attachmentDelete')->name('attachment-delete');
+            });
+
+            //List of Expenses
+            Route::group(['prefix' => '/budget'], function () {
+                Route::get('/', [ProjectBudgetController::class, 'getView'])->name('budget');
+                Route::put('/update', [ProjectBudgetController::class, 'update'])->name('project.update');
+                Route::get('/group-details/{group_id}', [ProjectBudgetController::class, 'viewCost'])->name('budget.viewCost');
+                Route::get('/data/{costGroupId}/{costId}', [ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
+                Route::post('/data/{costGroupId}/{costId}/update', [ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
+                Route::post('/rename-cost-group', [ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
+                Route::post('/create-group', [ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
+                Route::get('/cost-group-details/{group_id}', [ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
+                Route::post('/add-new-cost', [ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
+                Route::get('/export-csv', [ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
+                Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
+            });
+            //List of Commission
+            Route::group(['prefix' => '/commission'], function () {
+                Route::get('/', [ProjectBudgetController::class, 'getViewCommission'])->name('commission');
+                Route::post('/details', [ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
+                Route::get('/export-csv', [ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
+                Route::delete('/{cost_commission_id}', [ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
+                Route::put('/{commission_id}', [ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
+                Route::post('/add-new-commission', [ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
+                Route::put('/{group_id}/edit', [ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
+                Route::get('/commision-group-details/{group_id}', [ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
+                Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
+            });
+            //Progress
+            Route::group(['prefix' => '/task'], function () {
+                Route::post('/', [TaskController::class, 'getTask'])->name('task.getTask');
+                Route::post('/update', [TaskController::class, 'update'])->name('task.update');
+                Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
+                Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
+
+                Route::post('/update-item', [ProgressController::class, 'updateItem']);
+                Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
+                Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
+            });
+
+
+        });
+    });
+
+
+
 
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
@@ -146,6 +219,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
         Route::get('/update/{employee_id}', 'App\Http\Controllers\EmployeesController@updateView');
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
+        Route::post('/reactive/{employee_id}', 'App\Http\Controllers\EmployeesController@reactiveEmployee');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
         Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
@@ -160,10 +234,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
     Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
     Route::delete('img-delete', 'App\Http\Controllers\UploadFileController@imgDelete')->name('img-delete');
-    //File attachments
-    Route::post('attachment-upload', 'App\Http\Controllers\UploadAttachmentController@attachmentUpload')->name('attachment-upload');
-    Route::post('attachment-store', 'App\Http\Controllers\UploadAttachmentController@attachmentStore')->name('attachment-store');
-    Route::delete('attachment-delete', 'App\Http\Controllers\UploadAttachmentController@attachmentDelete')->name('attachment-delete');
 
     Route::group(['prefix' => '/profile'], function () {
         Route::get('/{employee_id}', 'App\Http\Controllers\ProfileController@getViewProfile');
@@ -217,12 +287,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/upload_employment_contract', 'App\Http\Controllers\UploadFileController@uploadEmploymentContract');
 
 
-    Route::get('/projects', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
-    Route::post('/projects', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
-    Route::get('/projects/{project_id}/attachments', 'App\Http\Controllers\ProjectController@getAttachmentView');
-    Route::get('/projects/{project_id}/attachments/{location_id}', 'App\Http\Controllers\ProjectController@getDateAttachments');
-    Route::get('/projects/{project_id}/attachments/{location_id}/{date}', 'App\Http\Controllers\ProjectController@getFileAttachments');
-
     Route::get('/materials', [MaterialsController::class, 'getView'])->name('materials.index');
     Route::post('/materials', [MaterialsController::class, 'store'])->name('materials.store');
     Route::get('materials/{id}/edit', [MaterialsController::class, 'edit'])->name('materials.edit');
@@ -231,52 +295,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('materials/{id}', [MaterialsController::class, 'show'])->name('materials.show');
 
 
-    //Progress
-    Route::post('/update-item', [ProgressController::class, 'updateItem']);
-    Route::get('/task/task/{id}', [TaskController::class, 'showTask'])->name('task.getTasksData');
-    Route::get('/task/subtask/{id}', [TaskController::class, 'showSubTask'])->name('task.getSubTasksData');
-    Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
-    Route::post('/task/update', [TaskController::class, 'update'])->name('task.update');
-    Route::get('/project/{id}/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
-    Route::post('/task/delete/{id}', [TaskController::class, 'delete'])->name('task.delete');
+
 
     //Settings
     Route::get('/setting', [SettingsController::class, 'getView'])->name('settings.view');
     Route::post('/setting', [SettingsController::class, 'updateForm'])->name('setting.update');
 
-    Route::get('/task', [TaskController::class, 'getView'])->name('task.index');
-    Route::get('/phase/{phase}', [TaskController::class, 'showPhaseTasks'])->name('phase.tasks');
-    Route::get('/task/{task}', [TaskController::class, 'showTaskSubtasks'])->name('task.subtasks');
 
-
-    Route::group(['prefix' => '/project'], function () {
-        //show details and update project
-        Route::get('/{id}', [\App\Http\Controllers\ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
-        Route::put('/{id}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'update'])->name('project.update');
-        //List of Expenses
-        Route::get('/{id}/budget', '\App\Http\Controllers\ProjectBudgetController@getView')->name('budget');
-        Route::get('/project/{id}/budget/group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'viewCost'])->name('budget.viewCost');
-        Route::get('/{id}/budget/data/{costGroupId}/{costId}', [\App\Http\Controllers\ProjectBudgetController::class, 'getBudgetData'])->name('budget.data');
-        Route::post('/{id}/budget/data/{costGroupId}/{costId}/update', [\App\Http\Controllers\ProjectBudgetController::class, 'updateBudget'])->name('budget.update');
-        Route::post('/budget/rename-cost-group', [\App\Http\Controllers\ProjectBudgetController::class, 'renameCostGroup'])->name('budget.renameCostGroup');
-        Route::post('/{id}/budget/create-group', [\App\Http\Controllers\ProjectBudgetController::class, 'createCostGroup'])->name('budget.createCostGroup');
-        Route::get('/{id}/budget/cost-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getCostGroupDetails'])->name('budget.getCostGroupDetails');
-        Route::post('/{id}/budget/add-new-cost', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
-        Route::get('/project/{id}/budget/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
-
-        //List of Commission
-        Route::get('/{id}/commission', [\App\Http\Controllers\ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-        Route::post('/{id}/commission/details', [\App\Http\Controllers\ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-        Route::get('/{id}/export-csv', [\App\Http\Controllers\ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-        Route::delete('/{project_id}/commission/{cost_commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-        Route::put('/{project_id}/commission/{commission_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
-        Route::post('/{project_id}/commission/add-new-commission', [\App\Http\Controllers\ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
-        Route::put('/{project_id}/commission/{group_id}/edit', [\App\Http\Controllers\ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-
-        Route::get('/{project_id}/commission/commision-group-details/{group_id}', [\App\Http\Controllers\ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
-
-        Route::get('/{project_id}/report', [ProjectBudgetController::class, 'report'])->name('project.report');
-    });
 
     Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
         Route::get('teams', [MyXteamController::class, 'getView']);
@@ -350,7 +375,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::group(['prefix' => '/quiz'], function () {
         Route::get('', [QuizController::class, 'getView'])->name('quiz.index');
+
+
         Route::get('/test-quiz', [TestQuizController::class, 'getView'])->name('test-quiz.index');
+        Route::post('/save-answer', [TestQuizController::class, 'saveAnswer'])->name('test-quiz.saveAnswer');
+        Route::post('/submit-quiz', [TestQuizController::class, 'submitQuiz'])->name('submit-quiz');
+
+
         Route::get('/create-quiz', [CreateQuizController::class, 'getView'])->name('create-quiz.index');
 
         Route::get('/question-bank', [QuizController::class, 'getViewQuestionBank'])->name('question-bank.index');
@@ -359,8 +390,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/question-bank/{id}', [QuizController::class, 'destroy'])->name('question-bank.destroy');
         Route::get('/question-bank/{id}/edit', [QuizController::class, 'edit'])->name('question-bank.edit');
         Route::post('/question-bank/{id}/update', [QuizController::class, 'update'])->name('question-bank.update');
+        Route::post('/question-bank/{course_id}/import', [QuizController::class, 'import'])->name('question-bank.import');
+        Route::get('/question-bank/{course_id}/export', [QuizController::class, 'export'])->name('question-bank.export');
+        Route::post('/question-bank/delete-file', [QuizController::class, 'deleteExportedFile'])->name('question-bank.deleteFile');
 
-
+        Route::get('/exam', [ExamController::class, 'getView'])->name('exams.index');
+        Route::post('/exam/add', [ExamController::class, 'store'])->name('exams.store');
+        Route::delete('/exam/{id}', [ExamController::class, 'destroy'])->name('exams.destroy');
+        Route::get('/exam/{id}/edit', [ExamController::class, 'edit'])->name('exams.edit');
+        Route::put('/exam/{id}/update', [ExamController::class, 'update'])->name('exams.update');
+        Route::get('/exam/{id}/questions', [ExamController::class, 'getQuestionsByCourse'])->name('exams.questions');
     });
 
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
@@ -376,7 +415,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
     Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
     Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
-    
+
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
             session(['locale' => $locale]);

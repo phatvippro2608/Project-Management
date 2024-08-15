@@ -61,10 +61,7 @@ class ProjectController extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            // Gán các lỗi vào một biến
             $errors = $validator->errors();
-
-            \Log::error('Validation errors:', $errors->toArray());
             return response()->json(['status' => 422, 'message' => json_encode($errors->toArray())]);
         }
 
@@ -108,19 +105,29 @@ class ProjectController extends Controller
         ]);
     }
     public function getDateAttachments(Request $request, $project_id, $project_location_id) {
-        $dates = DB::table('projects')
-            ->where('project_id', $project_id)
-            ->select('project_date_start','project_date_end')
-            ->first();
-        $startDate = Carbon::parse($dates->project_date_start);
-        $endDate = Carbon::parse($dates->project_date_end);
+//        $dates = DB::table('projects')
+//            ->where('project_id', $project_id)
+//            ->select('project_date_start','project_date_end')
+//            ->first();
+//        $startDate = Carbon::parse($dates->project_date_start);
+//        $endDate = Carbon::parse($dates->project_date_end);
+//
+//        $dateRange = [];
+//
+//        while ($startDate->lte($endDate)) {
+//            $dateRange[] = $startDate->format('Y-m-d');
+//            $startDate->addDay();
+//        }
 
-        $dateRange = [];
+        $dateFile = DB::table('task_files')
+            ->where('project_location_id', $project_location_id)
+            ->select('date');
 
-        while ($startDate->lte($endDate)) {
-            $dateRange[] = $startDate->format('Y-m-d');
-            $startDate->addDay();
-        }
+        $dateImage = DB::table('task_images')
+            ->where('project_location_id', $project_location_id)
+            ->select('date');
+
+        $dateRange = $dateFile->union($dateImage)->get();
 
         return json_encode($dateRange);
     }

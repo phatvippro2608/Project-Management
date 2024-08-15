@@ -192,10 +192,10 @@ class EmployeesController extends Controller
         $email = DB::table('accounts')->where('employee_id',$employee_id)->value('email');
         $data_cv = DB::table('employees')->where('employee_id',$employee_id)->value('cv');
         $data_medical_checkup = DB::table('medical_checkup')->where('employee_id',$employee_id)->get();
+        $data_employment_contract = DB::table('employment_contract')->where('employee_id',$employee_id)->get();
         $data_certificate = DB::table('certificates')
             ->join('certificate_types', 'certificate_types.certificate_type_id', '=', 'certificates.type_certificate_id')
             ->where('certificates.employee_id',$employee_id)->get();
-        Log::info(json_encode($data_job_detail));
         $data = new EmployeeModel();
         $jobdetails = DB::table('job_details')
             ->join('job_titles', 'job_titles.job_title_id', '=', 'job_details.job_title_id')
@@ -216,7 +216,8 @@ class EmployeesController extends Controller
             'data_passport' => $data_passport,
             'data_cv' => $data_cv,
             'data_medical_checkup' => $data_medical_checkup,
-            'data_certificate' => $data_certificate
+            'data_certificate' => $data_certificate,
+            'data_employment_contract' => $data_employment_contract,
         ]);
     }
 
@@ -600,7 +601,7 @@ class EmployeesController extends Controller
             $item->email = DB::table('accounts')->where('employee_id', $employee_id)->value('email');
         }
 //        dd($jobdetails);
-
+//        dd($item);
         return view('auth.employees.update_employee',[
             'item' => $item,
             'jobdetails' => $jobdetails,
@@ -614,5 +615,14 @@ class EmployeesController extends Controller
         return view('auth.employees.inactive_employee',[
             'data' => $data
         ]);
+    }
+
+    function reactiveEmployee(Request $request, $employee_id){
+        $update = DB::table('employees')->where('employee_id', $employee_id)->update(['fired' => 'false']);
+        if($update){
+            return response()->json(['message' => 'Action successful','code' => 200]);
+        }else{
+            return response()->json(['message' => 'Action failed','code' => 500]);
+        }
     }
 }
