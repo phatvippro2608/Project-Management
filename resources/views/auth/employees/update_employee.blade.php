@@ -553,10 +553,7 @@
                                     {{ $loop->index + 1 }}
                                 </td>
                                 <td>
-                                    {{ optional($row)->employment_contract }}
-                                    <button class="btn btn-primary btn-preview-file" data_employment_contract="{{ asset('/uploads/' . $employee_id . '/' . optional($row)->employment_contract) }}">
-                                        Preview
-                                    </button>
+                                    <a href="{{ asset('/uploads/' . $employee_id . '/' . optional($row)->employment_contract) }}" target="_blank">{{ optional($row)->employment_contract }}</a>
                                 </td>
                                 <td>
                                     {{ optional($row)->start_date }}
@@ -587,27 +584,6 @@
                     <input class="form-control employment_contract_start_date mb-3" type="date" id="employment_contract_start_date">
                     <label for="employment_contract_end_date">End Date</label>
                     <input class="form-control employment_contract_end_date" type="date" id="">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card mb-5 shadow-none">
-        <div class="card-header text-end">
-            <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
-        </div>
-    </div>
-    <div class="modal modal-preview" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Preview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <embed class="preview-panel" src="" width="100%" height="700px" type="application/pdf">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
