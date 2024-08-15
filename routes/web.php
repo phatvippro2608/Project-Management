@@ -60,7 +60,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
 
     Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
-    Route::group(['prefix' => '/account', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/account'], function () {
         Route::get('/', 'App\Http\Controllers\AccountController@getView');
         Route::put('/add', 'App\Http\Controllers\AccountController@add');
         Route::post('/update', 'App\Http\Controllers\AccountController@update');
@@ -97,7 +97,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::delete('/delete-file-contract', 'App\Http\Controllers\ContractController@deleteFileContract');
     });
     //Team
-    Route::group(['prefix' => '/team', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/team'], function () {
         Route::get('/', 'App\Http\Controllers\TeamController@getView');
         Route::put('/add', 'App\Http\Controllers\TeamController@add');
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
@@ -115,9 +115,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
 
+        //Project location
+        Route::group(['prefix' => '/project-location'], function () {
+            Route::put('/add', 'App\Http\Controllers\ProjectLocationController@addLocation');
+        });
+
         //Detaill
         Route::group(['prefix' => '/{project_id}'], function () {
             Route::get('/', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+
+
 
             //File attachments
             Route::group(['prefix' => '/attachments'], function () {
@@ -201,20 +208,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
 
-    Route::group(['prefix' => '/certificate_types', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/certificate_types'], function () {
         Route::get('/', 'App\Http\Controllers\CertificateTypeController@getView');
         Route::post('/add', 'App\Http\Controllers\CertificateTypeController@add');
         Route::post('/update', 'App\Http\Controllers\CertificateTypeController@update');
         Route::post('/delete', 'App\Http\Controllers\CertificateTypeController@delete');
     });
-    Route::group(['prefix' => '/job-info', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/job-info'], function () {
         Route::get('/', 'App\Http\Controllers\JobInfoController@getView');
         Route::post('/get', 'App\Http\Controllers\JobInfoController@getJob');
         Route::post('/add', 'App\Http\Controllers\JobInfoController@add');
         Route::post('/update', 'App\Http\Controllers\JobInfoController@update');
         Route::post('/delete', 'App\Http\Controllers\JobInfoController@delete');
     });
-    Route::group(['prefix' => '/employees', 'middleware' => 'isAdmin'], function () {
+    Route::group(['prefix' => '/employees'], function () {
         Route::get('/', 'App\Http\Controllers\EmployeesController@getView');
         Route::get('/import', 'App\Http\Controllers\EmployeesController@importView');
         Route::get('/update/{employee_id}', 'App\Http\Controllers\EmployeesController@updateView');
@@ -303,7 +310,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
 
-    Route::group(['prefix' => '/myxteam', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/myxteam'], function () {
         Route::get('teams', [MyXteamController::class, 'getView']);
         Route::get('team/{WorkspaceId}/project', [MyXteamController::class, 'getTeamProjects']);
         Route::get('team/{WorkspaceId}/project/{ProjectId}/tasks', [MyXteamController::class, 'getProjectTasks']);
@@ -352,7 +359,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
 
     // recognition
-    Route::group(['prefix' => '/recognition', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/recognition'], function () {
         Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
         Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
         Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
@@ -363,7 +370,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     });
 
     // disciplinary
-    Route::group(['prefix' => '/disciplinary', 'middleware' => 'isSuperAdmin'], function () {
+    Route::group(['prefix' => '/disciplinary'], function () {
         Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
         Route::get('/type', [DisciplinaryTypeController::class, 'getView'])->name('disciplinarytype.index');
         Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
