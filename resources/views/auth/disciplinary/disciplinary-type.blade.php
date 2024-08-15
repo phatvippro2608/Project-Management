@@ -59,15 +59,15 @@
                 <table id="disciplinaryTypeTable" class="table-hover table-borderless display">
                     <thead class="table-light">
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Employee Code</th>
-                        <th class="text-center" scope="col">Actions</th>
+                        <th scope="col" class="text-center">ID</th>
+                        <th scope="col" class="text-center">Employee Code</th>
+                        <th scope="col" class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($disciplinary_types as $disciplinary_type)
                         <tr class="{{ $disciplinary_type->disciplinary_type_hidden ? 'hidden-row' : '' }}">
-                            <th scope="col">{{ $disciplinary_type->disciplinary_type_id }}</th>
+                            <th scope="col" class="text-center">{{ $disciplinary_type->disciplinary_type_id }}</th>
                             <th scope="col">{{ $disciplinary_type->disciplinary_type_name }}</th>
                             <td class="text-center">
                                 <button data-disciplinary="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-primary" onclick="editDisciplinary(this)">

@@ -50,22 +50,22 @@
             <table id="recognitionTable" class="table table-hover table-borderless display">
                 <thead class="table-light">
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Employee Code</th>
-                    <th scope="col">Employee Name</th>
-                    <th scope="col">Recognition</th>
-                    <th scope="col">Recognition Date</th>
-                    <th class="text-center" scope="col">Actions</th>
+                    <th scope="col" class="text-center">ID</th>
+                    <th scope="col" class="text-center">Employee Code</th>
+                    <th scope="col" class="text-center">Employee Name</th>
+                    <th scope="col" class="text-center">Recognition</th>
+                    <th scope="col" class="text-center">Recognition Date</th>
+                    <th scope="col" class="text-center">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($recognitions as $recognition)
                     <tr class="{{ $recognition->recognition_hidden ? 'hidden-row' : '' }}">
-                        <th scope="col">{{ $recognition->recognition_id }}</th>
-                        <th scope="col">{{ $recognition->employee_code }}</th>
+                        <th scope="col" class="text-center">{{ $recognition->recognition_id }}</th>
+                        <th scope="col" class="text-center">{{ $recognition->employee_code }}</th>
                         <th scope="col">{{ $recognition->last_name }} {{ $recognition->first_name }}</th>
                         <th scope="col">{{ $recognition->recognition_type_name }}</th>
-                        <th scope="col">{{ $recognition->recognition_date }}</th>
+                        <th scope="col" class="text-center">{{ \Carbon\Carbon::parse($recognition->recognition_date)->format('d/m/Y') }}</th>
                         <td class="text-center">
                             <button data-recognition="{{ $recognition->recognition_id }}" class="btn text-primary fw-bold" onclick="editRecognitionModal(this)"><i class="bi bi-pencil-square"></i></button>
                         </td>
