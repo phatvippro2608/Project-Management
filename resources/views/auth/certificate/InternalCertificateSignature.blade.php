@@ -211,24 +211,18 @@
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header justify-content-between">
                     <h5 class="modal-title" id="addSignatureModalLabel">Add New Signature</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="addSignatureForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="employeeCode" class="form-label">Employee Code</label>
-                            <input type="text" class="form-control" id="employeeCode" name="employeeCode" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" name="fullName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="enName" class="form-label">EN Name</label>
-                            <input type="text" class="form-control" id="enName" name="enName" required>
+                            <label for="employee" class="form-label">Employee</label>
+                            <input type="text" class="form-control" id="employee" name="employee" required>
                         </div>
                         <div class="mb-3">
                             <label for="signatureImage" class="form-label">Signature Image</label>
@@ -478,6 +472,27 @@
 
             $('.btn-add').on('click', function() {
                 $('#addSignatureModal').modal('show');
+            });
+
+            $('#employee').on('input', function() {
+                var employeeValue = $(this).val();
+                if (employeeValue.length > 5) {
+                    $.ajax({
+                        url: '{{ route('certificate.signature.search') }}', 
+                        type: 'POST',
+                        data: JSON.stringify({
+                            employeeCode: employeeValue
+                        }),
+                        contentType: 'application/json',
+                        processData: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
             });
 
             $('#saveSignatureBtn').on('click', function() {

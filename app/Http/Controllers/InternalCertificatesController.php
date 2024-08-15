@@ -255,6 +255,10 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
+    public function searchEmployee(Request $request) {
+
+    }
+
     public function addSignatureCertificate(Request $request)
     {
 
