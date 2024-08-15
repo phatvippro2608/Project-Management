@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\DepartmentModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
     public function getView()
     {
         $departments = DepartmentModel::all();
-        return view('auth.departments.department', compact('departments'));
+        return view('auth.departments.department-list', compact('departments'));
     }
 
     public function create()
@@ -36,7 +37,7 @@ class DepartmentController extends Controller
     public function show($id)
     {
         $department = DepartmentModel::find($id);
-        return view('departments.show', compact('department'));
+//        return view('departments.show', compact('department'));
     }
 
     public function edit($id)
@@ -74,4 +75,20 @@ class DepartmentController extends Controller
             'success' => true,
         ]);
     }
+
+
+    public function getEmployeeOfDepartment(Request $request, $department_id)
+    {
+        $department_name = DB::table('departments')->where('department_id', $department_id)->value('department_name');
+        $data = DB::table('departments')
+            ->join('employees', 'departments.department_id', '=', 'employees.department_id')
+            ->where('departments.department_id', $department_id)->get();
+//        dd($data);
+        return view('auth.departments.department',[
+            'department_name' => $department_name,
+            'data' => $data,
+        ]);
+    }
+
+
 }
