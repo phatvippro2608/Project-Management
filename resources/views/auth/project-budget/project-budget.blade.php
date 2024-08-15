@@ -36,10 +36,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
-                        @foreach ($locations as $location)
-                            <a href="{{ route('project.progress', ['project_id' => $id, 'location_id' => $location->project_location_id]) }}"
-                                class="btn btn-sm btn-primary me-2">Progress</a>
-                        @endforeach
+                        <a href="{{ route('project.progress', ['project_id' => $id, 'location_id' => $keyword]) }}"
+                            class="btn btn-sm btn-primary me-2">Progress</a>
                         <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}"
                             class="btn btn-sm btn-primary me-2">List Of Expenses</a>
                         <a href="{{ route('commission', ['project_id' => $id]) }}" class="btn btn-sm btn-primary">List Of
