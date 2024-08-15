@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EarnLeaveModel;
+use App\Models\EmployeeModel;
 use App\Models\LeaveApplicationModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -11,31 +13,27 @@ class LeaveApplicationController extends Controller
 {
     function getView()
     {
-//        $data = \Illuminate\Support\Facades\DB::table('accounts')
-//            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-//            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
-//            ->where(
-//                'account_id',
-//                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-//            )
-//            ->first();
-//
-//        dd($data);
-
-
+        $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
+        $employee_id = DB::table('accounts')
+            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('accounts.account_id', $account_id)
+            ->value('employees.employee_id');
 
 
         $model = new LeaveApplicationModel();
         $employee_name = $model->getEmployeeName();
         $leave_type = $model->getLeaveTypes();
-//        dd(LeaveApplicationModel::with('employee', 'leaveType')->get());
+        $leaveSummaries = EarnLeaveModel::getEmployeeLeaveSummary();
         return view(
             'auth.leave.leave-application',
             [
-            'leave_types'=> LeaveApplicationModel::all(),
-            'employee_name' => $employee_name,
-            'leave_type' => $leave_type,
-                'leave_applications' => LeaveApplicationModel::with('employee', 'leaveType')->get(),
+                'leave_types'=> LeaveApplicationModel::all(),
+                'employee_name' => $employee_name,
+                'leave_type' => $leave_type,
+                'earn_leave' => $leaveSummaries,
+                'leave_applications' => LeaveApplicationModel::with('employee', 'leaveType')
+                    ->where('employee_id',$employee_id)
+                    ->get(),
             ]);
     }
 
