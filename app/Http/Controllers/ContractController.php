@@ -50,7 +50,7 @@ class ContractController extends Controller
     {
         $rules = [
             'contract_name' => 'required|string|max:255|min:5',
-            'contract_date' => 'required|date|before:project_date_end',
+            'contract_date' => 'required|date|before:contract_end_date',
             'contract_end_date' => 'required|date',
             'contract_details' => 'required|string',
             'customer_id' => 'required|int',

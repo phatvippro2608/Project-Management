@@ -56,7 +56,7 @@
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="projectListTable" class="table table-hover table-borderless">
+                <table id="projectListTable" class="table table-hover table-borderless" >
                     <thead class="table-light">
                     <tr>
 
