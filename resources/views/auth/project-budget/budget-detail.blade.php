@@ -31,12 +31,11 @@
     <div class="d-flex ms-auto">
         <!-- Import Form -->
         <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
-
         <!-- Hidden Import Form -->
-        <form id="importForm" action="{{ route('budget.import', $id) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+        <form id="importForm" action="{{ !empty($location) ? route('budget.import', ['project_id' => $id, 'location' => $location ]) : route('budget.import', ['project_id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
             @csrf
             <input type="file" name="file" id="fileInput" required>
-            <button type="submit" id="submitButton">Submit</button>
+            <button type="button" id="submitButton">Submit</button>
         </form>
 
         <!-- Add New Cost Button -->
@@ -88,7 +87,7 @@
                         <table id="total" class="table table-hover table-borderless">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Group Name</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -154,7 +153,7 @@
                     <thead class="table-light">
                         <tr>
                             <th class="text-center" data-sort="id_source">#<i class="bi bi-sort"></i></th>
-                            <th data-sort="name">NAME<i class="bi bi-sort"></i></th>
+                            <th data-sort="name">GROUP NAME<i class="bi bi-sort"></i></th>
                             <th data-sort="description" style="width:15%">DESCRIPTION<i class="bi bi-sort"></i></th>
                             <th data-sort="laborqty">LABOR QTY<i class="bi bi-sort"></i></th>
                             <th data-sort="budgetqty">BUDGET QTY <i class="bi bi-sort"></i></th>
@@ -215,13 +214,13 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="chooseGroupModalLabel">Add New Cost</h5>
                 </div>
-                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['id' => $id]) }}">
+                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="existingGroup">Select Existing Cost Group</label>
+                            <label for="existingGroup">Select Existing Cost Group Name</label>
                             <select class="form-control" id="existingGroup" name="existingGroup">
-                                <option value="">-- Select a Cost Group --</option>
+                                <option value="">-- Select a Cost Group Name --</option>
                                 @foreach ($dataCostGroup as $costGroup)
                                     <option value="{{ $costGroup->project_cost_group_id }}">
                                         {{ $costGroup->project_cost_group_name }}</option>
@@ -233,7 +232,7 @@
                         </div>
                         <div class="form-group mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#addNewGroupModal">Or Add New Group</button>
+                                data-bs-target="#addNewGroupModal">Or Add New Group Name</button>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -251,9 +250,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group</h5>
+                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group Name</h5>
                 </div>
-                <form id="addNewGroupForm" method="POST" action="{{ route('budget.createCostGroup', ['id' => $id]) }}">
+                <form id="addNewGroupForm" method="POST" action="{{ !empty($location) ? route('budget.createCostGroup', ['project_id' => $id, 'location' => $location]) : route('budget.createCostGroup', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -273,43 +272,53 @@
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-        document.getElementById('fileInput').click(); // Trigger file input click
-    });
+            document.getElementById('fileInput').click(); 
+        });
 
-    document.getElementById('fileInput').addEventListener('change', function() {
-        document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
-    });
-    document.getElementById('importForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    var fileInput = document.getElementById('fileInput');
-    var file = fileInput.files[0];
-    var reader = new FileReader();
+        document.getElementById('fileInput').addEventListener('change', function() {
+            document.getElementById('submitButton').click(); 
+        });
 
-    reader.onload = function(e) {
-    var data = e.target.result;
-    console.log(data); // Log the data to verify its contents
-    var json = JSON.stringify({ dataExcel: data });
+        $('#submitButton').on('click', function(event) {
+            event.preventDefault(); 
 
-    fetch('{{ route('budget.import', $id) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: json
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Log the response to check if data is received correctly
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
+            var fileInput = $('#fileInput')[0];
+            var file = fileInput.files[0];
+            
+            if (!file) {
+                toastr.error('Please select a file before submitting.');
+                return;
+            }
 
-    reader.readAsText(file);
-});
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            var url = $('#importForm').attr('action');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data.success) {
+                        toastr.success('Import successful!');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error('Import failed: ' + (data.message || 'Unknown error'));
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error('Error: ' + errorThrown);
+                }
+            });
+        });
+
+
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
             var labelsData = [];
@@ -349,7 +358,7 @@
             });
             $('#selectGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
-                var url = '{{ route('budget.viewCost', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                var url = '{{ route('budget.viewCost', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {
@@ -438,7 +447,7 @@
             $('#existingGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
                 var url =
-                    '{{ route('budget.getCostGroupDetails', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                    '{{ route('budget.getCostGroupDetails', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {

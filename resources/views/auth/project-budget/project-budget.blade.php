@@ -62,7 +62,7 @@
                         </tr>
                         <tr>
                             <td scope="row">RISK (CONTINGENCY)</td>
-                            <td id="valRisk">{{ number_format($data->project_price_contingency, 0, ',', '.') }} VND</td>
+                            <td id="valRisk">{{ number_format($contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
                         </tr>
                         <tr>
                             <td scope="row">COMMISSION</td>
