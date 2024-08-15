@@ -16,6 +16,12 @@
         .dropdown-toggle::after {
             display: none!important;
         }
+
+        @media (min-width: 1200px) {
+            .dropdown-position{
+                inset: 0 0 auto auto !important;
+            }
+        }
     </style>
 @endsection
 @section('contents')
@@ -170,7 +176,7 @@
                                     <img src="/assets/icons/settings.ico" alt="">
                                 </div>
 
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-position">
                                     <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.details', ['id' => $item->project_id]) }}">Details and Cost</a></li>
                                     <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover" href="{{ route('project.report', ['project_id' => $item->project_id]) }}">Report</a></li>
                                     <li><a class="dropdown-item bg-hover" href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $item->project_id) }}">Attachments</a></li>
