@@ -85,6 +85,7 @@
                         <th scope="col">Full Name</th>
                         <th scope="col">EN Name</th>
                         <th class="text-center" scope="col">Signature</th>
+                        <th scope="col">Updated</th>
                         @if ($btnEdit)
                             <th class="text-center" scope="col">Action</th>
                         @endif
@@ -106,6 +107,28 @@
                                 <img style="height: 50px; object-fit: contain;"
                                     src="{{ asset($item->employee_signature_img) }}"
                                     alt="{{ $item->first_name }}'s signature">
+                            </td>
+                            <td>
+                                @php
+                                    $updatedAt = \Carbon\Carbon::parse($item->updated_at);
+                                    $now = \Carbon\Carbon::now();
+                                    $difference = $updatedAt->diff($now);
+                                @endphp
+
+                                @if ($difference->m < 1)
+                                    @if ($difference->d > 0)
+                                        {{ $difference->d }} days ago
+                                    @elseif ($difference->h > 0)
+                                        {{ $difference->h }} hours ago
+                                    @elseif ($difference->i > 0)
+                                        {{ $difference->i }} minutes ago
+                                    @else
+                                        now
+                                    @endif
+                                @else
+                                    {{ $updatedAt->format('Y-m-d') }}
+                                @endif
+
                             </td>
                             @if ($btnEdit)
                                 <td class="text-center">
@@ -133,7 +156,7 @@
     <!-- Modal -->
     @if ($btnEdit)
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header justify-content-between">
                         <h5 class="modal-title" id="editModalLabel">Edit Employee Signature</h5>
@@ -145,26 +168,33 @@
                         <form id="editForm">
                             @csrf
                             <div class="mb-3">
-                                <label for="employeeId" class="form-label">Employee ID</label>
+                                <label for="employeeId" class="form-label">Employee</label>
                                 <input type="text" class="form-control" id="employeeId" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="enName" class="form-label">EN Name</label>
-                                <input type="text" class="form-control" id="enName" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="signature" class="form-label">Signature</label>
                                 <div class="d-flex flex-column align-items-center">
                                     <img id="signaturePreview" src="" alt="Signature Image"
-                                        class="img-thumbnail mb-2" style="max: 100px; object-fit: contain;">
+                                        class="img-thumbnail mb-2" style="max-height: 150px; object-fit: contain;">
                                     <canvas id="signatureCanvas" style="display:none;"></canvas>
-
                                     <input type="file" id="signatureInput" class="form-control mt-2">
                                 </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="historyTable" class="form-label">History Edit</label>
+                                <table id="historyTable" class="display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Signature Image</th>
+                                            <th>Photo</th>
+                                            <th>Employee ID</th>
+                                            <th>Updated</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dữ liệu sẽ được chèn vào đây bằng JavaScript -->
+                                    </tbody>
+                                </table>
                             </div>
                         </form>
                     </div>
@@ -202,8 +232,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="signatureImage" class="form-label">Signature Image</label>
-                            <input type="file" class="form-control" id="signatureImage" name="signatureImage"
-                                accept="image/*" required>
+                            <div class="d-flex flex-column align-items-center">
+                                <img id="signatureAddPreview" src="" alt="Signature Image"
+                                    class="img-thumbnail mb-2 d-none" style="max-height: 150px; object-fit: contain;">
+                                <input type="file" id="signatureImage" class="form-control mt-2" required>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -229,17 +262,48 @@
             $('.edit-btn').on('click', function() {
                 var signatureID = $(this).data('id');
                 var employeeCode = $(this).data('employee_code');
-                var fullName = $(this).data('full_name');
-                var enName = $(this).data('en_name');
                 var signature = $(this).data('signature');
+                var employee =
+                    `${employeeCode} - ${$(this).data('full_name')} - ${$(this).data('en_name')}`;
 
-                $('#employeeId').val(employeeCode);
-                $('#fullName').val(fullName);
-                $('#enName').val(enName);
+                $('#employeeId').val(employee);
                 $('#signaturePreview').attr('src', signature);
                 $('#signatureInput').val('');
 
+                $('#saveBtn').data('employee', employeeCode);
                 $('#saveBtn').data('id', signatureID);
+
+                $.ajax({
+                    url: '{{ route('certificate.signature.load') }}',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        employeeCode: employeeCode
+                    }),
+                    contentType: 'application/json',
+                    processData: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log(response.history);
+                        var historyData = response.history.map(function(signature) {
+                            return [
+                                `<img src="${signature.employee_signature_img}" style="height: 50px; margin-right: 10px;" alt="">`,
+                                `<img src="${signature.creator_photo}" style="height: 30px; margin-right: 10px;" class="rounded-circle"  alt="">`,
+                                `${signature.creator_code}`,
+                                `${signature.created_at}`
+                            ];
+                        });
+
+                        // Khởi tạo DataTable
+                        $('#historyTable').DataTable({
+                            data: historyData,
+                            destroy: true,
+                            pageLength: 3,
+                            lengthChange: false,
+                        });
+                    }
+                });
 
                 $('#editModal').modal('show');
             });
@@ -353,11 +417,13 @@
                             }
 
                             $('#saveBtn').on('click', function() {
-                                var employeeId = $(this).data('id');
+                                var signatureId = $(this).data('id');
+                                // var employeeId = $('#employeeId').val();
+                                var employeeId = $(this).data('employee');
                                 var data = {
-                                    signatureId: employeeId,
-                                    signature: $('#signaturePreview').attr(
-                                        'src') // sử dụng hình ảnh trong suốt
+                                    signatureId,
+                                    employeeId,
+                                    signature: $('#signaturePreview').attr('src')
                                 };
                                 $.ajax({
                                     url: '{{ route('certificate.signature.edit') }}',
@@ -392,6 +458,21 @@
                         };
                     };
                     reader.readAsDataURL(file);
+                }
+            });
+
+            $('#signatureImage').on('change', function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                if (file) {
+                    reader.onload = function(e) {
+                        $('#signatureAddPreview').attr('src', e.target.result).removeClass('d-none');
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#signatureAddPreview').addClass('d-none');
                 }
             });
 

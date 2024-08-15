@@ -146,10 +146,21 @@ class InternalCertificatesController extends Controller
             })
             ->exists();
         $btnEdit = true;
+
+        $latestSignatureSubQuery = DB::table('employee_signatures')
+            ->select('employee_id', DB::raw('MAX(updated_at) as latest_updated_at'))
+            ->groupBy('employee_id');
+
         $employeeQuery = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
-            ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id');
+            ->join('employee_signatures', function ($join) use ($latestSignatureSubQuery) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->joinSub($latestSignatureSubQuery, 'latest_signature', function ($join) {
+                        $join->on('employee_signatures.employee_id', '=', 'latest_signature.employee_id')
+                            ->on('employee_signatures.updated_at', '=', 'latest_signature.latest_updated_at');
+                    });
+            });
 
         if (!$permission) {
             $employeeQuery->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID));
@@ -157,6 +168,7 @@ class InternalCertificatesController extends Controller
         }
 
         $employee = $employeeQuery->get();
+        // dd($employee);
         return view('auth.certificate.InternalCertificateSignature', [
             'employee' => $employee,
             'btnEdit' => $btnEdit,
@@ -168,10 +180,18 @@ class InternalCertificatesController extends Controller
         // Xác thực dữ liệu yêu cầu
         $request->validate([
             'signatureId' => 'required|integer|exists:employee_signatures,employee_signature_id',
-            'signature' => 'required|string', // Đây là dữ liệu Base64
+            'employeeId' => 'required|integer',
+            'signature' => 'required|string',
         ]);
 
-        // Lấy dữ liệu từ yêu cầu
+        $employeeCode = $request->input('employeeId');
+        $employee = DB::table('employees')
+            ->where('employee_code', '=', $employeeCode)
+            ->first();
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
         $signatureId = $request->input('signatureId');
         $signatureData = $request->input('signature');
 
@@ -193,17 +213,46 @@ class InternalCertificatesController extends Controller
 
         // Lưu file vào thư mục public/assets/img/signature
         File::put($filePath, $imageData);
-
         // Cập nhật đường dẫn mới vào cơ sở dữ liệu
         DB::table('employee_signatures')
-            ->where('employee_signature_id', $signatureId)
-            ->update([
+            ->insert([
                 'employee_signature_img' => 'assets/img/signature/' . $hashedFileName,
-                'updated_at' => now()
+                'employee_id' => $employee->employee_id,
+                'employee_signature_created_id' => $employeeUpdated->employee_id
             ]);
 
         // Trả về phản hồi thành công
         return response()->json(['message' => 'Signature updated successfully'], 200);
+    }
+
+    public function loadHistorySignatureCertificate(Request $request)
+    {
+        $request->validate([
+            'employeeCode' => 'required|integer',
+        ]);
+        $employeeCode = $request->input('employeeCode');
+        $employee = DB::table('employees')
+            ->where('employee_code', '=', $employeeCode)
+            ->first();
+
+        $history = DB::table('employee_signatures')
+            ->join('employees AS creator', 'employee_signatures.employee_signature_created_id', '=', 'creator.employee_id')
+            ->where('employee_signatures.employee_id', $employee->employee_id)
+            ->select(
+                'employee_signatures.employee_signature_img',
+                'creator.employee_code as creator_code',
+                'creator.first_name as creator_first_name',
+                'creator.last_name as creator_last_name',
+                'creator.photo as creator_photo',
+                'employee_signatures.created_at'
+            )
+            ->orderBy('employee_signatures.created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'employee' => $employee,
+            'history' => $history,
+        ]);
     }
 
     public function addSignatureCertificate(Request $request)

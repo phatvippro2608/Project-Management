@@ -392,9 +392,12 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
         Route::get('/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
     });
-    Route::get('certificateSignature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
-    Route::post('certificateSignature/edit',[InternalCertificatesController::class, 'updateSignatureCertificate'])->name('certificate.signature.edit');
-    Route::post('certificateSignature/add',[InternalCertificatesController::class, 'addSignatureCertificate'])->name('certificate.signature.add');
+    Route::group(['prefix' => '/certificateSignature'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
+        Route::post('/edit', [InternalCertificatesController::class, 'updateSignatureCertificate'])->name('certificate.signature.edit');
+        Route::post('/add', [InternalCertificatesController::class, 'addSignatureCertificate'])->name('certificate.signature.add');
+        Route::post('/load', [InternalCertificatesController::class, 'loadHistorySignatureCertificate'])->name('certificate.signature.load');
+    });
     Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
 
 
