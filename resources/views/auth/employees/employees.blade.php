@@ -295,11 +295,6 @@
                 countError++;
             }
 
-            if (!validateNameInput(enName)) {
-                toastr.error('Name should not contain numbers or special characters.', 'Please enter the English name again!');
-                countError++;
-            }
-
             if (phoneNumber.val().length === 0) {
                 toastr.error('Please enter phone number!', 'Please enter phone number!');
                 countError++;
