@@ -333,12 +333,7 @@ $token = 'position';
                     <li>
                         <a class="nav-sub-link"
                            href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.department') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="#">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.designation') }}</span>
+                            <i class="bi bi-circle"></i><span>{{ __('messages.department_list') }}</span>
                         </a>
                     </li>
                 </ul>
@@ -525,7 +520,7 @@ $token = 'position';
             <li class="nav-item">
                 <a class="nav-link"
                    href="{{action('App\Http\Controllers\ContractController@getView')}}">
-                    <i class="bi bi-journal-bookmark"></i><span>Contracts</span>
+                    <i class="bi bi-journal-bookmark"></i><span>{{ __('messages.contract') }}</span>
                 </a>
             </li>
 

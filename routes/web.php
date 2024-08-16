@@ -75,6 +75,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/demo', 'App\Http\Controllers\AccountController@demoView');
         Route::post('/demo', 'App\Http\Controllers\AccountController@import');
     });
+    //Department
+    Route::group(['prefix' => '/departments'], function () {
+        Route::get('/', [DepartmentController::class, 'getView'])->name('departments.index');
+        Route::post('/add', [DepartmentController::class, 'store'])->name('departments.store');
+        Route::delete('/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+        Route::put('/update/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/',  'App\Http\Controllers\DepartmentController@getEmployeeOfDepartment');
+            Route::post('/addEmployee', 'App\Http\Controllers\DepartmentController@addEmployee');
+            Route::post('/deleteEmployee/{employee_id}', 'App\Http\Controllers\DepartmentController@deleteEmployee');
+            Route::get('/export', 'App\Http\Controllers\DepartmentController@export');
+            Route::get('/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+        });
+    });
 
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
@@ -115,6 +129,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Project
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+        Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
 
         //Project location
         Route::group(['prefix' => '/project-location'], function () {
@@ -151,19 +166,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::post('/add-new-cost', [ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
                 Route::get('/export-csv', [ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
                 Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
+                Route::post('/details/1', [ProjectBudgetController::class, 'getCostDetails'])->name('budget.getDetail');
             });
-            //List of Commission
-            Route::group(['prefix' => '/commission'], function () {
-                Route::get('/', [ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-                Route::post('/details', [ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-                Route::get('/export-csv', [ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-                Route::delete('/{cost_commission_id}', [ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-                Route::put('/{commission_id}', [ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
-                Route::post('/add-new-commission', [ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
-                Route::put('/{group_id}/edit', [ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-                Route::get('/commision-group-details/{group_id}', [ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
-                Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
-            });
+            
             //Progress
             Route::group(['prefix' => '/location'], function () {
                 Route::group(['prefix' => '/{location_id}'], function () {
@@ -243,6 +248,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
+
+
 
     Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
     Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
@@ -326,13 +333,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     //Inventory Management
     Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
-    //Department
-    Route::resource('departments', DepartmentController::class);
-    Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
-    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-    Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-    Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
-    Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
 
     //Attendance
     Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');

@@ -327,7 +327,12 @@ class InternalCertificatesController extends Controller
     public function getViewCreate()
     {
         $this->updateCreatePermissions();
-        return view('auth.certificate.InternalCertificateCreate');
+        $employees = DB::table('employees')
+        ->join('certificate_creates', 'employees.employee_id', '=','certificate_creates.employee_id')
+        ->get();
+        return view('auth.certificate.InternalCertificateCreate', [
+            'employees' => $employees
+        ]);
     }
 
     public function temp()
