@@ -160,10 +160,11 @@
             })
         })
 
-        $('.at4').click(function () {
+        $(document).on('click', '.at4', function () {
             let employee_id = $(this).attr('data');
-            let url = _delete.replace(':employee_id', employee_id)
-            if(confirm('Are you sure you want to remove this employee from the department?')){
+            let url = _delete.replace(':employee_id', employee_id);
+
+            if (confirm('Are you sure you want to remove this employee from the department?')) {
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -173,7 +174,7 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        console.log(typeof response.status)
+                        console.log(typeof response.status);
                         if (response.status === 200) {
                             toastr.success(response.message, response.message);
                             setTimeout(function () {
@@ -185,7 +186,8 @@
                     }
                 });
             }
-        })
+        });
+
 
 
     </script>
