@@ -389,8 +389,8 @@
         function deleteAttendanceByID(e) {
             var id = $(e).attr('data-attendance');
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: {{ __('messages.confirmDeleteTitle') }},
+                text: {{ __('messages.confirmDelete') }},
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

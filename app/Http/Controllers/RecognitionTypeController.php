@@ -12,12 +12,15 @@ class RecognitionTypeController extends Controller
     {
         $recognition_types = RecognitionTypeModel::getRecognitionTypes();
 
-//        dd($recognition_types);
-
         // Hiển thị kết quả với view recognition
         return view('auth.recognition.recognition-type', [
             'recognition_types' => $recognition_types,
             'title' => 'Recognition Types'
         ]);
+    }
+
+    public function getRecognitionType($recognition_type_id)
+    {
+        return RecognitionTypeModel::getRecognitionTypes()->where('recognition_type_id', $recognition_type_id)->first();
     }
 }

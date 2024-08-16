@@ -255,14 +255,74 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
-    public function searchEmployee(Request $request) {
+    public function searchEmployee(Request $request)
+    {
+        $request->validate([
+            'employeeValue' => 'required|string',
+        ]);
 
+        $employeeValue = strtolower(trim($request->input('employeeValue')));
+
+        $employees = DB::table('employees')
+            ->whereRaw("LOWER(employee_code) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(CONCAT(last_name, ' ', first_name)) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(CONCAT(last_name, ' ', first_name), ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(en_name) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(en_name, ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->get();
+
+        return response()->json([
+            'employees' => $employees,
+        ]);
     }
 
     public function addSignatureCertificate(Request $request)
     {
+        // Xác thực dữ liệu đầu vào
+        $request->validate([
+            'img' => 'required|string',
+            'employee' => 'required|integer'
+        ]);
 
+        $imageData = $request->input('img');
+        $employeeCode = $request->input('employee');
+
+        // Tìm nhân viên dựa trên mã nhân viên
+        $employee = DB::table('employees')
+            ->where('employee_code', $employeeCode)
+            ->first();
+
+        // Tìm nhân viên hiện tại đang đăng nhập
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
+
+        // Xử lý hình ảnh
+        $imageParts = explode(',', $imageData);
+        $imageExtension = 'png'; // Có thể thay đổi tùy nhu cầu
+        $imageContent = base64_decode($imageParts[1]);
+
+        // Tạo tên tệp tin và đường dẫn
+        $imageName = 'signature_' . time() . '.' . $imageExtension;
+        $imagePath = public_path('assets/img/signature/' . $imageName);
+
+        // Lưu hình ảnh vào thư mục
+        file_put_contents($imagePath, $imageContent);
+
+        // Thêm thông tin vào cơ sở dữ liệu
+        DB::table('employee_signatures')->insert([
+            'employee_id' => $employee->employee_id,
+            'employee_signature_img' => 'assets/img/signature/' . $imageName,
+            'employee_signature_created_id' => $employeeUpdated->employee_id
+        ]);
+
+        return response()->json([
+            'message' => 'Signature saved successfully!',
+            'image_path' => $imagePath,
+        ]);
     }
+
 
     public function getViewCreate()
     {
@@ -282,6 +342,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->where(DB::raw('DATE(employment_contract.end_date)'), '>=', Carbon::now()->toDateString())
             ->where('permissions.permission_name', '=', 'Director')
+            ->orderBy('employee_signatures.updated_at','desc')
             ->first();
 
         $teacher = DB::table('employees')
@@ -289,6 +350,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
             ->where('permissions.permission_str', '=', 'teacher')
+            ->orderBy('employee_signatures.updated_at','desc')
             // ->where('employees.employee_id', '=', '191')
             ->first();
 
