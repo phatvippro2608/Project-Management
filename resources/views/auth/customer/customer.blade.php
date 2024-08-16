@@ -42,12 +42,19 @@
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary mb-3 btn-add">
+    <a class="btn btn-primary mb-3 btn-add">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus pe-2"></i>
             {{ __('messages.add') }}
         </div>
-    </div>
+    </a>
+    <a class="btn btn-primary mb-3" href="{{action('App\Http\Controllers\CustomerController@export')}}">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+            {{ __('messages.export') }}
+        </div>
+    </a>
+
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">

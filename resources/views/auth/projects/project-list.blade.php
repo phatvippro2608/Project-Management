@@ -66,15 +66,15 @@
         {{ __('messages.add') }}
     </button>
 
-    <button class="btn btn-primary mb-4">
-        <i class="bi bi-file-earmark-arrow-up"></i>
-        {{ __('messages.import') }}
-    </button>
+{{--    <button class="btn btn-primary mb-4">--}}
+{{--        <i class="bi bi-file-earmark-arrow-up"></i>--}}
+{{--        {{ __('messages.import') }}--}}
+{{--    </button>--}}
 
-    <button class="btn btn-primary mb-4">
-        <i class="bi bi-file-earmark-arrow-down"></i>
-        {{ __('messages.export') }}
-    </button>
+{{--    <button class="btn btn-primary mb-4">--}}
+{{--        <i class="bi bi-file-earmark-arrow-down"></i>--}}
+{{--        {{ __('messages.export') }}--}}
+{{--    </button>--}}
 
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
