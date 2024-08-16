@@ -1,3 +1,9 @@
+<?php
+
+use App\Http\Controllers\AccountController;
+
+$token = 'position';
+?>
 @extends('auth.main')
 @section('head')
     <link rel="stylesheet" href="{{ asset('assets/css/dhtmlxgantt.css') }}" type="text/css">
@@ -22,7 +28,8 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('project.projects') }}">Projects</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $p_id]) }}">Details</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $p_id]) }}">Details</a>
+                </li>
                 <li class="breadcrumb-item active">Progress</li>
             </ol>
         </nav>
@@ -31,8 +38,28 @@
         <div class="card rounded-4 p-2">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#modalCreateTask"><i class="bi bi-plus-lg me-1"></i>Create</button>
+                    @php
+                        $data = \Illuminate\Support\Facades\DB::table('accounts')
+                            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                            ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+
+                            ->where(
+                                'accounts.account_id',
+                                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                            )
+                            ->first();
+                        $empl_id = (int) $data->employee_id;
+                        $leader_arr = [];
+                        foreach ($leaders as $l) {
+                            array_push($leader_arr, $l->employee_id);
+                        }
+                    @endphp
+                    @if (in_array($empl_id, $leader_arr) ||
+                            in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#modalCreateTask"><i class="bi bi-plus-lg me-1"></i>Create</button>
+                    @endif
                     <div class="btn-group">
                         <button class="btn btn-primary" id="btnD">Day</button>
                         <button class="btn btn-primary" id="btnM">Month</button>
@@ -45,122 +72,142 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-                <form id="create-task-form" method="post">
-                    @csrf
-                    <div class="modal-header bg-white">
-                        <div class="input-group">
-                            <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-c" autocomplete="off">
-                            <label class="btn btn-outline-success me-2" for="btn-check-c"><i
-                                    class="bi bi-check"></i></label>
-                            <input type="text" class="form-control modal-title fs-5 no-background" name="taskname"
-                                placeholder="[Task Name]" required>
+    @if (in_array($empl_id, $leader_arr) ||
+            in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
+        <div class="modal fade" id="modalCreateTask" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <form id="create-task-form" method="post">
+                        @csrf
+                        <div class="modal-header bg-white">
+                            <div class="input-group">
+                                <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-c"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-success me-2" for="btn-check-c"><i
+                                        class="bi bi-check"></i></label>
+                                <input type="text" class="form-control modal-title fs-5 no-background" name="taskname"
+                                    placeholder="[Task Name]" required>
+                            </div>
+                            <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
+                                    class="bi bi-x" style="font-size: 3vh;"></i></button>
                         </div>
-                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"
-                                style="font-size: 3vh;"></i></button>
-                    </div>
-                    <div class="modal-body row">
-                        <div class="form-group col-6">
-                            <div class="form-group">
-                                <div class="form-group"><strong><i class="bi bi-diagram-2"></i> Add a
-                                        sub-task</strong></div>
-                                <div id="c-subtasks-holder">
+                        <div class="modal-body row">
+                            <div class="form-group col-6">
+                                <div class="form-group">
+                                    <div class="form-group"><strong><i class="bi bi-diagram-2"></i> Add a
+                                            sub-task</strong></div>
+                                    <div id="c-subtasks-holder">
+                                    </div>
+                                    <a class="btn" onclick="c_addSubTask()"><i class="bi bi-plus"></i>Add</a>
                                 </div>
-                                <a class="btn" onclick="c_addSubTask()"><i class="bi bi-plus"></i>Add</a>
+                                <div class="form-group" style="margin: 2% 0;">
+                                    <label class="form-group"><strong><i class="bi bi-body-text"></i>
+                                            Request</strong></label>
+                                    <textarea class="form-control" placeholder="Enter your request" style="resize: none;" name="request"></textarea>
+                                </div>
                             </div>
-                            <div class="form-group" style="margin: 2% 0;">
-                                <label class="form-group"><strong><i class="bi bi-body-text"></i>
-                                        Request</strong></label>
-                                <textarea class="form-control" placeholder="Enter your request" style="resize: none;" name="request"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group col-6" style="border-left: 1px solid;">
-                            <div class="form-group">
-                                <label for="users"><strong><i class="bi bi-person-circle"></i>
-                                        Assigned</strong></label>
-                                <div class="row form-group mt-3">
-                                    <div class="d-flex justify-content-between">
-                                        <input class="form-control empl_name" onkeyup="searchDropdown(this)"
-                                            onclick="displayDropdown(this)" required>
-                                        <input class="form-control empl_code" style="width: 25%;"
-                                            onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
-                                        <input type="text" class="empl_id" name="employee_id" hidden>
+                            <div class="form-group col-6" style="border-left: 1px solid;">
+                                <div class="form-group">
+                                    <label for="users"><strong><i class="bi bi-person-circle"></i>
+                                            Assigned</strong></label>
+                                    <div class="row form-group mt-3">
+                                        <div class="d-flex justify-content-between">
+                                            <input class="form-control empl_name" onkeyup="searchDropdown(this)"
+                                                onclick="displayDropdown(this)" required>
+                                            <input class="form-control empl_code" style="width: 25%;"
+                                                onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                            <input type="text" class="empl_id" name="employee_id" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="employees-dropdown fs-5">
+                                        @foreach ($employees as $employee)
+                                            @php
+                                                $photoPath = asset($employee->photo);
+                                                $defaultPhoto = asset('assets/img/avt.png');
+                                                $photoExists =
+                                                    !empty($employee->photo) &&
+                                                    file_exists(public_path($employee->photo));
+                                            @endphp
+                                            <div class="employee-item d-flex align-items-center"
+                                                data-id="{{ $employee->employee_id }}"
+                                                data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
+                                                data-code={{ $employee->employee_code }}>
+                                                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
+                                                    class="rounded-circle object-fit-cover" width="22" height="22">
+                                                <div class="empl_val ms-1"></div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                                <div class="employees-dropdown fs-5">
-                                    @foreach ($employees as $employee)
-                                        @php
-                                            $photoPath = asset($employee->photo);
-                                            $defaultPhoto = asset('assets/img/avt.png');
-                                            $photoExists =
-                                                !empty($employee->photo) && file_exists(public_path($employee->photo));
-                                        @endphp
-                                        <div class="employee-item d-flex align-items-center"
-                                            data-id="{{ $employee->employee_id }}"
-                                            data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
-                                            data-code={{ $employee->employee_code}}>
-                                            <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
-                                                class="rounded-circle object-fit-cover" width="22" height="22">
-                                            <div class="empl_val ms-1"></div>
-                                        </div>
-                                    @endforeach
+                                <div class="form-group" style="margin: 2% 0">
+                                    <label for="s_date"><strong><i class="bi bi-calendar"></i> Start
+                                            date</strong></label>
+                                    <input class="form-control" type="date" onchange="checkDate('create-task-form')"
+                                        name="s_date" required>
+                                </div>
+                                <div class="form-group" style="margin: 2% 0">
+                                    <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
+                                    <input class="form-control" type="date" onchange="checkDate('create-task-form')"
+                                        name="e_date" required>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin: 2% 0">
-                                <label for="s_date"><strong><i class="bi bi-calendar"></i> Start
-                                        date</strong></label>
-                                <input class="form-control" type="date" onchange="checkDate('create-task-form')"
-                                    name="s_date" required>
-                            </div>
-                            <div class="form-group" style="margin: 2% 0">
-                                <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
-                                <input class="form-control" type="date" onchange="checkDate('create-task-form')"
-                                    name="e_date" required>
-                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
+    @endif
     <div class="modal fade" id="modalViewTask" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <form id="edit-task-form">
                     @csrf
                     <div class="modal-header bg-white">
-                        <input type="text" id="task_id" name="task_id" style="display:none;" required>
-                        <div class="input-group">
-                            <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e"
-                                autocomplete="off">
-                            <label class="btn btn-outline-success me-2" for="btn-check-e"><i
-                                    class="bi bi-check"></i></label>
-                            <input type="text" class="form-control modal-title fs-5" id="taskname" name="taskname"
-                                required>
-                        </div>
-                        <div class="dropdown">
-                            <div class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                        @if (in_array($empl_id, $leader_arr) ||
+                                in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
+                            <input type="text" id="task_id" name="task_id" style="display:none;" required>
+                            <div class="input-group">
+                                <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-success me-2" for="btn-check-e"><i
+                                        class="bi bi-check"></i></label>
+                                <input type="text" class="form-control modal-title fs-5" id="taskname"
+                                    name="taskname" required>
                             </div>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
-                                <li><a class="dropdown-item" id="dl_task_id" href="#"
-                                        onclick="delTask(this)">Delete</a></li>
-                            </ul>
-                        </div>
+                        @else
+                            <input type="text" id="task_id" name="task_id" style="display:none;" readonly required>
+                            <div class="input-group">
+                                <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e"
+                                    autocomplete="off">
+                                <label class="btn btn-outline-success me-2" for="btn-check-e"><i
+                                        class="bi bi-check"></i></label>
+                                <input type="text" class="form-control modal-title fs-5" id="taskname"
+                                    name="taskname" readonly required>
+                            </div>
+                        @endif
+                        @if (in_array($empl_id, $leader_arr) ||
+                                in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
+                            <div class="dropdown">
+                                <div class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                                </div>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
+                                    <li><a class="dropdown-item" id="dl_task_id" href="#"
+                                            onclick="delTask(this)">Delete</a></li>
+                                </ul>
+                            </div>
+                        @endif
                         <div type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="bi bi-x" style="font-size: 3vh;"></i></div>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
                             <div class="form-group" id="subTaskHol">
-                                <div><strong><i class="bi bi-diagram-2"></i> Add a sub-task</strong></div>
+                                <div><strong><i class="bi bi-diagram-2"></i> Sub task</strong></div>
                                 <div id="e-subtasks-holder">
                                 </div>
                                 <a class="btn" onclick="e_addSubTask()"><i class="bi bi-plus"></i>Add</a>
@@ -178,9 +225,10 @@
                                     <div class="d-flex justify-content-between">
                                         <input id="empl_name" class="form-control empl_name"
                                             onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
-                                        <input id="empl_code" class="form-control empl_code" style="width: 25%;" onkeyup="searchDropdown(this)"
-                                            onclick="displayDropdown(this)" required>
-                                        <input id="empl_id" type="text" class="empl_id" name="employee_id" hidden required>
+                                        <input id="empl_code" class="form-control empl_code" style="width: 25%;"
+                                            onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                        <input id="empl_id" type="text" class="empl_id" name="employee_id" hidden
+                                            required>
                                     </div>
                                 </div>
                                 <div class="employees-dropdown fs-5">
@@ -194,7 +242,7 @@
                                         <div class="employee-item d-flex align-items-center"
                                             data-id="{{ $employee->employee_id }}"
                                             data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
-                                            data-code={{ $employee->employee_code}}>
+                                            data-code={{ $employee->employee_code }}>
                                             <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
                                                 class="rounded-circle object-fit-cover" width="22" height="22">
                                             <div class="empl_val ms-1"></div>
@@ -215,6 +263,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
@@ -292,7 +341,7 @@
             gantt.clearAll();
             $.ajax({
                 type: 'post',
-                url: "{{ route('tasks.getTasks',['project_id' => $p_id,'location_id'=>$id]) }}",
+                url: "{{ route('tasks.getTasks', ['project_id' => $p_id, 'location_id' => $id]) }}",
                 data: {
                     id: {{ $id }},
                     _token: '{{ csrf_token() }}'
@@ -317,13 +366,14 @@
                 },
             });
         }
+        //sự kiện click vào task sẽ chọn task đó nếu click lần nữa sẽ hiển thị modal
 
         gantt.attachEvent("onTaskDblClick", function(id, e) {
             var column = e.target.getAttribute("data-column");
             if (column == 'task') {
                 $.ajax({
                     type: 'post',
-                    url: "{{ route('task.getTask',['project_id' => $p_id,'location_id'=>$id]) }}",
+                    url: "{{ route('task.getTask', ['project_id' => $p_id, 'location_id' => $id]) }}",
                     data: {
                         id: id,
                         _token: '{{ csrf_token() }}'
@@ -371,26 +421,6 @@
             }
         });
 
-        $('#create-task-form').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            var data = form.serialize();
-            data += '&id=' + {{ $id }};
-            $.ajax({
-                type: 'post',
-                url: "{{ route('task.create',['project_id' => $p_id,'location_id'=>$id]) }}",
-                data: data,
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        loadData();
-                        $('#modalCreateTask').modal('hide');
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-            });
-        });
         $('#edit-task-form').submit(function(e) {
             e.preventDefault();
             var form = $(this);
@@ -398,10 +428,9 @@
             data += '&id=' + {{ $id }};
             $.ajax({
                 type: 'post',
-                url: "{{ route('task.update',['project_id' => $p_id,'location_id'=>$id]) }}",
+                url: "{{ route('task.update', ['project_id' => $p_id, 'location_id' => $id]) }}",
                 data: data,
                 success: function(response) {
-                    console.log(response);
                     if (response.success) {
                         toastr.success(response.message);
                         loadData();
@@ -413,38 +442,62 @@
             });
         });
 
-        function delTask(e) {
-            var task_id = $(e).attr('data-task-id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: 'post',
-                        url: "{{ route('task.delete',['project_id' => $p_id,'location_id'=>$id]) }}",
-                        data: {
-                            id: task_id,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                toastr.success(response.message);
-                                loadData();
-                                $('#modalViewTask').modal('hide');
-                            } else {
-                                toastr.error(response.message);
-                            }
-                        },
-                    });
-                }
+        @if (in_array($empl_id, $leader_arr) ||
+                in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
+            $('#create-task-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var data = form.serialize();
+                data += '&id=' + {{ $id }};
+                $.ajax({
+                    type: 'post',
+                    url: "{{ route('task.create', ['project_id' => $p_id, 'location_id' => $id]) }}",
+                    data: data,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            loadData();
+                            $('#modalCreateTask').modal('hide');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                });
             });
-        };
+
+            function delTask(e) {
+                var task_id = $(e).attr('data-task-id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'post',
+                            url: "{{ route('task.delete', ['project_id' => $p_id, 'location_id' => $id]) }}",
+                            data: {
+                                id: task_id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    toastr.success(response.message);
+                                    loadData();
+                                    $('#modalViewTask').modal('hide');
+                                } else {
+                                    toastr.error(response.message);
+                                }
+                            },
+                        });
+                    }
+                });
+            };
+        @endif
 
         function displayDropdown(e) {
             $('.employees-dropdown').css('display', 'block');
