@@ -1,16 +1,25 @@
 @extends('auth.main');
 
 @section('contents')
-<div class="pagetitle">
-    <h1>{{ __('messages.department') }}</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active">{{ __('messages.department') }}</li>
-        </ol>
-    </nav>
-</div>
-
+    <div class="pagetitle">
+        <h1>{{ __('messages.department') }}</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">{{ __('messages.department') }}</li>
+            </ol>
+        </nav>
+        </div>
+    <div class="row gx-3 my-3">
+        <div class="col-md-6 m-0">
+            <div class="btn btn-primary me-2">
+                <div class="d-flex align-items-center at1">
+                    <i class="bi bi-file-earmark-plus pe-2"></i>
+                    {{ __('messages.add') }}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="addDepartmentModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -175,10 +184,30 @@
         </div>
     </div>
 </div>
+<div class="modal modal-add" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Employee to Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="select-employee">Choose Employee</label>
+                <input type="text" class="form-control form-control-lg department-name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-add">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
     <script>
+        $('.at1').click(function () {
+            $('#addDepartmentModal').modal('show');
+        });
         $(document).ready(function() {
             var table = $('#departmentsTable').DataTable({
                 language: {
@@ -203,23 +232,10 @@
                     success: function(response) {
                         if (response.success) {
                             $('#addDepartmentModal').modal('hide');
-                            // $('#successModal').modal('show');
                             toastr.success(response.message, "Successful");
-
-                            // table.row.add([
-                            //     response.department.department_name,
-                            //     '<button class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn" data-id="' +
-                            //     response.department.department_id + '">' +
-                            //     '<i class="bi bi-pencil-square"></i>' +
-                            //     '</button>' +
-                            //     ' | ' +
-                            //     '<button class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none delete-btn" data-id="' +
-                            //     response.department.department_id + '">' +
-                            //     '<i class="bi bi-trash3"></i>' +
-                            //     '</button>'
-                            // ]).draw();
-                            // $('#addDepartmentForm')[0].reset();
                             location.reload();
+                        }else{
+                            toastr.error(response.message, "Error");
                         }
                     },
                     error: function(xhr) {
@@ -302,7 +318,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ url('departments') }}/' + departmentId,
+                            url: '{{ url('departments') }}/delete/' + departmentId,
                             method: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'
@@ -327,5 +343,7 @@
                 });
             }
         });
+
+
     </script>
 @endsection
