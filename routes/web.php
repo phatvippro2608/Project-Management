@@ -80,13 +80,13 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/', [DepartmentController::class, 'getView'])->name('departments.index');
         Route::post('/add', [DepartmentController::class, 'store'])->name('departments.store');
         Route::delete('/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+        Route::put('/update/{id}', [DepartmentController::class, 'update'])->name('departments.update');
         Route::group(['prefix' => '/{id}'], function () {
             Route::get('/',  'App\Http\Controllers\DepartmentController@getEmployeeOfDepartment');
             Route::post('/addEmployee', 'App\Http\Controllers\DepartmentController@addEmployee');
             Route::post('/deleteEmployee/{employee_id}', 'App\Http\Controllers\DepartmentController@deleteEmployee');
             Route::get('/export', 'App\Http\Controllers\DepartmentController@export');
             Route::get('/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-            Route::put('/update', [DepartmentController::class, 'update'])->name('departments.update');
         });
     });
 
