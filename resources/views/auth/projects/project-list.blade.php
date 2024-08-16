@@ -25,17 +25,20 @@
             margin-bottom: 1px;
             margin-right: 5px;
         }
+
         .custom-checkbox-lg input[type="checkbox"] {
             width: 22px;
             height: 22px;
             margin-bottom: 1px;
             margin-right: 5px;
         }
-        .hover-details{
+
+        .hover-details {
             text-decoration: none;
             color: var(--bs-primary);
         }
-        .hover-details:hover{
+
+        .hover-details:hover {
             text-decoration: underline;
             opacity: 1;
             color: var(--bs-primary);
@@ -66,15 +69,15 @@
         {{ __('messages.add') }}
     </button>
 
-{{--    <button class="btn btn-primary mb-4">--}}
-{{--        <i class="bi bi-file-earmark-arrow-up"></i>--}}
-{{--        {{ __('messages.import') }}--}}
-{{--    </button>--}}
+    {{--    <button class="btn btn-primary mb-4">--}}
+    {{--        <i class="bi bi-file-earmark-arrow-up"></i>--}}
+    {{--        {{ __('messages.import') }}--}}
+    {{--    </button>--}}
 
-{{--    <button class="btn btn-primary mb-4">--}}
-{{--        <i class="bi bi-file-earmark-arrow-down"></i>--}}
-{{--        {{ __('messages.export') }}--}}
-{{--    </button>--}}
+    {{--    <button class="btn btn-primary mb-4">--}}
+    {{--        <i class="bi bi-file-earmark-arrow-down"></i>--}}
+    {{--        {{ __('messages.export') }}--}}
+    {{--    </button>--}}
 
     <!-- Table to display materials -->
     <div class="card border rounded-4 p-2">
@@ -162,7 +165,7 @@
                                     data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
                                     team-id="{{$item->team_id}}"
                                 >
-                                    <i class="bi bi-person-fill-add fs-4" ></i>
+                                    <i class="bi bi-person-fill-add fs-4"></i>
                                 </div>
                             </div>
                         </td>
@@ -204,7 +207,8 @@
 
                                 <ul class="dropdown-menu">
                                     <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">
-                                        <a class="dropdown-item bg-hover add-location d-flex align-items-center" data="{{$item->project_id}}">
+                                        <a class="dropdown-item bg-hover add-location d-flex align-items-center"
+                                           data="{{$item->project_id}}">
                                             <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>
                                     </li>
                                     <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover"
@@ -369,7 +373,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for=""  style="margin-bottom: 0.3rem">
+                            <label for="" style="margin-bottom: 0.3rem">
                                 Location name
                             </label>
                             <input type="text" class="form-control mt-1 location-name">
@@ -389,7 +393,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <label for=""  style="margin-bottom: 0.3rem">
+                            <label for="" style="margin-bottom: 0.3rem">
                                 Amount
                             </label>
                             <input type="number" class="form-control mt-1 location-amount">
@@ -399,7 +403,8 @@
                         <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"
                                 aria-label="Close">Close
                         </button>
-                        <button type="button" class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">
+                        <button type="button"
+                                class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">
                             Create
                         </button>
                     </div>
@@ -416,23 +421,25 @@
                 </div>
                 <div class="modal-body">
 
-                            <div class="table-responsive">
-                                <table id="teamListTable" class="table table-hover table-borderless">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th class="text-center" style="width: 112px">Avatar</th>
-                                        <th class="text-center">Employee Code</th>
-                                        <th class="text-center">Full Name</th>
-                                        <th class="text-center">Email</th>
-                                        <th class="text-center">Position</th>
-                                        <th class="text-center" data-orderable="false"><input type="checkbox" name="" id="" class="custom-checkbox-lg check-all"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="team-manager-list">
+                    <div class="table-responsive">
+                        <table id="teamListTable" class="table table-hover table-borderless">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="text-center" style="width: 112px">Avatar</th>
+                                <th class="text-center">Employee Code</th>
+                                <th class="text-center">Full Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Position</th>
+                                <th class="text-center" data-orderable="false"><input type="checkbox" name="" id=""
+                                                                                      class="custom-checkbox-lg check-all">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="team-manager-list">
 
-                                    </tbody>
-                                </table>
-                            </div>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
             </div>
@@ -477,7 +484,7 @@
     </script>
     <script>
         var table = $('#teamListTable').DataTable({
-            language: { search: "" },
+            language: {search: ""},
             lengthMenu: [
                 [10, 30, 50, 100, -1],
                 [10, 30, 50, 100, "All"]
@@ -485,56 +492,15 @@
             pageLength: {{env('ITEM_PER_PAGE')}},
             responsive: true
         });
-        // function renderEmployeeList(employees, positions) {
-        //     var listHtml = '';
-        //
-        //     employees.forEach(function (item) {
-        //         var positionOptions = '<option value="100">Member</option>';
-        //
-        //         positions.forEach(function (position) {
-        //             if (position.team_permission !== 100) {
-        //                 var selected = item.team_permission === position.team_permission ? 'selected' : '';
-        //                 positionOptions += `<option value="${position.team_permission}" ${selected}>${position.position_name}</option>`;
-        //             }
-        //         });
-        //
-        //         listHtml += `
-        //         <tr class="account-item">
-        //             <td class="text-center">
-        //                 <div class="d-flex align-items-center justify-content-center">
-        //                     <img src="${item?.photo?item?.photo: ""}" alt="" onerror="this.onerror=null;this.src='/assets/img/not-found.svg'" class="account-photo2 rounded-circle p-0 m-0">
-        //                 </div>
-        //             </td>
-        //             <td class="text-center">
-        //                 ${item.employee_code}
-        //             </td>
-        //             <td class="text-left">
-        //                 ${item.first_name} ${item.last_name}
-        //             </td>
-        //             <td class="text-left">
-        //                 ${item.email}
-        //             </td>
-        //             <td class="text-left">
-        //                 <select class="form-select position" data="${item.employee_id}">
-        //                     ${positionOptions}
-        //                 </select>
-        //             </td>
-        //             <td class="text-center">
-        //                 <input type="checkbox" class="custom-checkbox-lg check-item" data="${item.employee_id}" ${item.isAtTeam ? 'checked' : ''}>
-        //             </td>
-        //         </tr>
-        //     `;
-        //     });
-        //     $('.team-manager-list').html(listHtml);
-        // }
+
         function renderEmployeeList(employees, positions) {
             var table = $('#teamListTable').DataTable();
             table.clear().draw(); // Clear the existing rows
 
-            employees.forEach(function(item) {
+            employees.forEach(function (item) {
                 var positionOptions = '<option value="100">Member</option>';
 
-                positions.forEach(function(position) {
+                positions.forEach(function (position) {
                     if (position.team_permission !== 100) {
                         var selected = item.team_permission === position.team_permission ? 'selected' : '';
                         positionOptions += `<option value="${position.team_permission}" ${selected}>${position.position_name}</option>`;
@@ -569,13 +535,10 @@
             $('.team-project-modal').modal('show');
 
 
-
-
-            $('.check-all').change(function () {
+            $(document).on('change', '.check-all', function () {
                 $('.check-item').prop('checked', $('.check-all').prop('checked')).trigger('change');
             });
-
-            $('.check-item').change(function (){
+            $(document).on('change', '.check-item', function () {
                 let employee_id = $(this).attr('data');
                 let team_permission = $('select.form-select.position[data="' + employee_id + '"]').val();
                 console.log(employee_id)
@@ -590,7 +553,7 @@
                         'employee_id': employee_id,
                         'team_id': team_id,
                         'team_permission': team_permission,
-                        'checked': $(this).prop('checked')?1:0
+                        'checked': $(this).prop('checked') ? 1 : 0
                     },
                     success: function (result) {
                         result = JSON.parse(result);
@@ -607,7 +570,7 @@
                 window.location.reload();
             });
 
-            $('.position').change(function (){
+            $('.position').change(function () {
                 let employee_id = $(this).attr('data');
                 let team_permission = $(this).val();
                 $.ajax({

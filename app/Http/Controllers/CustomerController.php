@@ -46,6 +46,7 @@ class CustomerController extends Controller
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
+        $redirectUrl = $request->input('redirectUrl', '');
         if ($id_new_customer = DB::table('customers')->insertGetId($new_customer)) {
             $new_contract = [
                 'customer_id' => $id_new_customer,
@@ -54,11 +55,14 @@ class CustomerController extends Controller
                 'contract_end_date' => $request->contract_end_date,
                 'contract_details' => $request->contract_details
             ];
+            if(!empty($redirectUrl)){
+                return AccountController::status($id_new_customer, 200);
+            }
             if ($id_new_contract = DB::table('contracts')->insertGetId($new_contract)) {
-                return AccountController::status('Thêm thành công', 200);
+                return AccountController::status('Added Customer', 200);
             } else {
                 DB::table('customers')->where('customer_id', $id_new_customer)->delete();
-                return AccountController::status('Added Customer', 500);
+                return AccountController::status('Fail to add Customer', 500);
             }
         } else {
             return AccountController::status('Fail To Add Customer', 500);
