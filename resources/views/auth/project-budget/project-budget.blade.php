@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 
 @section('contents')
     <div class="pagetitle">
@@ -62,7 +62,7 @@
                                 <td id="valMaterialCost">{{ number_format($materialCost, 0, ',', '.') }} VND</td>
                             </tr>
                         @endif
-                        
+
                         <tr class="table-primary">
                             <th scope="row">FUNDS REMAINING</th>
                             <td id="remain"></td>

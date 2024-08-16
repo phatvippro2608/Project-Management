@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 @section('head')
 <style>
     input::-webkit-outer-spin-button,
@@ -14,7 +14,7 @@
     <form action="" method="POST">
         @csrf
         @method('PUT')
-        
+
         <div class="row mb-3">
             <label class="col-sm-2 col-form-label">Select Group Of Cost</label>
             <div class="col-sm-10">
@@ -41,7 +41,7 @@
 
         <div id="budget-data-container">
         </div>
-        
+
     </form>
 </div>
 @endsection

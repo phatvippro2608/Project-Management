@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.crm')
 @section('head')
     <style>
         .custom-checkbox-lg {
