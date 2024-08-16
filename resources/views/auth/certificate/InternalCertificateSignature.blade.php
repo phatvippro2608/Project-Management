@@ -10,6 +10,10 @@
             padding-right: 30px;
         }
 
+        .pr-30 {
+            padding-right: 30px;
+        }
+
         .edit-btn {
             border: none;
             background: transparent;
@@ -43,6 +47,27 @@
             max-width: 100%;
             max-height: 100px;
             object-fit: contain;
+        }
+
+        #employeeResults {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            z-index: 1000;
+            padding: 0;
+            margin: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #employeeResults li {
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        #employeeResults li:hover {
+            background-color: #f1f1f1;
         }
     </style>
 @endsection
@@ -220,15 +245,17 @@
                 <div class="modal-body">
                     <form id="addSignatureForm">
                         @csrf
-                        <div class="mb-3">
+                        <div class="mb-3 position-relative">
                             <label for="employee" class="form-label">Employee</label>
                             <input type="text" class="form-control" id="employee" name="employee" required>
+                            <ul id="employeeResults" class="list-group position-absolute w-100 d-none"></ul>
                         </div>
                         <div class="mb-3">
                             <label for="signatureImage" class="form-label">Signature Image</label>
                             <div class="d-flex flex-column align-items-center">
                                 <img id="signatureAddPreview" src="" alt="Signature Image"
                                     class="img-thumbnail mb-2 d-none" style="max-height: 150px; object-fit: contain;">
+                                <canvas id="addSignatureCanvas" style="display:none;"></canvas>
                                 <input type="file" id="signatureImage" class="form-control mt-2" required>
                             </div>
                         </div>
@@ -252,6 +279,29 @@
                 info: true,
                 lengthChange: true
             });
+
+            function calculateTimeDifference(updatedAt) {
+                var updatedDate = new Date(updatedAt);
+                var now = new Date();
+                var diff = now - updatedDate;
+
+                var diffMinutes = Math.floor(diff / (1000 * 60));
+                var diffHours = Math.floor(diff / (1000 * 60 * 60));
+                var diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var diffMonths = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+
+                if (diffMonths > 0) {
+                    return updatedDate.toISOString().split('T')[0];
+                } else if (diffDays > 0) {
+                    return `${diffDays} days ago`;
+                } else if (diffHours > 0) {
+                    return `${diffHours} hours ago`;
+                } else if (diffMinutes > 0) {
+                    return `${diffMinutes} minutes ago`;
+                } else {
+                    return 'now';
+                }
+            }
 
             $('.edit-btn').on('click', function() {
                 var signatureID = $(this).data('id');
@@ -285,7 +335,7 @@
                                 `<img src="${signature.employee_signature_img}" style="height: 50px; margin-right: 10px;" alt="">`,
                                 `<img src="${signature.creator_photo}" style="height: 30px; margin-right: 10px;" class="rounded-circle"  alt="">`,
                                 `${signature.creator_code}`,
-                                `${signature.created_at}`
+                                `${calculateTimeDifference(signature.created_at)}`
                             ];
                         });
 
@@ -293,6 +343,10 @@
                         $('#historyTable').DataTable({
                             data: historyData,
                             destroy: true,
+                            columnDefs: [{
+                                targets: [0, 2],
+                                className: 'text-center pr-30'
+                            }],
                             pageLength: 3,
                             lengthChange: false,
                         });
@@ -409,7 +463,6 @@
                                 var transparentImage = canvas.toDataURL('image/png');
                                 $('#signaturePreview').attr('src', transparentImage);
                             }
-
                             $('#saveBtn').on('click', function() {
                                 var signatureId = $(this).data('id');
                                 // var employeeId = $('#employeeId').val();
@@ -447,8 +500,8 @@
                                             confirmButtonText: 'OK'
                                         });
                                     }
-                                });
-                            });
+                                })
+                            })
                         };
                     };
                     reader.readAsDataURL(file);
@@ -462,6 +515,43 @@
                 if (file) {
                     reader.onload = function(e) {
                         $('#signatureAddPreview').attr('src', e.target.result).removeClass('d-none');
+                        var img = new Image();
+                        img.src = e.target.result;
+
+                        img.onload = function() {
+                            var canvas = document.getElementById('addSignatureCanvas');
+                            var ctx = canvas.getContext('2d');
+
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+
+                            // Kiểm tra xem có điểm nào trong suốt không
+                            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            var data = imageData.data;
+                            var hasTransparentPixel = false;
+
+                            for (var i = 3; i < data.length; i += 4) {
+                                if (data[i] < 255) {
+                                    hasTransparentPixel = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasTransparentPixel) {
+                                // Nếu không có nền trong suốt, xử lý để tạo nền trong suốt
+                                for (var i = 0; i < data.length; i += 4) {
+                                    // Nếu điểm ảnh là màu trắng, thì làm cho nó trong suốt
+                                    if (data[i] > 200 && data[i + 1] > 200 && data[i + 2] > 200) {
+                                        data[i + 3] = 0;
+                                    }
+                                }
+
+                                ctx.putImageData(imageData, 0, 0);
+                                var transparentImage = canvas.toDataURL('image/png');
+                                $('#signatureAddPreview').attr('src', transparentImage);
+                            }
+                        };
                     };
 
                     reader.readAsDataURL(file);
@@ -471,17 +561,22 @@
             });
 
             $('.btn-add').on('click', function() {
+                $('#employee').val('');
+                $('#signatureAddPreview').attr('src', '').addClass('d-none');
+                $('#signatureImage').val('');
+                $('#employeeResult').empty();
                 $('#addSignatureModal').modal('show');
             });
 
             $('#employee').on('input', function() {
                 var employeeValue = $(this).val();
-                if (employeeValue.length > 5) {
+
+                if (employeeValue.length > 2) {
                     $.ajax({
-                        url: '{{ route('certificate.signature.search') }}', 
+                        url: '{{ route('certificate.signature.search') }}',
                         type: 'POST',
                         data: JSON.stringify({
-                            employeeCode: employeeValue
+                            employeeValue: employeeValue
                         }),
                         contentType: 'application/json',
                         processData: false,
@@ -489,39 +584,71 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            console.log(response);
+                            var html = '';
+                            if (response.employees.length > 0) {
+                                html = '';
+                                $.each(response.employees, function(index, employee) {
+                                    html +=
+                                        `<li class="list-group-item list-group-item-action" data-id="${employee.employee_code}">`;
+                                    html +=
+                                        `${employee.employee_code} - ${employee.last_name} ${employee.first_name}`;
+                                    if (employee.en_name) {
+                                        html += ` - ${employee.en_name}`
+                                    }
+                                    html += '</li>';
+                                });
+                                $('#employeeResults').html(html).removeClass('d-none');
+                            } else {
+                                $('#employeeResults').html(
+                                        '<li class="list-group-item">No employees found.</li>')
+                                    .removeClass('d-none');
+                            }
                         }
                     });
+                } else {
+                    $('#employeeResults').addClass('d-none');
                 }
             });
 
-            $('#saveSignatureBtn').on('click', function() {
-                var formData = new FormData($('#addSignatureForm')[0]);
+            $(document).on('click', '#employeeResults li', function() {
+                var selectedText = $(this).text();
+                var selectedId = $(this).data('id');
+                $('#employee').val(selectedText);
+                $('#employee').data('id', selectedId);
+                $('#employeeResults').addClass('d-none');
+            });
 
+            $('#saveSignatureBtn').on('click', function() {
+                var canvas = document.getElementById('addSignatureCanvas');
+                var imageData = canvas.toDataURL('image/png');
+                var data = {
+                    img: imageData,
+                    employee: $('#employee').data('id')
+                }
                 $.ajax({
                     url: '{{ route('certificate.signature.add') }}',
                     type: 'POST',
-                    data: formData,
-                    contentType: false,
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
                     processData: false,
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                            .attr('content')
                     },
                     success: function(response) {
                         Swal.fire({
-                            title: 'Success',
-                            text: 'Signature added successfully!',
+                            title: 'Success!',
+                            text: 'Signature saved successfully!',
                             icon: 'success',
                             confirmButtonText: 'OK'
-                        }).then(function() {
-                            $('#addSignatureModal').modal('hide');
+                        }).then(() => {
                             location.reload();
                         });
                     },
-                    error: function(xhr, status, error) {
+                    error: function() {
                         Swal.fire({
-                            title: 'Error',
-                            text: 'There was an error adding the signature.',
+                            title: 'Error!',
+                            text: 'An error occurred while saving the signature.',
                             icon: 'error',
                             confirmButtonText: 'OK'
                         });

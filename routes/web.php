@@ -172,14 +172,14 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                         Route::post('/update', [TaskController::class, 'update'])->name('task.update');
                         Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
                         Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
-        
+
                         Route::post('/update-item', [ProgressController::class, 'updateItem']);
                         Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
                         Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
                     });
                 });
             });
-            
+
 
 
         });
