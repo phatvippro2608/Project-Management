@@ -115,6 +115,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Project
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+        Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
 
         //Project location
         Route::group(['prefix' => '/project-location'], function () {
@@ -151,19 +152,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::post('/add-new-cost', [ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
                 Route::get('/export-csv', [ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
                 Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
+                Route::post('/details/1', [ProjectBudgetController::class, 'getCostDetails'])->name('budget.getDetail');
             });
-            //List of Commission
-            Route::group(['prefix' => '/commission'], function () {
-                Route::get('/', [ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-                Route::post('/details', [ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-                Route::get('/export-csv', [ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-                Route::delete('/{cost_commission_id}', [ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-                Route::put('/{commission_id}', [ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
-                Route::post('/add-new-commission', [ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
-                Route::put('/{group_id}/edit', [ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-                Route::get('/commision-group-details/{group_id}', [ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
-                Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
-            });
+            
             //Progress
             Route::group(['prefix' => '/location'], function () {
                 Route::group(['prefix' => '/{location_id}'], function () {
