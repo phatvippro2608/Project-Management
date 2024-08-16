@@ -272,7 +272,7 @@
                 var departmentId = $('#editDepartmentId').val();
 
                 $.ajax({
-                    url: '{{ url('departments') }}/' + departmentId,
+                    url: '{{ url('departments') }}/update/' + departmentId,
                     method: 'PUT',
                     data: $(this).serialize(),
                     success: function(response) {
