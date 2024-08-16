@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ContractModel;
 use App\Models\CustomerModel;
+use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use function Laravel\Prompts\table;
 
 class CustomerController extends Controller
@@ -42,6 +46,7 @@ class CustomerController extends Controller
             'company_name' => $request->company_name,
             'status' => $request->status,
         ];
+        $redirectUrl = $request->input('redirectUrl', '');
         if ($id_new_customer = DB::table('customers')->insertGetId($new_customer)) {
             $new_contract = [
                 'customer_id' => $id_new_customer,
@@ -50,11 +55,14 @@ class CustomerController extends Controller
                 'contract_end_date' => $request->contract_end_date,
                 'contract_details' => $request->contract_details
             ];
+            if(!empty($redirectUrl)){
+                return AccountController::status($id_new_customer, 200);
+            }
             if ($id_new_contract = DB::table('contracts')->insertGetId($new_contract)) {
-                return AccountController::status('Thêm thành công', 200);
+                return AccountController::status('Added Customer', 200);
             } else {
                 DB::table('customers')->where('customer_id', $id_new_customer)->delete();
-                return AccountController::status('Added Customer', 500);
+                return AccountController::status('Fail to add Customer', 500);
             }
         } else {
             return AccountController::status('Fail To Add Customer', 500);
@@ -96,4 +104,50 @@ class CustomerController extends Controller
         DB::table("projects")->all();
         return true;
     }
+
+    public function export(Request $request)
+    {
+        $inputFileName = public_path('excel-example/Customer.xlsx');
+
+        $inputFileType = IOFactory::identify($inputFileName);
+
+        $objReader = IOFactory::createReader($inputFileType);
+
+        $excel = $objReader->load($inputFileName);
+
+        $excel->setActiveSheetIndex(0);
+        $excel->getDefaultStyle()->getFont()->setName('Times New Roman');
+
+        $stt = 1;
+        $cell = $excel->getActiveSheet();
+
+        $data = DB::table('customers')->get();
+        $num_row = 6;
+        foreach ($data as $row) {
+            $cell->setCellValue('A' . $num_row, $stt++);
+            $cell->setCellValue('B' . $num_row, $row->last_name.' '.$row->first_name);
+            $cell->setCellValue('C' . $num_row, $row->date_of_birth);
+            $cell->setCellValue('D' . $num_row, $row->email);
+            $cell->setCellValue('E' . $num_row, $row->phone_number);
+            $cell->setCellValue('F' . $num_row, $row->address);
+            $cell->setCellValue('G' . $num_row, $row->company_name);
+            $cell->setCellValue('H' . $num_row, $row->website);
+            $cell->setCellValue('I' . $num_row, $row->created_at);
+            $borderStyle = $cell->getStyle('A'.$num_row.':I' . $num_row)->getBorders();
+            $borderStyle->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $cell->getStyle('A'.$num_row.':I' . $num_row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $num_row++;
+        }
+        foreach (range('A', 'I') as $columnID) {
+            $excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = "Customer-List" . '.xlsx';
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($excel, 'Xlsx');
+        $writer->save('php://output');
+    }
+
 }

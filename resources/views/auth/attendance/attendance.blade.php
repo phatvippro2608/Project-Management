@@ -85,7 +85,7 @@
                         @endphp
                         <tr>
                             <td>{{ $data->attendance_id }}</td>
-                            <td>{{ $name }}</td>
+                            <td class="text-start">{{ $name }}</td>
                             <td>{{ $data->employee_id }}</td>
                             <td>{{ $data->date }}</td>
                             <td>{{ $data->sign_in }}</td>
@@ -389,8 +389,8 @@
         function deleteAttendanceByID(e) {
             var id = $(e).attr('data-attendance');
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: {{ __('messages.confirmDeleteTitle') }},
+                text: {{ __('messages.confirmDelete') }},
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

@@ -31,12 +31,11 @@
     <div class="d-flex ms-auto">
         <!-- Import Form -->
         <button type="button" class="btn btn-primary btn-sm me-2" id="importButton">Import</button>
-
         <!-- Hidden Import Form -->
-        <form id="importForm" action="{{ route('budget.import', $id) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+        <form id="importForm" action="{{ !empty($location) ? route('budget.import', ['project_id' => $id, 'location' => $location ]) : route('budget.import', ['project_id' => $id]) }}" method="POST" enctype="multipart/form-data" style="display: none;">
             @csrf
             <input type="file" name="file" id="fileInput" required>
-            <button type="submit" id="submitButton">Submit</button>
+            <button type="button" id="submitButton">Submit</button>
         </form>
 
         <!-- Add New Cost Button -->
@@ -88,7 +87,7 @@
                         <table id="total" class="table table-hover table-borderless">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Group Name</th>
                                     <th>Subtotal</th>
                                 </tr>
                             </thead>
@@ -154,7 +153,7 @@
                     <thead class="table-light">
                         <tr>
                             <th class="text-center" data-sort="id_source">#<i class="bi bi-sort"></i></th>
-                            <th data-sort="name">NAME<i class="bi bi-sort"></i></th>
+                            <th data-sort="name">GROUP NAME<i class="bi bi-sort"></i></th>
                             <th data-sort="description" style="width:15%">DESCRIPTION<i class="bi bi-sort"></i></th>
                             <th data-sort="laborqty">LABOR QTY<i class="bi bi-sort"></i></th>
                             <th data-sort="budgetqty">BUDGET QTY <i class="bi bi-sort"></i></th>
@@ -171,13 +170,14 @@
                         $subtotal1 = 0;
                     @endphp
                     <tbody>
-                        <tr>
+                        
                             @foreach ($dataCost as $data)
+                            <tr style="cursor: pointer" data="{{(\App\Http\Controllers\AccountController::toAttrJson(\App\Http\Controllers\ProjectBudgetController::getCostDetails($data->project_cost_id)))}}">
                                 @php
                                     $subtotal = 0;
                                 @endphp
                                 <td class="text-center" id="{{ $data->project_cost_id }}">{{ $i++ }}</td>
-                                <td>{{ $data->project_cost_group_name }}</td>
+                                <td id="name" name="name">{{ $data->project_cost_group_name }}</td>
                                 <td>{{ $data->project_cost_description }}</td>
                                 <td>{{ $data->project_cost_labor_qty }}</td>
                                 <td>{{ $data->project_cost_budget_qty }}</td>
@@ -215,13 +215,13 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="chooseGroupModalLabel">Add New Cost</h5>
                 </div>
-                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['id' => $id]) }}">
+                <form id="chooseGroupForm" method="POST" action="{{ route('budget.addNewCost', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="existingGroup">Select Existing Cost Group</label>
+                            <label for="existingGroup">Select Existing Cost Group Name</label>
                             <select class="form-control" id="existingGroup" name="existingGroup">
-                                <option value="">-- Select a Cost Group --</option>
+                                <option value="">-- Select a Cost Group Name --</option>
                                 @foreach ($dataCostGroup as $costGroup)
                                     <option value="{{ $costGroup->project_cost_group_id }}">
                                         {{ $costGroup->project_cost_group_name }}</option>
@@ -233,7 +233,7 @@
                         </div>
                         <div class="form-group mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#addNewGroupModal">Or Add New Group</button>
+                                data-bs-target="#addNewGroupModal">Or Add New Group Name</button>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -251,9 +251,9 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group</h5>
+                    <h5 class="modal-title" id="addNewGroupModalLabel">Add New Cost Group Name</h5>
                 </div>
-                <form id="addNewGroupForm" method="POST" action="{{ route('budget.createCostGroup', ['id' => $id]) }}">
+                <form id="addNewGroupForm" method="POST" action="{{ !empty($location) ? route('budget.createCostGroup', ['project_id' => $id, 'location' => $location]) : route('budget.createCostGroup', ['project_id' => $id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -270,46 +270,77 @@
         </div>
     </div>
 
+    <!-- Expense Detail Modal -->
+    <div class="modal fade" id="detailCostModal" tabindex="-1" aria-labelledby="detailCostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailCostModalLabel">Detail Expense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Nội dung chi tiết chi phí sẽ được hiển thị ở đây -->
+                    <div id="costDetails">
+                        <!-- Nội dung động từ AJAX sẽ được chèn vào đây -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-        document.getElementById('fileInput').click(); // Trigger file input click
-    });
+            document.getElementById('fileInput').click(); 
+        });
 
-    document.getElementById('fileInput').addEventListener('change', function() {
-        document.getElementById('importForm').submit(); // Automatically submit the form when a file is selected
-    });
-    document.getElementById('importForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    var fileInput = document.getElementById('fileInput');
-    var file = fileInput.files[0];
-    var reader = new FileReader();
+        document.getElementById('fileInput').addEventListener('change', function() {
+            document.getElementById('submitButton').click(); 
+        });
 
-    reader.onload = function(e) {
-    var data = e.target.result;
-    console.log(data); // Log the data to verify its contents
-    var json = JSON.stringify({ dataExcel: data });
+        $('#submitButton').on('click', function(event) {
+            event.preventDefault(); 
 
-    fetch('{{ route('budget.import', $id) }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: json
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Log the response to check if data is received correctly
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-};
+            var fileInput = $('#fileInput')[0];
+            var file = fileInput.files[0];
+            
+            if (!file) {
+                toastr.error('Please select a file before submitting.');
+                return;
+            }
 
-    reader.readAsText(file);
-});
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            var url = $('#importForm').attr('action');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data.success) {
+                        toastr.success('Import successful!');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error('Import failed: ' + (data.message || 'Unknown error'));
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    toastr.error('Error: ' + errorThrown);
+                }
+            });
+        });
+
+
         document.addEventListener("DOMContentLoaded", function() {
             var seriesData = [];
             var labelsData = [];
@@ -349,7 +380,7 @@
             });
             $('#selectGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
-                var url = '{{ route('budget.viewCost', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                var url = '{{ route('budget.viewCost', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {
@@ -438,7 +469,7 @@
             $('#existingGroup').on('change', function() {
                 var selectedGroupId = $(this).val();
                 var url =
-                    '{{ route('budget.getCostGroupDetails', ['id' => $id, 'group_id' => '__GROUP_ID__']) }}'
+                    '{{ route('budget.getCostGroupDetails', ['project_id' => $id, 'group_id' => '__GROUP_ID__']) }}'
                     .replace('__GROUP_ID__', selectedGroupId);
 
                 if (selectedGroupId) {
@@ -510,6 +541,33 @@
                 filterTable();
             });
         });
+    // Bắt sự kiện click vào hàng trong bảng
+    $(document).ready(function() {
+    $('#costTable tbody').on('click', 'tr', function() {
+        var data = JSON.parse($(this).attr('data'));
+        data=data.original.data
+                var html = `
+                    <table class="table">
+                    <tbody>
+                        <tr><th>Group Name</th><td>${data.project_cost_group_name || ''}</td></tr>
+                        <tr><th>Description</th><td>${data.project_cost_description || ''}</td></tr>
+                        <tr><th>Labor QTY</th><td>${data.project_cost_labor_qty || ''}</td></tr>
+                        <tr><th>Labor Unit</th><td>${data.project_cost_labor_unit || ''}</td></tr>
+                        <tr><th>Budget QTY</th><td>${data.project_cost_budget_qty || ''}</td></tr>
+                        <tr><th>Budget Unit</th><td>${data.project_budget_unit || ''}</td></tr>
+                        <tr><th>Labor Cost</th><td>${data.project_cost_labor_cost || ''}</td></tr>
+                        <tr><th>Misc. Cost</th><td>${data.project_cost_misc_cost || ''}</td></tr>
+                        <tr><th>OT Budget</th><td>${data.project_cost_ot_budget || ''}</td></tr>
+                        <tr><th>Per Diem Pay</th><td>${data.project_cost_perdiempay || ''}</td></tr>
+                        <tr><th>Remark</th><td>${data.project_cost_remaks || ''}</td></tr>
+                    </tbody>
+                    </table>
+                `;
+                $('#costDetails').html(html);
+                $('#detailCostModal').modal('show');
+      
+    });
+});
         new DataTable('#costTable');
         new DataTable('#total');
     </script>

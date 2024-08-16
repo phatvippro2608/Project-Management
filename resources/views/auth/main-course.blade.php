@@ -1,6 +1,7 @@
 <?php
 
 use App\StaticString;
+use App\Http\Controllers\AccountController;
 
 $token = 'position';
 ?>
@@ -345,6 +346,7 @@ $token = 'position';
                     <i class="bi bi-bookmark"></i><span>Description</span>
                 </a>
             </li>
+            @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
             <li class="nav-item" id="new-section">
 
             </li>
@@ -353,6 +355,7 @@ $token = 'position';
                     <i class="bi bi-plus-square"></i><span>New section</span>
                 </button>
             </li>
+            @endif
         </ul>
     </aside>
 

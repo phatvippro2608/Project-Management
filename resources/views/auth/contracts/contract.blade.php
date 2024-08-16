@@ -23,31 +23,34 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Contract list</h1>
+        <h1>{{ __('messages.contract') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Contract List</li>
+                <li class="breadcrumb-item active">{{ __('messages.contract') }}</li>
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary my-3 add-contract">
+    <div class="btn btn-primary mb-3 add-contract">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus pe-2"></i>
-            Add contract
+            {{ __('messages.add') }}
         </div>
     </div>
     <div class="card border rounded-4 p-2">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">{{ __('messages.contract_list') }}</div>
+        </div>
         <div class="card-body">
             <table id="contractTable" class="table table-borderless table-hover">
                 <thead class="table-light">
                 <tr>
-                    <th class="text-center">No.</th>
-                    <th class="text-center">Contract detail</th>
-                    <th class="text-center">Contact date</th>
-                    <th class="text-center">Contact end date</th>
-                    <th class="text-center">Amount</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">#</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.contract_detail') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.datestart') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.dateend') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.amount') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.action') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -136,7 +139,7 @@
                                                         value="{{$item->customer_id}}">{{$item->first_name.' '.$item->last_name}}</option>
                                                 @endforeach
                                             </select>
-                                            <button class="btn btn-outline-secondary add-team" type="button"><i
+                                            <button class="btn btn-outline-secondary add-customer" type="button"><i
                                                     class="bi bi-plus"></i></button>
                                         </div>
                                     </div>
@@ -164,7 +167,7 @@
                                                 type="submit"><i class="bi bi-upload me-2"></i>Upload
                                         </button>
                                         <div class="files-of-contract" style="max-height: 120px">
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -292,7 +295,7 @@
                         },
                     },
                     revert: {
-                        url: '{{route('attachment-delete')}}',
+                        url: '{{route('attachment-delete', ['project_id'=>-1])}}',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
                         },
@@ -514,6 +517,132 @@
                 }
             });
         })
-    </script>
 
+
+        $('.add-customer').click(function () {
+            let timerInterval;
+            Swal.fire({
+                html: 'You will redirect to the customer page to add a new customer in <b>4</b> seconds.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Redirect Now',
+                didOpen: () => {
+                    const content = Swal.getHtmlContainer();
+                    const b = content.querySelector('b');
+                    let countdown = 3;
+                    timerInterval = setInterval(() => {
+                        b.textContent = countdown;
+                        countdown--;
+                        if (countdown < 0) {
+                            clearInterval(timerInterval);
+                            Swal.close();
+                            const contractName = document.querySelector('.name').value;
+                            const contractStartDate = document.querySelector('.start').value;
+                            const contractEndDate = document.querySelector('.end').value;
+                            const customer = document.querySelector('.customer').value;
+                            const contractDetails = document.querySelector('.details').value;
+                            // const encodedContractName = encodeURIComponent(contractName);
+                            // const encodedContractStartDate = encodeURIComponent(contractStartDate);
+                            // const encodedContractEndDate = encodeURIComponent(contractEndDate);
+                            // const encodedCustomer = encodeURIComponent(customer);
+                            // const encodedContractDetails = encodeURIComponent(contractDetails);
+
+                            let redirectUrl = `{{ action('App\Http\Controllers\CustomerController@getView', ['redirect' => action('App\Http\Controllers\ContractController@getView', ['re'=>'re','contractName' => 'CONTRACT_NAME', 'contractStartDate' => 'CONTRACT_START_DATE', 'contractEndDate' => 'CONTRACT_END_DATE', 'customer' => 'CUSTOMER', 'contractDetails' => 'CONTRACT_DETAILS'])]) }}`
+                                .replace('CONTRACT_NAME', contractName)
+                                .replace('CONTRACT_START_DATE', contractStartDate)
+                                .replace('CONTRACT_END_DATE', contractEndDate)
+                                .replace('CUSTOMER', customer)
+                                .replace('CONTRACT_DETAILS', contractDetails);
+                            window.location.href = redirectUrl;
+                        }
+                    }, 1000);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Handle the confirmation button click if needed
+                    window.location.href = `{{action('App\Http\Controllers\ContractController@getView')}}`;
+                }
+            });
+        })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('re') && urlParams.get('re')==='re') {
+            $('.name').val(urlParams.get('contractName') || '');
+            $('.start').val(urlParams.get('contractStartDate') || '');
+            $('.end').val(urlParams.get('contractEndDate') || '');
+            $('.customer').val(urlParams.get('customerId') || '');
+            $('.details').val(urlParams.get('contractDetails') || '');
+            const url = new URL(window.location.href);
+            url.search = '';
+            window.history.replaceState({}, '', url);
+            $('.md1 .modal-title').text('Add New Contract');
+
+            $('.md1').modal('show');
+
+            $('.btn-add-contract').off('click').on('click', function (e) {
+                e.preventDefault();
+
+                // Thu thập dữ liệu từ form
+                var formData = new FormData($('.form-contract')[0]);
+
+                formData.append('contract_name', $('.name').val());
+                formData.append('contract_date', $('.start').val());
+                formData.append('contract_end_date', $('.end').val());
+                formData.append('contract_details', $('.details').val());
+                formData.append('customer_id', $('.customer').val());
+
+                $.ajax({
+                    url:  `{{action('App\Http\Controllers\ContractController@addContract')}}`,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        result = JSON.parse(response);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Successfully");
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        }else if(result.status === 422){
+                            const errorRes = JSON.parse(result.message);
+                            let strMes = "";
+                            if (errorRes.contract_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_name}</div>`;
+                            if (errorRes.contract_date) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_date}</div>`;
+                            if (errorRes.contract_end_date) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_end_date}</div>`;
+                            if (errorRes.contract_details) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_details}</div>`;
+                            if (errorRes.customer_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.customer_id}</div>`;
+                            Swal.fire({
+                                html: strMes,
+                                icon: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Back and continue edit!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                }
+                            });
+                        }
+                        else {
+                            toastr.error(result.message, "Failed Action");
+                        }
+                    },
+                    error: function (response) {
+                        // console.error(response);
+                    }
+                });
+            });
+        }
+    </script>
 @endsection

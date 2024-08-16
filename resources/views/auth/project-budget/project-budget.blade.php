@@ -33,15 +33,16 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">FINANCIAL STATUS</h5>
                     <div role="group" aria-label="Button group">
-                        <a href="{{ route('project.progress', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">Progress</a>
-                        <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
-                        <a href="{{ route('commission', ['project_id' => $id]) }}" class="btn btn-sm btn-primary">List Of Commission</a>
+                    @if(!empty($keyword))
+                        <a href="{{ route('project.progress', ['project_id' => $id, 'location_id' => $keyword]) }}"
+                            class="btn btn-sm btn-primary me-2">Progress</a>
+                    @endif
+                    <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
                     </div>
                 </div>
                 <table class="table">
                     <tbody>
                         <tr>
-
                             <td scope="row" id="amount">{{!empty($keyword) ? "AMOUNT" : "AMOUNT OF CONTRACT"}}</td>
                             <td id="valAmount">
                                 {{ number_format(!empty($keyword) ? $dataLoca->location_amount : $contract->amount, 0, ',', '.') }} VND
@@ -53,12 +54,15 @@
                         </tr>
                         <tr>
                             <td scope="row">RISK (CONTINGENCY)</td>
-                            <td id="valRisk">{{ number_format($data->project_price_contingency, 0, ',', '.') }} VND</td>
+                            <td id="valRisk">{{ number_format($contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
                         </tr>
-                        <tr>
-                            <td scope="row">COMMISSION</td>
-                            <td id="valCommission">0 VND</td>
-                        </tr>
+                        @if(empty($keyword))
+                            <tr>
+                                <td scope="row">MATERIALS COST</td>
+                                <td id="valMaterialCost">{{ number_format($materialCost, 0, ',', '.') }} VND</td>
+                            </tr>
+                        @endif
+                        
                         <tr class="table-primary">
                             <th scope="row">FUNDS REMAINING</th>
                             <td id="remain"></td>
@@ -159,79 +163,63 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-    function parseCurrency(value) {
-        return parseInt(value.replace(/\./g, '').replace(' VND', ''), 10);
-    }
+        function parseCurrency(value) {
+            return parseInt(value.replace(/\./g, '').replace(' VND', ''), 10);
+        }
 
-    let amount = parseCurrency(document.getElementById('valAmount').textContent);
-    let risk = parseCurrency(document.getElementById('valRisk').textContent);
-    let subtotal = parseCurrency(document.getElementById('valSubtotal').textContent);
-
-    let fundsRemaining = amount - subtotal - risk;
-
-    document.getElementById('remain').innerHTML = `${number_format(fundsRemaining, 0, ',', '.')} VND`;
-
-    document.getElementById('editProjectForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const form = event.target;
-        const formData = new FormData(form);
-        const id = "{{ $id }}";
-        const url = "{{ route('project.update', ['project_id' => $id]) }}";
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'X-HTTP-Method-Override': 'PUT',
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update the UI with the new values
-                document.getElementById('project_name').textContent = formData.get('project_name');
-                document.getElementById('project_description').textContent = formData.get('project_description');
-                // Close the modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editProjectModal'));
-                modal.hide();
-                toastr.success('Update Successful!');
-            } else if (data.errors) {
-                console.log(data.errors);
-                alert('Validation errors occurred. Please check the form fields.');
-            } else {
-                alert('Error updating project');
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '').replace(',', '').replace(' ', '');
+            const n = !isFinite(+number) ? 0 : +number,
+                  prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                  sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                  dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                  toFixedFix = function(n, prec) {
+                      const k = Math.pow(10, prec);
+                      return '' + Math.round(n * k) / k;
+                  };
+            const s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating the project.');
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
+        let amount = parseCurrency(document.getElementById('valAmount').textContent);
+        let risk = parseCurrency(document.getElementById('valRisk').textContent);
+        let subtotal = parseCurrency(document.getElementById('valSubtotal').textContent);
+        @if(empty($keyword))
+            let fundsRemaining = amount - subtotal - risk - parseCurrency(document.getElementById('valMaterialCost').textContent);
+        @else
+            let fundsRemaining = amount - subtotal - risk;
+        @endif
+        document.getElementById('remain').textContent = `${number_format(fundsRemaining, 0, ',', '.')} VND`;
+
+        $('#editProjectForm').on('submit', function(e) {
+            e.preventDefault();
+            let formData = $(this).serialize();
+            $.ajax({
+                type: 'PUT',
+                url: '{{ route('project.update', ['project_id' => $data->project_id]) }}',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('Project information updated successfully!');
+                        $('#editProjectModal').modal('hide');
+                        $('#project_name').text(response.data.project_name);
+                        $('#project_description').text(response.data.project_description);
+                    } else {
+                        toastr.error('Failed to update project information.');
+                    }
+                },
+                error: function(response) {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
         });
     });
-});
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-    number = (number + '').replace(',', '').replace(' ', '');
-    const n = !isFinite(+number) ? 0 : +number,
-          prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-          sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-          dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-          toFixedFix = function(n, prec) {
-              const k = Math.pow(10, prec);
-              return '' + Math.round(n * k) / k;
-          };
-    const s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-    if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-    }
-    if ((s[1] || '').length < prec) {
-        s[1] = s[1] || '';
-        s[1] += new Array(prec - s[1].length + 1).join('0');
-    }
-    return s.join(dec);
-}
-
     </script>
-
 @endsection

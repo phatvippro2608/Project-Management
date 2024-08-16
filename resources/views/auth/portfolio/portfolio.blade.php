@@ -3,6 +3,10 @@
 @section('head')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <style>
+        #table tbody td {
+            padding-right: 30px;
+        }
+
         /* Tắt chọn văn bản cho một phần cụ thể */
         .no-select {
             user-select: none;
@@ -37,11 +41,11 @@
                     <thead>
                         <tr>
                             <th class="text-center">#</th>
-                            <th class="text-center" data-field="employee_code">Employee Code</th>
+                            <th class="text-center" data-field="employee_code">{{ __('messages.employee_code') }}</th>
                             <th class="text-center" data-field="photo">Photo</th>
-                            <th data-field="full_name">Full Name</th>
-                            <th data-field="en_name">English Name</th>
-                            <th data-field="department">Department</th>
+                            <th class="text-center" data-field="full_name">{{ __('messages.employee_name') }}</th>
+                            <th class="text-center" data-field="en_name">English Name</th>
+                            <th class="text-center" data-field="department">{{ __('messages.department') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,7 +59,7 @@
                                 </td>
                                 <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                                 <td>{{ $item->en_name }}</td>
-                                <td>{{ $item->department_name }}</td>
+                                <td class="text-center">{{ $item->department_name }}</td>
                             </tr>
                         @endforeach
                     </tbody>

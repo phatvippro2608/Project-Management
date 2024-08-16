@@ -33,23 +33,25 @@
                     <table id="holidaysTable" class="table table-hover table-borderless">
                         <thead class="table-light">
                             <tr>
-                                <th>Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Days</th>
-                                <th>Year</th>
-                                <th>Action</th>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Start Date</th>
+                                <th class="text-center">End Date</th>
+                                <th class="text-center">Days</th>
+                                <th class="text-center">Year</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($holidays as $holiday)
                                 <tr>
+                                    <td class="text-center">{{ $holiday->holiday_id }}</td>
                                     <td>{{ $holiday->name }}</td>
-                                    <td>{{ $holiday->start_date }}</td>
-                                    <td>{{ $holiday->end_date }}</td>
-                                    <td>{{ $holiday->days }}</td>
-                                    <td>{{ $holiday->year }}</td>
-                                    <td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($holiday->start_date)->format('d/m/Y') }}</td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($holiday->end_date)->format('d/m/Y') }}</td>
+                                    <td class="text-center">{{ $holiday->days }}</td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($holiday->year)->format('m/Y') }}</td>
+                                    <td align="center">
                                         <button
                                             class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
                                             data-id="{{ $holiday->holiday_id }}">
