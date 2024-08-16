@@ -73,7 +73,7 @@
     </div>
 </div>
 </div>
-        <h5><b>Pie Chart Of Cost</b></h5>
+        <h5><b>Pie Chart Of Expenses</b></h5>
         <div class="row">
             <div class="col-md-6">
                 <div id="pieChart" class="container-fluid"></div>

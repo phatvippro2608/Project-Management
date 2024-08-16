@@ -38,6 +38,8 @@
                             class="btn btn-sm btn-primary me-2">Progress</a>
                     @endif
                     <a href="{{ !empty($keyword) ? route('budget', ['project_id' => $id, 'location' => $keyword]) : route('budget', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">List Of Expenses</a>
+                    <a href="{{ !empty($keyword) ? route('prjMaterials', ['project_id' => $id, 'location' => $keyword]) : route('prjMaterials', ['project_id' => $id]) }}" class="btn btn-sm btn-primary me-2">Materials</a>
+
                     </div>
                 </div>
                 <table class="table">
