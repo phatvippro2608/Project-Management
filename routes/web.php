@@ -75,6 +75,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/demo', 'App\Http\Controllers\AccountController@demoView');
         Route::post('/demo', 'App\Http\Controllers\AccountController@import');
     });
+    //Department
+    Route::group(['prefix' => '/departments'], function () {
+        Route::get('/', [DepartmentController::class, 'getView'])->name('departments.index');
+        Route::post('/add', [DepartmentController::class, 'store'])->name('departments.store');
+        Route::delete('/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+        Route::put('/update/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/',  'App\Http\Controllers\DepartmentController@getEmployeeOfDepartment');
+            Route::post('/addEmployee', 'App\Http\Controllers\DepartmentController@addEmployee');
+            Route::post('/deleteEmployee/{employee_id}', 'App\Http\Controllers\DepartmentController@deleteEmployee');
+            Route::get('/export', 'App\Http\Controllers\DepartmentController@export');
+            Route::get('/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+        });
+    });
 
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
@@ -235,6 +249,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
 
+
+
     Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
     Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
     Route::delete('img-delete', 'App\Http\Controllers\UploadFileController@imgDelete')->name('img-delete');
@@ -317,13 +333,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     //Inventory Management
     Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
-    //Department
-    Route::resource('departments', DepartmentController::class);
-    Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
-    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-    Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-    Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
-    Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
 
     //Attendance
     Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
