@@ -32,7 +32,7 @@ class TaskController extends Controller
         $tasks = DB::table('tasks')
             ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
             ->select('tasks.*', 'employees.last_name', 'employees.first_name')
-            ->where('project_id', $request->id)
+            ->where('project_location_id', $request->id)
             ->get();
         return response()->json(['success' => true,'tasks' => $tasks]);
     }
@@ -68,7 +68,9 @@ class TaskController extends Controller
             $empl_allow = DB::table('employees')->select('employees.employee_id')
                 ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
                 ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
-                ->where('project_teams.project_id', $validatedData['id'])->get()->toArray();
+                ->join('project_locations', 'project_teams.project_id', '=', 'project_locations.project_id')
+                ->where('project_locations.project_location_id', $validatedData['id'])
+                ->get()->toArray();
             $empl_allow_ids = array_map(function($empl) {
                     return $empl->employee_id;
             }, $empl_allow);
@@ -78,7 +80,7 @@ class TaskController extends Controller
 
             $task = TaskModel::create([
                 'task_name' => $validatedData['taskname'],
-                'project_id' => $validatedData['id'],
+                'project_location_id' => $validatedData['id'],
                 'request' => $validatedData['request'],
                 'employee_id' => $validatedData['employee_id'],
                 'start_date' => $validatedData['s_date'],
@@ -94,7 +96,7 @@ class TaskController extends Controller
                     TaskModel::create([
                         'task_name' => $value,
                         'employee_id' => $validatedData['employee_id'],
-                        'project_id' => $validatedData['id'],
+                        'project_location_id' => $validatedData['id'],
                         'start_date' => $validatedData['s_date'],
                         'end_date' => $validatedData['s_date'],
                         'parent_id' => $task->task_id,
@@ -118,7 +120,7 @@ class TaskController extends Controller
             $tasks = DB::table('tasks')
                 ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
                 ->select('tasks.*', 'employees.last_name', 'employees.first_name')
-                ->where('project_id', $validatedData['id'])
+                ->where('project_location_id', $validatedData['id'])
                 ->get();
             return response()->json(['success' => true,'message' => 'Add new task success','tasks' => $tasks]);
         } catch (\Exception $e) {
@@ -138,14 +140,13 @@ class TaskController extends Controller
                 's_date' => 'required|date',
                 'e_date' => 'required|date|after_or_equal:s_date',
             ]);
-            $progress = 0;
-            if($request->has('allmarkdone')){
-                $progress = 1;
-            }
+            
             $empl_allow = DB::table('employees')->select('employees.employee_id')
                 ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
                 ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
-                ->where('project_teams.project_id', $validatedData['id'])->get()->toArray();
+                ->join('project_locations', 'project_teams.project_id', '=', 'project_locations.project_id')
+                ->where('project_locations.project_location_id', $validatedData['id'])
+                ->get()->toArray();
             $empl_allow_ids = array_map(function($empl) {
                     return $empl->employee_id;
             }, $empl_allow);
@@ -153,6 +154,10 @@ class TaskController extends Controller
                 return response()->json(['success' => false,'message' => 'Employee is not in this project']);
             }
 
+            $progress = 0;
+            if($request->has('allmarkdone')){
+                $progress = 1;
+            }
             TaskModel::where('task_id', $validatedData['task_id'])->update([
                 'task_name' => $validatedData['taskname'],
                 'request' => $validatedData['request'],
@@ -175,7 +180,7 @@ class TaskController extends Controller
                         $sub=TaskModel::create([
                             'task_name' => $value,
                             'parent_id' => $validatedData['task_id'],
-                            'project_id' => $validatedData['id'],
+                            'project_location_id' => $validatedData['id'],
                             'progress' => $progress,
                         ]);
                         array_push($subtask_id, $sub->task_id);
@@ -207,7 +212,7 @@ class TaskController extends Controller
             $tasks = DB::table('tasks')
                 ->leftJoin('employees', 'tasks.employee_id', '=', 'employees.employee_id')
                 ->select('tasks.*', 'employees.last_name', 'employees.first_name')
-                ->where('project_id', $validatedData['id'])
+                ->where('project_location_id', $validatedData['id'])
                 ->get();
             return response()->json(['success' => true,'message' => 'Update task success','tasks' => $tasks]);
         } catch (\Exception $e) {

@@ -19,10 +19,26 @@
             display: none !important;
         }
 
-        @media (min-width: 1200px) {
-            .dropdown-position{
-                inset: 0 0 auto auto !important;
-            }
+        .custom-checkbox-lg {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 1px;
+            margin-right: 5px;
+        }
+        .custom-checkbox-lg input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 1px;
+            margin-right: 5px;
+        }
+        .hover-details{
+            text-decoration: none;
+            color: var(--bs-primary);
+        }
+        .hover-details:hover{
+            text-decoration: underline;
+            opacity: 1;
+            color: var(--bs-primary);
         }
     </style>
 @endsection
@@ -107,7 +123,7 @@
                                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
                                          class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
                                          width="36" height="36"
-                                         title="{{$employee->last_name." ".$employee->first_name}}"
+                                         title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
                                          style="cursor:pointer">
                                 @endforeach
                                 @if(count($item->team_members)>3)
@@ -131,7 +147,7 @@
                                                          alt="Profile"
                                                          class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
                                                          width="36" height="36"
-                                                         title="{{$employee->last_name." ".$employee->first_name}}"
+                                                         title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
                                                          style="cursor:pointer">
                                                 @endif
                                             @endforeach
@@ -399,12 +415,9 @@
                     <h4 class="modal-title text-bold"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12" style="margin-top: 1rem">
-
 
                             <div class="table-responsive">
-                                <table id="eListTable" class="table table-hover table-borderless">
+                                <table id="teamListTable" class="table table-hover table-borderless">
                                     <thead class="table-light">
                                     <tr>
                                         <th class="text-center" style="width: 112px">Avatar</th>
@@ -420,8 +433,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -464,48 +476,87 @@
         });
     </script>
     <script>
+        var table = $('#teamListTable').DataTable({
+            language: { search: "" },
+            lengthMenu: [
+                [10, 30, 50, 100, -1],
+                [10, 30, 50, 100, "All"]
+            ],
+            pageLength: {{env('ITEM_PER_PAGE')}},
+            responsive: true
+        });
+        // function renderEmployeeList(employees, positions) {
+        //     var listHtml = '';
+        //
+        //     employees.forEach(function (item) {
+        //         var positionOptions = '<option value="100">Member</option>';
+        //
+        //         positions.forEach(function (position) {
+        //             if (position.team_permission !== 100) {
+        //                 var selected = item.team_permission === position.team_permission ? 'selected' : '';
+        //                 positionOptions += `<option value="${position.team_permission}" ${selected}>${position.position_name}</option>`;
+        //             }
+        //         });
+        //
+        //         listHtml += `
+        //         <tr class="account-item">
+        //             <td class="text-center">
+        //                 <div class="d-flex align-items-center justify-content-center">
+        //                     <img src="${item?.photo?item?.photo: ""}" alt="" onerror="this.onerror=null;this.src='/assets/img/not-found.svg'" class="account-photo2 rounded-circle p-0 m-0">
+        //                 </div>
+        //             </td>
+        //             <td class="text-center">
+        //                 ${item.employee_code}
+        //             </td>
+        //             <td class="text-left">
+        //                 ${item.first_name} ${item.last_name}
+        //             </td>
+        //             <td class="text-left">
+        //                 ${item.email}
+        //             </td>
+        //             <td class="text-left">
+        //                 <select class="form-select position" data="${item.employee_id}">
+        //                     ${positionOptions}
+        //                 </select>
+        //             </td>
+        //             <td class="text-center">
+        //                 <input type="checkbox" class="custom-checkbox-lg check-item" data="${item.employee_id}" ${item.isAtTeam ? 'checked' : ''}>
+        //             </td>
+        //         </tr>
+        //     `;
+        //     });
+        //     $('.team-manager-list').html(listHtml);
+        // }
         function renderEmployeeList(employees, positions) {
-            var listHtml = '';
+            var table = $('#teamListTable').DataTable();
+            table.clear().draw(); // Clear the existing rows
 
-            employees.forEach(function (item) {
+            employees.forEach(function(item) {
                 var positionOptions = '<option value="100">Member</option>';
 
-                positions.forEach(function (position) {
+                positions.forEach(function(position) {
                     if (position.team_permission !== 100) {
                         var selected = item.team_permission === position.team_permission ? 'selected' : '';
                         positionOptions += `<option value="${position.team_permission}" ${selected}>${position.position_name}</option>`;
                     }
                 });
 
-                listHtml += `
-                <tr class="account-item">
-                    <td class="text-center">
-                        <div class="d-flex align-items-center justify-content-center">
-                            <img src="${item?.photo?item?.photo: ""}" alt="" onerror="this.onerror=null;this.src='/assets/img/not-found.svg'" class="account-photo2 rounded-circle p-0 m-0">
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        ${item.employee_code}
-                    </td>
-                    <td class="text-left">
-                        ${item.first_name} ${item.last_name}
-                    </td>
-                    <td class="text-left">
-                        ${item.email}
-                    </td>
-                    <td class="text-left">
-                        <select class="form-select position" data="${item.employee_id}">
-                            ${positionOptions}
-                        </select>
-                    </td>
-                    <td class="text-center">
-                        <input type="checkbox" class="custom-checkbox-lg check-item" data="${item.employee_id}" ${item.isAtTeam ? 'checked' : ''}>
-                    </td>
-                </tr>
-            `;
+                // Add a new row to the DataTable
+                table.row.add([
+                    `<div class="d-flex align-items-center justify-content-center">
+                <img src="${item?.photo ? item?.photo : ''}" alt="" onerror="this.onerror=null;this.src='/assets/img/not-found.svg'" class="account-photo2 rounded-circle p-0 m-0">
+            </div>`,
+                    item.employee_code,
+                    `${item.first_name} ${item.last_name}`,
+                    item.email,
+                    `<select class="form-select position" data="${item.employee_id}">
+                ${positionOptions}
+            </select>`,
+                    `<input type="checkbox" class="custom-checkbox-lg check-item" data="${item.employee_id}" ${item.isAtTeam ? 'checked' : ''}>`
+                ]).draw();
             });
-            $('.team-manager-list').html(listHtml);
         }
+
         $('.team-select-employee').off('click').click(function () {
             var all_employees = JSON.parse($(this).attr('data'));
             var team_id = JSON.parse($(this).attr('team-id'));

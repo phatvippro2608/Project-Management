@@ -44,6 +44,10 @@ class TeamDetailsController extends Controller
         ]);
     }
 
+    static function getPermissionName($permission)
+    {
+        return DB::table("team_positions")->where('team_permission', $permission)->value('position_name');
+    }
     function update(Request $request)
     {
         $employee_id = $request->employee_id;
