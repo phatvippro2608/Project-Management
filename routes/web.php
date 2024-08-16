@@ -43,7 +43,6 @@ use App\Http\Controllers\ProjectBudgetController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
 Route::post('/9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE', 'App\Http\Controllers\AccountController@position');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
