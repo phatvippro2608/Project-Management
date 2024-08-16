@@ -166,7 +166,17 @@ class TaskController extends Controller
                 's_date' => 'required|date',
                 'e_date' => 'required|date|after_or_equal:s_date',
             ]);
-            
+            $data = \Illuminate\Support\Facades\DB::table('accounts')
+                ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+                ->join('contacts', 'employees.contact_id', '=', 'contacts.contact_id')
+                ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+                ->where(
+                    'accounts.account_id',
+                    \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+                )
+                ->first();
+            $empl_id = (int) $data->employee_id;
+
             $empl_allow = DB::table('employees')->select('employees.employee_id')
                 ->join('team_details', 'employees.employee_id', '=', 'team_details.employee_id')
                 ->join('project_teams', 'team_details.team_id', '=', 'project_teams.team_id')
@@ -176,6 +186,10 @@ class TaskController extends Controller
             $empl_allow_ids = array_map(function($empl) {
                     return $empl->employee_id;
             }, $empl_allow);
+            if (!in_array($empl_id, $empl_allow_ids)){
+                return response()->json(['success' => false,'message' => 'You do not have permission to update task']);
+            }
+
             if(!in_array($validatedData['employee_id'], $empl_allow_ids)){
                 return response()->json(['success' => false,'message' => 'Employee is not in this project']);
             }
