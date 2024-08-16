@@ -6,6 +6,9 @@ use App\Models\EmployeeModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use App\StaticString;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -120,20 +123,218 @@ class InternalCertificatesController extends Controller
         }
     }
 
-    public function getViewSignature() {
-
-        return view('auth.certificate.InternalCertificateSignature');
+    protected function updateCreatePermissions()
+    {
+        // Cập nhật quyền tạo chứng chỉ cho super admin và giám đốc
+        DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->where('permissions.permission_name', '=', 'Director')
+            ->orWhere('permissions.permission_name', '=', 'Super Admin')
+            ->update(['certificate_creation_permission' => 1]);
     }
 
-    public function getViewCreate() {
+    public function getViewSignature()
+    {
+        $this->updateCreatePermissions();
+
+        $permission = DB::table('permissions')
+            ->where('permissions.permission_num', '=', session()->get(StaticString::PERMISSION))
+            ->where(function ($query) {
+                $query->where('permissions.permission_name', '=', 'Director')
+                    ->orWhere('permissions.permission_name', '=', 'Super Admin');
+            })
+            ->exists();
+        $btnEdit = true;
+
+        $latestSignatureSubQuery = DB::table('employee_signatures')
+            ->select('employee_id', DB::raw('MAX(updated_at) as latest_updated_at'))
+            ->groupBy('employee_id');
+
+        $employeeQuery = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', function ($join) use ($latestSignatureSubQuery) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->joinSub($latestSignatureSubQuery, 'latest_signature', function ($join) {
+                        $join->on('employee_signatures.employee_id', '=', 'latest_signature.employee_id')
+                            ->on('employee_signatures.updated_at', '=', 'latest_signature.latest_updated_at');
+                    });
+            });
+
+        if (!$permission) {
+            $employeeQuery->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID));
+            $btnEdit = false;
+        }
+
+        $employee = $employeeQuery->get();
+        // dd($employee);
+        return view('auth.certificate.InternalCertificateSignature', [
+            'employee' => $employee,
+            'btnEdit' => $btnEdit,
+        ]);
+    }
+
+    public function updateSignatureCertificate(Request $request)
+    {
+        // Xác thực dữ liệu yêu cầu
+        $request->validate([
+            'signatureId' => 'required|integer|exists:employee_signatures,employee_signature_id',
+            'employeeId' => 'required|integer',
+            'signature' => 'required|string',
+        ]);
+
+        $employeeCode = $request->input('employeeId');
+        $employee = DB::table('employees')
+            ->where('employee_code', '=', $employeeCode)
+            ->first();
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
+        $signatureId = $request->input('signatureId');
+        $signatureData = $request->input('signature');
+
+        // Xử lý dữ liệu Base64
+        $data = explode(',', $signatureData);
+        $imageData = base64_decode(end($data));
+
+        // Tạo tên file chữ ký mới với mã hóa
+        $hashedFileName = md5(uniqid($signatureId, true)) . '.png';
+
+        // Xác định đường dẫn để lưu file
+        $directory = public_path('assets/img/signature/');
+        $filePath = $directory . $hashedFileName;
+
+        // Tạo thư mục nếu không tồn tại
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory, 0755, true);
+        }
+
+        // Lưu file vào thư mục public/assets/img/signature
+        File::put($filePath, $imageData);
+        // Cập nhật đường dẫn mới vào cơ sở dữ liệu
+        DB::table('employee_signatures')
+            ->insert([
+                'employee_signature_img' => 'assets/img/signature/' . $hashedFileName,
+                'employee_id' => $employee->employee_id,
+                'employee_signature_created_id' => $employeeUpdated->employee_id
+            ]);
+
+        // Trả về phản hồi thành công
+        return response()->json(['message' => 'Signature updated successfully'], 200);
+    }
+
+    public function loadHistorySignatureCertificate(Request $request)
+    {
+        $request->validate([
+            'employeeCode' => 'required|integer',
+        ]);
+        $employeeCode = $request->input('employeeCode');
+        $employee = DB::table('employees')
+            ->where('employee_code', '=', $employeeCode)
+            ->first();
+
+        $history = DB::table('employee_signatures')
+            ->join('employees AS creator', 'employee_signatures.employee_signature_created_id', '=', 'creator.employee_id')
+            ->where('employee_signatures.employee_id', $employee->employee_id)
+            ->select(
+                'employee_signatures.employee_signature_img',
+                'creator.employee_code as creator_code',
+                'creator.first_name as creator_first_name',
+                'creator.last_name as creator_last_name',
+                'creator.photo as creator_photo',
+                'employee_signatures.created_at'
+            )
+            ->orderBy('employee_signatures.created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'employee' => $employee,
+            'history' => $history,
+        ]);
+    }
+
+    public function searchEmployee(Request $request)
+    {
+        $request->validate([
+            'employeeValue' => 'required|string',
+        ]);
+
+        $employeeValue = strtolower(trim($request->input('employeeValue')));
+
+        $employees = DB::table('employees')
+            ->whereRaw("LOWER(employee_code) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(CONCAT(last_name, ' ', first_name)) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(CONCAT(last_name, ' ', first_name), ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(en_name) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(en_name, ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->get();
+
+        return response()->json([
+            'employees' => $employees,
+        ]);
+    }
+
+    public function addSignatureCertificate(Request $request)
+    {
+        // Xác thực dữ liệu đầu vào
+        $request->validate([
+            'img' => 'required|string',
+            'employee' => 'required|integer'
+        ]);
+
+        $imageData = $request->input('img');
+        $employeeCode = $request->input('employee');
+
+        // Tìm nhân viên dựa trên mã nhân viên
+        $employee = DB::table('employees')
+            ->where('employee_code', $employeeCode)
+            ->first();
+
+        // Tìm nhân viên hiện tại đang đăng nhập
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
+
+        // Xử lý hình ảnh
+        $imageParts = explode(',', $imageData);
+        $imageExtension = 'png'; // Có thể thay đổi tùy nhu cầu
+        $imageContent = base64_decode($imageParts[1]);
+
+        // Tạo tên tệp tin và đường dẫn
+        $imageName = 'signature_' . time() . '.' . $imageExtension;
+        $imagePath = public_path('assets/img/signature/' . $imageName);
+
+        // Lưu hình ảnh vào thư mục
+        file_put_contents($imagePath, $imageContent);
+
+        // Thêm thông tin vào cơ sở dữ liệu
+        DB::table('employee_signatures')->insert([
+            'employee_id' => $employee->employee_id,
+            'employee_signature_img' => 'assets/img/signature/' . $imageName,
+            'employee_signature_created_id' => $employeeUpdated->employee_id
+        ]);
+
+        return response()->json([
+            'message' => 'Signature saved successfully!',
+            'image_path' => $imagePath,
+        ]);
+    }
+
+
+    public function getViewCreate()
+    {
+        $this->updateCreatePermissions();
         return view('auth.certificate.InternalCertificateCreate');
     }
 
     public function temp()
     {
 
-        $employee = DB::table('employees')->where('employee_id','=','3')->first();
-    
+        $employee = DB::table('employees')->where('employee_id', '=', '3')->first();
+
         $director = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('employment_contract', 'employment_contract.employee_id', '=', 'employees.employee_id')
@@ -141,6 +342,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->where(DB::raw('DATE(employment_contract.end_date)'), '>=', Carbon::now()->toDateString())
             ->where('permissions.permission_name', '=', 'Director')
+            ->orderBy('employee_signatures.updated_at','desc')
             ->first();
 
         $teacher = DB::table('employees')
@@ -148,6 +350,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
             ->where('permissions.permission_str', '=', 'teacher')
+            ->orderBy('employee_signatures.updated_at','desc')
             // ->where('employees.employee_id', '=', '191')
             ->first();
 

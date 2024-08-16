@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 @section('head')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.51.0/apexcharts.min.js"></script>
@@ -68,7 +68,7 @@
                                 <td>{{ number_format($total - $contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
                             </tr>
                         </tbody>
-                    
+
         </table>
     </div>
 </div>
@@ -170,13 +170,14 @@
                         $subtotal1 = 0;
                     @endphp
                     <tbody>
-                        <tr>
+
                             @foreach ($dataCost as $data)
+                            <tr style="cursor: pointer" data="{{(\App\Http\Controllers\AccountController::toAttrJson(\App\Http\Controllers\ProjectBudgetController::getCostDetails($data->project_cost_id)))}}">
                                 @php
                                     $subtotal = 0;
                                 @endphp
                                 <td class="text-center" id="{{ $data->project_cost_id }}">{{ $i++ }}</td>
-                                <td>{{ $data->project_cost_group_name }}</td>
+                                <td id="name" name="name">{{ $data->project_cost_group_name }}</td>
                                 <td>{{ $data->project_cost_description }}</td>
                                 <td>{{ $data->project_cost_labor_qty }}</td>
                                 <td>{{ $data->project_cost_budget_qty }}</td>
@@ -269,22 +270,43 @@
         </div>
     </div>
 
+    <!-- Expense Detail Modal -->
+    <div class="modal fade" id="detailCostModal" tabindex="-1" aria-labelledby="detailCostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailCostModalLabel">Detail Expense</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Nội dung chi tiết chi phí sẽ được hiển thị ở đây -->
+                    <div id="costDetails">
+                        <!-- Nội dung động từ AJAX sẽ được chèn vào đây -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-            document.getElementById('fileInput').click(); 
+            document.getElementById('fileInput').click();
         });
 
         document.getElementById('fileInput').addEventListener('change', function() {
-            document.getElementById('submitButton').click(); 
+            document.getElementById('submitButton').click();
         });
 
         $('#submitButton').on('click', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
 
             var fileInput = $('#fileInput')[0];
             var file = fileInput.files[0];
-            
+
             if (!file) {
                 toastr.error('Please select a file before submitting.');
                 return;
@@ -519,6 +541,33 @@
                 filterTable();
             });
         });
+    // Bắt sự kiện click vào hàng trong bảng
+    $(document).ready(function() {
+    $('#costTable tbody').on('click', 'tr', function() {
+        var data = JSON.parse($(this).attr('data'));
+        data=data.original.data
+                var html = `
+                    <table class="table">
+                    <tbody>
+                        <tr><th>Group Name</th><td>${data.project_cost_group_name || ''}</td></tr>
+                        <tr><th>Description</th><td>${data.project_cost_description || ''}</td></tr>
+                        <tr><th>Labor QTY</th><td>${data.project_cost_labor_qty || ''}</td></tr>
+                        <tr><th>Labor Unit</th><td>${data.project_cost_labor_unit || ''}</td></tr>
+                        <tr><th>Budget QTY</th><td>${data.project_cost_budget_qty || ''}</td></tr>
+                        <tr><th>Budget Unit</th><td>${data.project_budget_unit || ''}</td></tr>
+                        <tr><th>Labor Cost</th><td>${data.project_cost_labor_cost || ''}</td></tr>
+                        <tr><th>Misc. Cost</th><td>${data.project_cost_misc_cost || ''}</td></tr>
+                        <tr><th>OT Budget</th><td>${data.project_cost_ot_budget || ''}</td></tr>
+                        <tr><th>Per Diem Pay</th><td>${data.project_cost_perdiempay || ''}</td></tr>
+                        <tr><th>Remark</th><td>${data.project_cost_remaks || ''}</td></tr>
+                    </tbody>
+                    </table>
+                `;
+                $('#costDetails').html(html);
+                $('#detailCostModal').modal('show');
+
+    });
+});
         new DataTable('#costTable');
         new DataTable('#total');
     </script>

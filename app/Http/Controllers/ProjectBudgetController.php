@@ -12,7 +12,7 @@ use App\Models\ProjectModel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\SpreadsheetModel;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\MaterialsModel;
 
 class ProjectBudgetController extends Controller
 {
@@ -26,7 +26,11 @@ class ProjectBudgetController extends Controller
             ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
             ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
             ->get();
-            $dataCostGroup = DB::table('project_cost_group')->get();
+            $dataCostGroup = DB::table('project_cost_group')
+            ->join('project_locations', 'project_cost_group.project_location_id', '=', 'project_locations.project_location_id')
+            ->join('projects', 'project_locations.project_id', '=', 'projects.project_id')
+            ->select('project_cost_group.*', 'projects.project_name')
+            ->where('projects.project_id', $id)->get();
         }
         else{
             $dataCost = DB::table('project_costs')
@@ -82,8 +86,7 @@ class ProjectBudgetController extends Controller
             $prjNameCurrent = $project->project_name;
             $prjName = $dataExcel['data'][1][1];
             $prjLocationName = $dataExcel['data'][2][1];
-
-            $prjLocationNameCurrent = DB::table('project_locations')->where('project_id', $id)->where('project_location_id', $location)->first()->project_location_name;
+            $prjLocationId = DB::table('project_locations')->select('project_location_id')->where('project_id', $id)->where('project_location_name', $prjLocationName)->first();
 
             if ($prjNameCurrent != $prjName) {
                 return response()->json([
@@ -92,13 +95,12 @@ class ProjectBudgetController extends Controller
                 ]);
             }
 
-            // Fetch project location
-            if ($prjLocationName != $prjLocationNameCurrent) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
-                ]);
-            }
+            // if ($prjLocationName != $prjLocationNameCurrent) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
+            //     ]);
+            // }
     
             $num_row = 4; // Start reading from row 3
             while ($num_row < count($dataExcel['data'])) {
@@ -108,7 +110,7 @@ class ProjectBudgetController extends Controller
                     // Insert a new cost group and get its ID
                     $group_id = DB::table('project_cost_group')->insertGetId([
                         'project_cost_group_name' => $name,
-                        'project_location_id' => $location
+                        'project_location_id' => $prjLocationId
                     ]);
                 } else {
                     $description = trim($dataExcel['data'][$num_row][0] ?? '');
@@ -165,9 +167,6 @@ class ProjectBudgetController extends Controller
             
     }
     
-    
-    
-
     public function showProjects()
     {
 
@@ -269,6 +268,15 @@ public function showProjectDetail(Request $request,$id)
         }
         $data = DB::table('projects')->where('project_id', $id)->first();
 
+        $materials = MaterialsModel::all();
+
+        $sub_total = $materials->sum('total_price');
+        $vat_of_goods = $materials->sum(function ($material) {
+            return $material->total_price * ($material->vat / 100);
+        });
+
+        $materialCost = $sub_total + $vat_of_goods;
+
     return view('auth.project-budget.project-budget', [
         'data' => $data,
         'id' => $id,
@@ -279,7 +287,8 @@ public function showProjectDetail(Request $request,$id)
         'locations' => $locations,
         'dataLoca' => $dataLoca,
         'keyword' => $keyword,
-        'contingency_price' => $contingency_price
+        'contingency_price' => $contingency_price,
+        'materialCost' => $materialCost
     ]);
 }
 
@@ -476,125 +485,8 @@ public function addNewCost(Request $request, $id)
     return redirect()->back()->with('success', 'New cost added successfully.');
 }
 
-    public function getCommissionDetails(Request $request, $id)
-{
-    $groupId = $request->input('group_id');
+    
 
-    // Fetch commission details based on groupId and projectId
-    $commissionDetails = DB::table('project_cost_commission')->where('project_id', $id)
-                                    ->where('groupcommission_id', $groupId)
-                                    ->get();
-
-    if ($commissionDetails) {
-        return response()->json([
-            'success' => true,
-            'data' => $commissionDetails
-        ]);
-    } else {
-        return response()->json([
-            'success' => false,
-            'message' => 'No details found.'
-        ]);
-    }
-}
-public function exportCsv($id)
-    {
-        $project = DB::table('projects')->where('project_id', $id)->first();
-        $dataGroupCommission = DB::table('project_group_cost_commission')->get();
-        $dataCommission = DB::table('project_cost_commission')->where('project_id', $id)->get();
-
-        $filename = "project_budget_{$id}.csv";
-        $handle = fopen($filename, 'w+');
-        fputcsv($handle, ['ID', 'Group Name', 'Description', 'Amount']);
-
-        foreach ($dataGroupCommission as $commissionGroup) {
-            foreach ($dataCommission as $data) {
-                if ($data->groupcommission_id == $commissionGroup->group_id) {
-                    fputcsv($handle, [
-                        $commissionGroup->group_id,
-                        $commissionGroup->groupcommission_name,
-                        $data->description,
-                        $data->amount
-                    ]);
-                }
-            }
-        }
-
-        fclose($handle);
-
-        return response()->download($filename)->deleteFileAfterSend(true);
-    }
-
-    public function deleteCostCommission($project_id, $cost_commission_id)
-    {
-        try {
-            DB::table('project_cost_commission')->where('commission_id', $cost_commission_id)->delete();
-            return response()->json(['success' => true, 'message' => 'Cost commission item deleted successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to delete cost commission item.']);
-        }
-    }
-    public function updateCommission(Request $request, $project_id, $commission_id)
-{
-    $costCommission = CostComissionModel::find($commission_id);
-
-    if (!$costCommission) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Commission not found.'
-        ], 404);
-    }
-
-    $costCommission->description = $request->input('description');
-    $costCommission->amount = $request->input('amount');
-    $costCommission->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Cost commission updated successfully.'
-    ]);
-}
-public function addNewCommission(Request $request, $project_id)
-{
-    try {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'group_id' => 'required|integer',
-            'description' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->first()
-            ]);
-        }
-
-        // Create new commission entry
-        $CommissionCost = new CostComissionModel();
-        $CommissionCost->project_id = $project_id;
-        $CommissionCost->groupcommission_id = $request->input('group_id');
-        $CommissionCost->description = $request->input('description');
-        $CommissionCost->amount = $request->input('amount');
-
-        // Save and check if successful
-        if ($CommissionCost->save()) {
-            return response()->json(['success' => true]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add commission.'
-            ]);
-        }
-    } catch (\Exception $e) {
-        Log::error('Error adding commission: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Server error. Please try again later.'
-        ]);
-    }
-}
 
 public function cost_exportCsv($id)
     {
@@ -632,33 +524,14 @@ public function cost_exportCsv($id)
 
         return $response;
     }
-    public function addNewCommissionGroup(Request $request, $project_id)
-{
-    // Validate the request data
-    $request->validate([
-        'groupcommission_name' => 'required|string|max:255',
-    ]);
-
-    // Insert the new group into the database and get the inserted ID
-    $insertedId = DB::table('project_group_cost_commission')->insertGetId([
-        'groupcommission_name' => $request->input('groupcommission_name'),
-    ]);
-
-    // Check if the insertion was successful
-    if ($insertedId) {
-        // Return a success response with the new group ID
-        return response()->json([
-            'success' => true,
-            'message' => 'Group added successfully!',
-            'group_id' => $insertedId // Return the new group ID
-        ]);
-    } else {
-        // Return an error response if the insertion failed
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to add group.'
-        ]);
+    static function getCostDetails($id)
+    {
+        $costDetail = DB::table('project_costs')->join('project_cost_group', 'project_costs.project_cost_group_id','=','project_cost_group.project_cost_group_id')
+        ->select('project_costs.*','project_cost_group.*')->where('project_costs.project_cost_id',$id)->first();
+        if ($costDetail) {
+            return response()->json(['data' => $costDetail]);
+        } else {
+            return response()->json(['error' => 'Not Found gfff'], 404);
+        }
     }
-}
-
 }

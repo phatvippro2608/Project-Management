@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.crm')
 @section('head')
     <style>
         .custom-checkbox-lg {
@@ -42,12 +42,19 @@
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary mb-3 btn-add">
+    <a class="btn btn-primary mb-3 btn-add">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus pe-2"></i>
             {{ __('messages.add') }}
         </div>
-    </div>
+    </a>
+    <a class="btn btn-primary mb-3" href="{{action('App\Http\Controllers\CustomerController@export')}}">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-arrow-down pe-2"></i>
+            {{ __('messages.export') }}
+        </div>
+    </a>
+
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
@@ -305,9 +312,14 @@
                 if (!validateForm()) {
                     return;
                 }
+                const urlParams = new URLSearchParams(window.location.search);
+                let redirectUrl = '';
+                if (urlParams.has('redirect')) {
+                    redirectUrl = urlParams.get('redirect');
+                }
 
                 $.ajax({
-                    url: `{{action('App\Http\Controllers\CustomerController@add')}}`,
+                    url: `{{action('App\Http\Controllers\CustomerController@add')}}?redirectUrl=${redirectUrl}`,
                     type: "PUT",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -341,5 +353,66 @@
                 });
             });
         });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('redirect')) {
+            const redirectUrl = urlParams.get('redirect');
+            console.log(redirectUrl);
+            $('.md1 .modal-title').text('Add New Customer');
+            $('.md1').modal('show');
+            $('.at1').off('click').click(function () {
+                // if (!validateForm()) {
+                //     return;
+                // }
+                const urlParams = new URLSearchParams(window.location.search);
+                let redirectUrl = '';
+                if (urlParams.has('redirect')) {
+                    redirectUrl = urlParams.get('redirect');
+                }
+
+                $.ajax({
+                    url: `{{action('App\Http\Controllers\CustomerController@add')}}`,
+                    type: "PUT",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'first_name': $('.name1').val(),
+                        'last_name': $('.name2').val(),
+                        'email': $('.name3').val(),
+                        'date_of_birth': $('.name4').val(),
+                        'status': $('.name5').val(),
+                        'address': $('.name6').val(),
+                        'company_name': $('.name7').val(),
+                        'phone_number': $('.name8').val(),
+                        'contract_name': $('.name21').val(),
+                        'contract_date': $('.name22').val(),
+                        'contract_end_date': $('.name23').val(),
+                        'contract_details': $('.name24').val(),
+                        'redirectUrl':redirectUrl
+                    },
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        if (result.status === 200) {
+                            toastr.success(result.message, "Successfully");
+                            const url = new URL(window.location.href);
+                            url.search = '';
+                            window.history.replaceState({}, '', url);
+                            setTimeout(function () {
+                                window.location.href=redirectUrl+`&customerId=${result.message}`;
+                            }, 300);
+                        } else {
+                            toastr.error(result.message, "Failed Action");
+                        }
+                    }
+                });
+            });
+        } else {
+            console.log('Redirect parameter is not present in the URL.');
+        }
+
     </script>
 @endsection

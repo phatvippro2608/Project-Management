@@ -1,3 +1,10 @@
+<?php
+
+use App\StaticString;
+use App\Http\Controllers\AccountController;
+
+$token = 'position';
+?>
 @extends('auth.main-lms')
 
 @section('head')
@@ -44,6 +51,7 @@
     </div>
     <div class="section educaiton">
         <div class="d-flex justify-content-between">
+            @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
                     <i class="bi bi-plus me-1"></i>Add course
@@ -52,6 +60,7 @@
                     <i class="bi bi-pencil me-1"></i>Edit course
                 </button>
             </div>
+            @endif
             <div>
                 <div class="d-flex">
                     <input type="text" id="courseNameFilter" onkeyup="search()" class="form-control me-1"
@@ -86,6 +95,7 @@
             @endforeach
         </div>
     </div>
+    @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
     <div class="modal fade" id="modalAddCourse" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -216,7 +226,22 @@
             </div>
         </div>
     </div>
+    @endif
     <script>
+        function search() {
+            var courseName = $('#courseNameFilter').val();
+            var courseType = $('#courseTypeFilter').val();
+            $('.card').parent().parent().hide();
+            $('.card').filter(function() {
+                var courseNameFilter = $(this).find('.course_name').text().toLowerCase().indexOf(courseName
+                    .toLowerCase()) > -1;
+                var courseTypeFilter = $(this).find('.course_type').text().toLowerCase().indexOf(courseType
+                    .toLowerCase()) > -1;
+                return courseNameFilter && courseTypeFilter;
+            }).parent().parent().show();
+        }
+
+        @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
         $('#modalEditCourse').on('shown.bs.modal', function() {
             $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
             $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
@@ -441,19 +466,6 @@
             });
         });
 
-        function search() {
-            var courseName = $('#courseNameFilter').val();
-            var courseType = $('#courseTypeFilter').val();
-            $('.card').parent().parent().hide();
-            $('.card').filter(function() {
-                var courseNameFilter = $(this).find('.course_name').text().toLowerCase().indexOf(courseName
-                    .toLowerCase()) > -1;
-                var courseTypeFilter = $(this).find('.course_type').text().toLowerCase().indexOf(courseType
-                    .toLowerCase()) > -1;
-                return courseNameFilter && courseTypeFilter;
-            }).parent().parent().show();
-        }
-
         function deleteCourse() {
             var course_id = $('#course_id').val();
             Swal.fire({
@@ -520,5 +532,6 @@
                 }
             });
         }
+        @endif
     </script>
 @endsection

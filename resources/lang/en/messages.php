@@ -32,6 +32,7 @@ return [
     'attendance_list' => 'Attendance List',
     'attendance_report' => 'Attendance report',
     'leave' => 'Leave',
+    'leave_application' => 'Leave Application',
     'holiday' => 'Holiday',
     'leave_type' => 'Leave Type',
     'earned_leave' => 'Earned Leave',
@@ -85,17 +86,25 @@ return [
     'export' => 'Export',
     'status' => 'Status',
     'description' => 'Description',
+    'birthday' => 'Birthday',
 
     'company' => 'Company',
     'address' => 'Address',
     'contract' => 'Contract',
+    'contract_list' => 'List of Contracts',
+    'contract_detail' => 'Contract Detail',
+    'amount' => 'amount',
 
     'datestart' => 'Start Date',
     'dateend' => 'End Date',
-
 
     'full_name' => 'Full Name',
     'gender' => 'Gender',
     'male' => 'Male',
     'female' => 'Female',
+
+    'confirmDeleteTitle' => "Delete data",
+    'confirmDelete' => 'Are you sure you want to delete this data? This action cannot be undone.',
+
+
 ];

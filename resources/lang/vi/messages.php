@@ -79,17 +79,21 @@ return [
     'recent' => 'Gần đây',
     'recent_project' => 'Dự án gần đây',
     'todolist' => 'Danh sách việc cần làm',
-    'action' => 'Thao tác',
+    'action' => 'thao tác',
 
     'add' => 'Thêm',
     'import' => 'Nhập',
     'export' => 'Xuất',
     'status' => 'Tình trạng',
     'description' => 'Mô tả',
+    'birthday' => 'Sinh nhật',
 
     'company' => 'Công ty',
     'address' => 'Địa chỉ',
     'contract' => 'Hợp đồng',
+    'contract_list' => 'Danh sách hợp đồng',
+    'contract_detail' => 'thông tin hợp đồng',
+    'amount' => 'chi phí',
 
     'datestart' => 'Ngày bắt đầu',
     'dateend' => 'Ngày kết thúc',
@@ -99,4 +103,7 @@ return [
     'gender' => 'Giới tính',
     'male' => 'Nam',
     'female' => 'Nữ',
+
+    'confirmDelete' => 'Bạn có chắc chắn muốn xóa dữ liệu này không? Hành động này không thể hoàn tác.',
+    'confirmDeleteTitle' => "Xóa dữ liệu",
 ];

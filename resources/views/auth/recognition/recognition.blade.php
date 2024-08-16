@@ -1,6 +1,6 @@
 @section('title', $title)
 
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('head')
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
@@ -402,6 +402,7 @@
         let form = document.getElementById('importRecognitionForm');
         let recognition_date = form.querySelector('#recognition_date').value;
         const fileInput = form.querySelector('#file-excel');
+
 
         // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
         if (!recognition_date) {

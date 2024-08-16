@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('contents')
     <div class="container-fluid">
