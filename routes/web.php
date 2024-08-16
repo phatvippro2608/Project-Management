@@ -172,14 +172,14 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                         Route::post('/update', [TaskController::class, 'update'])->name('task.update');
                         Route::post('/delete', [TaskController::class, 'delete'])->name('task.delete');
                         Route::post('/s', [TaskController::class, 'showTask'])->name('tasks.getTasks');
-        
+
                         Route::post('/update-item', [ProgressController::class, 'updateItem']);
                         Route::post('/progress', [TaskController::class, 'create'])->name('task.create');
                         Route::get('/progress', [ProgressController::class, 'getViewHasID'])->name('project.progress');
                     });
                 });
             });
-            
+
 
 
         });
@@ -368,6 +368,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/recognition'], function () {
         Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
         Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
+        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'getRecognitionType'])->name('recognitiontype.getRecognitionType');
         Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
         Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
         Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');

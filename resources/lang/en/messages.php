@@ -98,9 +98,13 @@ return [
     'datestart' => 'Start Date',
     'dateend' => 'End Date',
 
-
     'full_name' => 'Full Name',
     'gender' => 'Gender',
     'male' => 'Male',
     'female' => 'Female',
+
+    'confirmDeleteTitle' => "Delete data",
+    'confirmDelete' => 'Are you sure you want to delete this data? This action cannot be undone.',
+
+
 ];

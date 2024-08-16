@@ -103,4 +103,7 @@ return [
     'gender' => 'Giới tính',
     'male' => 'Nam',
     'female' => 'Nữ',
+
+    'confirmDelete' => 'Bạn có chắc chắn muốn xóa dữ liệu này không? Hành động này không thể hoàn tác.',
+    'confirmDeleteTitle' => "Xóa dữ liệu",
 ];

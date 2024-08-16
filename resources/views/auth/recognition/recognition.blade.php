@@ -403,6 +403,7 @@
         let recognition_date = form.querySelector('#recognition_date').value;
         const fileInput = form.querySelector('#file-excel');
 
+
         // Kiểm tra nếu người dùng không nhập ngày bắt đầu hoặc ngày kết thúc
         if (!recognition_date) {
             event.preventDefault(); // Ngăn chặn việc gửi form
