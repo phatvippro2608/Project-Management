@@ -305,22 +305,21 @@ $token = 'position';
 
 <aside id="sidebar" class="sidebar">
     <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
-
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab"
+            <button onclick="saveTab(this)" class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab"
                     aria-selected="true" role="tab">Tab1
             </button>
         </li>
 
         <li class="nav-item" role="presentation">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"
+            <button onclick="saveTab(this)" class="nav-link" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"
                     aria-selected="false" tabindex="-1" role="tab">Tab2
             </button>
         </li>
 
 
         <li class="nav-item" role="presentation">
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"
+            <button onclick="saveTab(this)" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"
                     aria-selected="false" tabindex="-1" role="tab">Tab3
             </button>
         </li>
@@ -715,5 +714,35 @@ $token = 'position';
 
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script>
+    function saveTab(tab){
+        const currentTab = tab.getAttribute('data-bs-target')
+        localStorage.setItem('tab', currentTab)
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tab = localStorage.getItem('tab')
+        const tabLinks = document.querySelectorAll('.nav-tabs .nav-item .nav-link')
+        if(tab){
+            const activeTab = document.querySelector(tab);
+            const tabContents = document.querySelectorAll('.tab-pane')
+            tabContents.forEach(tabContent=>{
+                if('#'+tabContent.id !== tab){
+                    tabContent.classList.remove('active')
+                }
+            })
+            tabLinks.forEach(tabLink=>{
+                if(tabLink.getAttribute('data-bs-target') !== tab){
+                    tabLink.classList.remove('active')
+                }else{
+                    tabLink.classList.add('active')
+                }
+            })
+            activeTab.classList.add('active');
+        }
+
+    });
+
+</script>
 </html>
 @yield('script')
