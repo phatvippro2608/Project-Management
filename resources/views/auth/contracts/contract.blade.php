@@ -23,31 +23,34 @@
 @endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Contract list</h1>
+        <h1>{{ __('messages.contract') }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Contract List</li>
+                <li class="breadcrumb-item active">{{ __('messages.contract') }}</li>
             </ol>
         </nav>
     </div>
-    <div class="btn btn-primary my-3 add-contract">
+    <div class="btn btn-primary mb-3 add-contract">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus pe-2"></i>
-            Add contract
+            {{ __('messages.add') }}
         </div>
     </div>
     <div class="card border rounded-4 p-2">
+        <div class="card-header py-0">
+            <div class="card-title my-3 p-0">{{ __('messages.contract_list') }}</div>
+        </div>
         <div class="card-body">
             <table id="contractTable" class="table table-borderless table-hover">
                 <thead class="table-light">
                 <tr>
-                    <th class="text-center">No.</th>
-                    <th class="text-center">Contract detail</th>
-                    <th class="text-center">Contact date</th>
-                    <th class="text-center">Contact end date</th>
-                    <th class="text-center">Amount</th>
-                    <th class="text-center">Action</th>
+                    <th class="text-center">#</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.contract_detail') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.datestart') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.dateend') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.amount') }}</th>
+                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.action') }}</th>
                 </tr>
                 </thead>
                 <tbody>

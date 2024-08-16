@@ -135,8 +135,8 @@
             </div>
         </div>
     </div>
-
-
+@endsection
+@section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -148,8 +148,8 @@
                 initComplete: function(settings, json) {
                     $('.dt-search').addClass('input-group');
                     $('.dt-search').prepend(`<button class="input-group-text bg-secondary-subtle border-secondary-subtle rounded-start-4">
-                                <i class="bi bi-search"></i>
-                            </button>`)
+                            <i class="bi bi-search"></i>
+                        </button>`)
                 },
                 responsive: true
             });

@@ -75,6 +75,20 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/demo', 'App\Http\Controllers\AccountController@demoView');
         Route::post('/demo', 'App\Http\Controllers\AccountController@import');
     });
+    //Department
+    Route::group(['prefix' => '/departments'], function () {
+        Route::get('/', [DepartmentController::class, 'getView'])->name('departments.index');
+        Route::post('/add', [DepartmentController::class, 'store'])->name('departments.store');
+        Route::delete('/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+        Route::put('/update/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+        Route::group(['prefix' => '/{id}'], function () {
+            Route::get('/',  'App\Http\Controllers\DepartmentController@getEmployeeOfDepartment');
+            Route::post('/addEmployee', 'App\Http\Controllers\DepartmentController@addEmployee');
+            Route::post('/deleteEmployee/{employee_id}', 'App\Http\Controllers\DepartmentController@deleteEmployee');
+            Route::get('/export', 'App\Http\Controllers\DepartmentController@export');
+            Route::get('/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
+        });
+    });
 
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', 'App\Http\Controllers\CustomerController@getView');
@@ -106,7 +120,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\TeamController@update');
         Route::delete('/delete', 'App\Http\Controllers\TeamController@delete');
 
-        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');;
+        Route::get('/{team_id}/employees', 'App\Http\Controllers\TeamDetailsController@getView')->name('team.employees');
+        ;
         Route::post('/update-employees', 'App\Http\Controllers\TeamDetailsController@update');
         Route::post('/update-position', 'App\Http\Controllers\TeamDetailsController@updatePosition');
 
@@ -117,6 +132,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Project
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+        Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
 
         //Project location
         Route::group(['prefix' => '/project-location'], function () {
@@ -153,19 +169,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::post('/add-new-cost', [ProjectBudgetController::class, 'addNewCost'])->name('budget.addNewCost');
                 Route::get('/export-csv', [ProjectBudgetController::class, 'cost_exportCsv'])->name('budget.cost-export-csv');
                 Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
+                Route::post('/details/1', [ProjectBudgetController::class, 'getCostDetails'])->name('budget.getDetail');
             });
-            //List of Commission
-            Route::group(['prefix' => '/commission'], function () {
-                Route::get('/', [ProjectBudgetController::class, 'getViewCommission'])->name('commission');
-                Route::post('/details', [ProjectBudgetController::class, 'getCommissionDetails'])->name('commission.details');
-                Route::get('/export-csv', [ProjectBudgetController::class, 'exportCsv'])->name('budget.export.csv');
-                Route::delete('/{cost_commission_id}', [ProjectBudgetController::class, 'deleteCostCommission'])->name('budget.deleteCommission');
-                Route::put('/{commission_id}', [ProjectBudgetController::class, 'updateCommission'])->name('budget.updateCommission');
-                Route::post('/add-new-commission', [ProjectBudgetController::class, 'addNewCommission'])->name('budget.addNewCommission');
-                Route::put('/{group_id}/edit', [ProjectBudgetController::class, 'editNameGroup'])->name('budget.editNameGroup');
-                Route::get('/commision-group-details/{group_id}', [ProjectBudgetController::class, 'getGroupCommissionDetails'])->name('budget.getGroupCommissionDetails');
-                Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
-            });
+            
             //Progress
             Route::group(['prefix' => '/location'], function () {
                 Route::group(['prefix' => '/{location_id}'], function () {
@@ -245,6 +251,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/importEmployee', 'App\Http\Controllers\EmployeesController@import');
         Route::get('/exportEmployee', 'App\Http\Controllers\EmployeesController@export');
     });
+
+
 
     Route::post('img-upload', 'App\Http\Controllers\UploadFileController@imgUpload')->name('img-upload');
     Route::post('img-store', 'App\Http\Controllers\UploadFileController@imgStore')->name('img-store');
@@ -328,13 +336,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     //Inventory Management
     Route::get('inventory', [\App\Http\Controllers\InventoryManagementController::class, 'getView'])->name('inventory');
 
-    //Department
-    Route::resource('departments', DepartmentController::class);
-    Route::get('/departments', [\App\Http\Controllers\DepartmentController::class, 'getView'])->name('departments.index');
-    Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-    Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit');
-    Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update');
-    Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
 
     //Attendance
     Route::get('/attendance', [AttendanceController::class, 'getView'])->name('attendance.index');
@@ -425,13 +427,22 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
     Route::get('certificate', [InternalCertificatesController::class, 'getViewUser'])->name('certificate.user');
     Route::delete('certificate', [InternalCertificatesController::class, 'deleteViewUser'])->name('certificate.user.delete');
-    Route::get('certificateType', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
-    Route::delete('certificateType', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
-    Route::post('certificateType/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
-    Route::post('certificateType/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
-    Route::get('certificateType/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
-    Route::get('certificateType/signature', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
-    Route::get('certificateType/create', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+    Route::group(['prefix' => '/certificateType'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewType'])->name('certificate.type');
+        Route::delete('', [InternalCertificatesController::class, 'deleteType'])->name('certificate.type.delete');
+        Route::post('/post', [InternalCertificatesController::class, 'updateCertificateType'])->name('certificate.type.update');
+        Route::post('/add', [InternalCertificatesController::class, 'addCertificateType'])->name('certificate.type.add');
+        Route::get('/temp', [InternalCertificatesController::class, 'temp'])->name('certificate');
+    });
+    Route::group(['prefix' => '/certificateSignature'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewSignature'])->name('certificate.signature');
+        Route::post('/edit', [InternalCertificatesController::class, 'updateSignatureCertificate'])->name('certificate.signature.edit');
+        Route::post('/add', [InternalCertificatesController::class, 'addSignatureCertificate'])->name('certificate.signature.add');
+        Route::post('/load', [InternalCertificatesController::class, 'loadHistorySignatureCertificate'])->name('certificate.signature.load');
+        Route::post('/search', [InternalCertificatesController::class, 'searchEmployee'])->name('certificate.signature.search');
+    });
+    Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+
 
     Route::get('lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'vi'])) {
