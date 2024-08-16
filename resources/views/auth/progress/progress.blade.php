@@ -4,7 +4,7 @@ use App\Http\Controllers\AccountController;
 
 $token = 'position';
 ?>
-@extends('auth.main')
+@extends('auth.project')
 @section('head')
     <link rel="stylesheet" href="{{ asset('assets/css/dhtmlxgantt.css') }}" type="text/css">
     <script src="{{ asset('assets/js/dhtmlxgantt.js') }}"></script>

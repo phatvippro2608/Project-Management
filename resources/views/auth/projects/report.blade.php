@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 
 @section('contents')
 
