@@ -32,7 +32,7 @@ $token = 'position';
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
         </a>
         <i class="bi bi-list toggle-sidebar-btn me-5"></i>
-        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between pb-2 border-0" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0" role="tablist">
             <li class="nav-item" role="presentation">
                 <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold active" >HRM
                 </a>
