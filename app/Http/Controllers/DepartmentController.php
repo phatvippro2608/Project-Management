@@ -28,8 +28,15 @@ class DepartmentController extends Controller
         $validated = $request->validate([
             'department_name' => 'required|string|max:255',
         ]);
+        if(DB::table('departments')->where('department_name', $validated['department_name'])->exists()){
+            return response()->json([
+                'success' => false,
+                'message' => 'Department already exist',
+            ]);
+        }
 
         $department = DepartmentModel::create($validated);
+
 
         return response()->json([
             'success' => true,
@@ -44,7 +51,7 @@ class DepartmentController extends Controller
 //        return view('departments.show', compact('department'));
     }
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
         $department = DepartmentModel::findOrFail($id);
 
