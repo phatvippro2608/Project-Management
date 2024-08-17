@@ -591,10 +591,10 @@ h6 {
     top: 60px;
     left: 0;
     bottom: 0;
-    width: 300px;
+    width: 400px;
     z-index: 996;
     transition: all 0.3s;
-    padding: 20px;
+    padding: 10px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #aab7cf transparent;
@@ -604,7 +604,7 @@ h6 {
 
 @media (max-width: 1199px) {
     .sidebar {
-        left: -300px;
+        left: -400px;
     }
 }
 
@@ -621,7 +621,7 @@ h6 {
 @media (min-width: 1200px) {
     #main,
     #footer {
-        margin-left: 300px;
+        margin-left: 400px;
     }
 }
 
@@ -638,7 +638,7 @@ h6 {
     }
 
     .toggle-sidebar .sidebar {
-        left: -300px;
+        left: -400px;
     }
 }
 
@@ -669,12 +669,12 @@ h6 {
 .sidebar-nav .nav-link {
     display: flex;
     align-items: center;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
     color: #4154f1;
     transition: 0.3s;
     background: #f6f9ff;
-    padding: 10px 15px;
+    padding: 10px 5px;
     border-radius: 4px;
 }
 
@@ -702,14 +702,15 @@ h6 {
     color: #4154f1;
 }
 
-.sidebar-nav .nav-link .bi-chevron-down {
-    margin-right: 0;
-    transition: transform 0.2s ease-in-out;
+.sidebar-nav .nav-link  .bi-chevron-down {
+    margin-right: 5px !important;
+    transition: transform 0.2s ease-in-out !important;
 }
 
-.sidebar-nav .nav-link:not(.collapsed) .bi-chevron-down {
-    transform: rotate(180deg);
+.sidebar-nav .nav-link:not(.collapsed)  .bi-chevron-down {
+    transform: rotate(180deg) !important;
 }
+
 
 .sidebar-nav .nav-content {
     padding: 5px 0 0 0;
@@ -720,16 +721,16 @@ h6 {
 .sidebar-nav .nav-content a {
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #012970;
     transition: 0.3s;
-    padding: 10px 0 10px 40px;
+    padding: 10px 0 10px 20px;
 }
 
 .sidebar-nav .nav-content a i {
     font-size: 6px;
-    margin-right: 8px;
+    margin-right: 4px;
     line-height: 0;
     border-radius: 50%;
 }

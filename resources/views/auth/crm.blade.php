@@ -62,150 +62,6 @@ $token = 'position';
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
-            {{--            <li class="nav-item d-block d-lg-none">--}}
-            {{--                <a class="nav-link nav-icon search-bar-toggle " href="#">--}}
-            {{--                    <i class="bi bi-search"></i>--}}
-            {{--                </a>--}}
-            {{--            </li>--}}
-            {{--            <li class="nav-item dropdown">--}}
-            {{--                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">--}}
-            {{--                    <i class="bi bi-bell"></i>--}}
-            {{--                    <span class="badge bg-primary badge-number">4</span>--}}
-            {{--                </a>--}}
-
-            {{--                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">--}}
-            {{--                    <li class="dropdown-header">--}}
-            {{--                        You have 4 new notifications--}}
-            {{--                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>--}}
-            {{--                    </li>--}}
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="notification-item">--}}
-            {{--                        <i class="bi bi-exclamation-circle text-warning"></i>--}}
-            {{--                        <div>--}}
-            {{--                            <h4>Lorem Ipsum</h4>--}}
-            {{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
-            {{--                            <p>30 min. ago</p>--}}
-            {{--                        </div>--}}
-            {{--                    </li>--}}
-
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="notification-item">--}}
-            {{--                        <i class="bi bi-x-circle text-danger"></i>--}}
-            {{--                        <div>--}}
-            {{--                            <h4>Atque rerum nesciunt</h4>--}}
-            {{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
-            {{--                            <p>1 hr. ago</p>--}}
-            {{--                        </div>--}}
-            {{--                    </li>--}}
-
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="notification-item">--}}
-            {{--                        <i class="bi bi-check-circle text-success"></i>--}}
-            {{--                        <div>--}}
-            {{--                            <h4>Sit rerum fuga</h4>--}}
-            {{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
-            {{--                            <p>2 hrs. ago</p>--}}
-            {{--                        </div>--}}
-            {{--                    </li>--}}
-
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="notification-item">--}}
-            {{--                        <i class="bi bi-info-circle text-primary"></i>--}}
-            {{--                        <div>--}}
-            {{--                            <h4>Dicta reprehenderit</h4>--}}
-            {{--                            <p>Quae dolorem earum veritatis oditseno</p>--}}
-            {{--                            <p>4 hrs. ago</p>--}}
-            {{--                        </div>--}}
-            {{--                    </li>--}}
-
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-            {{--                    <li class="dropdown-footer">--}}
-            {{--                        <a href="#">Show all notifications</a>--}}
-            {{--                    </li>--}}
-
-            {{--                </ul>--}}
-
-            {{--            </li>--}}
-
-            {{--            <li class="nav-item dropdown">--}}
-
-            {{--                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">--}}
-            {{--                    <i class="bi bi-chat-left-text"></i>--}}
-            {{--                    <span class="badge bg-success badge-number">3</span>--}}
-            {{--                </a><!-- End Messages Icon -->--}}
-
-            {{--                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">--}}
-            {{--                    <li class="dropdown-header">--}}
-            {{--                        You have 3 new messages--}}
-            {{--                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>--}}
-            {{--                    </li>--}}
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="message-item">--}}
-            {{--                        <a href="#">--}}
-            {{--                            <img src="{{ 'assets/img/messages-1.jpg' }}" alt="" class="rounded-circle">--}}
-            {{--                            <div>--}}
-            {{--                                <h4>Maria Hudson</h4>--}}
-            {{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
-            {{--                                <p>4 hrs. ago</p>--}}
-            {{--                            </div>--}}
-            {{--                        </a>--}}
-            {{--                    </li>--}}
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="message-item">--}}
-            {{--                        <a href="#">--}}
-
-            {{--                            <img src="{{ asset('assets/img/messages-2.jpg') }}" alt=""--}}
-            {{--                                 class="rounded-circle">--}}
-            {{--                            <div>--}}
-            {{--                                <h4>Anna Nelson</h4>--}}
-            {{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
-            {{--                                <p>6 hrs. ago</p>--}}
-            {{--                            </div>--}}
-            {{--                        </a>--}}
-            {{--                    </li>--}}
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="message-item">--}}
-            {{--                        <a href="#">--}}
-            {{--                            <img src="{{ 'assets/img/messages-3.jpg' }}" alt="" class="rounded-circle">--}}
-            {{--                            <div>--}}
-            {{--                                <h4>David Muldon</h4>--}}
-            {{--                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>--}}
-            {{--                                <p>8 hrs. ago</p>--}}
-            {{--                            </div>--}}
-            {{--                        </a>--}}
-            {{--                    </li>--}}
-            {{--                    <li>--}}
-            {{--                        <hr class="dropdown-divider">--}}
-            {{--                    </li>--}}
-
-            {{--                    <li class="dropdown-footer">--}}
-            {{--                        <a href="#">Show all messages</a>--}}
-            {{--                    </li>--}}
-            {{--                </ul>--}}
-
             {{--     Change language      --}}
             <li class="nav-item dropdown-center my-2">
                 <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#"
@@ -350,7 +206,14 @@ $token = 'position';
                     <i class="bi bi-person"></i><span>{{ __('messages.customer') }}</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{{action('App\Http\Controllers\ContractController@getView')}}">
+                    <i class="bi bi-journal-bookmark"></i><span>{{ __('messages.contract') }}</span>
+                </a>
+            </li>
         @endif
+
     </ul>
 </aside>
 

@@ -50,13 +50,15 @@ class ProjectController extends Controller
                 ";
 
             $item->all_employees = DB::select($sql);
+
+            $item->locations = DB::table('project_locations')->where('project_id', $item->project_id)->get();
         }
         $teams = DB::table('teams')->get();
         $team_positions = DB::table("team_positions")->get();
         $contracts = DB::table('contracts')
             ->leftjoin('projects', 'contracts.contract_id', '=', 'projects.contract_id')
             ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
-        return view('auth.projects.project-list', compact('project', 'teams', 'contracts', 'team_positions'));
+        return view('auth.prm.project.project', compact('project', 'teams', 'contracts', 'team_positions'));
     }
 
 

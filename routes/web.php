@@ -126,6 +126,17 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
         Route::put('/add-from-project', 'App\Http\Controllers\TeamController@addFromProject');
     });
+    //PRM
+    Route::group(['prefix' => '/prm'], function () {
+        Route::get('/', '\App\Http\Controllers\PRMController@getView');
+
+        Route::group(['prefix' => '/project/{project_id}'], function () {
+            Route::get('/', '\App\Http\Controllers\ProjectController@getView');
+            Route::group(['prefix' => '/location/{location_id}'], function () {
+                Route::get('/', '\App\Http\Controllers\PRMController@getView');
+            });
+        });
+    });
     //Project
     Route::group(['prefix' => '/project'], function () {
         //Project
@@ -170,7 +181,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
                 Route::post('/details/1', [ProjectBudgetController::class, 'getCostDetails'])->name('budget.getDetail');
             });
-            
+
             //Progress
             Route::group(['prefix' => '/location'], function () {
                 Route::group(['prefix' => '/{location_id}'], function () {
