@@ -13,6 +13,11 @@
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+    <style>
+        .collapse {
+            visibility: visible!important;
+        }
+    </style>
 @endsection
 @section('contents')
 
