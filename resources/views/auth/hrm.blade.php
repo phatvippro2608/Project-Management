@@ -31,7 +31,32 @@ $token = 'position';
             <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        <i class="bi bi-list toggle-sidebar-btn me-5"></i>
+        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold active" >HRM
+                </a>
+                {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab"--}}
+                {{--                    aria-selected="true" role="tab">Tab1--}}
+                {{--            </button>--}}
+            </li>
+
+            <li class="nav-item" role="presentation">
+                {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"--}}
+                {{--                    aria-selected="false" tabindex="-1" role="tab">Tab2--}}
+                {{--            </button>--}}
+                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}" class="nav-link fw-bold" >CRM </a>
+            </li>
+
+
+            <li class="nav-item" role="presentation">
+                {{--            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"--}}
+                {{--                    aria-selected="false" tabindex="-1" role="tab">Tab3--}}
+                {{--            </button>--}}
+                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold" >PRM
+                </a>
+            </li>
+        </ul>
     </div>
 
     <nav class="header-nav ms-auto">
@@ -161,32 +186,6 @@ $token = 'position';
 
 
 <aside id="sidebar" class="sidebar">
-    <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between pb-2 border-0" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold active" >HRM
-            </a>
-            {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab"--}}
-            {{--                    aria-selected="true" role="tab">Tab1--}}
-            {{--            </button>--}}
-        </li>
-
-        <li class="nav-item" role="presentation">
-            {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"--}}
-            {{--                    aria-selected="false" tabindex="-1" role="tab">Tab2--}}
-            {{--            </button>--}}
-            <a href="{{action('App\Http\Controllers\CustomerController@getView')}}" class="nav-link fw-bold" >CRM </a>
-        </li>
-
-
-        <li class="nav-item" role="presentation">
-            {{--            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"--}}
-            {{--                    aria-selected="false" tabindex="-1" role="tab">Tab3--}}
-            {{--            </button>--}}
-            <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold" >PRM
-            </a>
-        </li>
-    </ul>
-
     @php
         $data = \Illuminate\Support\Facades\DB::table('accounts')
             ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
