@@ -381,8 +381,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/recognition'], function () {
         Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
         Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
-        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'getRecognitionType'])->name('recognitiontype.getRecognitionType');
-        Route::put('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'updRecognitionType'])->name('recognitiontype.udpRecognitionType');
+        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'get'])->name('recognitiontype.get');
+        Route::put('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'upd'])->name('recognitiontype.udp');
+        Route::delete('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'del'])->name('recognitiontype.del');
         Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
         Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
         Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
@@ -394,6 +395,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/disciplinary'], function () {
         Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
         Route::get('/type', [DisciplinaryTypeController::class, 'getView'])->name('disciplinarytype.index');
+        Route::get('/type/{id}', [DisciplinaryTypeController::class, 'get'])->name('disciplinarytype.get');
+        Route::put('/type/{id}', [DisciplinaryTypeController::class, 'upd'])->name('disciplinarytype.upd');
+        Route::delete('/type/{id}', [DisciplinaryTypeController::class, 'del'])->name('disciplinarytype.del');
         Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
         Route::post('/addType', [DisciplinaryController::class, 'addType'])->name('disciplinary.addType');
         Route::post('/import', [DisciplinaryController::class, 'import'])->name('disciplinary.import');

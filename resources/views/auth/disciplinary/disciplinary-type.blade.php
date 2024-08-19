@@ -70,11 +70,13 @@
                             <th scope="col" class="text-center">{{ $disciplinary_type->disciplinary_type_id }}</th>
                             <th scope="col">{{ $disciplinary_type->disciplinary_type_name }}</th>
                             <td class="text-center">
-                                <button data-disciplinary="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-primary" onclick="editDisciplinary(this)">
+                                <button data="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-primary" onclick="btnEdit(this)">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 |
-                                <button data-disciplinary="{{ $disciplinary_type->disciplinary_type_id }}" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)" >
+                                <button data="{{ $disciplinary_type->disciplinary_type_id }}"
+                                        class="btn p-1 text-danger"
+                                        onclick="btnDel(this)" >
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
@@ -82,6 +84,40 @@
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade md1" id="editDisciplinaryTypeModal" tabindex="-1" aria-labelledby="editDisciplinaryTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDisciplinaryTypeModalLabel">Edit Disciplinary Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Form trong view -->
+            <div class="modal-body">
+                <form id="recognitionTypeForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" name="disciplinary_type_id" id="edit_disciplinary_type_id" class="form-control" hidden>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="edit_disciplinary_type_name" class="form-label">Disciplinary type name</label>
+                            <input type="text" name="recognition_type_name" id="edit_disciplinary_type_name" class="form-control">
+                        </div>
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="edit_disciplinary_type_hidden">Hidden</label>
+                            <input type="checkbox" name="disciplinary_type_hidden" id="edit_disciplinary_type_hidden">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnUpd">Submit</button>
             </div>
         </div>
     </div>
@@ -173,5 +209,114 @@
                     toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
                 });
         });
+
+        function btnEdit(button) {
+            var id = button.getAttribute('data');
+
+            fetch(`/disciplinary/type/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('edit_disciplinary_type_id').value = data.disciplinary_type_id || '';
+                        document.getElementById('edit_disciplinary_type_name').value = data.disciplinary_type_name || '';
+                        document.getElementById('edit_disciplinary_type_hidden').checked = data.disciplinary_type_hidden == 1;
+
+                        var editModal = new bootstrap.Modal(document.getElementById('editDisciplinaryTypeModal'));
+                        editModal.show();
+                    } else {
+                        toastr.error('Dữ liệu không hợp lệ.', "Thao tác thất bại");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Có lỗi xảy ra khi tải dữ liệu.', "Thao tác thất bại");
+                });
+        }
+
+        document.getElementById('btnUpd').addEventListener('click', function() {
+            // Lấy giá trị từ form
+            var disciplinary_type_id = document.getElementById('edit_disciplinary_type_id').value;
+            var disciplinary_type_name = document.getElementById('edit_disciplinary_type_name').value;
+            var disciplinary_type_hidden = document.getElementById('edit_disciplinary_type_hidden').checked ? 1 : 0;
+
+            // Tạo object dữ liệu để gửi đi
+            var data = {
+                disciplinary_type_id: disciplinary_type_id,
+                disciplinary_type_name: disciplinary_type_name,
+                disciplinary_type_hidden: disciplinary_type_hidden,
+            };
+
+            // Gửi yêu cầu cập nhật qua fetch API
+            fetch(`/disciplinary/type/${disciplinary_type_id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Có lỗi xảy ra khi cập nhật dữ liệu.');
+                    }
+                })
+                .then(responseData => {
+                    toastr.success('Cập nhật loại công nhận thành công!', "Thành công");
+                    // Ẩn modal sau khi cập nhật thành công
+                    var editModal = bootstrap.Modal.getInstance(document.getElementById('editDisciplinaryTypeModal'));
+                    editModal.hide();
+
+                    // Tải lại bảng dữ liệu sau khi cập nhật thành công
+                    // loadRecognitionTypeTable();
+                    location.reload()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Có lỗi xảy ra trong quá trình cập nhật.', "Thao tác thất bại");
+                });
+        });
+
+        function btnDel(button) {
+            // Lấy giá trị từ thuộc tính data của nút
+            var id = button.getAttribute('data');
+
+            // Hiển thị hộp thoại xác nhận trước khi xóa
+            var confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa loại công nhận này không?");
+
+            if (confirmDelete) {
+                // Lấy CSRF token từ thẻ meta
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                // Nếu người dùng chọn "OK", gửi yêu cầu xóa qua Fetch API
+                fetch(`/disciplinary/type/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Có lỗi xảy ra khi xóa dữ liệu.');
+                        }
+                    })
+                    .then(responseData => {
+                        toastr.success('Xóa loại công nhận thành công!', "Thành công");
+                        // Tải lại trang sau khi xóa thành công
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        toastr.error('Có lỗi xảy ra trong quá trình xóa.', "Thao tác thất bại");
+                    });
+            } else {
+                // Nếu người dùng chọn "Cancel", không làm gì cả
+                toastr.info('Hành động xóa đã bị hủy.', "Thông báo");
+            }
+        }
     </script>
 @endsection

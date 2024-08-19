@@ -369,22 +369,22 @@
 
         $(document).on('click', '.at4', function () {
             var id = $(this).attr('data');
-            if (confirm("Do you want to remove this employee?")) {
-                $.ajax({
-                    url: _delete,
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {'id': id},
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Thao tác thành công");
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 500);
-                        } else {
+                        if (confirm("Do you want to remove this employee?")) {
+                            $.ajax({
+                                url: _delete,
+                                type: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {'id': id},
+                                success: function (result) {
+                                    result = JSON.parse(result);
+                                    if (result.status === 200) {
+                                        toastr.success(result.message, "Thao tác thành công");
+                                        setTimeout(function () {
+                                            window.location.reload();
+                                        }, 500);
+                                    } else {
                             toastr.error(result.message, "Thao tác thất bại");
                         }
                     }

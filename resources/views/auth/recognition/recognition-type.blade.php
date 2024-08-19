@@ -77,9 +77,11 @@
                                 <button data-recognitiontype="{{ $recognition_type->recognition_type_id }}" class="btn p-1 text-primary" onclick="editRecognitionTypeModal(this)">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-{{--                                <button data-recognition="{{ $recognition_type->recognition_type_id }}" class="btn p-1 text-danger" onclick="deleteRecognitionType(this)" >--}}
-{{--                                    <i class="bi bi-trash"></i>--}}
-{{--                                </button>--}}
+                                <button data="{{ $recognition_type->recognition_type_id }}"
+                                        class="btn p-1 text-danger"
+                                        onclick="btnDelRecognitionType(this)" >
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -306,6 +308,44 @@
                     toastr.error('Có lỗi xảy ra trong quá trình cập nhật.', "Thao tác thất bại");
                 });
         });
+
+        function btnDelRecognitionType(button) {
+            // Lấy giá trị từ thuộc tính data-recognitiontype của nút
+            var recognitionTypeId = button.getAttribute('data');
+
+            // Hiển thị hộp thoại xác nhận trước khi xóa
+            var confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa loại công nhận này không?");
+
+            if (confirmDelete) {
+                // Nếu người dùng chọn "OK", gửi yêu cầu xóa qua Fetch API
+                fetch(`/recognition/type/${recognitionTypeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Có lỗi xảy ra khi xóa dữ liệu.');
+                        }
+                    })
+                    .then(responseData => {
+                        toastr.success('Xóa loại công nhận thành công!', "Thành công");
+                        // Tải lại trang sau khi xóa thành công
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        toastr.error('Có lỗi xảy ra trong quá trình xóa.', "Thao tác thất bại");
+                    });
+            } else {
+                // Nếu người dùng chọn "Cancel", không làm gì cả
+                toastr.info('Hành động xóa đã bị hủy.', "Thông báo");
+            }
+        };
 
         function loadRecognitionTypeTable() {
             // Gửi yêu cầu lấy dữ liệu và cập nhật bảng

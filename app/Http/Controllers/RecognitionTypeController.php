@@ -19,12 +19,12 @@ class RecognitionTypeController extends Controller
         ]);
     }
 
-    public function getRecognitionType($recognition_type_id)
+    public function get($recognition_type_id)
     {
         return RecognitionTypeModel::getRecognitionTypes()->where('recognition_type_id', $recognition_type_id)->first();
     }
 
-    public function updRecognitionType(Request $request, $id)
+    public function upd(Request $request, $id)
     {
         // Validate the incoming request data
         $request->validate([
@@ -47,4 +47,27 @@ class RecognitionTypeController extends Controller
             'data' => $recognitionType
         ]);
     }
+    public function del($id)
+    {
+        try {
+            // Tìm loại công nhận theo ID
+            $recognitionType = RecognitionTypeModel::findOrFail($id);
+
+            // Xóa loại công nhận
+            $recognitionType->delete();
+
+            // Trả về phản hồi thành công
+            return response()->json([
+                'success' => true,
+                'message' => 'Recognition type deleted successfully!',
+            ]);
+        } catch (\Exception $e) {
+            // Trả về phản hồi lỗi
+            return response()->json([
+                'success' => false,
+                'message' => 'Error occurred while deleting recognition type.',
+            ], 500);
+        }
+    }
+
 }
