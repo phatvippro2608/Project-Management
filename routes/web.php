@@ -202,9 +202,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         });
     });
 
-
-
-
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
         Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
@@ -212,6 +209,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
         Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
         Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
+        Route::put('/workshop/{workshop_id}', [WorkshopController::class, 'updAll'])->name('workshop.updAll');
         Route::get('/live/{workshop_id}', [WorkshopController::class, 'live'])->name('lms.live');
 
         //Courses
