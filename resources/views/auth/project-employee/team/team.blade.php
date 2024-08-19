@@ -43,6 +43,7 @@
             </ol>
         </nav>
     </div>
+    @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
             <div class="btn btn-primary me-2 btn-add">
@@ -53,6 +54,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
@@ -64,7 +66,9 @@
                             <th class="text-center">Created at</th>
                             <th class="text-center">Last update</th>
                             <th class="text-center">{{ __('messages.status') }}</th>
+                            @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
                             <th class="text-center" style="width: 60px!important;">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="account-list">
@@ -97,6 +101,7 @@
 
                                     {{$status[$item->status]}}
                                 </td>
+                                @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
                                 <td class="text-center">
                                     <div class="d-flex align-items-center justify-content-center">
                                         <div class="d-flex align-items-center">
@@ -113,6 +118,7 @@
                                     </div>
 
                                 </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
