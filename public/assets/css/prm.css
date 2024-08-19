@@ -53,7 +53,7 @@ h6 {
 
 #main {
     margin-top: 60px;
-    padding: 20px 30px;
+
     transition: all 0.3s;
 }
 
@@ -1311,7 +1311,7 @@ h6 {
     display: none;
     /*justify-content: space-between;*/
     flex-wrap: wrap;
-    max-width: 193px;
+    max-width: 400px;
     width: max-content;
     height: auto;
     padding: 4px 0px 10px 4px;
@@ -1394,5 +1394,6 @@ div.dt-container div.dt-search {
     background: var(--bs-light);
     cursor: pointer;
 }
+
 
 

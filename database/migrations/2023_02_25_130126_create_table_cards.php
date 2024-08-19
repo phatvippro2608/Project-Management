@@ -11,19 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('temporary_files', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->id();
-            $table->string('folder');
-            $table->string('file');
+            $table->string('content')->nullable();
+            $table->integer('position');
+            $table->foreignId('column_id')->constrained();
             $table->timestamps();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('temporary_files');
     }
 };

@@ -33,6 +33,17 @@ use App\Http\Controllers\InternalCertificatesController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\ProjectBudgetController;
 
+/** TEST */
+use App\Http\Controllers\ColumnCardUpdateController;
+use App\Http\Controllers\ColumnCardDestroyController;
+use App\Http\Controllers\ColumnCardCreateController;
+use App\Http\Controllers\CardsReorderUpdateController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
+use Inertia\Inertia;
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\ColumnDestroyController;
+use App\Http\Controllers\BoardColumnCreateController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,6 +68,34 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/dashboard', 'App\Http\Controllers\DashboardController@getViewDashboard')->name('home');
     Route::post('/dashboard/update-todo', 'App\Http\Controllers\DashboardController@UpdateTodo');
     Route::post('/dashboard/update-sub-todo', 'App\Http\Controllers\DashboardController@UpdateSubTodo');
+
+    /** TEST */
+    Route::get('/boards/{id?}', [BoardController::class, 'show'])->name('boards');
+
+    Route::post('/boards/{board}/columns', BoardColumnCreateController::class)
+        ->name('boards.columns.store');
+
+    Route::delete('/columns/{column}', ColumnDestroyController::class)
+        ->name('columns.destroy');
+
+    Route::post('/columns/{column}/cards', ColumnCardCreateController::class)
+        ->name('columns.cards.store');
+
+    Route::put('/columns/{column}/cards/{card}', ColumnCardUpdateController::class)
+        ->scopeBindings()->name('columns.cards.update');
+
+    Route::delete('/columns/{column}/cards/{card}', ColumnCardDestroyController::class)
+        ->scopeBindings()->name('columns.cards.destroy');
+
+    Route::put('/cards/reorder', CardsReorderUpdateController::class)
+        ->name('cards.reorder');
+    /** TEST */
+
+
+
+
+
+
 
     Route::get('/login-history', 'App\Http\Controllers\AccountController@loginHistory');
     Route::group(['prefix' => '/account'], function () {

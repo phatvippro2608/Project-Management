@@ -57,6 +57,62 @@ $token = 'position';
 </head>
 
 <body>
+@php
+    $data = \Illuminate\Support\Facades\DB::table('accounts')
+        ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+        ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
+        ->where(
+            'account_id',
+            \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+        )
+        ->first();
+
+
+    $project = DB::table('projects')
+        ->join('contracts', 'contracts.contract_id', '=', 'projects.contract_id')
+        ->join('customers', 'customers.customer_id', '=', 'contracts.customer_id')
+        ->join('phases', 'phases.phase_id', '=', 'projects.phase_id')
+        ->join('project_teams', 'project_teams.project_id', '=', 'projects.project_id')
+        ->select(
+            'project_teams.*',
+            'projects.*',
+            DB::raw("CONCAT(customers.company_name, ' - ', customers.last_name, ' ', customers.first_name) AS customer_info"),
+            'phases.phase_name_eng'
+        )
+        ->orderBy('project_teams.project_id', 'asc')
+        ->get();
+    foreach ($project as $item) {
+        $item->team_members = DB::table('team_details')
+            ->join('employees', 'employees.employee_id', '=', 'team_details.employee_id')
+            ->where('team_id', $item->team_id)
+            ->orderBy('team_permission', 'asc')
+            ->get();
+
+
+        $sql = "SELECT
+                employees.*, accounts.*,team_details.team_permission as team_permission,
+                CASE
+                    WHEN team_details.employee_id IS NOT NULL THEN 1
+                    ELSE 0
+                END AS isAtTeam
+            FROM
+                employees
+            JOIN
+                accounts ON accounts.employee_id = employees.employee_id
+            LEFT JOIN
+                team_details ON team_details.employee_id = employees.employee_id AND team_details.team_id = $item->team_id
+            ";
+
+        $item->all_employees = DB::select($sql);
+
+        $item->locations = DB::table('project_locations')->where('project_id', $item->project_id)->get();
+    }
+    $teams = DB::table('teams')->get();
+    $team_positions = DB::table("team_positions")->get();
+    $contracts = DB::table('contracts')
+        ->leftjoin('projects', 'contracts.contract_id', '=', 'projects.contract_id')
+        ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
+@endphp
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -65,27 +121,96 @@ $token = 'position';
             <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
         </a>
-        <i class="bi bi-list toggle-sidebar-btn me-5"></i>
-        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold">HRM
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
-                   class="nav-link fw-bold">CRM </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
-                </a>
-            </li>
-        </ul>
+        <i class="bi bi-list toggle-sidebar-btn me-1"></i>
+        <div class="dropdown" style="margin-left: 40px">
+            <a class="btn btn-secondary dropdown-toggle" href="{{action('\App\Http\Controllers\ProjectController@getView')}}" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                PRM
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="{{action('App\Http\Controllers\EmployeesController@getView')}}">HRM</a></li>
+                <li><a class="dropdown-item" href="{{action('App\Http\Controllers\CustomerController@getView')}}">CRM</a></li>
+                <li><a class="dropdown-item active" href="{{action('\App\Http\Controllers\ProjectController@getView')}}">PRM</a></li>
+            </ul>
+        </div>
+{{--        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0 ms-5" role="tablist">--}}
+{{--            <li class="nav-item" role="presentation">--}}
+{{--                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold">HRM--}}
+{{--                </a>--}}
+{{--            </li>--}}
+{{--            <li class="nav-item" role="presentation">--}}
+{{--                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"--}}
+{{--                   class="nav-link fw-bold">CRM </a>--}}
+{{--            </li>--}}
+{{--            <li class="nav-item" role="presentation">--}}
+{{--                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM--}}
+{{--                </a>--}}
+{{--            </li>--}}
+{{--        </ul>--}}
+        <div class="ms-3" style="display: flex; align-items: center">
+
+            @php $i = 1; $item = $project[0] @endphp
+            @foreach($item->team_members as $employee)
+                @php $i++ @endphp
+                @if($i>6)
+                    @break
+                @endif
+                @php
+                    $photoPath = asset($employee->photo);
+                    $defaultPhoto = asset('assets/img/avt.png');
+                    $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                @endphp
+                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                     class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
+                     width="30" height="30"
+                     title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                     style="cursor:pointer">
+            @endforeach
+            @if(count($item->team_members)>6)
+                <div
+                    class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
+                    style="width: 30px; height: 30px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
+                    <i class="bi bi-plus position-absolute center" style="left: 1px; font-size: 11px"></i>
+                    <span class="position-absolute center"
+                          style="left:10px;  font-size: 12px">{{count($item->team_members)-5}}</span>
+                    <div class="more-em" style="">
+                        @php $i=1 @endphp
+                        @foreach($item->team_members as $employee)
+                            @php $i++ @endphp
+                            @if($i>6)
+                                @php
+                                    $photoPath = asset($employee->photo);
+                                    $defaultPhoto = asset('assets/img/avt.png');
+                                    $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                @endphp
+                                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
+                                     alt="Profile"
+                                     class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
+                                     width="30" height="30"
+                                     title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                                     style="cursor:pointer">
+                            @endif
+                        @endforeach
+                        <div class="arrow-f"></div>
+                    </div>
+                </div>
+
+            @endif
+            <div
+                class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
+                style="width: 30px; height: 30px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
+                data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
+                team-id="{{$item->team_id}}"
+            >
+                <i class="bi bi-person-fill-add fs-5"></i>
+            </div>
+        </div>
     </div>
 
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
             <li class="nav-item dropdown-center my-2">
-                <a class="nav-link nav-icon rounded-2 bg-light-hover" style="padding: 0 7px" href="#"
+                <a class="nav-link nav-icon rounded-2 bg-light-hover" href="#"
                    data-bs-toggle="dropdown">
                     @if(\Illuminate\Support\Facades\Session::get('locale') === 'vi')
                         <img src="{{asset('assets/img/vietnam.png')}}" width="36" alt="">
@@ -139,10 +264,6 @@ $token = 'position';
 
                     <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
                          class="rounded-circle object-fit-cover" width="36" height="36">
-                    <span class="d-none d-md-block dropdown-toggle ps-2">
-                            {{ $data->last_name . ' ' . $data->first_name }}
-                        </span>
-
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
@@ -209,16 +330,6 @@ $token = 'position';
 
 
 <aside id="sidebar" class="sidebar">
-    @php
-        $data = \Illuminate\Support\Facades\DB::table('accounts')
-            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
-            ->join('job_details', 'job_details.employee_id', '=', 'employees.employee_id')
-            ->where(
-                'account_id',
-                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
-            )
-            ->first();
-    @endphp
     <ul class="sidebar-nav" id="sidebar-nav">
         @foreach($project as $item)
             <li class="nav-item">
