@@ -38,17 +38,6 @@
             color: #ff6b6b;
         }
 
-        .modal-dialog {
-            max-height: 90vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .modal-body {
-            overflow-y: auto;
-            padding: 0;
-        }
-
         .pdf-container {
             height: 100%;
         }
@@ -184,7 +173,7 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header justify-content-between">
                     <h5 class="modal-title" id="addCertificateModalLabel">Create New Certificate</h5>
                     <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
                         <i class="bi bi-x"></i>
@@ -202,7 +191,7 @@
                             <input type="file" class="form-control" id="certificateImg" name="certificateImg"
                                 required>
                         </div>
-                        <!-- Add other form fields as needed -->
+                        
                     </form>
                 </div>
                 <div class="modal-footer">

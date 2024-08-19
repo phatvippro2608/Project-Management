@@ -323,7 +323,6 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
-
     public function getViewCreate()
     {
         $this->updateCreatePermissions();
@@ -367,7 +366,6 @@ class InternalCertificatesController extends Controller
             'status' => "Updated"
         ]);
     }
-
 
     public function temp()
     {
