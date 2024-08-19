@@ -109,7 +109,64 @@ $token = 'position';
             @endif
         </ul>
     </div>
+    <div class="ms-3" style="display: flex; align-items: center">
 
+        @php $i = 1; $item = $project[0] @endphp
+        @foreach($item->team_members as $employee)
+            @php $i++ @endphp
+            @if($i>6)
+                @break
+            @endif
+            @php
+                $photoPath = asset($employee->photo);
+                $defaultPhoto = asset('assets/img/avt.png');
+                $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+            @endphp
+            <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                 class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
+                 width="30" height="30"
+                 title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                 style="cursor:pointer">
+        @endforeach
+        @if(count($item->team_members)>6)
+            <div
+                class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
+                style="width: 30px; height: 30px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
+                <i class="bi bi-plus position-absolute center" style="left: 1px; font-size: 11px"></i>
+                <span class="position-absolute center"
+                      style="left:10px;  font-size: 12px">{{count($item->team_members)-5}}</span>
+                <div class="more-em" style="">
+                    @php $i=1 @endphp
+                    @foreach($item->team_members as $employee)
+                        @php $i++ @endphp
+                        @if($i>6)
+                            @php
+                                $photoPath = asset($employee->photo);
+                                $defaultPhoto = asset('assets/img/avt.png');
+                                $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                            @endphp
+                            <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
+                                 alt="Profile"
+                                 class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
+                                 width="30" height="30"
+                                 title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                                 style="cursor:pointer">
+                        @endif
+                    @endforeach
+                    <div class="arrow-f"></div>
+                </div>
+            </div>
+
+        @endif
+        <div
+            class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
+            style="width: 30px; height: 30px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
+            data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
+            team-id="{{$item->team_id}}"
+        >
+            <i class="bi bi-person-fill-add fs-5"></i>
+        </div>
+    </div>
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
             <li class="nav-item dropdown-center my-2">
