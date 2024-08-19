@@ -34,28 +34,23 @@ $token = 'position';
         <i class="bi bi-list toggle-sidebar-btn me-5"></i>
         <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0" role="tablist">
             <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold" >HRM
-                </a>
-                {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab"--}}
-                {{--                    aria-selected="true" role="tab">Tab1--}}
-                {{--            </button>--}}
-            </li>
-
-            <li class="nav-item" role="presentation">
-                {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"--}}
-                {{--                    aria-selected="false" tabindex="-1" role="tab">Tab2--}}
-                {{--            </button>--}}
-                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}" class="nav-link fw-bold" >CRM </a>
-            </li>
-
-
-            <li class="nav-item" role="presentation">
-                {{--            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password"--}}
-                {{--                    aria-selected="false" tabindex="-1" role="tab">Tab3--}}
-                {{--            </button>--}}
-                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active" >PRM
+                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold">HRM
                 </a>
             </li>
+
+            @if (in_array(AccountController::permissionStr(), ['super', 'admin','director', 'customer_manager']))
+            <li class="nav-item" role="presentation">
+                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
+                   class="nav-link fw-bold">CRM </a>
+            </li>
+            @endif
+
+            @if (in_array(AccountController::permissionStr(), ['employee','super','admin','director', 'project_manager']))
+            <li class="nav-item" role="presentation">
+                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
+                </a>
+            </li>
+            @endif
         </ul>
     </div>
 
@@ -197,11 +192,12 @@ $token = 'position';
             ->first();
     @endphp
     <ul class="sidebar-nav" id="sidebar-nav">
-        @if (!in_array(AccountController::permissionStr(), []))
+        @if (in_array(AccountController::permissionStr(), ['employee','super','admin','director', 'project_manager']))
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#projects-nav" data-bs-toggle="collapse"
                    href="#">
-                    <i class="bi bi-folder"></i><span>{{ __('messages.projects') }}</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-folder"></i><span>{{ __('messages.projects') }}</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="projects-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
@@ -211,17 +207,11 @@ $token = 'position';
                         </a>
                     </li>
                     <li>
-                        <a href="{{ action('App\Http\Controllers\TeamController@getView') }}">
+                        <a class="nav-sub-link" href="{{ action('App\Http\Controllers\TeamController@getView') }}">
                             <i class="bi bi-circle"></i><span>{{ __('messages.team') }}</span>
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link"
-                   href="{{action('App\Http\Controllers\ContractController@getView')}}">
-                    <i class="bi bi-journal-bookmark"></i><span>{{ __('messages.contract') }}</span>
-                </a>
             </li>
         @endif
     </ul>
@@ -231,18 +221,9 @@ $token = 'position';
     @yield('contents')
 </main>
 
-
-{{-- <footer id="footer" class="footer"> --}}
-{{-- <div class="copyright"> --}}
-{{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
-{{-- </div> --}}
-{{-- </footer> --}}
-
-
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
-
 </body>
-<script src="{{ asset('assets/js/main.js') }}"></script>
 </html>
 @yield('script')
+<script src="{{ asset('assets/js/main.js') }}"></script>
