@@ -16,6 +16,7 @@ class CourseModel extends Model
         'description',
         'course_image',
         'course_type_id',
+        'certificate_type_id',
     ];
 
     public $timestamps = false;

@@ -17,7 +17,13 @@ class CourseController extends Controller
         ->get();
         $getTypeName = DB::table('course_types')->get();
 
-        return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName]);
+        $certificate = DB::table('certificate_types')
+        ->join('certificate_bodys','certificate_types.certificate_body_id','=','certificate_bodys.certificate_body_id')
+        ->where('certificate_body_name','=','Ventech')
+        ->select('certificate_types.certificate_type_id','certificate_types.certificate_type_name')
+        ->get();
+
+        return view('auth.lms.course', ['courses' => $courses, 'getTypeName' => $getTypeName,'certificate' => $certificate]);
     }
     
     function getCourseView($id)
@@ -36,8 +42,13 @@ class CourseController extends Controller
             ->where('course_id',$id)
             ->get();
         $getTypeName = DB::table('course_types')->get();
+        $certificate = DB::table('certificate_types')
+        ->join('certificate_bodys','certificate_types.certificate_body_id','=','certificate_bodys.certificate_body_id')
+        ->where('certificate_body_name','=','Ventech')
+        ->select('certificate_types.certificate_type_id','certificate_types.certificate_type_name')
+        ->get();
         if ($isExist) {
-            return view('auth.lms.course_section', ['show'=>true,'course' => $course, 'getTypeName' => $getTypeName, 'id' => $id]);
+            return view('auth.lms.course_section', ['show'=>true,'course' => $course, 'getTypeName' => $getTypeName, 'id' => $id,'certificate' => $certificate]);
         } else {
             return view('auth.lms.course_section', ['show'=>false,'course' => $course,'id' => $id]);
         }
@@ -63,6 +74,14 @@ class CourseController extends Controller
         }
     }
 
+    function getCourses(){
+        $courses=DB::table('courses')
+        ->join('course_types','courses.course_type_id','=','course_types.course_type_id')
+        ->select('courses.*','course_types.type_name')
+        ->get();
+        return response()->json(['success' => true, 'courses' => $courses]);
+    }
+
     function create(Request $request)
     {
         try {
@@ -78,10 +97,12 @@ class CourseController extends Controller
             }
             $description = $request->input('course_description');
             $course_type=$request->input('course_type');
+            $certificate_type_id = $request->input('course_certificate');
             $course = new CourseModel([
                 'course_name' => $course_name,
                 'description' => $description,
                 'course_type_id' => $course_type,
+                'certificate_type_id' => $certificate_type_id,
             ]);
             $course->save();
 
@@ -113,6 +134,9 @@ class CourseController extends Controller
                 return response()->json(['success' => false, 'message' => 'Permission denied!']);
             }
             $course_id = $request->input('course_id');
+            if (!CourseModel::select('course_name')->where('course_id',$course_id)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Course not exists or get deleted!']);
+            }
             $course_name = $request->input('course_name');
             if (CourseModel::where('course_name', $course_name)->whereNot('course_id',$course_id)->exists()) {
                 return response()->json(['success' => false, 'message' => 'Course name already exists!']);
@@ -122,10 +146,12 @@ class CourseController extends Controller
             }
             $description = $request->input('course_description');
             $course_type=$request->input('course_type');
+            $certificate_type_id = $request->input('course_certificate');
             $course = CourseModel::find($course_id);
             $course->course_name = $course_name;
             $course->description = $description;
             $course->course_type_id = $course_type;
+            $course->certificate_type_id = $certificate_type_id;
             $course->save();
 
             if ($request->hasFile('course_img')) {
@@ -165,6 +191,9 @@ class CourseController extends Controller
                 return response()->json(['success' => false, 'message' => 'Permission denied!']);
             }
             $id = $request->input('course_id');
+            if (!CourseModel::select('course_name')->where('course_id',$id)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Course not exists or get deleted!']);
+            }
             $course = CourseModel::find($id);
             $old_image = public_path('uploads/course/' . $course->course_image);
             if (file_exists($old_image)) {
@@ -313,6 +342,54 @@ class CourseController extends Controller
             return response()->json(['success' => true, 'message' => 'Delete section success!', 'sections' => $sections]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'An error occurred while deleting the section. '.$e->getMessage()]);
+        }
+    }
+
+    function getCourseType()
+    {
+        $getTypeName = DB::table('course_types')->get();
+        return response()->json(['success' => true, 'getTypeName' => $getTypeName]);
+    }
+
+    function addCourseType(Request $request)
+    {
+        try {
+            $type_name = $request->input('type_name');
+            DB::table('course_types')->insert([
+                'type_name' => $type_name,
+            ]);
+            $getTypeName = DB::table('course_types')->get();
+            return response()->json(['success' => true,'message' => 'Add new course type success!', 'getTypeName' => $getTypeName]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while creating the course type. '.$e->getMessage()]);
+        }
+    }
+
+    function updateCourseType(Request $request)
+    {
+        try {
+            $type_id = $request->input('type_id');
+            $type_name = $request->input('type_name');
+            DB::table('course_types')
+                ->where('course_type_id',$type_id)
+                ->update([
+                    'type_name' => $type_name,
+                ]);
+            $getTypeName = DB::table('course_types')->get();
+            return response()->json(['success' => true,'message' => 'Update course type success!', 'getTypeName' => $getTypeName]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while updating the course type. '.$e->getMessage()]);
+        }
+    }
+
+    function deleteCourseType(Request $request){
+        try {
+            $id = $request->input('type_id');
+            DB::table('course_types')->where('course_type_id',$id)->delete();
+            $getTypeName = DB::table('course_types')->get();
+            return response()->json(['success' => true, 'message' => 'Delete course type success!', 'getTypeName' => $getTypeName]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while deleting the course type. '.$e->getMessage()]);
         }
     }
 }
