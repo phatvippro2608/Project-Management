@@ -117,11 +117,11 @@
     </div>
 </div>
 
-<div class="modal fade md1" id="editRecognitionTypeModal" tabindex="-1" aria-labelledby="addRecognitionTypeModalLabel" aria-hidden="true">
+<div class="modal fade md1" id="editRecognitionTypeModal" tabindex="-1" aria-labelledby="editRecognitionTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addProjectModalTypeLabel">Add new recognition type</h5>
+                <h5 class="modal-title" id="editRecognitionTypeModalLabel">Edit Recognition Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- Form trong view -->
@@ -134,22 +134,23 @@
                         </div>
                         <div class="col-md-12">
                             <label for="edit_recognition_type_name" class="form-label">Recognition type</label>
-                            <input type="text" name="recognition_type_name" id="edit_recognition_type_name" class="form-control" >
+                            <input type="text" name="recognition_type_name" id="edit_recognition_type_name" class="form-control">
                         </div>
-{{--                        <div class="col-md-12" style="margin-top: 1rem">--}}
-{{--                            <label for="edit_recognitiontype_hidden">Hidden</label>--}}
-{{--                            <input type="checkbox" name="recognition_type_hidden" id="edit_recognitiontype_hidden">--}}
-{{--                        </div>--}}
+                        <div class="col-md-12" style="margin-top: 1rem">
+                            <label for="edit_recognition_type_hidden">Hidden</label>
+                            <input type="checkbox" name="recognition_type_hidden" id="edit_recognition_type_hidden">
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="btnRecognitionTypeSubmit">Submit</button>
+                <button type="button" class="btn btn-success" id="btnUpdRecognitionType">Submit</button>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
 
 @section('script')
@@ -240,15 +241,14 @@
 
         function editRecognitionTypeModal(button) {
             var recognitiontype_id = button.getAttribute('data-recognitiontype');
-            // Dùng Ajax để lấy dữ liệu từ máy chủ và điền vào form chỉnh sửa
+
             fetch(`/recognition/type/${recognitiontype_id}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        let recognition_type = data[0];
-                        document.getElementById('edit_recognition_type_id').value = recognition_type.recognition_type_id || '';
-                        document.getElementById('edit_recognition_type_name').value = recognition_type.recognition_type_name || '';
-                        // document.getElementById('edit_recognition_type_hidden').checked = recognition_type.recognition_type_hidden == 1;
+                    if (data) {
+                        document.getElementById('edit_recognition_type_id').value = data.recognition_type_id || '';
+                        document.getElementById('edit_recognition_type_name').value = data.recognition_type_name || '';
+                        document.getElementById('edit_recognition_type_hidden').checked = data.recognition_type_hidden == 1;
 
                         var editModal = new bootstrap.Modal(document.getElementById('editRecognitionTypeModal'));
                         editModal.show();
@@ -261,6 +261,81 @@
                     toastr.error('Có lỗi xảy ra khi tải dữ liệu.', "Thao tác thất bại");
                 });
         }
+
+        document.getElementById('btnUpdRecognitionType').addEventListener('click', function() {
+            // Lấy giá trị từ form
+            var recognitionTypeId = document.getElementById('edit_recognition_type_id').value;
+            var recognitionTypeName = document.getElementById('edit_recognition_type_name').value;
+            var recognitionTypeHidden = document.getElementById('edit_recognition_type_hidden').checked ? 1 : 0;
+
+            // Tạo object dữ liệu để gửi đi
+            var data = {
+                recognition_type_id: recognitionTypeId,
+                recognition_type_name: recognitionTypeName,
+                recognition_type_hidden: recognitionTypeHidden,
+            };
+
+            // Gửi yêu cầu cập nhật qua fetch API
+            fetch(`/recognition/type/${recognitionTypeId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Có lỗi xảy ra khi cập nhật dữ liệu.');
+                    }
+                })
+                .then(responseData => {
+                    toastr.success('Cập nhật loại công nhận thành công!', "Thành công");
+                    // Ẩn modal sau khi cập nhật thành công
+                    var editModal = bootstrap.Modal.getInstance(document.getElementById('editRecognitionTypeModal'));
+                    editModal.hide();
+
+                    // Tải lại bảng dữ liệu sau khi cập nhật thành công
+                    // loadRecognitionTypeTable();
+                    location.reload()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Có lỗi xảy ra trong quá trình cập nhật.', "Thao tác thất bại");
+                });
+        });
+
+        function loadRecognitionTypeTable() {
+            // Gửi yêu cầu lấy dữ liệu và cập nhật bảng
+            fetch('/recognition/types') // URL để lấy lại dữ liệu bảng
+                .then(response => response.json())
+                .then(data => {
+                    var tableBody = document.querySelector('#recognitionTypeTable tbody');
+                    tableBody.innerHTML = ''; // Xóa nội dung bảng cũ
+
+                    data.forEach(function(item) {
+                        var rowClass = item.recognition_type_hidden ? 'hidden-row' : '';
+                        var row = `
+                    <tr class="${rowClass}">
+                        <th scope="col" class="text-center">${item.recognition_type_id}</th>
+                        <th scope="col">${item.recognition_type_name}</th>
+                        <td class="text-center">
+                            <button data-recognitiontype="${item.recognition_type_id}" class="btn p-1 text-primary" onclick="editRecognitionTypeModal(this)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading table:', error);
+                    toastr.error('Có lỗi xảy ra khi tải dữ liệu bảng.', "Thao tác thất bại");
+                });
+        }
+
 
         document.getElementById('toggleHiddenRows').addEventListener('click', function() {
             var tableRows = document.querySelectorAll('#recognitionTypeTable tbody tr');
