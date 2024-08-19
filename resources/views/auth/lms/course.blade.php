@@ -107,7 +107,7 @@ $token = 'position';
                     <div class="modal-body row">
                         <div class="d-flex justify-content-between">
                             <strong><i class="bi bi-card-image me-1"></i>Background image</strong>
-                            <input type="file" id="course_img" name="course_img" accept="image/*" hidden required>
+                            <input type="file" id="course_img" name="course_img" accept="image/*" hidden>
                             <label for="course_img">
                                 <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
                             </label>
@@ -325,6 +325,11 @@ $token = 'position';
             }
             if (tinymce.get('course_description').getContent().includes('base64')) {
                 toastr.error('Upload image is not allowed please use source image');
+                return;
+            }
+            //kiểm tra xem có tồn tại ảnh trong input hay không
+            if ($('#course_img').val() == '') {
+                toastr.error('Image is required');
                 return;
             }
 
