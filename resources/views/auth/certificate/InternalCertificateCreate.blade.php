@@ -3,6 +3,7 @@
 @section('head')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/certificateFonts.css') }}">
 
     <style>
         .pr-30 {
@@ -188,34 +189,36 @@
                         </div>
                         <div class="mb-3">
                             <label for="certificateDes" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="certificateDes" name="certificateTitle"
+                            <input type="text" class="form-control" id="certificateDes" name="certificateDescription"
                                 required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="certificateLSig" class="form-label">Left Signature</label>
-                                    <input type="text" class="form-control" id="certificateLSig"
-                                        name="certificateTitle" required>
+                                    <select class="form-control" id="certificateLSig" name="certificateLSig" required>
+                                        <option value="" disabled selected>Select Left Signature</option>
+                                        <option value="signature1">Signature 1</option>
+                                        <option value="signature2">Signature 2</option>
+                                        <option value="signature3">Signature 3</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="certificateRSig" class="form-label">Right Signature</label>
                                     <input type="text" class="form-control" id="certificateRSig"
-                                        name="certificateTitle" required>
+                                        name="certificateRSig" required>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <img style="width: 100%" src="{{ asset('assets/img/certificate.png') }}" alt="">
+                            <canvas id="certificateCanvas" style="width: 100%;"></canvas>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveCertificate">Preview</button>
                     <button type="button" class="btn btn-primary" id="saveCertificate">Save changes</button>
                 </div>
             </div>
@@ -226,16 +229,118 @@
 @section('script')
     <script>
         $(document).ready(function() {
+
+
+            $('#viewAddCertificate').click(function() {
+                $('#certificateTitle').val('');
+                $('#certificateDes').val('');
+                $('#addCertificateModal').modal('show');
+            });
+
+            var canvas = document.getElementById('certificateCanvas');
+            var context = canvas.getContext('2d');
+            var img = new Image();
+
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                document.fonts.ready.then(function() {
+                    drawCertificate();
+                });
+            };
+
+            img.src = '{{ asset('assets/img/certificate.png') }}';
+
+            var namedescription = '';
+
+            function drawCertificate() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                context.fillStyle = "black";
+                context.textAlign = "center";
+
+                if (namedescription) {
+                    context.font = "bold 34px 'Lora', serif";
+                    context.fillText(namedescription, canvas.width / 2, canvas.height * 23 / 64);
+                }
+
+                if (description) {
+                    context.font = "13px 'Lora', serif";
+                    var maxWidth = canvas.width * 18 / 32;
+                    var lineHeight = 16;
+                    wrapText(context, description, canvas.width / 2, canvas.height * 10 / 16, maxWidth, lineHeight);
+                }
+            }
+
+            $('#certificateTitle').on('input', function() {
+                namedescription = `of ${$(this).val()}`.toLowerCase();
+                drawCertificate();
+            });
+
+            $('#certificateDes').on('input', function() {
+                description = $(this).val();
+                drawCertificate();
+            });
+
+            function capitalizeFirstLetterOfEachWord(text) {
+                return text
+                    .split(' ')
+                    .map(word =>
+                        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                    )
+                    .join(' ');
+            };
+
+            function wrapText(context, text, x, y, maxWidth, lineHeight) {
+                var words = text.split(' ');
+                var line = '';
+                var lines = [];
+
+                for (var n = 0; n < words.length; n++) {
+                    var testLine = line + words[n] + ' ';
+                    var metrics = context.measureText(testLine);
+                    var testWidth = metrics.width;
+
+                    if (testWidth > maxWidth && n > 0) {
+                        lines.push(line);
+                        line = words[n] + ' ';
+                    } else {
+                        line = testLine;
+                    }
+                }
+                lines.push(line);
+
+                for (var i = 0; i < lines.length; i++) {
+                    context.fillText(lines[i], x, y + (i * lineHeight));
+                }
+            };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             $('#certificateTable').DataTable();
 
             //chưa viết
             $(document).on('click', '.addUserBtn', function(event) {
 
             });
-            //chưa viết
-            $('#viewAddCertificate').click(function() {
-                $('#addCertificateModal').modal('show');
-            });
+
 
             $('#certificateTable tbody').on('click', 'tr', function(event) {
                 if (!$(event.target).closest('.addUserBtn').length) {
