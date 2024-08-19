@@ -1,9 +1,7 @@
 @extends('auth.main')
 
 @section('head')
-    <link rel="stylesheet" href="https://mozilla.github.io/pdf.js/build/pdf.viewer.css">
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.viewer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js" integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         .pr-30 {
@@ -98,10 +96,7 @@
                             <td>{{ $item->en_name }}</td>
                             <td>{{ $item->certificate_create_title }}</td>
                             <td class="pr-30 text-center">
-                                <img style="height: 50px; object-fit: cover;"
-                                    src="{{ strpos($item->certificate_create_img, '.pdf') !== false ? 'assets/img/pdf-placeholder.png' : asset($item->certificate_create_img) }}"
-                                    data-type="{{ strpos($item->certificate_create_img, '.pdf') !== false ? 'pdf' : 'image' }}"
-                                    data-src="{{ asset($item->certificate_create_img) }}" alt="Certificate">
+                                
                             </td>
                             <td class="pr-30 text-center">
                                 @if ($item->certificate_create_status == '0')
@@ -173,38 +168,12 @@
                 var type = $td.find('img').attr('data-type');
 
                 if (type === 'pdf') {
-                    // Hiển thị PDF bằng canvas và PDF.js
-                    $('#certificateModal .modal-body').html(
-                        '<canvas id="pdf-canvas" style="width: 100%; height: 500px;"></canvas>');
-
-                    var loadingTask = pdfjsLib.getDocument(src);
-                    loadingTask.promise.then(function(pdf) {
-                        // Render trang đầu tiên
-                        pdf.getPage(1).then(function(page) {
-                            var scale = 1.5;
-                            var viewport = page.getViewport({
-                                scale: scale
-                            });
-
-                            var canvas = document.getElementById('pdf-canvas');
-                            var context = canvas.getContext('2d');
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
-
-                            var renderContext = {
-                                canvasContext: context,
-                                viewport: viewport
-                            };
-                            page.render(renderContext);
-                        });
-                    }).catch(function(error) {
-                        console.error('Error loading PDF:', error);
-                    });
-
+                    $('#certificate-viewer').attr('data', src).attr('type', 'application/pdf');
+                    $('#certificate-link').attr('href', src);
                 } else {
-                    // Hiển thị hình ảnh
-                    $('#certificateModal .modal-body').html('<img src="' + src +
-                        '" class="img-fluid" alt="Certificate Image">');
+                    $('#certificate-viewer').attr('data', src).attr('type',
+                    'image/jpeg'); // Hoặc 'image/png' tùy thuộc vào loại hình ảnh
+                    $('#certificate-link').hide(); // Ẩn liên kết tải xuống khi hiển thị hình ảnh
                 }
 
                 $('#certificateModal').modal('show');
