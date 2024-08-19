@@ -587,6 +587,11 @@
                 </div>
             </div>
         </div>
+        <div class="card mb-5 shadow-none">
+            <div class="card-header text-end">
+                <button type="submit" class="btn btn-primary btn-update"><i class="bi bi-floppy me-3"></i>Update</button>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')

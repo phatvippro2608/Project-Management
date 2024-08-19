@@ -42,15 +42,17 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="employeesTable" class="table table-hover table-borderless">
+                <table id="employeesTable" class="table table-hover table-borderless" style="font-size: 14px">
                     <thead class="table-light">
                     <tr>
-                        <th class="text-center">{{ __('messages.employee_code') }}</th>
-                        <th class="text-center">Photo</th>
-                        <th class="text-center">{{ __('messages.full_name') }}</th>
-                        <th class="text-center">English Name</th>
-                        <th class="text-center">{{ __('messages.gender') }}</th>
-                        <th class="text-center">{{ __('messages.action') }}</th>
+                        <th class="text-center" style="width: 10%">{{ __('messages.employee_code') }}</th>
+                        <th class="text-center" style="width: 5%">Photo</th>
+                        <th class="text-center" style="width: 20%">{{ __('messages.full_name') }}</th>
+                        <th class="text-center" style="width: 15%">English Name</th>
+                        <th class="text-center" style="width: 20%">{{ __('messages.department') }}</th>
+                        <th class="text-center" style="width: 20%">Email</th>
+                        <th class="text-center" style="width: 5%">{{ __('messages.gender') }}</th>
+                        <th class="text-center" style="width: 5%">{{ __('messages.action') }}</th>
                     </tr>
                     </thead>
                     <tbody id="employeesTableBody">
@@ -71,9 +73,11 @@
                                     }
                                 @endphp
                                 <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}"
-                                                             alt="" width="75" height="75"></td>
+                                                             alt="" width="50" height="50"></td>
                                 <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                <td>{{$item->en_name}}</td>
+                                <td class="text-center">{{$item->en_name}}</td>
+                                <td class="text-center">{{$item->department_name}}</td>
+                                <td class="text-center">{{$item->email}}</td>
                                 <td class="text-center">{{ $item->gender == 0 ? __('messages.male') : __('messages.female') }}</td>
                                 <td align="center">
                                         <?php
