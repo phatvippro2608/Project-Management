@@ -80,91 +80,95 @@ $token = 'position';
         ->whereNull('projects.contract_id')->select('contracts.contract_id', 'contracts.contract_name')->get();
 @endphp
 <header id="header" class="header fixed-top d-flex align-items-center">
-
     <div class="d-flex align-items-center justify-content-between">
         <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
            class="d-flex align-items-center logo justify-content-center">
             <img class="d-none d-lg-block" src="{{ asset('assets/img/logo.png') }}" alt="">
             <img class="d-lg-none" src="{{ asset('assets/img/logo2.png') }}" alt="">
         </a>
-        <i class="bi bi-list toggle-sidebar-btn me-5"></i>
-        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold">HRM
-                </a>
-            </li>
+        <i class="bi bi-list toggle-sidebar-btn me-1"></i>
+        <div class="dropdown" style="margin-left: 40px">
+            <a class="btn btn-secondary dropdown-toggle" href="{{action('\App\Http\Controllers\ProjectController@getView')}}" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                PRM
+            </a>
 
-            @if (in_array(AccountController::permissionStr(), ['super', 'admin','director', 'customer_manager']))
-                <li class="nav-item" role="presentation">
-                    <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
-                       class="nav-link fw-bold">CRM </a>
-                </li>
-            @endif
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="{{action('App\Http\Controllers\EmployeesController@getView')}}">HRM</a></li>
+                <li><a class="dropdown-item" href="{{action('App\Http\Controllers\CustomerController@getView')}}">CRM</a></li>
+                <li><a class="dropdown-item active" href="{{action('\App\Http\Controllers\ProjectController@getView')}}">PRM</a></li>
+            </ul>
+        </div>
+        {{--        <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between border-0 ms-5" role="tablist">--}}
+        {{--            <li class="nav-item" role="presentation">--}}
+        {{--                <a href="{{action('App\Http\Controllers\EmployeesController@getView')}}" class="nav-link fw-bold">HRM--}}
+        {{--                </a>--}}
+        {{--            </li>--}}
+        {{--            <li class="nav-item" role="presentation">--}}
+        {{--                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"--}}
+        {{--                   class="nav-link fw-bold">CRM </a>--}}
+        {{--            </li>--}}
+        {{--            <li class="nav-item" role="presentation">--}}
+        {{--                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM--}}
+        {{--                </a>--}}
+        {{--            </li>--}}
+        {{--        </ul>--}}
+        <div class="ms-3" style="display: flex; align-items: center">
 
-            @if (in_array(AccountController::permissionStr(), ['employee','super','admin','director', 'project_manager']))
-                <li class="nav-item" role="presentation">
-                    <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
-                    </a>
-                </li>
-            @endif
-        </ul>
-    </div>
-    <div class="ms-3" style="display: flex; align-items: center">
-
-        @php $i = 1; $item = $project[0] @endphp
-        @foreach($item->team_members as $employee)
-            @php $i++ @endphp
-            @if($i>6)
-                @break
-            @endif
-            @php
-                $photoPath = asset($employee->photo);
-                $defaultPhoto = asset('assets/img/avt.png');
-                $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-            @endphp
-            <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
-                 class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
-                 width="30" height="30"
-                 title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
-                 style="cursor:pointer">
-        @endforeach
-        @if(count($item->team_members)>6)
-            <div
-                class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
-                style="width: 30px; height: 30px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
-                <i class="bi bi-plus position-absolute center" style="left: 1px; font-size: 11px"></i>
-                <span class="position-absolute center"
-                      style="left:10px;  font-size: 12px">{{count($item->team_members)-5}}</span>
-                <div class="more-em" style="">
-                    @php $i=1 @endphp
-                    @foreach($item->team_members as $employee)
-                        @php $i++ @endphp
-                        @if($i>6)
-                            @php
-                                $photoPath = asset($employee->photo);
-                                $defaultPhoto = asset('assets/img/avt.png');
-                                $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
-                            @endphp
-                            <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
-                                 alt="Profile"
-                                 class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
-                                 width="30" height="30"
-                                 title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
-                                 style="cursor:pointer">
-                        @endif
-                    @endforeach
-                    <div class="arrow-f"></div>
+            @php $i = 1; $item = $project[0] @endphp
+            @foreach($item->team_members as $employee)
+                @php $i++ @endphp
+                @if($i>6)
+                    @break
+                @endif
+                @php
+                    $photoPath = asset($employee->photo);
+                    $defaultPhoto = asset('assets/img/avt.png');
+                    $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                @endphp
+                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}" alt="Profile"
+                     class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-1"
+                     width="30" height="30"
+                     title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                     style="cursor:pointer">
+            @endforeach
+            @if(count($item->team_members)>6)
+                <div
+                    class="d-flex align-items-center justify-content-center ms-1 position-relative show-more"
+                    style="width: 30px; height: 30px; background: #FFC107; color: white; font-weight: normal;border-radius: 50%; border: 1px solid #FFC107; cursor: pointer">
+                    <i class="bi bi-plus position-absolute center" style="left: 1px; font-size: 11px"></i>
+                    <span class="position-absolute center"
+                          style="left:10px;  font-size: 12px">{{count($item->team_members)-5}}</span>
+                    <div class="more-em" style="">
+                        @php $i=1 @endphp
+                        @foreach($item->team_members as $employee)
+                            @php $i++ @endphp
+                            @if($i>6)
+                                @php
+                                    $photoPath = asset($employee->photo);
+                                    $defaultPhoto = asset('assets/img/avt.png');
+                                    $photoExists = !empty($employee->photo) && file_exists(public_path($employee->photo));
+                                @endphp
+                                <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
+                                     alt="Profile"
+                                     class="@if($employee->team_permission == 1){{"border-admin"}}@endif rounded-circle object-fit-cover ms-2 mt-2"
+                                     width="30" height="30"
+                                     title="{{$employee->last_name." ".$employee->first_name.' - '.\App\Http\Controllers\TeamDetailsController::getPermissionName($employee->team_permission)}}"
+                                     style="cursor:pointer">
+                            @endif
+                        @endforeach
+                        <div class="arrow-f"></div>
+                    </div>
                 </div>
-            </div>
 
-        @endif
-        <div
-            class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
-            style="width: 30px; height: 30px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
-            data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
-            team-id="{{$item->team_id}}"
-        >
-            <i class="bi bi-person-fill-add fs-5"></i>
+            @endif
+            <div
+                class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
+                style="width: 30px; height: 30px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
+                data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
+                team-id="{{$item->team_id}}"
+            >
+                <i class="bi bi-person-fill-add fs-5"></i>
+            </div>
         </div>
     </div>
     <nav class="header-nav ms-auto">
