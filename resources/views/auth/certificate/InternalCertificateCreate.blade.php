@@ -1,9 +1,8 @@
 @extends('auth.main')
 
 @section('head')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"
-        integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .pr-30 {
@@ -38,6 +37,26 @@
         .btn-close-custom:hover {
             color: #ff6b6b;
         }
+
+        .modal-dialog {
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .pdf-container {
+            height: 100%;
+        }
+
+        #pdf-viewer {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 @endsection
 
@@ -54,7 +73,7 @@
 
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
-            <div class="btn btn-primary mx-2 btn-add">
+            <div class="btn btn-primary mx-2" id="viewAddCertificate">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                     Create Certificate
@@ -79,7 +98,6 @@
                         <th scope="col">Full Name</th>
                         <th scope="col">EN Name</th>
                         <th scope="col">Title</th>
-                        <th class="text-center" scope="col">Certificate</th>
                         <th class="text-center" scope="col">status</th>
                         <th scope="col">Created</th>
                         <th class="text-center" scope="col">Action</th>
@@ -87,7 +105,7 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $index => $item)
-                        <tr>
+                        <tr data-id="{{ $item->certificate_create_id }}">
                             <td class="pr-30 text-center">{{ $index + 1 }}</td>
                             <td class="pr-30 text-center">
                                 <img style="width: 50px; height: 50px; object-fit: cover;" class="rounded-circle"
@@ -98,9 +116,6 @@
                             <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                             <td>{{ $item->en_name }}</td>
                             <td>{{ $item->certificate_create_title }}</td>
-                            <td class="pr-30 text-center">
-
-                            </td>
                             <td class="pr-30 text-center">
                                 @if ($item->certificate_create_status == '0')
                                     Waitting
@@ -116,7 +131,6 @@
                                     $now = \Carbon\Carbon::now();
                                     $difference = $updatedAt->diff($now);
                                 @endphp
-
                                 @if ($difference->y > 0)
                                     {{ $difference->y }} years ago
                                 @elseif ($difference->m > 0)
@@ -130,10 +144,11 @@
                                 @else
                                     now
                                 @endif
-
                             </td>
-                            <td class="text-center" scope="col">
-                                <i class="bi bi-person-fill-add"></i>
+                            <td class="pr-30 text-center">
+                                <button class="btn btn-outline-primary btn-sm addUserBtn">
+                                    <i class="bi bi-person-fill-add"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -141,6 +156,7 @@
             </table>
         </div>
     </div>
+
     <div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="certificateModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -156,7 +172,42 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" id="btnAprove" class="btn btn-success" data-bs-dismiss="modal">Aprove</button>
+                    <button type="button" id="btnRefuse" class="btn btn-danger" data-bs-dismiss="modal">Refuse</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCertificateModal" tabindex="-1" aria-labelledby="addCertificateModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCertificateModalLabel">Create New Certificate</h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCertificateForm">
+                        <div class="mb-3">
+                            <label for="certificateTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="certificateTitle" name="certificateTitle"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="certificateImg" class="form-label">Upload Image</label>
+                            <input type="file" class="form-control" id="certificateImg" name="certificateImg"
+                                required>
+                        </div>
+                        <!-- Add other form fields as needed -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCertificate">Save changes</button>
                 </div>
             </div>
         </div>
@@ -168,6 +219,125 @@
         $(document).ready(function() {
             $('#certificateTable').DataTable();
 
+            //chưa viết
+            $(document).on('click', '.addUserBtn', function(event) {
+
+            });
+            //chưa viết
+            $('#viewAddCertificate').click(function() {
+                $('#addCertificateModal').modal('show');
+            });
+
+            $('#certificateTable tbody').on('click', 'tr', function(event) {
+                if (!$(event.target).closest('.addUserBtn').length) {
+                    var idCertificate = $(this).data('id');
+                    $.ajax({
+                        url: '{{ route('certificate.create.load') }}',
+                        type: 'POST',
+                        data: {
+                            id: idCertificate
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.imgCertificate) {
+                                var imgUrl = response.imgCertificate.certificate_create_img;
+                                var loadingTask = pdfjsLib.getDocument(imgUrl);
+                                loadingTask.promise.then(function(pdf) {
+                                    pdf.getPage(1).then(function(page) {
+                                        var scale = 1;
+                                        var viewport = page.getViewport({
+                                            scale: scale
+                                        });
+                                        var canvas = document.getElementById(
+                                            'pdf-viewer');
+                                        var context = canvas.getContext('2d');
+                                        canvas.height = viewport.height;
+                                        canvas.width = viewport.width;
+                                        var renderContext = {
+                                            canvasContext: context,
+                                            viewport: viewport
+                                        };
+                                        var renderTask = page.render(
+                                            renderContext);
+                                    });
+                                }, function(reason) {
+                                    console.error(reason);
+                                });
+                            }
+
+                            $('#certificateModal').modal('show');
+                            $('#certificateModal #btnAprove').data('id', idCertificate);
+                            $('#certificateModal #btnRefuse').data('id', idCertificate);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX request failed:', error);
+                        }
+                    });
+                }
+            });
+
+            $('#certificateModal #btnAprove').click(function() {
+                var idCertificate = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        loadStatusCertificate(idCertificate, 1);
+                    }
+                });
+            });
+
+            $('#certificateModal #btnRefuse').click(function() {
+                var idCertificate = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, refuse it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        loadStatusCertificate(idCertificate, 2);
+                    }
+                });
+            });
+
+            function loadStatusCertificate(idCertificate, status) {
+                $.ajax({
+                    url: '{{ route('certificate.create.status') }}',
+                    type: 'POST',
+                    data: {
+                        id: idCertificate,
+                        status: status
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            status === 1 ? 'Approved!' : 'Refused!',
+                            status === 1 ? 'The certificate has been approved.' :
+                            'The certificate has been refused.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Tải lại trang
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX request failed:', error);
+                    }
+                });
+            }
         });
     </script>
 @endsection

@@ -441,7 +441,11 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/load', [InternalCertificatesController::class, 'loadHistorySignatureCertificate'])->name('certificate.signature.load');
         Route::post('/search', [InternalCertificatesController::class, 'searchEmployee'])->name('certificate.signature.search');
     });
-    Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+    Route::group(['prefix' => '/certificateCreate'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+        Route::post('/load', [InternalCertificatesController::class, 'loadCertificateCreate'])->name('certificate.create.load');
+        Route::post('/status', [InternalCertificatesController::class, 'updateStatusCertificateCreate'])->name('certificate.create.status');
+    });
 
 
     Route::get('lang/{locale}', function ($locale) {

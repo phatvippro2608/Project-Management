@@ -328,12 +328,46 @@ class InternalCertificatesController extends Controller
     {
         $this->updateCreatePermissions();
         $employees = DB::table('employees')
-        ->join('certificate_creates', 'employees.employee_id', '=','certificate_creates.employee_id')
-        ->get();
+            ->join('certificate_creates', 'employees.employee_id', '=', 'certificate_creates.employee_id')
+            ->get();
         return view('auth.certificate.InternalCertificateCreate', [
             'employees' => $employees
         ]);
     }
+
+    public function loadCertificateCreate(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer'
+        ]);
+        $idCertificate = $request->input('id');
+        $imgCertificate = DB::table('certificate_creates')
+            ->where('certificate_create_id', '=', $idCertificate)
+            ->first();
+        return response()->json([
+            'imgCertificate' => $imgCertificate
+        ]);
+    }
+
+    public function updateStatusCertificateCreate(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'status' => 'required|integer'
+        ]);
+
+        $idCertificate = $request->input('id');
+        $statusCertificate = $request->input('status');
+
+        DB::table('certificate_creates')
+            ->where('certificate_create_id', '=', $idCertificate)
+            ->update(['certificate_create_status' => $statusCertificate]);
+
+        return response()->json([
+            'status' => "Updated"
+        ]);
+    }
+
 
     public function temp()
     {
@@ -347,7 +381,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->where(DB::raw('DATE(employment_contract.end_date)'), '>=', Carbon::now()->toDateString())
             ->where('permissions.permission_name', '=', 'Director')
-            ->orderBy('employee_signatures.updated_at','desc')
+            ->orderBy('employee_signatures.updated_at', 'desc')
             ->first();
 
         $teacher = DB::table('employees')
@@ -355,7 +389,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
             ->where('permissions.permission_str', '=', 'teacher')
-            ->orderBy('employee_signatures.updated_at','desc')
+            ->orderBy('employee_signatures.updated_at', 'desc')
             // ->where('employees.employee_id', '=', '191')
             ->first();
 
