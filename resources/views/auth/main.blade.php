@@ -491,35 +491,5 @@ $token = 'position';
 
 </body>
 <script src="{{ asset('assets/js/main.js') }}"></script>
-<script>
-    function saveTab(tab){
-        const currentTab = tab.getAttribute('data-bs-target')
-        localStorage.setItem('tab', currentTab)
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const tab = localStorage.getItem('tab')
-        const tabLinks = document.querySelectorAll('.nav-tabs .nav-item .nav-link')
-        if(tab){
-            const activeTab = document.querySelector(tab);
-            const tabContents = document.querySelectorAll('.tab-pane')
-            tabContents.forEach(tabContent=>{
-                if('#'+tabContent.id !== tab){
-                    tabContent.classList.remove('active')
-                }
-            })
-            tabLinks.forEach(tabLink=>{
-                if(tabLink.getAttribute('data-bs-target') !== tab){
-                    tabLink.classList.remove('active')
-                }else{
-                    tabLink.classList.add('active')
-                }
-            })
-            activeTab.classList.add('active');
-        }
-
-    });
-
-</script>
 </html>
 @yield('script')
