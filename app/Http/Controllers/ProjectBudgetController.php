@@ -221,6 +221,7 @@ public function showProjectDetail(Request $request,$id)
     $items = DB::table('project_costs')->where('project_id', $id)->get();
 
     if(!empty($keyword)){
+    //get data if choose location
         $dataLoca = DB::table('project_locations')
         ->join('projects', 'projects.project_id','=','project_locations.project_id')
         ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->where('project_locations.project_location_id', $keyword)->first();
@@ -233,7 +234,14 @@ public function showProjectDetail(Request $request,$id)
             ->get();
             $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $keyword)->get();
         
+        //get data material costs
+        $materialData = DB::table('project_materials')
+                ->join('project_locations', 'project_materials.project_location_id', '=', 'project_locations.project_location_id')
+                ->join('projects', 'projects.project_id', '=', 'project_locations.project_id')
+                ->select('project_materials.*', 'project_locations.*')
+                ->where('projects.project_id', $id)->where('project_locations.project_location_id', $keyword)->get();
     }else{
+    //get data if choose see all, dont have location
         $dataLoca = DB::table('project_locations')
         ->join('projects', 'projects.project_id','=','project_locations.project_id')
         ->select('projects.*', 'project_locations.*')->where('project_locations.project_id', $id)->first();
@@ -242,6 +250,12 @@ public function showProjectDetail(Request $request,$id)
             ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
             ->get();
         $dataCostGroup = DB::table('project_cost_group')->get();
+
+        $materialData = DB::table('project_materials')
+                ->join('project_locations', 'project_materials.project_location_id', '=', 'project_locations.project_location_id')
+                ->join('projects', 'projects.project_id', '=', 'project_locations.project_id')
+                ->select('project_materials.*', 'project_locations.*', 'projects.project_name')
+                ->where('projects.project_id', $id)->get();
     }
     $locations = DB::table('project_locations')
     ->join('projects', 'projects.project_id','=','project_locations.project_id')
@@ -268,14 +282,15 @@ public function showProjectDetail(Request $request,$id)
         }
         $data = DB::table('projects')->where('project_id', $id)->first();
 
-        $materials = MaterialsModel::all();
-
-        $sub_total = $materials->sum('total_price');
-        $vat_of_goods = $materials->sum(function ($material) {
-            return $material->total_price * ($material->vat / 100);
-        });
-
-        $materialCost = $sub_total + $vat_of_goods;
+        $subtotal1 = [];
+        $subvat1 = [];
+        foreach ($materialData as $item) {
+            $subtotal1[] = $item->project_material_quantity * $item->project_material_unit_price;
+            $subvat1[] = $item->project_material_quantity * $item->project_material_unit_price * ($item->project_material_vat / 100);
+        }
+        $total1 = array_sum($subtotal1);
+        $vat1 = array_sum($subvat1);
+        $materialCost = $total1 - $vat1;
 
     return view('auth.project-budget.project-budget', [
         'data' => $data,

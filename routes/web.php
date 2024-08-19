@@ -181,7 +181,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Project
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
-        Route::get('/report', [ProjectBudgetController::class, 'report'])->name('project.report');
 
         //Project location
         Route::group(['prefix' => '/project-location'], function () {
@@ -191,6 +190,17 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Detaill
         Route::group(['prefix' => '/{project_id}'], function () {
             Route::get('/', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+
+            Route::group(['prefix' => '/materials'], function () {
+                Route::get('/', [ProjectMaterialsController::class, 'getView'])->name('prjMaterials');
+                Route::post('/add', [ProjectMaterialsController::class, 'add'])->name('prjMaterials.add');
+                Route::get('/{id}/details', [ProjectMaterialsController::class, 'showDetails'])->name('material.details');
+                Route::delete('/{material_id}/delete', [ProjectMaterialsController::class, 'deleteMaterial'])->name('prjMaterials.delete');
+                Route::get('/{material_id}/edit', [ProjectMaterialsController::class, 'editMaterial'])->name('prjMaterials.edit');
+                Route::put('/{material_id}/update', [ProjectMaterialsController::class, 'updateMaterial'])->name('prjMaterials.update');
+                Route::get('/export', [ProjectMaterialsController::class, 'export'])->name('prjMaterials.export');
+                Route::post('/import', [ProjectMaterialsController::class, 'import'])->name('prjMaterials.import');
+            });
 
 
 
