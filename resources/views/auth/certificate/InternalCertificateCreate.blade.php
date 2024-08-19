@@ -1,7 +1,9 @@
 @extends('auth.main')
 
 @section('head')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js" integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"
+        integrity="sha512-Z8CqofpIcnJN80feS2uccz+pXWgZzeKxDsDNMD/dJ6997/LSRY+W4NmEt9acwR+Gt9OHN0kkI1CTianCwoqcjQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         .pr-30 {
@@ -97,7 +99,7 @@
                             <td>{{ $item->en_name }}</td>
                             <td>{{ $item->certificate_create_title }}</td>
                             <td class="pr-30 text-center">
-                                
+
                             </td>
                             <td class="pr-30 text-center">
                                 @if ($item->certificate_create_status == '0')
@@ -115,18 +117,18 @@
                                     $difference = $updatedAt->diff($now);
                                 @endphp
 
-                                @if ($difference->m < 1)
-                                    @if ($difference->d > 0)
-                                        {{ $difference->d }} days ago
-                                    @elseif ($difference->h > 0)
-                                        {{ $difference->h }} hours ago
-                                    @elseif ($difference->i > 0)
-                                        {{ $difference->i }} minutes ago
-                                    @else
-                                        now
-                                    @endif
+                                @if ($difference->y > 0)
+                                    {{ $difference->y }} years ago
+                                @elseif ($difference->m > 0)
+                                    {{ $difference->m }} months ago
+                                @elseif ($difference->d > 0)
+                                    {{ $difference->d }} days ago
+                                @elseif ($difference->h > 0)
+                                    {{ $difference->h }} hours ago
+                                @elseif ($difference->i > 0)
+                                    {{ $difference->i }} minutes ago
                                 @else
-                                    {{ $updatedAt->format('Y-m-d') }}
+                                    now
                                 @endif
 
                             </td>
