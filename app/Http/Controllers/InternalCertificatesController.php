@@ -367,6 +367,11 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
+    public function leftSignatureCertificateCreate(Request $request)
+    {
+
+    }
+
     public function temp()
     {
 

@@ -199,8 +199,6 @@
                                     <select class="form-control" id="certificateLSig" name="certificateLSig" required>
                                         <option value="" disabled selected>Select Left Signature</option>
                                         <option value="signature1">Signature 1</option>
-                                        <option value="signature2">Signature 2</option>
-                                        <option value="signature3">Signature 3</option>
                                     </select>
                                 </div>
                             </div>
@@ -230,16 +228,31 @@
     <script>
         $(document).ready(function() {
 
-
             $('#viewAddCertificate').click(function() {
                 $('#certificateTitle').val('');
                 $('#certificateDes').val('');
+
+                $.ajax({
+                    url: '{{ route('certificate.create.leftSignature') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX request failed:', error);
+                    }
+                });
                 $('#addCertificateModal').modal('show');
             });
 
             var canvas = document.getElementById('certificateCanvas');
             var context = canvas.getContext('2d');
             var img = new Image();
+            var namedescription = '';
+            var description = '';
 
             img.onload = function() {
                 canvas.width = img.width;
@@ -252,8 +265,6 @@
 
             img.src = '{{ asset('assets/img/certificate.png') }}';
 
-            var namedescription = '';
-
             function drawCertificate() {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -262,7 +273,7 @@
 
                 if (namedescription) {
                     context.font = "bold 34px 'Lora', serif";
-                    context.fillText(namedescription, canvas.width / 2, canvas.height * 23 / 64);
+                    context.fillText(namedescription.toUpperCase(), canvas.width / 2, canvas.height * 23 / 64);
                 }
 
                 if (description) {
@@ -274,7 +285,7 @@
             }
 
             $('#certificateTitle').on('input', function() {
-                namedescription = `of ${$(this).val()}`.toLowerCase();
+                namedescription = `of ${$(this).val()}`;
                 drawCertificate();
             });
 
@@ -283,16 +294,12 @@
                 drawCertificate();
             });
 
-            function capitalizeFirstLetterOfEachWord(text) {
-                return text
-                    .split(' ')
-                    .map(word =>
-                        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-                    )
-                    .join(' ');
-            };
+            var maxChars = 400;
 
             function wrapText(context, text, x, y, maxWidth, lineHeight) {
+                if (text.length > maxChars) {
+                    text = text.substring(0, maxChars);
+                }
                 var words = text.split(' ');
                 var line = '';
                 var lines = [];
