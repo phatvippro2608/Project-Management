@@ -187,15 +187,35 @@
                                 required>
                         </div>
                         <div class="mb-3">
-                            <label for="certificateImg" class="form-label">Upload Image</label>
-                            <input type="file" class="form-control" id="certificateImg" name="certificateImg"
+                            <label for="certificateDes" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="certificateDes" name="certificateTitle"
                                 required>
                         </div>
-                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="certificateLSig" class="form-label">Left Signature</label>
+                                    <input type="text" class="form-control" id="certificateLSig"
+                                        name="certificateTitle" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="certificateRSig" class="form-label">Right Signature</label>
+                                    <input type="text" class="form-control" id="certificateRSig"
+                                        name="certificateTitle" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <img style="width: 100%" src="{{ asset('assets/img/certificate.png') }}" alt="">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCertificate">Preview</button>
                     <button type="button" class="btn btn-primary" id="saveCertificate">Save changes</button>
                 </div>
             </div>
