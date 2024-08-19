@@ -216,11 +216,16 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
 
         //Courses
         Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
+        Route::get('/courses/get', 'App\Http\Controllers\CourseController@getCourses')->name('lms.getcourses');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
         Route::delete('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
+        Route::get('/course/types', 'App\Http\Controllers\CourseController@getCourseTypes')->name('course.types');
+        Route::post('/course/types', 'App\Http\Controllers\CourseController@addCourseType')->name('course.type.add');
+        Route::post('/course/types/update', 'App\Http\Controllers\CourseController@updateCourseType')->name('course.type.update');
+        Route::delete('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
 
         //Sections
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');

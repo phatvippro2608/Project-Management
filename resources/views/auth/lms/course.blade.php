@@ -51,15 +51,16 @@ $token = 'position';
     </div>
     <div class="section educaiton">
         <div class="d-flex justify-content-between">
-            @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
-                    <i class="bi bi-plus me-1"></i>Add course
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSelectCourse">
-                    <i class="bi bi-pencil me-1"></i>Edit course
-                </button>
-            </div>
+            @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddCourse">
+                        <i class="bi bi-plus me-1"></i>Add course
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#modalSelectCourse">
+                        <i class="bi bi-pencil me-1"></i>Edit course
+                    </button>
+                </div>
             @endif
             <div>
                 <div class="d-flex">
@@ -95,137 +96,191 @@ $token = 'position';
             @endforeach
         </div>
     </div>
-    @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
-    <div class="modal fade" id="modalAddCourse" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <form id="formAddCourse" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add new course</h5>
-                    </div>
-                    <div class="modal-body row">
-                        <div class="d-flex justify-content-between">
-                            <strong><i class="bi bi-card-image me-1"></i>Background image</strong>
-                            <input type="file" id="course_img" name="course_img" accept="image/*" hidden>
-                            <label for="course_img">
-                                <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
-                            </label>
+    @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
+        <div class="modal fade" id="modalAddCourse" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <form id="formAddCourse" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add new course</h5>
                         </div>
-                        <img id="bg_img" src="" class="img-fluid mt-1" alt="">
-                        <div class="form-group mt-3 row">
-                            <div class="col-6">
+                        <div class="modal-body row">
+                            <div class="d-flex justify-content-between">
+                                <strong><i class="bi bi-card-image me-1"></i>Background image</strong>
+                                <input type="file" id="course_img" name="course_img" accept="image/*" hidden>
+                                <label for="course_img">
+                                    <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
+                                </label>
+                            </div>
+                            <img id="bg_img" src="" class="img-fluid mt-1" alt="">
+                            <div class="form-group mt-3">
                                 <label for="course_name"><strong><i class="bi bi-bookmark me-1"></i>Course
-                                        name</strong></label>
-                                <input type="text" name="course_name" id="course_name" class="form-control" required>
+                                    name</strong></label>
+                            <input type="text" name="course_name" id="course_name" class="form-control" required>
                             </div>
-                            <div class="col-6">
-                                <label for="course_type"><strong><i class="bi bi-bookmark me-1"></i>Course
-                                        type</strong></label>
-                                <select name="course_type" id="course_type" class="form-select" required>
-                                    @foreach ($getTypeName as $type)
-                                        <option value="{{ $type->course_type_id }}">{{ $type->type_name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-group mt-3 row">
+                                <div class="col-6">
+                                    <label for="course_type"><strong><i class="bi bi-bookmark me-1"></i>Course
+                                            type</strong></label>
+                                    <div class="input-group">
+                                        <select name="course_type" id="course_type" class="form-select" required>
+                                            @foreach ($getTypeName as $type)
+                                                <option value="{{ $type->course_type_id }}">{{ $type->type_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" class="btn btn-outline-success"
+                                            onclick="openCourseType(this)"><i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label for="course_certificate"><strong><i class="bi bi-book me-1"></i>Course
+                                            certificate</strong></label>
+                                    <select name="course_certificate" id="course_certificate" class="form-select">
+                                        @foreach ($certificate as $cert)
+                                            <option value="{{ $cert->certificate_type_id }}">{{ $cert->certificate_type_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="course_description"><strong><i
+                                            class="bi bi-card-text me-1"></i>Description</strong></label>
+                                <textarea name="course_description" id="course_description" class="form-control"></textarea>
                             </div>
                         </div>
-                        <div class="form-group mt-3">
-                            <label for="course_description"><strong><i
-                                        class="bi bi-card-text me-1"></i>Description</strong></label>
-                            <textarea name="course_description" id="course_description" class="form-control"></textarea>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="modalSelectCourse" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="formSelectCourse">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Select course to edit</h5>
-                    </div>
-                    <div class="modal-body row">
-                        <select name="" id="select_data" class="form-control">
-                            @foreach ($courses as $course)
-                                <option value="{{ $course->course_id }}">{{ $course->course_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Select</button>
-                    </div>
-                </form>
+        <div class="modal fade" id="modalSelectCourse" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formSelectCourse">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Select course to edit</h5>
+                        </div>
+                        <div class="modal-body row">
+                            <select name="" id="select_data" class="form-control">
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->course_id }}">{{ $course->course_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Select</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <form id="formEditCourse" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-header d-flex justify-content-between">
-                        <h5 class="modal-title">Edit course</h5>
-                        <div class="dropdown">
-                            <button class="btn text-white" type="button" id="dropdownMenu" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                                <li><button class="dropdown-item" type="submit">Change</button></li>
-                                <li><a class="dropdown-item" onclick="deleteCourse()">Delete</a></li>
-                                <li><a class="dropdown-item" data-bs-dismiss="modal">Close</a></li>
-                            </ul>
+        <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <form id="formEditCourse" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header d-flex justify-content-between">
+                            <h5 class="modal-title">Edit course</h5>
+                            <div class="dropdown">
+                                <button class="btn text-white" type="button" id="dropdownMenu"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                                    <li><button class="dropdown-item" type="submit">Change</button></li>
+                                    <li><a class="dropdown-item" onclick="deleteCourse()">Delete</a></li>
+                                    <li><a class="dropdown-item" data-bs-dismiss="modal">Close</a></li>
+                                </ul>
+                            </div>
+                            <input type="text" id="course_id" name="course_id" hidden>
                         </div>
-                        <input type="text" id="course_id" name="course_id" hidden>
-                    </div>
-                    <div class="modal-body row">
-                        <div class="d-flex justify-content-between">
-                            <strong><i class="bi bi-card-image me-1"></i>Background image</strong>
-                            <input type="file" id="course_img_e" name="course_img" accept="image/*" hidden>
-                            <label for="course_img_e">
-                                <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
-                            </label>
-                        </div>
-                        <img id="bg_img_e" src="" class="img-fluid mt-1" alt="">
-                        <div class="form-group mt-3 row">
-                            <div class="col-6">
+                        <div class="modal-body row">
+                            <div class="d-flex justify-content-between">
+                                <strong><i class="bi bi-card-image me-1"></i>Background image</strong>
+                                <input type="file" id="course_img_e" name="course_img" accept="image/*" hidden>
+                                <label for="course_img_e">
+                                    <a class="btn btn-primary"><i class="bi bi-plus"></i>Upload image</a>
+                                </label>
+                            </div>
+                            <img id="bg_img_e" src="" class="img-fluid mt-1" alt="">
+                            <div class="form-group mt-3">
                                 <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course
-                                        name</strong></label>
-                                <input type="text" name="course_name" id="course_name_e" class="form-control">
+                                    name</strong></label>
+                            <input type="text" name="course_name" id="course_name_e" class="form-control">
                             </div>
-                            <div class="col-6">
-                                <label for="course_type_e"><strong><i class="bi bi-bookmark me-1"></i>Course
-                                        type</strong></label>
-                                <select name="course_type" id="course_type_e" class="form-select">
-                                    @foreach ($getTypeName as $type)
-                                        <option value="{{ $type->course_type_id }}">{{ $type->type_name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="course_type_e"><strong><i class="bi bi-bookmark me-1"></i>Course
+                                            type</strong></label>
+                                    <div class="input-group">
+                                        <select name="course_type" id="course_type_e" class="form-select">
+                                            @foreach ($getTypeName as $type)
+                                                <option value="{{ $type->course_type_id }}">{{ $type->type_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="button" class="btn btn-outline-success"
+                                            onclick="openCourseType(this)"><i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label for="course_certificate_e"><strong><i class="bi bi-book me-1"></i>Course
+                                            certificate</strong></label>
+                                    <select name="course_certificate" id="course_certificate_e" class="form-select">
+                                        @foreach ($certificate as $cert)
+                                            <option value="{{ $cert->certificate_type_id }}">{{ $cert->certificate_type_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="course_description"><strong><i
+                                            class="bi bi-card-text me-1"></i>Description</strong></label>
+                                <textarea name="course_description" id="course_description_e" class="form-control"></textarea>
                             </div>
                         </div>
-                        <div class="form-group mt-3">
-                            <label for="course_description"><strong><i
-                                        class="bi bi-card-text me-1"></i>Description</strong></label>
-                            <textarea name="course_description" id="course_description_e" class="form-control"></textarea>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" onclick="deleteCourse()">Delete</button>
+                            <button type="submit" class="btn btn-primary">Change</button>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalCourseType" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Course type</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table id="courseTypeTable">
+                            <thead>
+                                <tr>
+                                    <th>Course type</th>
+                                    <th class="text-center" style="width: 20%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger" onclick="deleteCourse()">Delete</button>
-                        <button type="submit" class="btn btn-primary">Change</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
     @endif
     <script>
         function search() {
@@ -241,115 +296,371 @@ $token = 'position';
             }).parent().parent().show();
         }
 
-        @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
-        $('#modalEditCourse').on('shown.bs.modal', function() {
-            $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
-            $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
-            $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
-                $('#modalEditCourse').modal('hide');
+        @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
+            $('#modalEditCourse').on('shown.bs.modal', function() {
+                $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                    $('#modalEditCourse').modal('hide');
+                });
+                $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                    setTimeout(function() {
+                        if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                            $('#modalEditCourse').modal('show');
+                        }
+                    }, 200);
+                });
             });
-            $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
-                setTimeout(function() {
-                    if ($('.tox-dialog-wrap__backdrop').length == 0) {
+            $('#modalAddCourse').on('shown.bs.modal', function() {
+                $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
+                $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
+                    $('#modalAddCourse').modal('hide');
+                });
+                $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
+                    setTimeout(function() {
+                        if ($('.tox-dialog-wrap__backdrop').length == 0) {
+                            $('#modalAddCourse').modal('show');
+                        }
+                    }, 200);
+                });
+            });
+
+
+            $('#course_img').change(function() {
+                var file = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#bg_img').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            });
+            $('#course_img_e').change(function() {
+                var file = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#bg_img_e').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            });
+            tinymce.init({
+                selector: 'textarea#course_description',
+                height: 300,
+                plugins: [
+                    'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor',
+                    'pagebreak',
+                    'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime',
+                    'media',
+                    'table', 'emoticons', 'codesample'
+                ],
+                toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+                    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+                    'forecolor backcolor emoticons',
+                menubar: 'file edit view insert format tools',
+                branding: false,
+            });
+            tinymce.init({
+                selector: 'textarea#course_description_e',
+                height: 300,
+                plugins: [
+                    'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor',
+                    'pagebreak',
+                    'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime',
+                    'media',
+                    'table', 'emoticons', 'codesample'
+                ],
+                toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+                    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+                    'forecolor backcolor emoticons',
+                menubar: 'file edit view insert format tools',
+                branding: false,
+            });
+            $('#formAddCourse').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                if (tinymce.get('course_description').getContent() == '') {
+                    toastr.error('Description is required');
+                    return;
+                }
+                if (tinymce.get('course_description').getContent().includes('base64')) {
+                    toastr.error('Upload image is not allowed please use source image');
+                    return;
+                }
+                //kiểm tra xem có tồn tại ảnh trong input hay không
+                if ($('#course_img').val() == '') {
+                    toastr.error('Image is required');
+                    return;
+                }
+
+                formData.append('course_description', tinymce.get('course_description').getContent());
+                $.ajax({
+                    url: '{{ action('App\Http\Controllers\CourseController@create') }}',
+                    type: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        if (data.success) {
+                            $('#formAddCourse').trigger('reset');
+                            toastr.success(data.message);
+                            $('#modalAddCourse').modal('hide');
+                            $('#course_handel').empty();
+                            $('#select_data').empty();
+                            data.courses.forEach(course => {
+                                let planinName = course.course_name.substring(0, 30) + '...';
+                                let plainDescription = course.description.replace(
+                                    /<\/?[^>]+(>|$)/g,
+                                    "").substring(0, 30) + '...';
+
+                                $('#course_handel').append(
+                                    `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
+                                    <div class="card shadow bg-white border-none rounded-4">
+                                        <div class="card-header m-2 p-0 text-primary">
+                                            <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                <p class="text-secondary course_type">${course.type_name}</p>
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            ${plainDescription}
+                                        </div>
+                                    </div>
+                                </div>`
+                                );
+                                $('#select_data').append(
+                                    `<option value="${course.course_id}">${course.course_name}</option>`
+                                );
+                            });
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+
+            });
+            $('#formSelectCourse').submit(function(e) {
+                e.preventDefault();
+                var course_id = $('#select_data').val();
+                $.ajax({
+                    url: '{{ url('lms/course/') }}/' + course_id,
+                    type: 'get',
+                    success: function(data) {
+                        $('#course_type_e').empty();
+                        data.getTypeName.forEach(type => {
+                            $('#course_type_e').append(
+                                `<option value="${type.course_type_id}">${type.type_name}</option>`
+                            );
+                        });
+                        data.course.forEach(course => {
+                            $('#course_id').val(course.course_id);
+                            $('#course_name_e').val(course.course_name);
+                            $('#course_certificate_e').val(course.certificate_type_id);
+                            tinymce.get('course_description_e').setContent(course.description);
+                            $('#bg_img_e').attr('src', '{{ asset('uploads/course/') }}/' +
+                                course
+                                .course_image);
+                            $('#course_type_e').val(course.course_type_id);
+                        });
+
+                        $('#modalSelectCourse').modal('hide');
                         $('#modalEditCourse').modal('show');
                     }
-                }, 200);
+                });
             });
-        });
-        $('#modalAddCourse').on('shown.bs.modal', function() {
-            $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
-            $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
-            $('.tox-tinymce-aux').on('mouseover', '.tox-dialog-wrap *', function() {
-                $('#modalAddCourse').modal('hide');
-            });
-            $('.tox-tinymce-aux').on('mousedown', '.tox-dialog-wrap *', function() {
-                setTimeout(function() {
-                    if ($('.tox-dialog-wrap__backdrop').length == 0) {
-                        $('#modalAddCourse').modal('show');
+
+
+            $('#formEditCourse').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                if (tinymce.get('course_description_e').getContent() == '') {
+                    toastr.error('Description is required');
+                    return;
+                }
+                if (tinymce.get('course_description').getContent().includes('base64')) {
+                    toastr.error('Upload image is not allowed please use source image');
+                    return;
+                }
+                formData.append('course_description', tinymce.get('course_description_e').getContent());
+                $.ajax({
+                    url: '{{ action('App\Http\Controllers\CourseController@updateCourse') }}',
+                    type: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        if (data.success) {
+                            $('#formEditCourse').trigger('reset');
+                            toastr.success(data.message);
+                            $('#modalEditCourse').modal('hide');
+                            $('#course_handel').empty();
+                            $('#select_data').empty();
+                            data.courses.forEach(course => {
+                                let planinName = course.course_name.substring(0, 30);
+                                if (course.course_name.length > 30) {
+                                    planinName += '...';
+                                }
+                                let plainDescription = course.description.replace(
+                                    /<\/?[^>]+(>|$)/g,
+                                    "").substring(0, 30);
+                                if (course.description.replace(/<\/?[^>]+(>|$)/g, "").length >
+                                    30) {
+                                    plainDescription += '...';
+                                }
+
+                                $('#course_handel').append(
+                                    `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
+                                    <div class="card shadow bg-white border-none rounded-4">
+                                        <div class="card-header m-2 p-0 text-primary">
+                                            <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                <p class="text-secondary course_type">${course.type_name}</p>
+                                            </a>
+                                        </div>
+                                        <div class="card-body">
+                                            ${plainDescription}
+                                        </div>
+                                    </div>
+                                </div>`
+                                );
+                                $('#select_data').append(
+                                    `<option value="${course.course_id}">${course.course_name}</option>`
+                                );
+                            });
+                        } else {
+                            toastr.error(data.message);
+                        }
                     }
-                }, 200);
+                });
             });
-        });
 
+            function deleteCourse() {
+                var course_id = $('#course_id').val();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ action('App\Http\Controllers\CourseController@deleteCourse') }}',
+                            data: {
+                                course_id: course_id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            type: 'delete',
+                            success: function(data) {
+                                if (data.success) {
+                                    toastr.success(data.message);
+                                    $('#modalEditCourse').modal('hide');
+                                    $('#course_handel').empty();
+                                    $('#select_data').empty();
+                                    data.courses.forEach(course => {
+                                        let planinName = course.course_name.substring(0, 30);
+                                        if (course.course_name.length > 30) {
+                                            planinName += '...';
+                                        }
+                                        let plainDescription = course.description.replace(
+                                            /<\/?[^>]+(>|$)/g,
+                                            "").substring(0, 30);
+                                        if (course.description.replace(/<\/?[^>]+(>|$)/g, "")
+                                            .length > 30) {
+                                            plainDescription += '...';
+                                        }
 
-        $('#course_img').change(function() {
-            var file = $(this)[0].files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#bg_img').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(file);
-        });
-        $('#course_img_e').change(function() {
-            var file = $(this)[0].files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#bg_img_e').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(file);
-        });
-        tinymce.init({
-            selector: 'textarea#course_description',
-            height: 300,
-            plugins: [
-                'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-                'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-                'table', 'emoticons', 'codesample'
-            ],
-            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
-                'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-                'forecolor backcolor emoticons',
-            menubar: 'file edit view insert format tools',
-            branding: false,
-        });
-        tinymce.init({
-            selector: 'textarea#course_description_e',
-            height: 300,
-            plugins: [
-                'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-                'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-                'table', 'emoticons', 'codesample'
-            ],
-            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
-                'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-                'forecolor backcolor emoticons',
-            menubar: 'file edit view insert format tools',
-            branding: false,
-        });
-        $('#formAddCourse').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            if (tinymce.get('course_description').getContent() == '') {
-                toastr.error('Description is required');
-                return;
-            }
-            if (tinymce.get('course_description').getContent().includes('base64')) {
-                toastr.error('Upload image is not allowed please use source image');
-                return;
-            }
-            //kiểm tra xem có tồn tại ảnh trong input hay không
-            if ($('#course_img').val() == '') {
-                toastr.error('Image is required');
-                return;
+                                        $('#course_handel').append(
+                                            `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
+                                            <div class="card shadow bg-white border-none rounded-4">
+                                                <div class="card-header m-2 p-0 text-primary">
+                                                    <a href="{{ url('lms/course/') }}/${course.course_id}/view">
+                                                        <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
+                                                        <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
+                                                        <p class="text-secondary course_type">${course.type_name}</p>
+                                                    </a>
+                                                </div>
+                                                <div class="card-body">
+                                                    ${plainDescription}
+                                                </div>
+                                            </div>
+                                        </div>`
+                                        );
+                                        $('#select_data').append(
+                                            `<option value="${course.course_id}">${course.course_name}</option>`
+                                        );
+                                    });
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            }
+                        });
+                    }
+                });
             }
 
-            formData.append('course_description', tinymce.get('course_description').getContent());
-            $.ajax({
-                url: '{{ action('App\Http\Controllers\CourseController@create') }}',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(data) {
-                    if (data.success) {
-                        $('#formAddCourse').trigger('reset');
-                        toastr.success(data.message);
-                        $('#modalAddCourse').modal('hide');
+            loadCourseType();
+
+            function loadCourseType() {
+                $.ajax({
+                    url: '{{ route('course.types') }}',
+                    type: 'get',
+                    success: function(data) {
+                        $('#courseTypeTable tbody').empty();
+                        $('#course_type').empty();
+                        $('#course_type_e').empty();
+                        $('#courseTypeFilter').empty();
+                        $('#courseTypeFilter').append(
+                            `<option noselect value="">Type</option>`
+                        );
+                        $('#courseTypeTable tbody').append(
+                                `<tr>
+                                <td><input class="form-control" id="newCourseType" placeholder="Add new type name"></td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-success" onclick="createCourseType()"><i class="bi bi-check"></i></button>
+                                </td>
+                            </tr>`
+                            );
+                        data.getTypeName.forEach(type => {
+                            $('#courseTypeTable tbody').append(
+                                `<tr>
+                                <td><input class="form-control" value="${type.type_name}" placeholder="${type.type_name}"></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-primary" onclick="saveCourseType(${type.course_type_id})"><i class="bi bi-floppy"></i></button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="deleteCourseType(${type.course_type_id})"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>`
+                            );
+                            $('#course_type').append(
+                                `<option value="${type.course_type_id}">${type.type_name}</option>`
+                            );
+                            $('#course_type_e').append(
+                                `<option value="${type.course_type_id}">${type.type_name}</option>`
+                            );
+                            $('#courseTypeFilter').append(
+                                `<option value="${type.type_name}">${type.type_name}</option>`
+                            );
+                        });
+                    }
+                });
+            }
+
+            loadCourse();
+
+            function loadCourse(){
+                $.ajax({
+                    url: '{{ route('lms.getcourses') }}',
+                    type: 'get',
+                    success: function(data){
                         $('#course_handel').empty();
                         $('#select_data').empty();
                         data.courses.forEach(course => {
                             let planinName = course.course_name.substring(0, 30) + '...';
-                            let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g,
+                            let plainDescription = course.description.replace(
+                                /<\/?[^>]+(>|$)/g,
                                 "").substring(0, 30) + '...';
 
                             $('#course_handel').append(
@@ -372,171 +683,92 @@ $token = 'position';
                                 `<option value="${course.course_id}">${course.course_name}</option>`
                             );
                         });
-                    } else {
-                        toastr.error(data.message);
                     }
-                }
-            });
-
-        });
-        $('#formSelectCourse').submit(function(e) {
-            e.preventDefault();
-            var course_id = $('#select_data').val();
-            $.ajax({
-                url: '{{ url('lms/course/') }}/' + course_id,
-                type: 'get',
-                success: function(data) {
-                    $('#course_type_e').empty();
-                    data.getTypeName.forEach(type => {
-                        $('#course_type_e').append(
-                            `<option value="${type.course_type_id}">${type.type_name}</option>`
-                        );
-                    });
-                    data.course.forEach(course => {
-                        $('#course_id').val(course.course_id);
-                        $('#course_name_e').val(course.course_name);
-                        tinymce.get('course_description_e').setContent(course.description);
-                        $('#bg_img_e').attr('src', '{{ asset('uploads/course/') }}/' + course
-                            .course_image);
-                        $('#course_type_e').val(course.course_type_id);
-                    });
-
-                    $('#modalSelectCourse').modal('hide');
-                    $('#modalEditCourse').modal('show');
-                }
-            });
-        });
-
-
-        $('#formEditCourse').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            if (tinymce.get('course_description_e').getContent() == '') {
-                toastr.error('Description is required');
-                return;
+                });
             }
-            if (tinymce.get('course_description').getContent().includes('base64')) {
-                toastr.error('Upload image is not allowed please use source image');
-                return;
-            }
-            formData.append('course_description', tinymce.get('course_description_e').getContent());
-            $.ajax({
-                url: '{{ action('App\Http\Controllers\CourseController@updateCourse') }}',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(data) {
-                    if (data.success) {
-                        $('#formEditCourse').trigger('reset');
-                        toastr.success(data.message);
-                        $('#modalEditCourse').modal('hide');
-                        $('#course_handel').empty();
-                        $('#select_data').empty();
-                        data.courses.forEach(course => {
-                            let planinName = course.course_name.substring(0, 30);
-                            if (course.course_name.length > 30) {
-                                planinName += '...';
-                            }
-                            let plainDescription = course.description.replace(/<\/?[^>]+(>|$)/g,
-                                "").substring(0, 30);
-                            if (course.description.replace(/<\/?[^>]+(>|$)/g, "").length > 30) {
-                                plainDescription += '...';
-                            }
 
-                            $('#course_handel').append(
-                                `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
-                                    <div class="card shadow bg-white border-none rounded-4">
-                                        <div class="card-header m-2 p-0 text-primary">
-                                            <a href="{{ url('lms/course/') }}/${course.course_id}/view">
-                                                <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
-                                                <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
-                                                <p class="text-secondary course_type">${course.type_name}</p>
-                                            </a>
-                                        </div>
-                                        <div class="card-body">
-                                            ${plainDescription}
-                                        </div>
-                                    </div>
-                                </div>`
-                            );
-                            $('#select_data').append(
-                                `<option value="${course.course_id}">${course.course_name}</option>`
-                            );
-                        });
-                    } else {
-                        toastr.error(data.message);
-                    }
-                }
-            });
-        });
-
-        function deleteCourse() {
-            var course_id = $('#course_id').val();
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ action('App\Http\Controllers\CourseController@deleteCourse') }}',
-                        data: {
-                            course_id: course_id,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        type: 'delete',
-                        success: function(data) {
-                            if (data.success) {
-                                toastr.success(data.message);
-                                $('#modalEditCourse').modal('hide');
-                                $('#course_handel').empty();
-                                $('#select_data').empty();
-                                data.courses.forEach(course => {
-                                    let planinName = course.course_name.substring(0, 30);
-                                    if (course.course_name.length > 30) {
-                                        planinName += '...';
-                                    }
-                                    let plainDescription = course.description.replace(
-                                        /<\/?[^>]+(>|$)/g,
-                                        "").substring(0, 30);
-                                    if (course.description.replace(/<\/?[^>]+(>|$)/g, "")
-                                        .length > 30) {
-                                        plainDescription += '...';
-                                    }
-
-                                    $('#course_handel').append(
-                                        `<div class="col-xl-3 col-lg-3 col-md-4 col-sm-3">
-                                            <div class="card shadow bg-white border-none rounded-4">
-                                                <div class="card-header m-2 p-0 text-primary">
-                                                    <a href="{{ url('lms/course/') }}/${course.course_id}/view">
-                                                        <img class="border-none rounded-4" style="max-width: 100%" src="{{ asset('uploads/course/') }}/${course.course_image}">
-                                                        <h5 class="mt-2 mb-1 course_name">${planinName}</h5>
-                                                        <p class="text-secondary course_type">${course.type_name}</p>
-                                                    </a>
-                                                </div>
-                                                <div class="card-body">
-                                                    ${plainDescription}
-                                                </div>
-                                            </div>
-                                        </div>`
-                                    );
-                                    $('#select_data').append(
-                                        `<option value="${course.course_id}">${course.course_name}</option>`
-                                    );
-                                });
-                            } else {
-                                toastr.error(data.message);
-                            }
+            function saveCourseType(id){
+                var courseType = $('#courseTypeTable tbody tr').eq(id).find('input').val();
+                $.ajax({
+                    url: '{{ route('course.type.update') }}',
+                    type: 'post',
+                    data: {
+                        type_id: id,
+                        type_name: courseType,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data){
+                        if(data.success){
+                            toastr.success(data.message);
+                            loadCourseType();
+                            loadCourse();
+                        } else {
+                            toastr.error(data.message);
                         }
-                    });
-                }
-            });
-        }
+                    }
+                });
+            }
+
+            function createCourseType(){
+                var courseType = $('#newCourseType').val();
+                $.ajax({
+                    url: '{{ route('course.type.add') }}',
+                    type: 'post',
+                    data: {
+                        type_name: courseType,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data){
+                        if(data.success){
+                            toastr.success(data.message);
+                            loadCourseType();
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+
+            function deleteCourseType(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('course.type.delete') }}',
+                            type: 'delete',
+                            data: {
+                                type_id: id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(data){
+                                if(data.success){
+                                    toastr.success(data.message);
+                                    loadCourseType();
+                                    loadCourse();                                    
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            function openCourseType(e) {
+                $('#modalCourseType').modal('show');
+                var modalId = $(e).closest('.modal').attr('id');
+                $('#' + modalId).modal('hide');
+                $('#modalCourseType').on('hidden.bs.modal', function() {
+                    $('#' + modalId).modal('show');
+                });
+            }
         @endif
     </script>
 @endsection
