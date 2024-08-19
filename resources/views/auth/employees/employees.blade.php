@@ -10,7 +10,7 @@
             </ol>
         </nav>
     </div>
-
+    @if(in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'hr_manager']))
     <div class="row gx-3 my-3">
         <div class="col-md-6 m-0">
             <div class="btn btn-primary me-2">
@@ -35,22 +35,26 @@
             </div>
         </div>
     </div>
-
+    @endif
     <div class="card p-2 rounded-4 border">
         <div class="card-header py-0">
             <div class="card-title my-3 p-0">{{ __('messages.employee_list') }}</div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="employeesTable" class="table table-hover table-borderless">
+                <table id="employeesTable" class="table table-hover table-borderless" style="font-size: 14px">
                     <thead class="table-light">
                     <tr>
-                        <th class="text-center">{{ __('messages.employee_code') }}</th>
-                        <th class="text-center">Photo</th>
-                        <th class="text-center">{{ __('messages.full_name') }}</th>
-                        <th class="text-center">English Name</th>
-                        <th class="text-center">{{ __('messages.gender') }}</th>
-                        <th class="text-center">{{ __('messages.action') }}</th>
+                        <th class="text-center" style="width: 10%">{{ __('messages.employee_code') }}</th>
+                        <th class="text-center" style="width: 5%">Photo</th>
+                        <th class="text-center" style="width: 20%">{{ __('messages.full_name') }}</th>
+                        <th class="text-center" style="width: 15%">English Name</th>
+                        <th class="text-center" style="width: 20%">{{ __('messages.department') }}</th>
+                        <th class="text-center" style="width: 20%">Email</th>
+                        <th class="text-center" style="width: 5%">{{ __('messages.gender') }}</th>
+                        @if(in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'hr_manager']))
+                            <th class="text-center" style="width: 5%">{{ __('messages.action') }}</th>
+                        @endif
                     </tr>
                     </thead>
                     <tbody id="employeesTableBody">
@@ -71,29 +75,33 @@
                                     }
                                 @endphp
                                 <td class="text-center"><img class="rounded-pill object-fit-cover" src="{{ $imageUrl }}"
-                                                             alt="" width="75" height="75"></td>
+                                                             alt="" width="50" height="50"></td>
                                 <td>{{$item->last_name . ' ' . $item->first_name}}</td>
-                                <td>{{$item->en_name}}</td>
+                                <td class="text-center">{{$item->en_name}}</td>
+                                <td class="text-center">{{$item->department_name}}</td>
+                                <td class="text-center">{{$item->email}}</td>
                                 <td class="text-center">{{ $item->gender == 0 ? __('messages.male') : __('messages.female') }}</td>
-                                <td align="center">
-                                        <?php
-                                        $id = $item->employee_id;
-                                        $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
-                                        $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
-                                        $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
-                                        $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
-                                        ?>
-                                    <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}"
-                                       class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    |
-                                    <button
-                                        class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4"
-                                        data="{{$id}}">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </td>
+                                @if(in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'hr_manager']))
+                                    <td align="center">
+                                            <?php
+                                            $id = $item->employee_id;
+                                            $item->medical = \App\Http\Controllers\EmployeesController::getMedicalInfo($id);
+                                            $item->certificates = \App\Http\Controllers\EmployeesController::getCertificateInfo($id);
+                                            $item->passport = \App\Http\Controllers\EmployeesController::getPassportInfo($id);
+                                            $item->email = \Illuminate\Support\Facades\DB::table('accounts')->where('employee_id', $id)->value('email');
+                                            ?>
+                                        <a href="{{action('App\Http\Controllers\EmployeesController@updateView',$id)}}"
+                                           class="btn p-0 btn-primary border-0 bg-transparent text-primary shadow-none at3">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        |
+                                        <button
+                                            class="btn p-0 btn-primary border-0 bg-transparent text-danger shadow-none at4"
+                                            data="{{$id}}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                @endif
                             </tr>
                         @endif
                     @endforeach

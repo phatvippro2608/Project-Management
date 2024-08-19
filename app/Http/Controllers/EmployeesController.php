@@ -23,11 +23,20 @@ class EmployeesController extends Controller
         $jobdetails = $data->getAllJobDetails();
         $type_certificate = $data->getTypeCertificate();
 
-        $data = EmployeeModel::query()
+        $data = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
-            ->where('fired','false')
+            ->join('departments', 'departments.department_id', '=', 'employees.department_id')
+            ->leftJoin('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('fired', 'false')
             ->orderBy('employees.employee_code')
-            ->get();
+            ->get([
+                'employees.*', // lấy tất cả các cột từ bảng employees
+                'contacts.*',  // lấy tất cả các cột từ bảng contacts
+                'departments.*', // lấy tất cả các cột từ bảng departments
+                'accounts.*', // lấy tất cả các cột từ bảng accounts
+                'employees.employee_id as employee_id' // chỉ định employee_id từ bảng employees
+            ]);
+
         return view('auth.employees.employees',
             [
                 'data' => $data,

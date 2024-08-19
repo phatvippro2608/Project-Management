@@ -66,6 +66,9 @@ class CourseController extends Controller
     function create(Request $request)
     {
         try {
+            if(!in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher'])){
+                return response()->json(['success' => false, 'message' => 'Permission denied!']);
+            }
             $course_name = $request->input('course_name');
             if (CourseModel::where('course_name', $course_name)->exists()) {
                 return response()->json(['success' => false, 'message' => 'Course name already exists!']);
@@ -106,6 +109,9 @@ class CourseController extends Controller
     function updateCourse(Request $request)
     {
         try {
+            if(!in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher'])){
+                return response()->json(['success' => false, 'message' => 'Permission denied!']);
+            }
             $course_id = $request->input('course_id');
             $course_name = $request->input('course_name');
             if (CourseModel::where('course_name', $course_name)->whereNot('course_id',$course_id)->exists()) {
@@ -155,6 +161,9 @@ class CourseController extends Controller
 
     function deleteCourse(Request $request){
         try {
+            if(!in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher'])){
+                return response()->json(['success' => false, 'message' => 'Permission denied!']);
+            }
             $id = $request->input('course_id');
             $course = CourseModel::find($id);
             $old_image = public_path('uploads/course/' . $course->course_image);
