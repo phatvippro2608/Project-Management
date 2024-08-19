@@ -80,6 +80,7 @@
                         <th class="text-center" scope="col">Certificate</th>
                         <th class="text-center" scope="col">status</th>
                         <th scope="col">Created</th>
+                        <th class="text-center" scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,6 +130,9 @@
                                 @endif
 
                             </td>
+                            <td class="text-center" scope="col">
+                                <i class="bi bi-person-fill-add"></i>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -162,26 +166,6 @@
         $(document).ready(function() {
             $('#certificateTable').DataTable();
 
-            $('#certificateTable tbody').on('click', 'tr', function() {
-                var $td = $(this).find('td').eq(6); // Cột thứ 7
-                var src = $td.find('img').attr('data-src');
-                var type = $td.find('img').attr('data-type');
-
-                if (type === 'pdf') {
-                    $('#certificate-viewer').attr('data', src).attr('type', 'application/pdf');
-                    $('#certificate-link').attr('href', src);
-                } else {
-                    $('#certificate-viewer').attr('data', src).attr('type',
-                    'image/jpeg'); // Hoặc 'image/png' tùy thuộc vào loại hình ảnh
-                    $('#certificate-link').hide(); // Ẩn liên kết tải xuống khi hiển thị hình ảnh
-                }
-
-                $('#certificateModal').modal('show');
-            });
-
-            $('.edit-btn').on('click', function(e) {
-                e.stopPropagation();
-            });
         });
     </script>
 @endsection
