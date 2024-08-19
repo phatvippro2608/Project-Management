@@ -10,7 +10,6 @@ class WorkshopModel extends Model
     use HasFactory;
     public $table = 'workshops';
     public $primaryKey = 'workshop_id';
-
     public $fillable = [
         'workshop_id',
         'workshop_name',
