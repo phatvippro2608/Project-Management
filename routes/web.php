@@ -43,7 +43,6 @@ use App\Http\Controllers\ProjectBudgetController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/login', 'App\Http\Controllers\LoginController@getViewLogin');
 Route::post('/9EqClX7gzeiZAQ2wtsghJxIfR3irIM375lq8LPTRS2A7sG9tvcRmyVTor00PiYBE', 'App\Http\Controllers\AccountController@position');
 Route::post('/login', 'App\Http\Controllers\LoginController@postLogin');
@@ -97,6 +96,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/update', 'App\Http\Controllers\CustomerController@update');
         Route::delete('/delete', 'App\Http\Controllers\CustomerController@delete');
         Route::get('/query', 'App\Http\Controllers\CustomerController@query');
+
+//        Route::get('/query', 'App\Http\Controllers\CustomerController@query');
+        Route::get('/export/customer', 'App\Http\Controllers\CustomerController@export');
     });
 
     //Contract
@@ -369,6 +371,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/recognition'], function () {
         Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
         Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
+        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'getRecognitionType'])->name('recognitiontype.getRecognitionType');
         Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
         Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
         Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');

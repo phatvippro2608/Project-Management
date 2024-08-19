@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 @section('contents')
     <div class="pagetitle">
         <h1>Project</h1>

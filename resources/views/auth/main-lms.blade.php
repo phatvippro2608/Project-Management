@@ -1,6 +1,7 @@
 <?php
 
 use App\StaticString;
+use App\Http\Controllers\AccountController;
 
 $token = 'position';
 ?>

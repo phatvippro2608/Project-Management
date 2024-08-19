@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('head')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">

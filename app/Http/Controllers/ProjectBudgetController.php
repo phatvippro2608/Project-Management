@@ -26,7 +26,11 @@ class ProjectBudgetController extends Controller
             ->join('project_cost_group', 'project_costs.project_cost_group_id', '=', 'project_cost_group.project_cost_group_id')
             ->select('project_costs.*', 'project_cost_group.project_cost_group_name')->where('project_id', $id)
             ->get();
-            $dataCostGroup = DB::table('project_cost_group')->get();
+            $dataCostGroup = DB::table('project_cost_group')
+            ->join('project_locations', 'project_cost_group.project_location_id', '=', 'project_locations.project_location_id')
+            ->join('projects', 'project_locations.project_id', '=', 'projects.project_id')
+            ->select('project_cost_group.*', 'projects.project_name')
+            ->where('projects.project_id', $id)->get();
         }
         else{
             $dataCost = DB::table('project_costs')
@@ -82,8 +86,7 @@ class ProjectBudgetController extends Controller
             $prjNameCurrent = $project->project_name;
             $prjName = $dataExcel['data'][1][1];
             $prjLocationName = $dataExcel['data'][2][1];
-
-            $prjLocationNameCurrent = DB::table('project_locations')->where('project_id', $id)->where('project_location_id', $location)->first()->project_location_name;
+            $prjLocationId = DB::table('project_locations')->select('project_location_id')->where('project_id', $id)->where('project_location_name', $prjLocationName)->first();
 
             if ($prjNameCurrent != $prjName) {
                 return response()->json([
@@ -92,13 +95,12 @@ class ProjectBudgetController extends Controller
                 ]);
             }
 
-            // Fetch project location
-            if ($prjLocationName != $prjLocationNameCurrent) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
-                ]);
-            }
+            // if ($prjLocationName != $prjLocationNameCurrent) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
+            //     ]);
+            // }
     
             $num_row = 4; // Start reading from row 3
             while ($num_row < count($dataExcel['data'])) {
@@ -108,7 +110,7 @@ class ProjectBudgetController extends Controller
                     // Insert a new cost group and get its ID
                     $group_id = DB::table('project_cost_group')->insertGetId([
                         'project_cost_group_name' => $name,
-                        'project_location_id' => $location
+                        'project_location_id' => $prjLocationId
                     ]);
                 } else {
                     $description = trim($dataExcel['data'][$num_row][0] ?? '');

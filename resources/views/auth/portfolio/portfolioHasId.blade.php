@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('head')
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">

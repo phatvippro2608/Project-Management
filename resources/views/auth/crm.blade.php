@@ -45,7 +45,7 @@ $token = 'position';
                 {{--            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#sidebar-tab1"--}}
                 {{--                    aria-selected="false" tabindex="-1" role="tab">Tab2--}}
                 {{--            </button>--}}
-                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}" class="nav-link fw-bold" >CRM </a>
+                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}" class="nav-link fw-bold active" >CRM </a>
             </li>
 
 
@@ -345,129 +345,9 @@ $token = 'position';
     <ul class="sidebar-nav" id="sidebar-nav">
         @if (!in_array(AccountController::permissionStr(), []))
             <li class="nav-item">
-                <a class="nav-link "
-                   href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">
-                    <i class="bi bi-grid"></i>
-                    <span>{{ __('messages.dashboard') }}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#organization-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-building"></i><span>{{ __('messages.organization') }}</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="organization-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\DepartmentController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.department_list') }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#myxteam-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-folder"></i><span>myXteam</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="myxteam-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('\App\Http\Controllers\MyXteamController@getView') }}">
-
-                            <i class="bi bi-circle"></i><span>Teams</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#inventory-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-boxes"></i><span>{{ __('messages.inventory') }}</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="inventory-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\InventoryManagementController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.dashboard') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\MaterialsController@getView') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.material_management') }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link " href="{{ action('App\Http\Controllers\LMSDashboardController@getView') }}">
-                    <i class="bi bi-mortarboard"></i>
-                    <span>LMS</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#internal-certificates-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-clipboard"></i><span>{{ __('messages.internal_certificates') }}</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="internal-certificates-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('certificate.user') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('certificate.type') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_types') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('certificate.signature') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_signature') }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-sub-link" href="{{ route('certificate.create') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.internal_certificates_create') }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#utilities-nav" data-bs-toggle="collapse"
-                   href="#">
-                    <i class="bi bi-gear-wide-connected"></i><span>{{ __('messages.utilities') }}</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="utilities-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-sub-link"
-                           href="{{ action('App\Http\Controllers\AccountController@loginHistory') }}">
-                            <i class="bi bi-circle"></i><span>{{ __('messages.activity_log') }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link " href="#">
-                    <i class="bi bi-clipboard2-fill"></i>
-                    <span>{{ __('messages.notice') }}</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link " href="{{ route('settings.view') }}">
-                    <i class="bi bi-gear-fill"></i>
-                    <span>{{ __('messages.settings') }}</span>
+                <a class="nav-link"
+                   href="{{ action('App\Http\Controllers\CustomerController@getView') }}">
+                    <i class="bi bi-person"></i><span>{{ __('messages.customer') }}</span>
                 </a>
             </li>
         @endif
@@ -477,13 +357,6 @@ $token = 'position';
 <main id="main" class="main">
     @yield('contents')
 </main>
-
-
-{{-- <footer id="footer" class="footer"> --}}
-{{-- <div class="copyright"> --}}
-{{-- &copy; Copyright <strong><span>Ventech</span></strong>. All Rights Reserved --}}
-{{-- </div> --}}
-{{-- </footer> --}}
 
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i

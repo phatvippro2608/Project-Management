@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.project')
 @section('head')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.51.0/apexcharts.min.js"></script>
@@ -68,7 +68,7 @@
                                 <td>{{ number_format($total - $contingency_price->project_price_contingency, 0, ',', '.') }} VND</td>
                             </tr>
                         </tbody>
-                    
+
         </table>
     </div>
 </div>
@@ -170,7 +170,7 @@
                         $subtotal1 = 0;
                     @endphp
                     <tbody>
-                        
+
                             @foreach ($dataCost as $data)
                             <tr style="cursor: pointer" data="{{(\App\Http\Controllers\AccountController::toAttrJson(\App\Http\Controllers\ProjectBudgetController::getCostDetails($data->project_cost_id)))}}">
                                 @php
@@ -294,19 +294,19 @@
 
     <script>
         document.getElementById('importButton').addEventListener('click', function() {
-            document.getElementById('fileInput').click(); 
+            document.getElementById('fileInput').click();
         });
 
         document.getElementById('fileInput').addEventListener('change', function() {
-            document.getElementById('submitButton').click(); 
+            document.getElementById('submitButton').click();
         });
 
         $('#submitButton').on('click', function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
 
             var fileInput = $('#fileInput')[0];
             var file = fileInput.files[0];
-            
+
             if (!file) {
                 toastr.error('Please select a file before submitting.');
                 return;
@@ -565,7 +565,7 @@
                 `;
                 $('#costDetails').html(html);
                 $('#detailCostModal').modal('show');
-      
+
     });
 });
         new DataTable('#costTable');

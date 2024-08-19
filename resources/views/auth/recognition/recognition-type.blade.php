@@ -1,6 +1,6 @@
 @section('title', $title)
 
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('head')
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
@@ -74,7 +74,7 @@
                             <th scope="col" class="text-center">{{ $recognition_type->recognition_type_id }}</th>
                             <th scope="col">{{ $recognition_type->recognition_type_name }}</th>
                             <td class="text-center">
-                                <button data-recognition="{{ $recognition_type->drecognition_type_id }}" class="btn p-1 text-primary" onclick="editRecognitionType(this)">
+                                <button data-recognitiontype="{{ $recognition_type->recognition_type_id }}" class="btn p-1 text-primary" onclick="editRecognitionTypeModal(this)">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 {{--                                <button data-recognition="{{ $recognition_type->recognition_type_id }}" class="btn p-1 text-danger" onclick="deleteRecognitionType(this)" >--}}
@@ -85,6 +85,67 @@
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade md1" id="addRecognitionTypeModal" tabindex="-1" aria-labelledby="addRecognitionTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProjectModalTypeLabel">Edit recognition type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Form trong view -->
+            <div class="modal-body">
+                <form id="recognitionTypeForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="recognition_type_" class="form-label">Recognition type</label>
+                            <input type="text" name="recognition_type_name" id="recognition_type_name" class="form-control" >
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnRecognitionTypeSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade md1" id="editRecognitionTypeModal" tabindex="-1" aria-labelledby="addRecognitionTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProjectModalTypeLabel">Add new recognition type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Form trong view -->
+            <div class="modal-body">
+                <form id="recognitionTypeForm">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" name="recognition_type_id" id="edit_recognition_type_id" class="form-control" hidden>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="edit_recognition_type_name" class="form-label">Recognition type</label>
+                            <input type="text" name="recognition_type_name" id="edit_recognition_type_name" class="form-control" >
+                        </div>
+{{--                        <div class="col-md-12" style="margin-top: 1rem">--}}
+{{--                            <label for="edit_recognitiontype_hidden">Hidden</label>--}}
+{{--                            <input type="checkbox" name="recognition_type_hidden" id="edit_recognitiontype_hidden">--}}
+{{--                        </div>--}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnRecognitionTypeSubmit">Submit</button>
             </div>
         </div>
     </div>
@@ -176,6 +237,30 @@
                     toastr.error('Có lỗi xảy ra. Vui lòng thử lại sau.', "Thao tác thất bại");
                 });
         });
+
+        function editRecognitionTypeModal(button) {
+            var recognitiontype_id = button.getAttribute('data-recognitiontype');
+            // Dùng Ajax để lấy dữ liệu từ máy chủ và điền vào form chỉnh sửa
+            fetch(`/recognition/type/${recognitiontype_id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        let recognition_type = data[0];
+                        document.getElementById('edit_recognition_type_id').value = recognition_type.recognition_type_id || '';
+                        document.getElementById('edit_recognition_type_name').value = recognition_type.recognition_type_name || '';
+                        // document.getElementById('edit_recognition_type_hidden').checked = recognition_type.recognition_type_hidden == 1;
+
+                        var editModal = new bootstrap.Modal(document.getElementById('editRecognitionTypeModal'));
+                        editModal.show();
+                    } else {
+                        toastr.error('Dữ liệu không hợp lệ.', "Thao tác thất bại");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Có lỗi xảy ra khi tải dữ liệu.', "Thao tác thất bại");
+                });
+        }
 
         document.getElementById('toggleHiddenRows').addEventListener('click', function() {
             var tableRows = document.querySelectorAll('#recognitionTypeTable tbody tr');
