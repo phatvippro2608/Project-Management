@@ -1,4 +1,4 @@
-@extends('auth.project')
+@extends('auth.prm.prm')
 @section('head')
     <style>
         label {

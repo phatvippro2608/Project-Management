@@ -18,7 +18,7 @@ $token = 'position';
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{ asset('assets/img/logo2.png') }}" rel="icon">
-    @include('auth/links')
+    @include('auth/prm/libraries')
     @yield('head')
 </head>
 
@@ -95,17 +95,17 @@ $token = 'position';
             </li>
 
             @if (in_array(AccountController::permissionStr(), ['super', 'admin','director', 'customer_manager']))
-            <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
-                   class="nav-link fw-bold">CRM </a>
-            </li>
+                <li class="nav-item" role="presentation">
+                    <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
+                       class="nav-link fw-bold">CRM </a>
+                </li>
             @endif
 
             @if (in_array(AccountController::permissionStr(), ['employee','super','admin','director', 'project_manager']))
-            <li class="nav-item" role="presentation">
-                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
-                </a>
-            </li>
+                <li class="nav-item" role="presentation">
+                    <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
+                    </a>
+                </li>
             @endif
         </ul>
     </div>
