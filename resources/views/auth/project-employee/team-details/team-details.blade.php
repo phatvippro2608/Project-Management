@@ -42,14 +42,14 @@
                 Back
         </div>
     </a>
-
+    @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
     <div class="btn btn-primary my-3 btn-add">
         <div class="d-flex align-items-center">
             <i class="bi bi-file-earmark-plus-fill pe-2"></i>
             Select Employee
         </div>
     </div>
-
+    @endif
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
