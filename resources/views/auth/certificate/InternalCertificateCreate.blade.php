@@ -239,7 +239,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        
+                        response.array.forEach(element => {
+                            
+                        });
                     },
                     error: function(xhr, status, error) {
                         console.error('AJAX request failed:', error);

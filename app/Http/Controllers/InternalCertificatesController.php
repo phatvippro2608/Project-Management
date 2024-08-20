@@ -369,7 +369,14 @@ class InternalCertificatesController extends Controller
 
     public function leftSignatureCertificateCreate(Request $request)
     {
-
+        $director = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->where('permissions.permission_name', '=', 'Director')
+            ->get();
+        return response()->json([
+            'director' => $director
+        ]);
     }
 
     public function temp()
