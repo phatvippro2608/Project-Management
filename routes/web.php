@@ -256,7 +256,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
         Route::post('/reactive/{employee_id}', 'App\Http\Controllers\EmployeesController@reactiveEmployee');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
-        Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
+        Route::post('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{employee_id}', 'App\Http\Controllers\EmployeesController@getEmployee');
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
