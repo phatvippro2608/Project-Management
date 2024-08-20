@@ -258,15 +258,15 @@ $token = 'position';
                     <div class="nav-title w-100">
                         <span>{{$item->project_name}}</span>
                     </div>
-{{--                    <i class="bi bi-chevron-down ms-auto"></i>--}}
+                    <i class="bi bi-chevron-down ms-auto text-primary"></i>
                 </a>
-                <div class="actions text-nowrap" style=" position: absolute; top: 10px; right: 16px; cursor: pointer;">
-                    <i class="bi bi-gear ms-auto"></i>
+                <div class="actions text-nowrap" style=" position: absolute; top: 10px; right: 48px; cursor: pointer;">
+                    <i class="bi bi-gear ms-auto text-primary me-1"></i>
                     <a class="add-location"  data="{{$item->project_id}}">
                         <i class="bi bi-plus-square ms-auto" ></i>
                     </a>
 
-                    <i class="bi bi-star ms-auto"></i>
+{{--                    <i class="bi bi-star ms-auto"></i>--}}
                 </div>
                 <ul id="projects-nav-{{$item->project_id}}" class="nav-content collapse list-unstyled" data-bs-parent="#sidebar-nav">
                     <li>
