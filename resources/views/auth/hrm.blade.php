@@ -212,6 +212,47 @@ $token = 'position';
                                 <i class="bi bi-circle"></i><span>{{ __('messages.employees') }}</span>
                             </a>
                         </li>
+<<<<<<< Updated upstream
+=======
+                        @if (in_array(AccountController::permissionStr(), ['super','admin','director', 'hr_manager']))
+                            <li>
+                                <a class="nav-sub-link"
+                                   href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
+                                    <i class="bi bi-circle"></i><span>{{ __('messages.inactive_user') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-sub-link"
+                                   href="{{action('App\Http\Controllers\CertificateTypeController@getView')}}">
+                                    <i class="bi bi-circle"></i><span>{{ __('messages.certificate_types') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-sub-link"
+                                   href="{{action('App\Http\Controllers\JobInfoController@getView')}}">
+                                    <i class="bi bi-circle"></i><span>{{ __('messages.job_info') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-sub-link"
+                                   href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                                    <i class="bi bi-circle"></i><span>{{ __('messages.account') }}</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+
+                </li>
+            @endif
+            @if (in_array(AccountController::permissionStr(), ['super','admin','director','hr_manager']))
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse"
+                       href="#">
+                        <i class="bi bi-person-fill-x"></i><span>{{ __('messages.recognitions_disciplinaries') }}</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="rewards-discipline-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+>>>>>>> Stashed changes
                         <li>
                             <a class="nav-sub-link"
                                href="{{action('App\Http\Controllers\EmployeesController@inactiveView')}}">
