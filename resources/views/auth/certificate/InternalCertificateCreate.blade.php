@@ -260,11 +260,13 @@
                     },
                     success: function(response) {
                         var html =
-                            `<option value="" disabled selected>Select Left Signature</option>`;
+                            `<option value="" disabled Selected>Select Left Signature</option>`;
                         if (Array.isArray(response.director)) {
                             response.director.forEach(function(element) {
                                 html +=
-                                    `<option value="${element.employee_id}">${element.employee_code} - ${element.last_name} ${element.first_name}`;
+                                    `<option data-img="${element.employee_signature_img}" 
+                                    data-name="${element.last_name} ${element.first_name}"
+                                    value="${element.employee_id}">${element.employee_code} - ${element.last_name} ${element.first_name}`;
                                 if (element.en_name) {
                                     html += ` - ${element.en_name}`;
                                 }
@@ -290,21 +292,25 @@
             var signatureLoadedRight = false;
             var signatureCanvasLeft = document.createElement('canvas');
             var signatureCanvasRight = document.createElement('canvas');
-            var signatureHeight = canvas.height * 23 / 32;
+            var signatureHeight = canvas.height * 30 / 8;
             var signaturePositionLeft = {
-                x: (canvas.width * 17 / 64),
+                x: (canvas.width * 78 / 64),
                 y: signatureHeight,
                 width: 150,
                 height: 75
             };
             var signaturePositionRight = {
-                x: (canvas.width * 19 / 32),
+                x: (canvas.width * 88 / 32),
                 y: signatureHeight,
                 width: 150,
                 height: 75
             };
             var namedescription = '';
             var description = '';
+            var signatureLeftSrc = '';
+            var leftName = '';
+            var signatureRightSrc = '';
+            var rightName = '';
 
             img.onload = function() {
                 canvas.width = img.width;
@@ -329,10 +335,34 @@
                 }
 
                 if (description) {
-                    context.font = "13px 'Lora', serif";
-                    var maxWidth = canvas.width * 18 / 32;
                     var lineHeight = 16;
+                    var maxWidth = canvas.width * 18 / 32;
+                    context.font = "13px 'Lora', serif";
                     wrapText(context, description, canvas.width / 2, canvas.height * 10 / 16, maxWidth, lineHeight);
+                }
+
+                if (signatureLoadedLeft) {
+                    context.drawImage(signatureCanvasLeft, signaturePositionLeft.x, signaturePositionLeft.y,
+                        signaturePositionLeft.width, signaturePositionLeft.height);
+                }
+
+                if (leftName) {
+                    var height = canvas.height * 14 / 16;
+                    var leftWidth = canvas.width * 21 / 64;
+                    context.font = "bold 11px 'Lora', serif";
+                    context.fillText(leftName, leftWidth, height);
+                }
+
+                if (signatureLoadedRight) {
+                    context.drawImage(signatureCanvasRight, signaturePositionRight.x, signaturePositionRight.y,
+                        signaturePositionRight.width, signaturePositionRight.height);
+                }
+
+                if (rightName) {
+                    var height = canvas.height * 14 / 16;
+                    var rightWidth = canvas.width * 42 / 64;
+                    context.font = "bold 11px 'Lora', serif";
+                    context.fillText(rightName, rightWidth, height);
                 }
             }
 
@@ -375,30 +405,32 @@
                 }
             };
 
-            $('#certificateLSig').on('select', function() {
+            $('#certificateLSig').on('change', function() {
+                var selectedOption = $(this).find('option:selected');
+                var signatureLeftSrc = selectedOption.data('img');
+                if (signatureLeftSrc) {
+                    signatureImgLeft.src = `{{ asset('${signatureLeftSrc}') }}`;
+                }
 
-            })
+                leftName = selectedOption.data('name');
+                drawCertificate();
+            });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+            signatureImgLeft.onload = function() {
+                signatureCanvasLeft.width = signatureImgLeft.width;
+                signatureCanvasLeft.height = signatureImgLeft.height;
+                var tempContext = signatureCanvasLeft.getContext('2d');
+                tempContext.drawImage(signatureImgLeft, 0, 0);
+                signatureLoadedLeft = true;
+                drawCertificate();
+            };
 
             $('#certificateRSig').on('input', function() {
                 var employeeValue = $(this).val();
 
                 if (employeeValue.length > 2) {
                     $.ajax({
-                        url: '{{ route('certificate.signature.search') }}',
+                        url: '{{ route('certificate.signature.search.HasSig') }}',
                         type: 'POST',
                         data: JSON.stringify({
                             employeeValue: employeeValue
@@ -409,13 +441,14 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            console.log(response)
                             var html = '';
                             if (response.employees.length > 0) {
                                 html = '';
                                 $.each(response.employees, function(index, employee) {
                                     html +=
-                                        `<li class="list-group-item list-group-item-action" data-id="${employee.employee_code}">`;
+                                        `<li class="list-group-item list-group-item-action" 
+                                        data-img="${employee.employee_signature_img}" 
+                                        data-name="${employee.last_name} ${employee.first_name}">`;
                                     html +=
                                         `${employee.employee_code} - ${employee.last_name} ${employee.first_name}`;
                                     if (employee.en_name) {
@@ -438,29 +471,30 @@
 
             $(document).on('click', '#employeeResults li', function() {
                 var selectedText = $(this).text();
-                var selectedId = $(this).data('id');
+                signatureRightSrc = $(this).data('img');
                 $('#certificateRSig').val(selectedText);
-                $('#certificateRSig').data('id', selectedId);
                 $('#employeeResults').addClass('d-none');
+                console.log(signatureRightSrc)
+                if (signatureRightSrc) {
+                    signatureImgRight.src = `{{ asset('${signatureRightSrc}') }}`;
+                }
+                rightName = $(this).data('name');
+                drawCertificate();
+
             });
 
+            signatureImgRight.onload = function() {
+                signatureCanvasRight.width = signatureImgRight.width;
+                signatureCanvasRight.height = signatureImgRight.height;
+                var tempContext = signatureCanvasRight.getContext('2d');
+                tempContext.drawImage(signatureImgRight, 0, 0);
+                signatureLoadedRight = true;
+                drawCertificate();
+            };
+            // lưu ảnh
+            $('#saveCertificate').on('click', function() {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            })
 
             $('#certificateTable').DataTable();
 

@@ -372,10 +372,56 @@ class InternalCertificatesController extends Controller
         $director = DB::table('employees')
             ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', function ($join) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->whereIn('employee_signatures.employee_signature_id', function ($query) {
+                        $query->select(DB::raw('MAX(employee_signature_id)'))
+                            ->from('employee_signatures')
+                            ->groupBy('employee_id');
+                    });
+            })
             ->where('permissions.permission_name', '=', 'Director')
+            ->select('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->groupBy('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
             ->get();
+
+
         return response()->json([
             'director' => $director
+        ]);
+    }
+
+    public function searchEmployeeHasSignature(Request $request)
+    {
+        $request->validate([
+            'employeeValue' => 'required|string',
+        ]);
+
+        $employeeValue = strtolower(trim($request->input('employeeValue')));
+
+        $employees = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', function ($join) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->whereIn('employee_signatures.employee_signature_id', function ($query) {
+                        $query->select(DB::raw('MAX(employee_signature_id)'))
+                            ->from('employee_signatures')
+                            ->groupBy('employee_id');
+                    });
+            })
+            ->whereRaw("LOWER(employees.employee_code) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(CONCAT(employees.last_name, ' ', employees.first_name)) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(CONCAT(employees.last_name, ' ', employees.first_name), ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(employees.en_name) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(employees.en_name, ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->select('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->groupBy('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->get();
+        ;
+
+        return response()->json([
+            'employees' => $employees,
         ]);
     }
 
