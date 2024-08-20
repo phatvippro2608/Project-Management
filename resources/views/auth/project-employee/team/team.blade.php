@@ -1,4 +1,4 @@
-@extends('auth.project')
+@extends('auth.prm')
 @section('head')
     <style>
         .custom-checkbox-lg {
@@ -7,28 +7,32 @@
             margin-bottom: 1px;
             margin-right: 5px;
         }
+
         .custom-checkbox-lg input[type="checkbox"] {
             width: 22px;
             height: 22px;
             margin-bottom: 1px;
             margin-right: 5px;
         }
-        .hover-details{
+
+        .hover-details {
             text-decoration: none;
             color: var(--bs-primary);
         }
-        .hover-details:hover{
+
+        .hover-details:hover {
             text-decoration: underline;
             opacity: 1;
             color: var(--bs-primary);
         }
-        label {
-                 font-weight: bolder;
-                 margin-left: 5px;
-                 margin-top: 20px;
-             }
 
-        tr{
+        label {
+            font-weight: bolder;
+            margin-left: 5px;
+            margin-top: 20px;
+        }
+
+        tr {
             border-bottom: 1px solid #E8E8E8;
         }
     </style>
@@ -43,60 +47,66 @@
             </ol>
         </nav>
     </div>
-    <div class="row gx-3 my-3">
-        <div class="col-md-6 m-0">
-            <div class="btn btn-primary me-2 btn-add">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-file-earmark-plus-fill pe-2"></i>
+    @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
+        <div class="row gx-3 my-3">
+            <div class="col-md-6 m-0">
+                <div class="btn btn-primary me-2 btn-add">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-plus-fill pe-2"></i>
                         {{ __('messages.add') }}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
     <div class="card border rounded-4 p-2">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="teamListTable" class="table table-hover table-borderless">
                     <thead class="table-light">
-                        <tr>
-                            <th class="text-center">{{ __('messages.team_name') }}</th>
-                            <th class="text-center">Created by</th>
-                            <th class="text-center">Created at</th>
-                            <th class="text-center">Last update</th>
-                            <th class="text-center">{{ __('messages.status') }}</th>
+                    <tr>
+                        <th class="text-center">{{ __('messages.team_name') }}</th>
+                        <th class="text-center">Created by</th>
+                        <th class="text-center">Created at</th>
+                        <th class="text-center">Last update</th>
+                        <th class="text-center">{{ __('messages.status') }}</th>
+                        @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
                             <th class="text-center" style="width: 60px!important;">Action</th>
-                        </tr>
+                        @endif
+                    </tr>
                     </thead>
                     <tbody class="account-list">
-                        @foreach($team as $item)
-                            <tr class="account-item " style="height: 80px" >
+                    @foreach($team as $item)
+                        <tr class="account-item " style="height: 80px">
 
-                                <td class="text-left pt-1 pb-1 w-25">
-                                    <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}" class="hover-details fw-bold ">
-                                        {{$item->team_name}}
-                                    </a>
-                                    <div class="text-truncate fw-normal">{{$item->team_description}}</div>
-                                </td>
-                                <td class="text-center">
-                                    {{$item->first_name.' '.$item->last_name}}
-                                </td>
-                                <td class="text-center">
-                                    {{\App\Http\Controllers\AccountController::format($item->created_at)}}
-                                </td>
-                                <td class="text-center">
-                                    {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
-                                </td>
-                                <td class="text-center">
-                                    @if($status[$item->status] == 'Offline')
-                                        <i class="bi bi-circle-fill account-status offline"></i>
-                                    @elseif($status[$item->status] == 'Locked')
-                                        <i class="bi bi-circle-fill account-status" style="color:red;"></i>
-                                    @else
-                                        <i class="bi bi-circle-fill account-status"></i>
-                                    @endif
+                            <td class="text-left pt-1 pb-1 w-25">
+                                <a href="{{ route('team.employees', ['team_id' => $item->team_id]) }}"
+                                   class="hover-details fw-bold ">
+                                    {{$item->team_name}}
+                                </a>
+                                <div class="text-truncate fw-normal">{{$item->team_description}}</div>
+                            </td>
+                            <td class="text-center">
+                                {{$item->first_name.' '.$item->last_name}}
+                            </td>
+                            <td class="text-center">
+                                {{\App\Http\Controllers\AccountController::format($item->created_at)}}
+                            </td>
+                            <td class="text-center">
+                                {{\App\Http\Controllers\AccountController::format($item->updated_at)}}
+                            </td>
+                            <td class="text-center">
+                                @if($status[$item->status] == 'Offline')
+                                    <i class="bi bi-circle-fill account-status offline"></i>
+                                @elseif($status[$item->status] == 'Locked')
+                                    <i class="bi bi-circle-fill account-status" style="color:red;"></i>
+                                @else
+                                    <i class="bi bi-circle-fill account-status"></i>
+                                @endif
 
-                                    {{$status[$item->status]}}
-                                </td>
+                                {{$status[$item->status]}}
+                            </td>
+                            @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager',]))
                                 <td class="text-center">
                                     <div class="d-flex align-items-center justify-content-center">
                                         <div class="d-flex align-items-center">
@@ -113,8 +123,9 @@
                                     </div>
 
                                 </td>
-                            </tr>
-                        @endforeach
+                            @endif
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -167,7 +178,7 @@
 @section('script')
     <script>
         var table = $('#teamListTable').DataTable({
-            language: { search: "" },
+            language: {search: ""},
             lengthMenu: [
                 [10, 30, 50, 100, -1],
                 [10, 30, 50, 100, "All"]
@@ -238,7 +249,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'team_id' : data.team_id,
+                        'team_id': data.team_id,
                         'team_name': $('.name1').val(),
                         'status': $('.name2').val(),
                         'team_description': $('.name3').val(),

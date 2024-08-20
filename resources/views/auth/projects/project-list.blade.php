@@ -1,4 +1,4 @@
-@extends('auth.project')
+@extends('auth.prm')
 @section('head')
     <style>
         label {
@@ -64,11 +64,12 @@
         </div>
     @endif
 
-    <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-        <i class="bi bi-plus-lg"></i>
-        {{ __('messages.add') }}
-    </button>
-
+    @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager']))
+        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+            <i class="bi bi-plus-lg"></i>
+            {{ __('messages.add') }}
+        </button>
+    @endif
     {{--    <button class="btn btn-primary mb-4">--}}
     {{--        <i class="bi bi-file-earmark-arrow-up"></i>--}}
     {{--        {{ __('messages.import') }}--}}
@@ -93,8 +94,6 @@
 
                     <th scope="col" class="text-center">{{ __('messages.status') }}</th>
                     <th scope="col" class="text-center">{{ __('messages.action') }}</th>
-                    {{--                        <th scope="col">StartDate</th>--}}
-                    {{--                        <th scope="col">EndDate</th>--}}
                 </tr>
                 </thead>
                 <tbody>
@@ -159,14 +158,16 @@
                                     </div>
 
                                 @endif
-                                <div
-                                    class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
-                                    style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
-                                    data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
-                                    team-id="{{$item->team_id}}"
-                                >
-                                    <i class="bi bi-person-fill-add fs-4"></i>
-                                </div>
+                                @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager']))
+                                    <div
+                                        class="d-flex align-items-center justify-content-center ms-1 team-select-employee"
+                                        style="width: 36px; height: 36px; background: transparent; border-radius: 50%; border: 1px dashed black; cursor: pointer"
+                                        data="{{\App\Http\Controllers\AccountController::toAttrJson($item->all_employees)}}"
+                                        team-id="{{$item->team_id}}"
+                                    >
+                                        <i class="bi bi-person-fill-add fs-4"></i>
+                                    </div>
+                                @endif
                             </div>
                         </td>
 
@@ -206,15 +207,17 @@
                                 </div>
 
                                 <ul class="dropdown-menu">
-                                    <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">
-                                        <a class="dropdown-item bg-hover add-location d-flex align-items-center"
-                                           data="{{$item->project_id}}">
-                                            <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>
-                                    </li>
-                                    <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover"
-                                                                                    href="{{ route('project.details', ['project_id' => $item->project_id]) }}">Details
-                                            and Cost</a></li>
-                                    </li>
+                                    @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager']))
+                                        <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">
+                                            <a class="dropdown-item bg-hover add-location d-flex align-items-center"
+                                               data="{{$item->project_id}}">
+                                                <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>
+                                        </li>
+                                        <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover"
+                                                                                        href="{{ route('project.details', ['project_id' => $item->project_id, 'location'=>'all']) }}">Details
+                                                and Cost</a></li>
+                                        </li>
+                                    @endif
                                     <li><a class="dropdown-item bg-hover"
                                            href="{{ action('App\Http\Controllers\ProjectController@getAttachmentView', $item->project_id) }}">Attachments</a>
                                     </li>

@@ -36,6 +36,7 @@ class EmployeesController extends Controller
                 'accounts.*', // lấy tất cả các cột từ bảng accounts
                 'employees.employee_id as employee_id' // chỉ định employee_id từ bảng employees
             ]);
+
         return view('auth.employees.employees',
             [
                 'data' => $data,

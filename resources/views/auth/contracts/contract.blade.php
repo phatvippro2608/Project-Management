@@ -1,4 +1,4 @@
-@extends('auth.project')
+@extends('auth.prm')
 @section('head')
     <style>
         label {
@@ -46,7 +46,8 @@
                 <thead class="table-light">
                 <tr>
                     <th class="text-center">#</th>
-                    <th class="text-center" style="text-transform: capitalize;">{{ __('messages.contract_detail') }}</th>
+                    <th class="text-center"
+                        style="text-transform: capitalize;">{{ __('messages.contract_detail') }}</th>
                     <th class="text-center" style="text-transform: capitalize;">{{ __('messages.datestart') }}</th>
                     <th class="text-center" style="text-transform: capitalize;">{{ __('messages.dateend') }}</th>
                     <th class="text-center" style="text-transform: capitalize;">{{ __('messages.amount') }}</th>
@@ -77,9 +78,10 @@
                                         <i class="bi bi-pencil-square ic-update ic-btn "
                                         ></i>
                                     </a>
-                                    <a class="btn-delete delete" style="cursor: pointer" data="{{$contract->contract_id}}">
+                                    <a class="btn-delete delete" style="cursor: pointer"
+                                       data="{{$contract->contract_id}}">
                                         <i class="bi bi-trash ic-delete ic-btn at3" aria-hidden="true"
-                                           ></i>
+                                        ></i>
                                     </a>
                                 </div>
 
@@ -100,7 +102,8 @@
                 <div class="modal-content">
                     <div class="modal-header d-flex justify-content-between">
                         <h4 class="modal-title text-bold"></h4>
-                        <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>
+                        <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal"
+                           aria-label="Close"></i>
                     </div>
                     <div class="modal-body">
 
@@ -136,11 +139,11 @@
                                                 <option selected>Choose...</option>
                                                 @foreach($customers as $item)
                                                     <option
-                                                        value="{{$item->customer_id}}">{{$item->first_name.' '.$item->last_name}}</option>
+                                                            value="{{$item->customer_id}}">{{$item->first_name.' '.$item->last_name}}</option>
                                                 @endforeach
                                             </select>
                                             <button class="btn btn-outline-secondary add-customer" type="button"><i
-                                                    class="bi bi-plus"></i></button>
+                                                        class="bi bi-plus"></i></button>
                                         </div>
                                     </div>
                                     <div class="col-md-12" style="margin-top: 1rem">
@@ -177,7 +180,9 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary btn-upload btn-add-contract btn-update-contract">Create</button>
+                        <button type="button" class="btn btn-primary btn-upload btn-add-contract btn-update-contract">
+                            Create
+                        </button>
                     </div>
                 </div>
             </form>
@@ -224,7 +229,7 @@
                 formData.append('customer_id', $('.customer').val());
 
                 $.ajax({
-                    url:  `{{action('App\Http\Controllers\ContractController@addContract')}}`,
+                    url: `{{action('App\Http\Controllers\ContractController@addContract')}}`,
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -239,7 +244,7 @@
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
-                        }else if(result.status === 422){
+                        } else if (result.status === 422) {
                             const errorRes = JSON.parse(result.message);
                             let strMes = "";
                             if (errorRes.contract_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_name}</div>`;
@@ -258,8 +263,7 @@
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             toastr.error(result.message, "Failed Action");
                         }
                     },
@@ -430,7 +434,7 @@
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
-                        }else if(result.status === 422){
+                        } else if (result.status === 422) {
                             const errorRes = JSON.parse(result.message);
                             let strMes = "";
                             if (errorRes.contract_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_name}</div>`;
@@ -485,9 +489,6 @@
                 }
             });
         })
-
-
-
 
 
         $(document).on('click', '.btn-delete', function () {
@@ -573,7 +574,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('re') && urlParams.get('re')==='re') {
+        if (urlParams.has('re') && urlParams.get('re') === 're') {
             $('.name').val(urlParams.get('contractName') || '');
             $('.start').val(urlParams.get('contractStartDate') || '');
             $('.end').val(urlParams.get('contractEndDate') || '');
@@ -599,7 +600,7 @@
                 formData.append('customer_id', $('.customer').val());
 
                 $.ajax({
-                    url:  `{{action('App\Http\Controllers\ContractController@addContract')}}`,
+                    url: `{{action('App\Http\Controllers\ContractController@addContract')}}`,
                     type: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -614,7 +615,7 @@
                             setTimeout(function () {
                                 window.location.reload();
                             }, 500);
-                        }else if(result.status === 422){
+                        } else if (result.status === 422) {
                             const errorRes = JSON.parse(result.message);
                             let strMes = "";
                             if (errorRes.contract_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_name}</div>`;
@@ -633,8 +634,7 @@
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             toastr.error(result.message, "Failed Action");
                         }
                     },

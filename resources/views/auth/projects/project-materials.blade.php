@@ -1,4 +1,4 @@
-@extends('auth.main')
+@extends('auth.prm')
 @section('head')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
@@ -79,7 +79,7 @@
                             <td>{{ number_format($subtotal[$i], 0, ',', '.') }} VND</td>
                             <td>{{ $materialData[$i]->project_material_vat }}%</td>
                             <td>{{ $materialData[$i]->date_create }}</td>
-                            
+
                             <td>
                                 <button
                                     class="btn p-1 btn-primary border-0 bg-transparent text-primary shadow-none edit-btn"
