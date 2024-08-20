@@ -204,9 +204,6 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         });
     });
 
-
-
-
     Route::group(['prefix' => '/lms'], function () {
         Route::get('', 'App\Http\Controllers\LMSDashboardController@getView');
         Route::get('/workshops', 'App\Http\Controllers\WorkshopController@getViewDashboard');
@@ -214,15 +211,21 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/workshop', [WorkshopController::class, 'add'])->name('workshop.store');
         Route::get('/workshop/{workshop_id}', [WorkshopController::class, 'show'])->name('workshop.show');
         Route::put('/workshop/update', [WorkshopController::class, 'update'])->name('workshop.update');
+        Route::put('/workshop/{workshop_id}', [WorkshopController::class, 'updAll'])->name('workshop.updAll');
         Route::get('/live/{workshop_id}', [WorkshopController::class, 'live'])->name('lms.live');
 
         //Courses
         Route::get('/courses', 'App\Http\Controllers\CourseController@getViewCourses')->name('lms.course');
+        Route::get('/courses/get', 'App\Http\Controllers\CourseController@getCourses')->name('lms.getcourses');
         Route::post('/course', 'App\Http\Controllers\CourseController@create');
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
         Route::delete('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
+        Route::get('/course/types', 'App\Http\Controllers\CourseController@getCourseTypes')->name('course.types');
+        Route::post('/course/types', 'App\Http\Controllers\CourseController@addCourseType')->name('course.type.add');
+        Route::post('/course/types/update', 'App\Http\Controllers\CourseController@updateCourseType')->name('course.type.update');
+        Route::delete('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
 
         //Sections
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
@@ -383,7 +386,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/recognition'], function () {
         Route::get('', [RecognitionController::class, 'getView'])->name('recognition.view');
         Route::get('/type', [RecognitionTypeController::class, 'getView'])->name('recognitiontype.index');
-        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'getRecognitionType'])->name('recognitiontype.getRecognitionType');
+        Route::get('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'get'])->name('recognitiontype.get');
+        Route::put('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'upd'])->name('recognitiontype.udp');
+        Route::delete('/type/{recognitiontype_id}', [RecognitionTypeController::class, 'del'])->name('recognitiontype.del');
         Route::post('/add', [RecognitionController::class, 'add'])->name('recognition.add');
         Route::post('/addType', [RecognitionController::class, 'addType'])->name('recognition.addType');
         Route::post('/import', [RecognitionController::class, 'import'])->name('recognition.import');
@@ -395,6 +400,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::group(['prefix' => '/disciplinary'], function () {
         Route::get('', [DisciplinaryController::class, 'getView'])->name('disciplinary.view');
         Route::get('/type', [DisciplinaryTypeController::class, 'getView'])->name('disciplinarytype.index');
+        Route::get('/type/{id}', [DisciplinaryTypeController::class, 'get'])->name('disciplinarytype.get');
+        Route::put('/type/{id}', [DisciplinaryTypeController::class, 'upd'])->name('disciplinarytype.upd');
+        Route::delete('/type/{id}', [DisciplinaryTypeController::class, 'del'])->name('disciplinarytype.del');
         Route::post('/add', [DisciplinaryController::class, 'add'])->name('disciplinary.add');
         Route::post('/addType', [DisciplinaryController::class, 'addType'])->name('disciplinary.addType');
         Route::post('/import', [DisciplinaryController::class, 'import'])->name('disciplinary.import');

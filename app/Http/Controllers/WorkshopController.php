@@ -75,6 +75,34 @@ class WorkshopController extends Controller
         return redirect()->route('workshop.show', ['workshop_id' => $workshop->workshop_id])->with('success', 'Workshop updated successfully');
     }
 
+    public function updAll(Request $request, $workshop_id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'workshop_title' => 'required|string|max:255',
+            'workshop_description' => 'required|string',
+            'workshop_content' => 'required|string',
+        ]);
+
+        // Find the workshop by ID
+        $workshop = WorkshopModel::find($workshop_id);
+
+        if (!$workshop) {
+            return redirect()->back()->with('error', 'Workshop not found.');
+        }
+
+        // Update the workshop's information
+        $workshop->workshop_title = $request->input('workshop_title');
+        $workshop->workshop_description = $request->input('workshop_description');
+        $workshop->workshop_content = $request->input('workshop_content');
+
+        // Save the updated workshop
+        $workshop->save();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Workshop updated successfully.');
+    }
+
     public function uploadOne($image, $folder, $disk, $name)
     {
         $image->storeAs($folder, $name.'.'.$image->getClientOriginalExtension(), $disk);

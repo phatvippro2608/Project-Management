@@ -12,6 +12,8 @@ class RecognitionTypeModel extends Model
 
     protected $table = 'recognition_types';
 
+    protected $primaryKey = 'recognition_type_id';
+
     protected $fillable = [
         'recognition_type_name',
         'recognition_type_hidden',
