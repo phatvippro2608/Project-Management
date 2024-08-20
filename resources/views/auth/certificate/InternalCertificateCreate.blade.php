@@ -178,9 +178,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="pdf-container">
-                        <canvas id="pdf-viewer"></canvas>
-                    </div>
+                    <div id="certificateImg"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnAprove" class="btn btn-success" data-bs-dismiss="modal">Aprove</button>
@@ -237,7 +235,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="saveCertificate">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="saveCertificate" data-bs-dismiss="modal">Save
+                        changes</button>
                 </div>
             </div>
         </div>
@@ -251,6 +250,7 @@
             $('#viewAddCertificate').click(function() {
                 $('#certificateTitle').val('');
                 $('#certificateDes').val('');
+                $('#certificateRSig').val('');
 
                 $.ajax({
                     url: '{{ route('certificate.create.leftSignature') }}',
@@ -430,7 +430,7 @@
 
                 if (employeeValue.length > 2) {
                     $.ajax({
-                        url: '{{ route('certificate.signature.search.HasSig') }}',
+                        url: '{{ route('certificate.create.search.HasSig') }}',
                         type: 'POST',
                         data: JSON.stringify({
                             employeeValue: employeeValue
@@ -448,7 +448,8 @@
                                     html +=
                                         `<li class="list-group-item list-group-item-action" 
                                         data-img="${employee.employee_signature_img}" 
-                                        data-name="${employee.last_name} ${employee.first_name}">`;
+                                        data-name="${employee.last_name} ${employee.first_name}" 
+                                        data-id="${employee.employee_code}">`;
                                     html +=
                                         `${employee.employee_code} - ${employee.last_name} ${employee.first_name}`;
                                     if (employee.en_name) {
@@ -471,10 +472,11 @@
 
             $(document).on('click', '#employeeResults li', function() {
                 var selectedText = $(this).text();
+                var selectedId = $(this).data('id');
                 signatureRightSrc = $(this).data('img');
                 $('#certificateRSig').val(selectedText);
+                $('#certificateRSig').data('id', selectedId);
                 $('#employeeResults').addClass('d-none');
-                console.log(signatureRightSrc)
                 if (signatureRightSrc) {
                     signatureImgRight.src = `{{ asset('${signatureRightSrc}') }}`;
                 }
@@ -493,7 +495,35 @@
             };
             // lưu ảnh
             $('#saveCertificate').on('click', function() {
-
+                var canvas = document.getElementById('certificateCanvas');
+                var employeeCode = $('#certificateRSig').data('id');
+                var imgData = canvas.toDataURL('image/png');
+                $.ajax({
+                    url: '{{ route('certificate.create.add') }}',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        img: imgData,
+                        employeeCode
+                    }),
+                    contentType: 'application/json',
+                    processData: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'The certificate has been successfully saved.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Reload the page when the user clicks OK
+                                location.reload();
+                            }
+                        });
+                    }
+                });
             })
 
             $('#certificateTable').DataTable();
@@ -517,32 +547,9 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            if (response.imgCertificate) {
-                                var imgUrl = response.imgCertificate.certificate_create_img;
-                                var loadingTask = pdfjsLib.getDocument(imgUrl);
-                                loadingTask.promise.then(function(pdf) {
-                                    pdf.getPage(1).then(function(page) {
-                                        var scale = 1;
-                                        var viewport = page.getViewport({
-                                            scale: scale
-                                        });
-                                        var canvas = document.getElementById(
-                                            'pdf-viewer');
-                                        var context = canvas.getContext('2d');
-                                        canvas.height = viewport.height;
-                                        canvas.width = viewport.width;
-                                        var renderContext = {
-                                            canvasContext: context,
-                                            viewport: viewport
-                                        };
-                                        var renderTask = page.render(
-                                            renderContext);
-                                    });
-                                }, function(reason) {
-                                    console.error(reason);
-                                });
-                            }
-
+                            var html =
+                                `<img src="${response.imgCertificate.certificate_create_img}" style="width: 100%" alt="">`;
+                            $('#certificateImg').html(html)
                             $('#certificateModal').modal('show');
                             $('#certificateModal #btnAprove').data('id', idCertificate);
                             $('#certificateModal #btnRefuse').data('id', idCertificate);

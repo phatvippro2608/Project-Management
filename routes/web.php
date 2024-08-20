@@ -464,7 +464,8 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/load', [InternalCertificatesController::class, 'loadCertificateCreate'])->name('certificate.create.load');
         Route::post('/status', [InternalCertificatesController::class, 'updateStatusCertificateCreate'])->name('certificate.create.status');
         Route::post('/leftSignature', [InternalCertificatesController::class, 'leftSignatureCertificateCreate'])->name('certificate.create.leftSignature');
-        Route::post('/search', [InternalCertificatesController::class, 'searchEmployeeHasSignature'])->name('certificate.signature.search.HasSig');
+        Route::post('/search', [InternalCertificatesController::class, 'searchEmployeeHasSignature'])->name('certificate.create.search.HasSig');
+        Route::post('/add', [InternalCertificatesController::class, 'addCertificate'])->name('certificate.create.add');
     });
 
 

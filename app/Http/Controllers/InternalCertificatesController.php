@@ -425,6 +425,48 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
+    public function addCertificate(Request $request)
+    {
+        $request->validate([
+            'img' => 'required|string',
+            'employeeCode' => 'required|integer'
+        ]);
+
+        $imageData = $request->input('img');
+        $employeeCode = $request->input('employeeCode');
+
+        // Tìm nhân viên dựa trên mã nhân viên
+        $employee = DB::table('employees')
+            ->where('employee_code', $employeeCode)
+            ->first();
+
+        // Tìm nhân viên hiện tại đang đăng nhập
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
+
+        // Xử lý hình ảnh
+        $imageParts = explode(',', $imageData);
+        $imageExtension = 'png'; // Có thể thay đổi tùy nhu cầu
+        $imageContent = base64_decode($imageParts[1]);
+
+        // Tạo tên tệp tin và đường dẫn
+        $imageName = 'certificate_' . time() . '.' . $imageExtension;
+        $imagePath = public_path('assets/img/certificate/' . $imageName);
+
+        // Lưu hình ảnh vào thư mục
+        file_put_contents($imagePath, $imageContent);
+
+        DB::table('certificate_creates')->insert([
+            'employee_id' => $employee->employee_id,
+            'certificate_create_img' => 'assets/img/certificate/' . $imageName,
+            'employeed_update_id' => $employeeUpdated->employee_id
+        ]);
+
+        return;
+    }
+
     public function temp()
     {
 
