@@ -47,6 +47,27 @@
             width: 100%;
             height: 100%;
         }
+
+        #employeeResults {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            z-index: 1000;
+            padding: 0;
+            margin: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #employeeResults li {
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        #employeeResults li:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 @endsection
 
@@ -195,18 +216,17 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="certificateLSig" class="form-label">Left Signature</label>
+                                    <label for="certificateLSig" class="form-label">Director Signature</label>
                                     <select class="form-control" id="certificateLSig" name="certificateLSig" required>
-                                        <option value="" disabled selected>Select Left Signature</option>
-                                        <option value="signature1">Signature 1</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="certificateRSig" class="form-label">Right Signature</label>
+                                <div class="mb-3 position-relative">
+                                    <label for="certificateRSig" class="form-label">Employee Signature</label>
                                     <input type="text" class="form-control" id="certificateRSig"
                                         name="certificateRSig" required>
+                                    <ul id="employeeResults" class="list-group position-absolute w-100 d-none"></ul>
                                 </div>
                             </div>
                         </div>
@@ -239,20 +259,50 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        response.array.forEach(element => {
-                            
-                        });
+                        var html =
+                            `<option value="" disabled selected>Select Left Signature</option>`;
+                        if (Array.isArray(response.director)) {
+                            response.director.forEach(function(element) {
+                                html +=
+                                    `<option value="${element.employee_id}">${element.employee_code} - ${element.last_name} ${element.first_name}`;
+                                if (element.en_name) {
+                                    html += ` - ${element.en_name}`;
+                                }
+                                html += `</option>`;
+                            });
+                        }
+                        $('#certificateLSig').html(html);
                     },
                     error: function(xhr, status, error) {
                         console.error('AJAX request failed:', error);
                     }
                 });
+
                 $('#addCertificateModal').modal('show');
             });
 
             var canvas = document.getElementById('certificateCanvas');
             var context = canvas.getContext('2d');
             var img = new Image();
+            var signatureImgLeft = new Image();
+            var signatureImgRight = new Image();
+            var signatureLoadedLeft = false;
+            var signatureLoadedRight = false;
+            var signatureCanvasLeft = document.createElement('canvas');
+            var signatureCanvasRight = document.createElement('canvas');
+            var signatureHeight = canvas.height * 23 / 32;
+            var signaturePositionLeft = {
+                x: (canvas.width * 17 / 64),
+                y: signatureHeight,
+                width: 150,
+                height: 75
+            };
+            var signaturePositionRight = {
+                x: (canvas.width * 19 / 32),
+                y: signatureHeight,
+                width: 150,
+                height: 75
+            };
             var namedescription = '';
             var description = '';
 
@@ -324,6 +374,75 @@
                     context.fillText(lines[i], x, y + (i * lineHeight));
                 }
             };
+
+            $('#certificateLSig').on('select', function() {
+
+            })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            $('#certificateRSig').on('input', function() {
+                var employeeValue = $(this).val();
+
+                if (employeeValue.length > 2) {
+                    $.ajax({
+                        url: '{{ route('certificate.signature.search') }}',
+                        type: 'POST',
+                        data: JSON.stringify({
+                            employeeValue: employeeValue
+                        }),
+                        contentType: 'application/json',
+                        processData: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log(response)
+                            var html = '';
+                            if (response.employees.length > 0) {
+                                html = '';
+                                $.each(response.employees, function(index, employee) {
+                                    html +=
+                                        `<li class="list-group-item list-group-item-action" data-id="${employee.employee_code}">`;
+                                    html +=
+                                        `${employee.employee_code} - ${employee.last_name} ${employee.first_name}`;
+                                    if (employee.en_name) {
+                                        html += ` - ${employee.en_name}`
+                                    }
+                                    html += '</li>';
+                                });
+                                $('#employeeResults').html(html).removeClass('d-none');
+                            } else {
+                                $('#employeeResults').html(
+                                        '<li class="list-group-item">No employees found.</li>')
+                                    .removeClass('d-none');
+                            }
+                        }
+                    });
+                } else {
+                    $('#employeeResults').addClass('d-none');
+                }
+            });
+
+            $(document).on('click', '#employeeResults li', function() {
+                var selectedText = $(this).text();
+                var selectedId = $(this).data('id');
+                $('#certificateRSig').val(selectedText);
+                $('#certificateRSig').data('id', selectedId);
+                $('#employeeResults').addClass('d-none');
+            });
 
 
 
