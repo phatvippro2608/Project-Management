@@ -140,7 +140,9 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Detaill
         Route::group(['prefix' => '/{project_id}'], function () {
             Route::get('/', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
-
+//            Route::group(['prefix' => '/location'], function () {
+//                Route::get('/{location}', [ProjectBudgetController::class, 'showProjectDetail'])->name('project.details');
+//            });
             Route::group(['prefix' => '/materials'], function () {
                 Route::get('/', [ProjectMaterialsController::class, 'getView'])->name('prjMaterials');
                 Route::post('/add', [ProjectMaterialsController::class, 'add'])->name('prjMaterials.add');
@@ -180,7 +182,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
                 Route::post('/import', [ProjectBudgetController::class, 'budget_import'])->name('budget.import');
                 Route::post('/details/1', [ProjectBudgetController::class, 'getCostDetails'])->name('budget.getDetail');
             });
-            
+
             //Progress
             Route::group(['prefix' => '/location'], function () {
                 Route::group(['prefix' => '/{location_id}'], function () {

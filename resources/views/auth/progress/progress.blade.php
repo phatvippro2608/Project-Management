@@ -4,7 +4,7 @@ use App\Http\Controllers\AccountController;
 
 $token = 'position';
 ?>
-@extends('auth.project')
+@extends('auth.prm')
 @section('head')
     <link rel="stylesheet" href="{{ asset('assets/css/dhtmlxgantt.css') }}" type="text/css">
     <script src="{{ asset('assets/js/dhtmlxgantt.js') }}"></script>
@@ -28,7 +28,8 @@ $token = 'position';
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('project.projects') }}">Projects</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('project.details', ['project_id' => $p_id]) }}">Details</a>
+                <li class="breadcrumb-item"><a
+                            href="{{ route('project.details', ['project_id' => $p_id]) }}">Details</a>
                 </li>
                 <li class="breadcrumb-item active">Progress</li>
             </ol>
@@ -58,7 +59,8 @@ $token = 'position';
                     @if (in_array($empl_id, $leader_arr) ||
                             in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalCreateTask"><i class="bi bi-plus-lg me-1"></i>Create</button>
+                                data-bs-target="#modalCreateTask"><i class="bi bi-plus-lg me-1"></i>Create
+                        </button>
                     @endif
                     <div class="btn-group">
                         <button class="btn btn-primary" id="btnD">Day</button>
@@ -82,14 +84,14 @@ $token = 'position';
                         <div class="modal-header bg-white">
                             <div class="input-group">
                                 <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-c"
-                                    autocomplete="off">
+                                       autocomplete="off">
                                 <label class="btn btn-outline-success me-2" for="btn-check-c"><i
-                                        class="bi bi-check"></i></label>
+                                            class="bi bi-check"></i></label>
                                 <input type="text" class="form-control modal-title fs-5 no-background" name="taskname"
-                                    placeholder="[Task Name]" required>
+                                       placeholder="[Task Name]" required>
                             </div>
                             <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
-                                    class="bi bi-x" style="font-size: 3vh;"></i></button>
+                                        class="bi bi-x" style="font-size: 3vh;"></i></button>
                         </div>
                         <div class="modal-body row">
                             <div class="form-group col-6">
@@ -103,7 +105,8 @@ $token = 'position';
                                 <div class="form-group" style="margin: 2% 0;">
                                     <label class="form-group"><strong><i class="bi bi-body-text"></i>
                                             Request</strong></label>
-                                    <textarea class="form-control" placeholder="Enter your request" style="resize: none;" name="request"></textarea>
+                                    <textarea class="form-control" placeholder="Enter your request"
+                                              style="resize: none;" name="request"></textarea>
                                 </div>
                             </div>
                             <div class="form-group col-6" style="border-left: 1px solid;">
@@ -113,9 +116,10 @@ $token = 'position';
                                     <div class="row form-group mt-3">
                                         <div class="d-flex justify-content-between">
                                             <input class="form-control empl_name" onkeyup="searchDropdown(this)"
-                                                onclick="displayDropdown(this)" required>
+                                                   onclick="displayDropdown(this)" required>
                                             <input class="form-control empl_code" style="width: 25%;"
-                                                onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                                   onkeyup="searchDropdown(this)" onclick="displayDropdown(this)"
+                                                   required>
                                             <input type="text" class="empl_id" name="employee_id" hidden>
                                         </div>
                                     </div>
@@ -129,11 +133,11 @@ $token = 'position';
                                                     file_exists(public_path($employee->photo));
                                             @endphp
                                             <div class="employee-item d-flex align-items-center"
-                                                data-id="{{ $employee->employee_id }}"
-                                                data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
-                                                data-code={{ $employee->employee_code }}>
+                                                 data-id="{{ $employee->employee_id }}"
+                                                 data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
+                                                 data-code={{ $employee->employee_code }}>
                                                 <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
-                                                    class="rounded-circle object-fit-cover" width="22" height="22">
+                                                     class="rounded-circle object-fit-cover" width="22" height="22">
                                                 <div class="empl_val ms-1"></div>
                                             </div>
                                         @endforeach
@@ -143,12 +147,12 @@ $token = 'position';
                                     <label for="s_date"><strong><i class="bi bi-calendar"></i> Start
                                             date</strong></label>
                                     <input class="form-control" type="date" onchange="checkDate('create-task-form')"
-                                        name="s_date" required>
+                                           name="s_date" required>
                                 </div>
                                 <div class="form-group" style="margin: 2% 0">
                                     <label for="e_date"><strong><i class="bi bi-calendar"></i> End date</strong></label>
                                     <input class="form-control" type="date" onchange="checkDate('create-task-form')"
-                                        name="e_date" required>
+                                           name="e_date" required>
                                 </div>
                             </div>
                         </div>
@@ -171,38 +175,38 @@ $token = 'position';
                             <input type="text" id="task_id" name="task_id" style="display:none;" required>
                             <div class="input-group">
                                 <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e"
-                                    autocomplete="off">
+                                       autocomplete="off">
                                 <label class="btn btn-outline-success me-2" for="btn-check-e"><i
-                                        class="bi bi-check"></i></label>
+                                            class="bi bi-check"></i></label>
                                 <input type="text" class="form-control modal-title fs-5" id="taskname"
-                                    name="taskname" required>
+                                       name="taskname" required>
                             </div>
                         @else
                             <input type="text" id="task_id" name="task_id" style="display:none;" readonly required>
                             <div class="input-group">
                                 <input name="allmarkdone" type="checkbox" class="btn-check" id="btn-check-e"
-                                    autocomplete="off">
+                                       autocomplete="off">
                                 <label class="btn btn-outline-success me-2" for="btn-check-e"><i
-                                        class="bi bi-check"></i></label>
+                                            class="bi bi-check"></i></label>
                                 <input type="text" class="form-control modal-title fs-5" id="taskname"
-                                    name="taskname" readonly required>
+                                       name="taskname" readonly required>
                             </div>
                         @endif
                         @if (in_array($empl_id, $leader_arr) ||
                                 in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
                             <div class="dropdown">
                                 <div class="btn" type="button" id="dropdownMenuTask" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
+                                     aria-expanded="false">
                                     <i class="bi bi-three-dots" style="font-size: 3vh;"></i>
                                 </div>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuTask">
                                     <li><a class="dropdown-item" id="dl_task_id" href="#"
-                                            onclick="delTask(this)">Delete</a></li>
+                                           onclick="delTask(this)">Delete</a></li>
                                 </ul>
                             </div>
                         @endif
                         <div type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i
-                                class="bi bi-x" style="font-size: 3vh;"></i></div>
+                                    class="bi bi-x" style="font-size: 3vh;"></i></div>
                     </div>
                     <div class="modal-body row">
                         <div class="form-group col-6">
@@ -214,8 +218,9 @@ $token = 'position';
                             </div>
                             <div class="form-group" style="margin: 2% 0;">
                                 <label><strong><i class="bi bi-body-text"></i> Request</strong></label>
-                                <textarea class="form-control" placeholder="Enter your request" style="resize: none;" id="request"
-                                    name="request"></textarea>
+                                <textarea class="form-control" placeholder="Enter your request" style="resize: none;"
+                                          id="request"
+                                          name="request"></textarea>
                             </div>
                         </div>
                         <div class="form-group col-6" style="border-left: 1px solid;">
@@ -224,11 +229,11 @@ $token = 'position';
                                 <div class="row form-group mt-3">
                                     <div class="d-flex justify-content-between">
                                         <input id="empl_name" class="form-control empl_name"
-                                            onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                               onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                         <input id="empl_code" class="form-control empl_code" style="width: 25%;"
-                                            onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
+                                               onkeyup="searchDropdown(this)" onclick="displayDropdown(this)" required>
                                         <input id="empl_id" type="text" class="empl_id" name="employee_id" hidden
-                                            required>
+                                               required>
                                     </div>
                                 </div>
                                 <div class="employees-dropdown fs-5">
@@ -240,11 +245,11 @@ $token = 'position';
                                                 !empty($employee->photo) && file_exists(public_path($employee->photo));
                                         @endphp
                                         <div class="employee-item d-flex align-items-center"
-                                            data-id="{{ $employee->employee_id }}"
-                                            data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
-                                            data-code={{ $employee->employee_code }}>
+                                             data-id="{{ $employee->employee_id }}"
+                                             data-value="{{ $employee->last_name . ' ' . $employee->first_name }}"
+                                             data-code={{ $employee->employee_code }}>
                                             <img src="{{ $photoExists ? $photoPath : $defaultPhoto }}"
-                                                class="rounded-circle object-fit-cover" width="22" height="22">
+                                                 class="rounded-circle object-fit-cover" width="22" height="22">
                                             <div class="empl_val ms-1"></div>
                                         </div>
                                     @endforeach
@@ -253,12 +258,12 @@ $token = 'position';
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> Start date</strong></label>
                                 <input class="form-control" type="date" id="s_date"
-                                    onchange="checkDate('edit-task-form')" name="s_date" required>
+                                       onchange="checkDate('edit-task-form')" name="s_date" required>
                             </div>
                             <div class="form-group" style="margin: 2% 0">
                                 <label><strong><i class="bi bi-calendar"></i> End date</strong></label>
                                 <input class="form-control" type="date" id="e_date"
-                                    onchange="checkDate('edit-task-form')" name="e_date" required>
+                                       onchange="checkDate('edit-task-form')" name="e_date" required>
                             </div>
                         </div>
                     </div>
@@ -271,21 +276,21 @@ $token = 'position';
         </div>
     </div>
     <script>
-        $('#btnD').click(function() {
+        $('#btnD').click(function () {
             gantt.config.scale_unit = "day";
             gantt.config.step = 1;
             gantt.config.date_scale = "%d %M";
             gantt.config.scale_width = 50;
             gantt.init("gantt_here");
         });
-        $('#btnM').click(function() {
+        $('#btnM').click(function () {
             gantt.config.scale_unit = "month";
             gantt.config.step = 1;
             gantt.config.date_scale = "%M %y";
             gantt.config.scale_width = 50;
             gantt.init("gantt_here");
         });
-        $('#btnY').click(function() {
+        $('#btnY').click(function () {
             gantt.config.scale_unit = "year";
             gantt.config.step = 1;
             gantt.config.date_scale = "%Y";
@@ -306,19 +311,19 @@ $token = 'position';
         gantt.config.scale_width = 50;
         gantt.config.autosize = "y";
 
-        gantt.templates.task_text = function(start, end, task) {
+        gantt.templates.task_text = function (start, end, task) {
             return "<div style='text-align:center;' data-column='task'>" + task.progress * 100 + "%</div>";
         };
 
         gantt.config.columns = [{
-                name: "text",
-                label: "Task name",
-                tree: true,
-                width: 150,
-                template: function(task) {
-                    return "<div data-column='task'>" + task.text + "</div>";
-                }
-            },
+            name: "text",
+            label: "Task name",
+            tree: true,
+            width: 150,
+            template: function (task) {
+                return "<div data-column='task'>" + task.text + "</div>";
+            }
+        },
             {
                 name: "start_date",
                 label: "Start",
@@ -346,8 +351,8 @@ $token = 'position';
                     id: {{ $id }},
                     _token: '{{ csrf_token() }}'
                 },
-                success: function(response) {
-                    response.tasks.forEach(function(task) {
+                success: function (response) {
+                    response.tasks.forEach(function (task) {
                         var dur = Math.ceil((new Date(task.end_date) - new Date(task.start_date)) / (
                             1000 * 60 * 60 * 24));
                         var parent = task.parent_id ? task.parent_id : 0;
@@ -366,9 +371,10 @@ $token = 'position';
                 },
             });
         }
+
         //sự kiện click vào task sẽ chọn task đó nếu click lần nữa sẽ hiển thị modal
 
-        gantt.attachEvent("onTaskDblClick", function(id, e) {
+        gantt.attachEvent("onTaskDblClick", function (id, e) {
             var column = e.target.getAttribute("data-column");
             if (column == 'task') {
                 $.ajax({
@@ -378,8 +384,8 @@ $token = 'position';
                         id: id,
                         _token: '{{ csrf_token() }}'
                     },
-                    success: function(response) {
-                        response.tasks.forEach(function(task) {
+                    success: function (response) {
+                        response.tasks.forEach(function (task) {
                             $('#task_id').val(task.task_id);
                             $('#taskname').val(task.task_name);
                             $('#request').val(task.request);
@@ -401,7 +407,7 @@ $token = 'position';
                             $('#subTaskHol').hide();
                         } else {
                             $('#subTaskHol').show();
-                            response.subtasks.forEach(function(subtask_data) {
+                            response.subtasks.forEach(function (subtask_data) {
                                 var subtask = document.createElement('div');
                                 subtask.classList.add('input-group');
                                 subtask.style.marginTop = '1%';
@@ -421,7 +427,7 @@ $token = 'position';
             }
         });
 
-        $('#edit-task-form').submit(function(e) {
+        $('#edit-task-form').submit(function (e) {
             e.preventDefault();
             var form = $(this);
             var data = form.serialize();
@@ -430,7 +436,7 @@ $token = 'position';
                 type: 'post',
                 url: "{{ route('task.update', ['project_id' => $p_id, 'location_id' => $id]) }}",
                 data: data,
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         toastr.success(response.message);
                         loadData();
@@ -444,59 +450,59 @@ $token = 'position';
 
         @if (in_array($empl_id, $leader_arr) ||
                 in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager']))
-            $('#create-task-form').submit(function(e) {
-                e.preventDefault();
-                var form = $(this);
-                var data = form.serialize();
-                data += '&id=' + {{ $id }};
-                $.ajax({
-                    type: 'post',
-                    url: "{{ route('task.create', ['project_id' => $p_id, 'location_id' => $id]) }}",
-                    data: data,
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            loadData();
-                            $('#modalCreateTask').modal('hide');
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    },
-                });
-            });
-
-            function delTask(e) {
-                var task_id = $(e).attr('data-task-id');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: 'post',
-                            url: "{{ route('task.delete', ['project_id' => $p_id, 'location_id' => $id]) }}",
-                            data: {
-                                id: task_id,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    toastr.success(response.message);
-                                    loadData();
-                                    $('#modalViewTask').modal('hide');
-                                } else {
-                                    toastr.error(response.message);
-                                }
-                            },
-                        });
+        $('#create-task-form').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var data = form.serialize();
+            data += '&id=' + {{ $id }};
+            $.ajax({
+                type: 'post',
+                url: "{{ route('task.create', ['project_id' => $p_id, 'location_id' => $id]) }}",
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        loadData();
+                        $('#modalCreateTask').modal('hide');
+                    } else {
+                        toastr.error(response.message);
                     }
-                });
-            };
+                },
+            });
+        });
+
+        function delTask(e) {
+            var task_id = $(e).attr('data-task-id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ route('task.delete', ['project_id' => $p_id, 'location_id' => $id]) }}",
+                        data: {
+                            id: task_id,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                loadData();
+                                $('#modalViewTask').modal('hide');
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                    });
+                }
+            });
+        };
         @endif
 
         function displayDropdown(e) {
@@ -506,16 +512,16 @@ $token = 'position';
             $('.employees-dropdown').css('left', position.left);
             $('.employees-dropdown').css('width', $(e).width());
             if ($(e).hasClass('empl_code')) {
-                $('.employee-item').each(function() {
+                $('.employee-item').each(function () {
                     $(this).find('.empl_val').html($(this).attr('data-code'));
                 });
             } else {
-                $('.employee-item').each(function() {
+                $('.employee-item').each(function () {
                     $(this).find('.empl_val').html($(this).attr('data-value'));
                 });
             }
             var value = $(e).val().toLowerCase();
-            $('.employee-item').filter(function() {
+            $('.employee-item').filter(function () {
                 if ($(e).hasClass('empl_code')) {
                     if ($(this).attr('data-code').toLowerCase().indexOf(value) > -1) {
                         $(this).attr('style', 'display: flex !important');
@@ -534,7 +540,7 @@ $token = 'position';
 
         function searchDropdown(e) {
             var value = $(e).val().toLowerCase();
-            $('.employee-item').filter(function() {
+            $('.employee-item').filter(function () {
                 if ($(e).hasClass('empl_code')) {
                     if ($(this).attr('data-code').toLowerCase().indexOf(value) > -1) {
                         $(this).attr('style', 'display: flex !important');
@@ -551,7 +557,7 @@ $token = 'position';
             });
         }
 
-        $('.employee-item').click(function() {
+        $('.employee-item').click(function () {
             $('.empl_name').val($(this).attr('data-value'));
             $('.empl_id').val($(this).attr('data-id'));
             $('.empl_code').val($(this).attr('data-code'));
@@ -573,6 +579,7 @@ $token = 'position';
             `;
             document.getElementById('c-subtasks-holder').appendChild(subtask);
         }
+
         var e_subtaskCount = 0;
 
         function e_addSubTask() {
@@ -614,12 +621,12 @@ $token = 'position';
             }
         }
 
-        $('#btn-check-e').change(function() {
+        $('#btn-check-e').change(function () {
             if ($(this).is(':checked')) {
                 $('input[name^="markdone_n"]').prop('checked', true);
             }
         });
-        $('#btn-check-c').change(function() {
+        $('#btn-check-c').change(function () {
             if ($(this).is(':checked')) {
                 $('input[name^="markdone_"]').prop('checked', true);
             }
