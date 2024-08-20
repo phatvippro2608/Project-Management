@@ -41,7 +41,7 @@ $token = 'position';
                 <div class="card-header rounded-4">
                     <div class="d-flex justify-content-between">
                         <h3 class="text-primary" id="v_course_name">{{ $c->course_name }}</h3>
-                        @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
+                        @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
                             <button id="btn_edit" class="btn btn-info text-white" data-bs-toggle="modal"
                                 data-bs-target="#modalEditCourse"><i class="bi bi-pencil-square me-1"></i>Edit
                             </button>
@@ -57,7 +57,7 @@ $token = 'position';
         </div>
     </div>
     @if ($show)
-        @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
+        @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
             <div class="modal fade" id="modalEditCourse" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
@@ -79,22 +79,37 @@ $token = 'position';
                                     </div>
                                     <img id="bg_img_e" src="{{ asset('uploads/course/') }}/{{ $c->course_image }}"
                                         class="img-fluid mt-1" alt="">
-                                    <div class="form-group mt-3 row">
-                                        <div class="col-6">
-                                            <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course
-                                                    name</strong></label>
-                                            <input type="text" name="course_name" id="course_name_e" class="form-control"
-                                                value="{{ $c->course_name }}">
-                                        </div>
+                                    <div class="form-group mt-3">
+                                        <label for="course_name_e"><strong><i class="bi bi-bookmark me-1"></i>Course
+                                                name</strong></label>
+                                        <input type="text" name="course_name" id="course_name_e" class="form-control"
+                                            value="{{ $c->course_name }}">
+                                    </div>
+                                    <div class="form-group row">
                                         <div class="col-6">
                                             <label for="course_type_e"><strong><i class="bi bi-bookmark me-1"></i>Course
                                                     type</strong></label>
-                                            <select name="course_type" id="course_type_e" class="form-select">
-                                                @foreach ($getTypeName as $type)
-                                                    <option value="{{ $type->course_type_id }}"
-                                                        @if ($type->course_type_id == $c->course_type_id) selected @endif>
-                                                        {{ $type->type_name }}
-                                                    </option>
+                                            <div class="input-group">
+                                                <select name="course_type" id="course_type_e" class="form-select">
+                                                    @foreach ($getTypeName as $type)
+                                                        <option value="{{ $type->course_type_id }}"
+                                                            @if ($type->course_type_id == $c->course_type_id) selected @endif>
+                                                            {{ $type->type_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="button" class="btn btn-outline-success"
+                                                    onclick="openCourseType(this)"><i class="bi bi-pencil"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="course_certificate_e"><strong><i class="bi bi-book me-1"></i>Course
+                                                    certificate</strong></label>
+                                            <select name="course_certificate" id="course_certificate_e" class="form-select">
+                                                @foreach ($certificate as $cert)
+                                                    <option value="{{ $cert->certificate_type_id }}" @if ($cert->certificate_type_id == $c->certificate_type_id) selected @endif>
+                                                        {{ $cert->certificate_type_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -157,6 +172,31 @@ $token = 'position';
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="modalCourseType" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Course type</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="courseTypeTable">
+                                <thead>
+                                    <tr>
+                                        <th>Course type</th>
+                                        <th class="text-center" style="width: 20%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @endif
     @endif
     <script>
@@ -201,7 +241,7 @@ $token = 'position';
             }
         @endif
         @if ($show)
-            @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
+            @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
                 $('#modalEditSection').on('shown.bs.modal', function() {
                     $('.tox-tinymce-aux').off('mouseover', '.tox-dialog-wrap *');
                     $('.tox-tinymce-aux').off('mousedown', '.tox-dialog-wrap *');
@@ -484,7 +524,7 @@ $token = 'position';
                                     </button>
                                 </li>`;
                             });
-                            @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
+                            @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
                                 temp += `<li class="nav-item" id="new-section">
                             </li>
                             <li class="nav-item">
@@ -514,7 +554,7 @@ $token = 'position';
                             data.sections.forEach(section => {
                                 $('#v_course_name').html(section.section_name);
                                 $('#v_course_description').html(section.detail);
-                                @if (in_array(AccountController::permissionStr(), ['super','admin','teacher']))
+                                @if (in_array(AccountController::permissionStr(), ['super', 'admin', 'teacher']))
                                     $('#btn_edit').attr('data-bs-target', '#modalEditSection');
                                     $('#section_id').val(section.courses_section_id);
                                     $('#section_name').val(section.section_name);
@@ -529,6 +569,123 @@ $token = 'position';
                     }
                 });
             };
+            loadCourseType();
+
+            function loadCourseType() {
+                $.ajax({
+                    url: '{{ route('course.types') }}',
+                    type: 'get',
+                    success: function(data) {
+                        $('#courseTypeTable tbody').empty();
+                        //save course type val before empty
+                        var courseTypeVal = $('#course_type_e').val();
+                        $('#course_type_e').empty();
+                        $('#courseTypeTable tbody').append(
+                                `<tr>
+                                <td><input class="form-control" id="newCourseType" placeholder="Add new type name"></td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-success" onclick="createCourseType()"><i class="bi bi-check"></i></button>
+                                </td>
+                            </tr>`
+                            );
+                        data.getTypeName.forEach(type => {
+                            $('#courseTypeTable tbody').append(
+                                `<tr>
+                                <td><input class="form-control" value="${type.type_name}" placeholder="${type.type_name}"></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-primary" onclick="saveCourseType(${type.course_type_id})"><i class="bi bi-floppy"></i></button>
+                                    <button type="button" class="btn btn-outline-danger" onclick="deleteCourseType(${type.course_type_id})"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>`
+                            );
+                            $('#course_type_e').append(
+                                `<option value="${type.course_type_id}">${type.type_name}</option>`
+                            );
+                        });
+                        $('#course_type_e').val(courseTypeVal);
+                    }
+                });
+            }
+            function saveCourseType(id){
+                var courseType = $('#courseTypeTable tbody tr').eq(id).find('input').val();
+                $.ajax({
+                    url: '{{ route('course.type.update') }}',
+                    type: 'post',
+                    data: {
+                        type_id: id,
+                        type_name: courseType,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data){
+                        if(data.success){
+                            toastr.success(data.message);
+                            loadCourseType();
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+
+            function createCourseType(){
+                var courseType = $('#newCourseType').val();
+                $.ajax({
+                    url: '{{ route('course.type.add') }}',
+                    type: 'post',
+                    data: {
+                        type_name: courseType,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data){
+                        if(data.success){
+                            toastr.success(data.message);
+                            loadCourseType();
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+
+            function deleteCourseType(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('course.type.delete') }}',
+                            type: 'delete',
+                            data: {
+                                type_id: id,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(data){
+                                if(data.success){
+                                    toastr.success(data.message);
+                                    loadCourseType();
+                                } else {
+                                    toastr.error(data.message);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            function openCourseType(e) {
+                $('#modalCourseType').modal('show');
+                var modalId = $(e).closest('.modal').attr('id');
+                $('#' + modalId).modal('hide');
+                $('#modalCourseType').on('hidden.bs.modal', function() {
+                    $('#' + modalId).modal('show');
+                });
+            }
         @endif
     </script>
 @endsection
