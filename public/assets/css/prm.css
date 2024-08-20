@@ -377,7 +377,7 @@ h6 {
     transition: all 0.5s;
     z-index: 997;
     height: 60px;
-    box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
+    /*box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);*/
     background-color: #fff;
     padding-left: 20px;
     /* Toggle Sidebar Button */
@@ -596,7 +596,7 @@ h6 {
     width: 400px;
     z-index: 996;
     transition: all 0.3s;
-    padding: 20px;
+    padding: 0px;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #aab7cf transparent;
@@ -650,7 +650,7 @@ h6 {
 }
 
 .sidebar-nav li {
-    padding: 0;
+    padding: 0 10px;
     margin: 0;
     list-style: none;
 }
@@ -741,7 +741,7 @@ h6 {
 }
 
 .sidebar-nav .nav-content a.active i {
-    background-color: #4154f1;
+    /*background-color: #4154f1;*/
 }
 
 .dashboard .filter {

@@ -25,7 +25,7 @@ class EmployeesController extends Controller
 
         $data = DB::table('employees')
             ->join('contacts', 'contacts.contact_id', '=', 'employees.contact_id')
-            ->join('departments', 'departments.department_id', '=', 'employees.department_id')
+            ->leftJoin('departments', 'departments.department_id', '=', 'employees.department_id')
             ->leftJoin('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
             ->where('fired', 'false')
             ->orderBy('employees.employee_code')

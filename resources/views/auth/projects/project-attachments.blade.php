@@ -1,11 +1,12 @@
-@extends('auth.project')
+@extends('auth.prm')
 @section('contents')
     <div class="pagetitle">
         <h1>Project</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ action('App\Http\Controllers\ProjectController@getView') }}">Project List</a></li>
+                <li class="breadcrumb-item"><a href="{{ action('App\Http\Controllers\ProjectController@getView') }}">Project
+                        List</a></li>
                 <li class="breadcrumb-item active">Project Attachments</li>
             </ol>
         </nav>
@@ -45,8 +46,8 @@
                 </select>
             </div>
             <div class="col-2">
-                <button href="" class="btn btn-info btn-lg btn-left"> < </button>
-                <button href="" class="btn btn-info btn-lg btn-right"> > </button>
+                <button href="" class="btn btn-info btn-lg btn-left"> <</button>
+                <button href="" class="btn btn-info btn-lg btn-right"> ></button>
             </div>
         </div>
     </div>
@@ -59,30 +60,35 @@
         <div class="card-body p-2">
             <table id="filesTable" class="table table-hover table-borderless">
                 <thead class="table-light">
-                    <tr>
-                        <th class="text-center">No.</th>
-                        <th class="text-center">File Name</th>
-                        <th class="text-center">Date Add</th>
-{{--                        <th>Action</th>--}}
-                    </tr>
+                <tr>
+                    <th class="text-center">No.</th>
+                    <th class="text-center">File Name</th>
+                    <th class="text-center">Date Add</th>
+                    {{--                        <th>Action</th>--}}
+                </tr>
                 </thead>
                 <tbody class="filesTableBody">
 
                 </tbody>
             </table>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center"
+                      action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST"
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="text-start">
                         <label for="date_file" class="fs-5 m-2">Choose the date of the attachment</label>
-                        <input type="date" id="date_file" class="form-control form-control-lg date-of-file-attachment mb-2">
+                        <input type="date" id="date_file"
+                               class="form-control form-control-lg date-of-file-attachment mb-2">
                     </div>
                     <input type="file"
                            id="fileAttachment"
                            name="fileAttachment[]"
                            multiple="multiple"
-                          >
-                    <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                    >
+                    <button class="btn btn-primary mx-auto d-none filepond-upload" type="submit"><i
+                                class="bi bi-upload me-2"></i>Upload
+                    </button>
                 </form>
             </div>
         </div>
@@ -100,18 +106,23 @@
                 </div>
             </div>
             <div class="col-lg">
-                <form class="border rounded-4 p-2 text-center" action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST" enctype="multipart/form-data">
+                <form class="border rounded-4 p-2 text-center"
+                      action="{{route('attachment-store', ['project_id', $project_id])}}" method="POST"
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="text-start">
                         <label for="date_image" class="fs-5 m-2">Choose the date of the attachment</label>
-                        <input type="date" id="date_image" class="form-control form-control-lg date-of-image-attachment mb-2">
+                        <input type="date" id="date_image"
+                               class="form-control form-control-lg date-of-image-attachment mb-2">
                     </div>
                     <input type="file"
                            id="imageAttachment"
                            name="imageAttachment[]"
                            multiple="multiple"
                            accept="image/png, image/jpeg, image/gif" disabled>
-                    <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i class="bi bi-upload me-2"></i>Upload</button>
+                    <button class="btn btn-primary mx-auto d-none filepond-upload1" type="submit"><i
+                                class="bi bi-upload me-2"></i>Upload
+                    </button>
                 </form>
             </div>
         </div>
@@ -123,10 +134,11 @@
                     <h5 class="modal-title">Preview Image</h5>
                 </div>
                 <div class="modal-body">
-                    <img src="" alt="" class="w-100 h-100 img_preview12" >
+                    <img src="" alt="" class="w-100 h-100 img_preview12">
                 </div>
                 <div class="modal-footer">
-                    <a href="" target="_blank" class="btn btn-primary btn-lg btn-download" download><i class="bi bi-download"></i></a>
+                    <a href="" target="_blank" class="btn btn-primary btn-lg btn-download" download><i
+                                class="bi bi-download"></i></a>
                     <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -143,7 +155,7 @@
             $('.btn-download').attr('href', src);
             $('.modal-preview-image').modal('show');
         });
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Function to update the date dropdown based on the selected location
             function updateDates(locationId) {
                 var baseUrl = '{{ action('App\Http\Controllers\ProjectController@getDateAttachments', ['project_id' => ':project_id', 'location_id' => ':location_id']) }}';
@@ -155,7 +167,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(result) {
+                    success: function (result) {
                         result = JSON.parse(result);
                         var $select = $('.date_select');
                         $select.empty();
@@ -163,7 +175,7 @@
                             .val('0')
                             .text('Please choose date');
                         $select.append(fisrtOption);
-                        $.each(result, function(index) {
+                        $.each(result, function (index) {
                             var $option = $('<option></option>')
                                 .val(result[index].date)
                                 .text(result[index].date);
@@ -174,7 +186,6 @@
                     }
                 });
             }
-
 
 
             function updateAttachments(selectedDate) {
@@ -188,17 +199,17 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(result) {
+                    success: function (result) {
                         let files = JSON.parse(result.files);
                         let images = JSON.parse(result.images);
                         var body = $('.filesTableBody');
                         body.empty();
 
-                        $.each(files, function(index, file) {
+                        $.each(files, function (index, file) {
                             var row = $('<tr></tr>');
 
-                            var fileNameCol = $('<td class="text-center"></td>').text(index+1);
-                            var filePathCol = $('<td class="text-center"></td>').html('<a href="{{ asset('attachments/') }}/'+ $('.location_select').val() + '/'  + file.file_name + '" target="_blank">'+file.file_name+'</a>');
+                            var fileNameCol = $('<td class="text-center"></td>').text(index + 1);
+                            var filePathCol = $('<td class="text-center"></td>').html('<a href="{{ asset('attachments/') }}/' + $('.location_select').val() + '/' + file.file_name + '" target="_blank">' + file.file_name + '</a>');
                             var createdAtCol = $('<td class="text-center"></td>').text(file.created_at);
 
                             row.append(fileNameCol);
@@ -210,8 +221,8 @@
 
                         let bodyImage = $('.content_image');
                         bodyImage.empty();
-                        if(images.length !== 0){
-                            $.each(images, function(index, image) {
+                        if (images.length !== 0) {
+                            $.each(images, function (index, image) {
                                 let div = $('<div></div>').addClass('col-1 text-center btn btn-preview-image');
 
                                 let img = $('<img/>')
@@ -230,7 +241,7 @@
                                 $('.image-box').removeClass('d-none');
 
                             });
-                        }else{
+                        } else {
                             $('.image-box').addClass('d-none');
                         }
 
@@ -239,7 +250,7 @@
             }
 
             // Event handler for location change
-            $('.location_select').change(function() {
+            $('.location_select').change(function () {
                 var locationId = $(this).val();
                 var body = $('.filesTableBody');
                 body.empty();
@@ -249,7 +260,7 @@
             });
 
             // Event handler for date selection
-            $('.date_select').change(function() {
+            $('.date_select').change(function () {
                 var selectedDate = $(this).val();
                 updateAttachments(selectedDate);
                 selectedDate = new Date(selectedDate);
@@ -262,11 +273,11 @@
                 $('.title-box-image').text('Image attachment of day ' + selectedDate);
                 $('.title-box-file').text('File attachment of day ' + selectedDate);
             });
-            document.querySelector('.date-of-image-attachment').addEventListener('click', function() {
+            document.querySelector('.date-of-image-attachment').addEventListener('click', function () {
                 this.value = new Date().toISOString().split('T')[0];
                 toggleUploadButton1();
             });
-            document.querySelector('.date-of-file-attachment').addEventListener('click', function() {
+            document.querySelector('.date-of-file-attachment').addEventListener('click', function () {
                 this.value = new Date().toISOString().split('T')[0];
                 toggleUploadButton();
             });
@@ -282,7 +293,7 @@
             }
             const dateSelect = $('.date_select');
 
-            $('.btn-left').on('click', function(event) {
+            $('.btn-left').on('click', function (event) {
                 event.preventDefault();
 
                 let currentIndex = dateSelect.prop('selectedIndex');
@@ -293,7 +304,7 @@
                     dateSelect.prop('selectedIndex', newIndex).change();
                 }
             });
-            $('.btn-right').on('click', function(event) {
+            $('.btn-right').on('click', function (event) {
                 event.preventDefault();
 
                 let currentIndex = dateSelect.prop('selectedIndex');
@@ -340,14 +351,14 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            if($('.date-of-file-attachment').val().length != 0){
+                            if ($('.date-of-file-attachment').val().length != 0) {
                                 formData.append('_token', csrfToken);
                                 formData.append('project_location_id', document.querySelector('.location_select').value);
                                 formData.append('date', document.querySelector('.date-of-file-attachment').value);
                                 formData.append('type', 'file');
 
                                 return formData;
-                            }else{
+                            } else {
                                 toastr.error('Please choose date!', 'Error');
                             }
 
@@ -378,14 +389,14 @@
                             'X-CSRF-TOKEN': csrfToken,
                         },
                         ondata: (formData) => {
-                            if($('.date-of-image-attachment').val().length != 0){
+                            if ($('.date-of-image-attachment').val().length != 0) {
                                 formData.append('_token', csrfToken);
                                 formData.append('project_location_id', document.querySelector('.location_select').value);
                                 formData.append('date', document.querySelector('.date-of-image-attachment').value);
                                 formData.append('type', 'image');
 
                                 return formData;
-                            }else{
+                            } else {
                                 toastr.error('Please choose date!', 'Error');
                             }
                         },
@@ -407,7 +418,7 @@
             }
         });
 
-        filePond.addEventListener('FilePond:removefile',e=>{
+        filePond.addEventListener('FilePond:removefile', e => {
             if (e.returnValue) {
                 filepondUpload.classList.add('d-none')
             }
@@ -421,7 +432,7 @@
             }
         });
 
-        filePond1.addEventListener('FilePond:removefile',e=>{
+        filePond1.addEventListener('FilePond:removefile', e => {
             if (e.returnValue) {
                 filepondUpload1.classList.add('d-none')
             }
@@ -443,6 +454,7 @@
                 fileAttachmentPond.setOptions({disabled: false});
             }
         }
+
         function toggleUploadButton1() {
             const dateValue = $('.date-of-image-attachment').val();
             const fileInput = $('#imageAttachment');
@@ -462,11 +474,11 @@
         toggleUploadButton();
         toggleUploadButton1();
 
-        $('.date-of-file-attachment').on('change', function() {
+        $('.date-of-file-attachment').on('change', function () {
             toggleUploadButton();
         });
 
-        $('.date-of-image-attachment').on('change', function() {
+        $('.date-of-image-attachment').on('change', function () {
             toggleUploadButton1();
         });
 
