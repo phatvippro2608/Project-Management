@@ -65,3 +65,13 @@ php artisan make:model DemoModel
     muốn sử dụng "bootstrap.min.css" nằm trong public ta phải thêm {{asset('')}} xong trỏ bắt đầu từ thư mục sau thư mục public là assets bỏ trong href
     ví du: <link href="{{asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 ```
+
+#### 8. Các extention cần bật
+```
+extension_dir = "ext"
+extension=fileinfo
+extension=gd
+extension=mbstring
+extension=openssl
+extension=pdo_mysql
+```
