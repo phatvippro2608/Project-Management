@@ -337,82 +337,82 @@
         </div>
     </div>
 
-    <div class="modal fade md1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
+{{--    <div class="modal fade md1">--}}
+{{--        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">--}}
+{{--            <div class="modal-content">--}}
 
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" class="fs-5" style="margin-bottom: 0.3rem">
-                                Team name
-                            </label>
-                            <input type="text" class="form-control mt-1 val-team-name">
-                        </div>
-                    </div>
-                    <div class="row mt-3 d-flex justify-content-end">
-                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"
-                                aria-label="Close">Close
-                        </button>
-                        <button type="button" class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-team">
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade location-modal">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center justify-content-between">
-                    <h4>Add Location</h4>
-                    <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" style="margin-bottom: 0.3rem">
-                                Location name
-                            </label>
-                            <input type="text" class="form-control mt-1 location-name">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <label for="project_date_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control location-start-date">
+{{--                <div class="modal-body">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" class="fs-5" style="margin-bottom: 0.3rem">--}}
+{{--                                Team name--}}
+{{--                            </label>--}}
+{{--                            <input type="text" class="form-control mt-1 val-team-name">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row mt-3 d-flex justify-content-end">--}}
+{{--                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"--}}
+{{--                                aria-label="Close">Close--}}
+{{--                        </button>--}}
+{{--                        <button type="button" class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-team">--}}
+{{--                            Create--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
 
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="project_date_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control location-end-date">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" style="margin-bottom: 0.3rem">
-                                Amount
-                            </label>
-                            <input type="number" class="form-control mt-1 location-amount">
-                        </div>
-                    </div>
-                    <div class="row mt-3 d-flex justify-content-end">
-                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"
-                                aria-label="Close">Close
-                        </button>
-                        <button type="button"
-                                class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="modal fade location-modal">--}}
+{{--        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-header d-flex align-items-center justify-content-between">--}}
+{{--                    <h4>Add Location</h4>--}}
+{{--                    <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>--}}
+{{--                </div>--}}
+{{--                <div class="modal-body">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" style="margin-bottom: 0.3rem">--}}
+{{--                                Location name--}}
+{{--                            </label>--}}
+{{--                            <input type="text" class="form-control mt-1 location-name">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-lg-6">--}}
+{{--                            <label for="project_date_start" class="form-label">Start Date</label>--}}
+{{--                            <input type="date" class="form-control location-start-date">--}}
+
+
+{{--                        </div>--}}
+{{--                        <div class="col-lg-6">--}}
+{{--                            <label for="project_date_end" class="form-label">End Date</label>--}}
+{{--                            <input type="date" class="form-control location-end-date">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" style="margin-bottom: 0.3rem">--}}
+{{--                                Amount--}}
+{{--                            </label>--}}
+{{--                            <input type="number" class="form-control mt-1 location-amount">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row mt-3 d-flex justify-content-end">--}}
+{{--                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"--}}
+{{--                                aria-label="Close">Close--}}
+{{--                        </button>--}}
+{{--                        <button type="button"--}}
+{{--                                class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">--}}
+{{--                            Create--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     <div class="modal fade team-project-modal modal-xl">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
