@@ -553,7 +553,7 @@ $token = 'position';
                                 course_id: course_id,
                                 _token: '{{ csrf_token() }}'
                             },
-                            type: 'delete',
+                            type: 'post',
                             success: function(data) {
                                 if (data.success) {
                                     toastr.success(data.message);
@@ -742,7 +742,7 @@ $token = 'position';
                     if (result.isConfirmed) {
                         $.ajax({
                             url: '{{ route('course.type.delete') }}',
-                            type: 'delete',
+                            type: 'post',
                             data: {
                                 type_id: id,
                                 _token: '{{ csrf_token() }}'
