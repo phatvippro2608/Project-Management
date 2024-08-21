@@ -326,25 +326,6 @@ $token = 'position';
 
 
     <aside id="sidebar" class="sidebar">
-        <div class="w-100 d-flex justify-content-center align-items-center">
-            <img class="rounded-circle" src="{{ asset('assets/img/avt.png') }}" style="width: 80px" />
-        </div>
-        <div class="account-info d-flex justify-content-center align-items-center mt-3 flex-column">
-            <span class="full-name h4 fw-bold fs-3">
-                Nguyễn Văn A
-            </span>
-            <span class="gmail">
-                <small class="text-muted">
-                    nguyenvana@gmail.com
-                </small>
-            </span>
-            <span class="active">
-                <small class="text-muted">
-                    Active 8 seconds ago
-                </small>
-            </span>
-        </div>
-        <hr />
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
                 <a class="nav-link fs-5 fw-bold "
@@ -376,75 +357,14 @@ $token = 'position';
                     <span>Quiz</span>
                 </a>
             </li>
-
-            <li class="nav-item position-relative">
-                <a class="nav-link fs-5 fw-bold" href="#">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span class="me-4">Messages</span>
-                </a>
-                <span class="badge bg-primary  position-absolute top-50 translate-middle end-0 fs-6">3</span>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-bell-fill"></i>
-                    <span>Notifications</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Friends</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-person-lines-fill"></i>
-                    <span>Profile</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-clipboard2-fill"></i>
-                    <span>Support</span>
-                </a>
-            </li>
-
             <li class="nav-item">
                 <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
                     <i class="bi bi-gear-fill"></i>
                     <span>Settings</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-handbag-fill"></i>
-                    <span>My Cart</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-clipboard-heart-fill"></i>
-                    <span>Coupons</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-vinyl-fill"></i>
-                    <span>Forums</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Log Out</span>
-                </a>
-            </li>
-
         </ul>
-
     </aside>
-
     <main id="main" class="main">
         @yield('contents')
     </main>
