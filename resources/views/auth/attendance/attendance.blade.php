@@ -400,7 +400,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         url: '{{ route('attendance.delete') }}',
-                        type: 'delete',
+                        type: 'post',
                         data: {
                             attendance_id: id,
                             _token: '{{ csrf_token() }}'
