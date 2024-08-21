@@ -323,11 +323,148 @@ class InternalCertificatesController extends Controller
         ]);
     }
 
-
     public function getViewCreate()
     {
         $this->updateCreatePermissions();
-        return view('auth.certificate.InternalCertificateCreate');
+        $employees = DB::table('employees')
+            ->join('certificate_creates', 'employees.employee_id', '=', 'certificate_creates.employee_id')
+            ->get();
+        return view('auth.certificate.InternalCertificateCreate', [
+            'employees' => $employees
+        ]);
+    }
+
+    public function loadCertificateCreate(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer'
+        ]);
+        $idCertificate = $request->input('id');
+        $imgCertificate = DB::table('certificate_creates')
+            ->where('certificate_create_id', '=', $idCertificate)
+            ->first();
+        return response()->json([
+            'imgCertificate' => $imgCertificate
+        ]);
+    }
+
+    public function updateStatusCertificateCreate(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'status' => 'required|integer'
+        ]);
+
+        $idCertificate = $request->input('id');
+        $statusCertificate = $request->input('status');
+
+        DB::table('certificate_creates')
+            ->where('certificate_create_id', '=', $idCertificate)
+            ->update(['certificate_create_status' => $statusCertificate]);
+
+        return response()->json([
+            'status' => "Updated"
+        ]);
+    }
+
+    public function leftSignatureCertificateCreate(Request $request)
+    {
+        $director = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', function ($join) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->whereIn('employee_signatures.employee_signature_id', function ($query) {
+                        $query->select(DB::raw('MAX(employee_signature_id)'))
+                            ->from('employee_signatures')
+                            ->groupBy('employee_id');
+                    });
+            })
+            ->where('permissions.permission_name', '=', 'Director')
+            ->select('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->groupBy('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->get();
+
+
+        return response()->json([
+            'director' => $director
+        ]);
+    }
+
+    public function searchEmployeeHasSignature(Request $request)
+    {
+        $request->validate([
+            'employeeValue' => 'required|string',
+        ]);
+
+        $employeeValue = strtolower(trim($request->input('employeeValue')));
+
+        $employees = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
+            ->join('employee_signatures', function ($join) {
+                $join->on('employee_signatures.employee_id', '=', 'employees.employee_id')
+                    ->whereIn('employee_signatures.employee_signature_id', function ($query) {
+                        $query->select(DB::raw('MAX(employee_signature_id)'))
+                            ->from('employee_signatures')
+                            ->groupBy('employee_id');
+                    });
+            })
+            ->whereRaw("LOWER(employees.employee_code) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(CONCAT(employees.last_name, ' ', employees.first_name)) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(CONCAT(employees.last_name, ' ', employees.first_name), ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(employees.en_name) LIKE ?", ["%{$employeeValue}%"])
+            ->orWhereRaw("LOWER(REPLACE(employees.en_name, ' ', '')) LIKE ?", ["%{$employeeValue}%"])
+            ->select('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->groupBy('employees.employee_id', 'employees.employee_code', 'employees.first_name', 'employees.last_name', 'employees.en_name', 'employee_signatures.employee_signature_img')
+            ->get();
+        ;
+
+        return response()->json([
+            'employees' => $employees,
+        ]);
+    }
+
+    public function addCertificate(Request $request)
+    {
+        $request->validate([
+            'img' => 'required|string',
+            'employeeCode' => 'required|integer'
+        ]);
+
+        $imageData = $request->input('img');
+        $employeeCode = $request->input('employeeCode');
+
+        // Tìm nhân viên dựa trên mã nhân viên
+        $employee = DB::table('employees')
+            ->where('employee_code', $employeeCode)
+            ->first();
+
+        // Tìm nhân viên hiện tại đang đăng nhập
+        $employeeUpdated = DB::table('employees')
+            ->join('accounts', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where('accounts.account_id', '=', session()->get(StaticString::ACCOUNT_ID))
+            ->first();
+
+        // Xử lý hình ảnh
+        $imageParts = explode(',', $imageData);
+        $imageExtension = 'png'; // Có thể thay đổi tùy nhu cầu
+        $imageContent = base64_decode($imageParts[1]);
+
+        // Tạo tên tệp tin và đường dẫn
+        $imageName = 'certificate_' . time() . '.' . $imageExtension;
+        $imagePath = public_path('assets/img/certificate/' . $imageName);
+
+        // Lưu hình ảnh vào thư mục
+        file_put_contents($imagePath, $imageContent);
+
+        DB::table('certificate_creates')->insert([
+            'employee_id' => $employee->employee_id,
+            'certificate_create_img' => 'assets/img/certificate/' . $imageName,
+            'employeed_update_id' => $employeeUpdated->employee_id
+        ]);
+
+        return;
     }
 
     public function temp()
@@ -342,7 +479,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->where(DB::raw('DATE(employment_contract.end_date)'), '>=', Carbon::now()->toDateString())
             ->where('permissions.permission_name', '=', 'Director')
-            ->orderBy('employee_signatures.updated_at','desc')
+            ->orderBy('employee_signatures.updated_at', 'desc')
             ->first();
 
         $teacher = DB::table('employees')
@@ -350,7 +487,7 @@ class InternalCertificatesController extends Controller
             ->join('permissions', 'permissions.permission_num', '=', 'accounts.permission')
             ->join('employee_signatures', 'employee_signatures.employee_id', '=', 'employees.employee_id')
             ->where('permissions.permission_str', '=', 'teacher')
-            ->orderBy('employee_signatures.updated_at','desc')
+            ->orderBy('employee_signatures.updated_at', 'desc')
             // ->where('employees.employee_id', '=', '191')
             ->first();
 

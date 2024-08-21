@@ -105,8 +105,8 @@
                 <thead>
                     <tr>
                         <th class="text-center" scope="col">#</th>
-                        <th class="text-center" scope="col">Employee ID</th>
                         <th class="text-center" scope="col">Photo</th>
+                        <th class="text-center" scope="col">Employee ID</th>
                         <th scope="col">Full Name</th>
                         <th scope="col">EN Name</th>
                         <th class="text-center" scope="col">Signature</th>
@@ -120,12 +120,12 @@
                     @forelse ($employee as $index => $item)
                         <tr>
                             <td class="text-center" scope="row">{{ $index + 1 }}</td>
-                            <td class="text-center">{{ $item->employee_code }}</td>
                             <td class="text-center">
                                 <img style="width: 50px; height: 50px; object-fit: cover;" class="rounded-circle"
                                     src="{{ empty($item->photo) ? asset('uploads/1/1219654976041648230.gif') : asset($item->photo) }}"
                                     alt="{{ $item->first_name }}'s photo">
                             </td>
+                            <td class="text-center">{{ $item->employee_code }}</td>
                             <td>{{ $item->last_name . ' ' . $item->first_name }}</td>
                             <td>{{ $item->en_name }}</td>
                             <td class="text-center">
@@ -140,20 +140,19 @@
                                     $difference = $updatedAt->diff($now);
                                 @endphp
 
-                                @if ($difference->m < 1)
-                                    @if ($difference->d > 0)
-                                        {{ $difference->d }} days ago
-                                    @elseif ($difference->h > 0)
-                                        {{ $difference->h }} hours ago
-                                    @elseif ($difference->i > 0)
-                                        {{ $difference->i }} minutes ago
-                                    @else
-                                        now
-                                    @endif
+                                @if ($difference->y > 0)
+                                    {{ $difference->y }} years ago
+                                @elseif ($difference->m > 0)
+                                    {{ $difference->m }} months ago
+                                @elseif ($difference->d > 0)
+                                    {{ $difference->d }} days ago
+                                @elseif ($difference->h > 0)
+                                    {{ $difference->h }} hours ago
+                                @elseif ($difference->i > 0)
+                                    {{ $difference->i }} minutes ago
                                 @else
-                                    {{ $updatedAt->format('Y-m-d') }}
+                                    now
                                 @endif
-
                             </td>
                             @if ($btnEdit)
                                 <td class="text-center">

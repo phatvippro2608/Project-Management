@@ -221,17 +221,17 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
-        Route::delete('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
+        Route::post('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
         Route::get('/course/types', 'App\Http\Controllers\CourseController@getCourseTypes')->name('course.types');
         Route::post('/course/types', 'App\Http\Controllers\CourseController@addCourseType')->name('course.type.add');
         Route::post('/course/types/update', 'App\Http\Controllers\CourseController@updateCourseType')->name('course.type.update');
-        Route::delete('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
+        Route::post('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
 
         //Sections
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
         Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
         Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
-        Route::delete('/course/deleteSection', 'App\Http\Controllers\CourseController@deleteSection');
+        Route::post('/course/deleteSection', 'App\Http\Controllers\CourseController@deleteSection');
         Route::post('/course/join', 'App\Http\Controllers\CourseController@joinCourse');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
@@ -256,7 +256,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/inactive', 'App\Http\Controllers\EmployeesController@inactiveView');
         Route::post('/reactive/{employee_id}', 'App\Http\Controllers\EmployeesController@reactiveEmployee');
         Route::post('/updateEmployee', 'App\Http\Controllers\EmployeesController@post');
-        Route::put('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
+        Route::post('/addEmployee', 'App\Http\Controllers\EmployeesController@put');
         Route::delete('/deleteEmployee', 'App\Http\Controllers\EmployeesController@delete');
         Route::get('/info/{employee_id}', 'App\Http\Controllers\EmployeesController@getEmployee');
         Route::post('/check_file_exists', 'App\Http\Controllers\EmployeesController@checkFileExists');
@@ -358,7 +358,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
     Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
     Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
-    Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+    Route::post('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
     //Proposal-Types
     Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');
@@ -461,7 +461,14 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::post('/load', [InternalCertificatesController::class, 'loadHistorySignatureCertificate'])->name('certificate.signature.load');
         Route::post('/search', [InternalCertificatesController::class, 'searchEmployee'])->name('certificate.signature.search');
     });
-    Route::get('certificateCreate', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+    Route::group(['prefix' => '/certificateCreate'], function () {
+        Route::get('', [InternalCertificatesController::class, 'getViewCreate'])->name('certificate.create');
+        Route::post('/load', [InternalCertificatesController::class, 'loadCertificateCreate'])->name('certificate.create.load');
+        Route::post('/status', [InternalCertificatesController::class, 'updateStatusCertificateCreate'])->name('certificate.create.status');
+        Route::post('/leftSignature', [InternalCertificatesController::class, 'leftSignatureCertificateCreate'])->name('certificate.create.leftSignature');
+        Route::post('/search', [InternalCertificatesController::class, 'searchEmployeeHasSignature'])->name('certificate.create.search.HasSig');
+        Route::post('/add', [InternalCertificatesController::class, 'addCertificate'])->name('certificate.create.add');
+    });
 
 
     Route::get('lang/{locale}', function ($locale) {
