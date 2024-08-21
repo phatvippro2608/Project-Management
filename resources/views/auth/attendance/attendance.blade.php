@@ -46,9 +46,9 @@
     <div class="card border rounded-4 p-2">
         <div class="card-header">
             <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}"
-                class="btn btn-primary text-white"><i class="bi bi-plus-lg"></i> Add Attendance</a>
+                class="btn p-1 text-primary"><i class="bi bi-plus-lg"></i> Add Attendance</a>
             <a href="{{ action('App\Http\Controllers\AttendanceController@addAttendanceView') }}"
-                class="btn btn-primary text-white"><i class="bi bi-file-earmark"></i> Attendance Report</a>
+                class="btn p-1 text-primary"><i class="bi bi-file-earmark"></i> Attendance Report</a>
         </div>
         <div class="card-body">
             <table id="attendanceTable" class="display">
@@ -374,9 +374,9 @@
                                 value.sign_out,
                                 working,
                                 '<button data-attendance="' + value.attendance_id +
-                                '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
+                                '" class="btn p-1 text-primary ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
                                 '<button data-attendance="' + value.attendance_id +
-                                '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
+                                '" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                             ]).draw();
                         });
                     } else {
@@ -427,10 +427,10 @@
                                         working,
                                         '<button data-attendance="' + value
                                         .attendance_id +
-                                        '" class="btn btn-primary text-white ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
+                                        '" class="btn p-1 text-primary ms-1" onclick="viewAttendanceByID(this)"><i class="bi bi-pencil-square"></i></button>' +
                                         '<button data-attendance="' + value
                                         .attendance_id +
-                                        '" class="btn btn-danger text-white" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
+                                        '" class="btn p-1 text-danger" onclick="deleteAttendanceByID(this)"><i class="bi bi-trash"></i></button>'
                                     ]).draw();
                                 });
                                 $('#modalViewAttendance').modal('hide')
