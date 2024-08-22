@@ -364,7 +364,7 @@
             {
                 allowPdfPreview: true,
                 pdfPreviewHeight: 320,
-                maxFileSize : '7MB',
+                maxFileSize : '5MB',
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {

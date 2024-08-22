@@ -1050,7 +1050,8 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         FilePond.registerPlugin(
             FilePondPluginImagePreview,
-            FilePondPluginFileValidateType
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize
         );
 
         FilePond.create(
@@ -1058,6 +1059,7 @@
             {
                 allowPdfPreview: true,
                 pdfPreviewHeight: 320,
+                maxFileSize : '5MB',
                 pdfComponentExtraParams: 'toolbar=0&view=fit&page=1',
                 server: {
                     process: {
