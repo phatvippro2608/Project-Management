@@ -460,7 +460,7 @@ $token = 'position';
                         if (result.isConfirmed) {
                             $.ajax({
                                 url: '{{ action('App\Http\Controllers\CourseController@deleteSection') }}',
-                                type: 'delete',
+                                type: 'post',
                                 data: {
                                     section_id: $('#section_id').val(),
                                     _token: '{{ csrf_token() }}'
@@ -660,7 +660,7 @@ $token = 'position';
                     if (result.isConfirmed) {
                         $.ajax({
                             url: '{{ route('course.type.delete') }}',
-                            type: 'delete',
+                            type: 'post',
                             data: {
                                 type_id: id,
                                 _token: '{{ csrf_token() }}'

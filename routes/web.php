@@ -221,17 +221,17 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         Route::get('/course/{id}', 'App\Http\Controllers\CourseController@getCourse');
         Route::get('/course/{id}/view', 'App\Http\Controllers\CourseController@getCourseView');
         Route::post('/course/update', 'App\Http\Controllers\CourseController@updateCourse');
-        Route::delete('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
+        Route::post('/course/delete', 'App\Http\Controllers\CourseController@deleteCourse');
         Route::get('/course/types', 'App\Http\Controllers\CourseController@getCourseTypes')->name('course.types');
         Route::post('/course/types', 'App\Http\Controllers\CourseController@addCourseType')->name('course.type.add');
         Route::post('/course/types/update', 'App\Http\Controllers\CourseController@updateCourseType')->name('course.type.update');
-        Route::delete('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
+        Route::post('/course/types/delete', 'App\Http\Controllers\CourseController@deleteCourseType')->name('course.type.delete');
 
         //Sections
         Route::post('/course/getSection', 'App\Http\Controllers\CourseController@getCourseSection')->name('course.getSection');
         Route::post('/course/createSection', 'App\Http\Controllers\CourseController@createSection');
         Route::post('/course/updateSection', 'App\Http\Controllers\CourseController@updateSection');
-        Route::delete('/course/deleteSection', 'App\Http\Controllers\CourseController@deleteSection');
+        Route::post('/course/deleteSection', 'App\Http\Controllers\CourseController@deleteSection');
         Route::post('/course/join', 'App\Http\Controllers\CourseController@joinCourse');
         Route::get('/mycourses/export', 'App\Http\Controllers\LMSDashboardController@export')->name('courses.export');
     });
@@ -358,7 +358,7 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
     Route::get('/attendance/{id}', [AttendanceController::class, 'viewAttendanceByID'])->name('attendance.viewID');
     Route::post('/attendance/add', [AttendanceController::class, 'addAttendance'])->name('attendance.add');
     Route::post('/attendance/update', [AttendanceController::class, 'updateAttendance'])->name('attendance.update');
-    Route::delete('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
+    Route::post('/attendance/delete', [AttendanceController::class, 'deleteAttendance'])->name('attendance.delete');
 
     //Proposal-Types
     Route::get('proposal-types', [ProposalTypesController::class, 'getView'])->name('proposal-types.index');

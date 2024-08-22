@@ -442,7 +442,7 @@ $token = 'position';
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center justify-content-between">
-                <h4>Add Location</h4>
+                <h4 class="modal-title">Add Location</h4>
                 <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body">
@@ -493,7 +493,8 @@ $token = 'position';
 <script>
     $('.add-location').off('click').click(function () {
         var id = $(this).attr('data');
-        $('.location-modal .modal-title').text('Add New Location');
+        $('.location-modal .modal-title').text('Add Location');
+        $('.btn-create-location').text('Create');
         $('.location-modal').modal('show');
         $('.btn-create-location').off('click').click(function () {
             $.ajax({

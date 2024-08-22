@@ -4,7 +4,7 @@ use App\Http\Controllers\AccountController;
 
 ?>
 
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('contents')
     <div class="pagetitle">
