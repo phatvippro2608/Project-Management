@@ -227,11 +227,23 @@ $token = 'position';
                                     <i class="bi bi-circle"></i><span>{{ __('messages.job_info') }}</span>
                                 </a>
                             </li>
+                            <li>
+                                <a class="nav-sub-link"
+                                   href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                                    <i class="bi bi-circle"></i><span>{{ __('messages.account') }}</span>
+                                </a>
+                            </li>
                         @endif
                     </ul>
 
                 </li>
             @endif
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="{{action('App\Http\Controllers\AccountController@getView')}}">
+                <i class="bi bi-people"></i><span>Account</span>
+            </a>
+        </li>
             @if (in_array(AccountController::permissionStr(), ['super','admin','director','hr_manager']))
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#rewards-discipline-nav" data-bs-toggle="collapse"

@@ -380,75 +380,14 @@ $token = 'position';
                     <span>Quiz</span>
                 </a>
             </li>
-
-            <li class="nav-item position-relative">
-                <a class="nav-link fs-5 fw-bold" href="#">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span class="me-4">Messages</span>
-                </a>
-                <span class="badge bg-primary  position-absolute top-50 translate-middle end-0 fs-6">3</span>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-bell-fill"></i>
-                    <span>Notifications</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Friends</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-person-lines-fill"></i>
-                    <span>Profile</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="#">
-                    <i class="bi bi-clipboard2-fill"></i>
-                    <span>Support</span>
-                </a>
-            </li>
-
             <li class="nav-item">
                 <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
                     <i class="bi bi-gear-fill"></i>
                     <span>Settings</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-handbag-fill"></i>
-                    <span>My Cart</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-clipboard-heart-fill"></i>
-                    <span>Coupons</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-vinyl-fill"></i>
-                    <span>Forums</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fs-5 fw-bold " href="{{ route('settings.view') }}">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Log Out</span>
-                </a>
-            </li>
-
         </ul>
-
     </aside>
-
     <main id="main" class="main">
         @yield('contents')
     </main>

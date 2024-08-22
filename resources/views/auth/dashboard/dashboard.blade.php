@@ -127,7 +127,7 @@
         <div class="row gy-3">
             <div class="col-xl-8 col-lg-6">
                 <h4 class="fw-bold mb-3"><i class="bi bi-clock-history"> </i>{{ __('messages.recent_project') }}</h4>
-                <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
+                <div class="border rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="row">
                             @foreach($recent_project as $item)
@@ -156,7 +156,7 @@
             </div>
             <div class="col-xl-4 col-lg-6">
                 <h4 class="fw-bold mb-3"><i class="bi bi-list-task"> </i>{{ __('messages.todolist') }}</h4>
-                <div class="border-0 rounded-4 shadow bg-white" style="min-height: 300px">
+                <div class="border rounded-4 shadow bg-white" style="min-height: 300px">
                     <div class="p-3">
                         <div class="card bg-white shadow-none">
                             <div class="card-header">

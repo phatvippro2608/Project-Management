@@ -1,4 +1,4 @@
-@extends('auth.prm')
+@extends('auth.crm')
 @section('head')
     <style>
         label {

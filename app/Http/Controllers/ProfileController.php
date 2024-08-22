@@ -27,7 +27,7 @@ class ProfileController extends Controller
         try {
             $data = new ProfileModel();
             $account_id = \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID);
-            $data->username = $request->username;
+//            $data->username = $request->username;
             $data->first_name = $request->first_name;
             $data->last_name = $request->last_name;
             $data->position_name = $request->position_name;

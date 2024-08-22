@@ -65,10 +65,10 @@
     @endif
 
     @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager']))
-        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-            <i class="bi bi-plus-lg"></i>
-            {{ __('messages.add') }}
-        </button>
+{{--        <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addProjectModal">--}}
+{{--            <i class="bi bi-plus-lg"></i>--}}
+{{--            {{ __('messages.add') }}--}}
+{{--        </button>--}}
     @endif
     {{--    <button class="btn btn-primary mb-4">--}}
     {{--        <i class="bi bi-file-earmark-arrow-up"></i>--}}
@@ -208,13 +208,13 @@
 
                                 <ul class="dropdown-menu">
                                     @if (in_array(\App\Http\Controllers\AccountController::permissionStr(), ['super','admin','director', 'project_manager']))
-                                        <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">
-                                            <a class="dropdown-item bg-hover add-location d-flex align-items-center"
-                                               data="{{$item->project_id}}">
-                                                <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>
-                                        </li>
+{{--                                        <li style="border-bottom: 1px solid #E2E3E5; cursor:pointer" class="fw-bold">--}}
+{{--                                            <a class="dropdown-item bg-hover add-location d-flex align-items-center"--}}
+{{--                                               data="{{$item->project_id}}">--}}
+{{--                                                <i class="bi bi-plus fs-4"></i><span style="padding: 0px!important;">Add Location</span></a>--}}
+{{--                                        </li>--}}
                                         <li style="border-bottom: 1px solid #E2E3E5"><a class="dropdown-item bg-hover"
-                                                                                        href="{{ route('project.details', ['project_id' => $item->project_id, 'location'=>'all']) }}">Details
+                                                                                        href="{{ route('project.details', ['project_id' => $item->project_id]) }}">Details
                                                 and Cost</a></li>
                                         </li>
                                     @endif
@@ -337,82 +337,82 @@
         </div>
     </div>
 
-    <div class="modal fade md1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
+{{--    <div class="modal fade md1">--}}
+{{--        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">--}}
+{{--            <div class="modal-content">--}}
 
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" class="fs-5" style="margin-bottom: 0.3rem">
-                                Team name
-                            </label>
-                            <input type="text" class="form-control mt-1 val-team-name">
-                        </div>
-                    </div>
-                    <div class="row mt-3 d-flex justify-content-end">
-                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"
-                                aria-label="Close">Close
-                        </button>
-                        <button type="button" class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-team">
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade location-modal">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center justify-content-between">
-                    <h4>Add Location</h4>
-                    <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" style="margin-bottom: 0.3rem">
-                                Location name
-                            </label>
-                            <input type="text" class="form-control mt-1 location-name">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <label for="project_date_start" class="form-label">Start Date</label>
-                            <input type="date" class="form-control location-start-date">
+{{--                <div class="modal-body">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" class="fs-5" style="margin-bottom: 0.3rem">--}}
+{{--                                Team name--}}
+{{--                            </label>--}}
+{{--                            <input type="text" class="form-control mt-1 val-team-name">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row mt-3 d-flex justify-content-end">--}}
+{{--                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"--}}
+{{--                                aria-label="Close">Close--}}
+{{--                        </button>--}}
+{{--                        <button type="button" class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-team">--}}
+{{--                            Create--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
 
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="project_date_end" class="form-label">End Date</label>
-                            <input type="date" class="form-control location-end-date">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="" style="margin-bottom: 0.3rem">
-                                Amount
-                            </label>
-                            <input type="number" class="form-control mt-1 location-amount">
-                        </div>
-                    </div>
-                    <div class="row mt-3 d-flex justify-content-end">
-                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"
-                                aria-label="Close">Close
-                        </button>
-                        <button type="button"
-                                class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">
-                            Create
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="modal fade location-modal">--}}
+{{--        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-header d-flex align-items-center justify-content-between">--}}
+{{--                    <h4>Add Location</h4>--}}
+{{--                    <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>--}}
+{{--                </div>--}}
+{{--                <div class="modal-body">--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" style="margin-bottom: 0.3rem">--}}
+{{--                                Location name--}}
+{{--                            </label>--}}
+{{--                            <input type="text" class="form-control mt-1 location-name">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-lg-6">--}}
+{{--                            <label for="project_date_start" class="form-label">Start Date</label>--}}
+{{--                            <input type="date" class="form-control location-start-date">--}}
+
+
+{{--                        </div>--}}
+{{--                        <div class="col-lg-6">--}}
+{{--                            <label for="project_date_end" class="form-label">End Date</label>--}}
+{{--                            <input type="date" class="form-control location-end-date">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row">--}}
+{{--                        <div class="col-md-12">--}}
+{{--                            <label for="" style="margin-bottom: 0.3rem">--}}
+{{--                                Amount--}}
+{{--                            </label>--}}
+{{--                            <input type="number" class="form-control mt-1 location-amount">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="row mt-3 d-flex justify-content-end">--}}
+{{--                        <button type="button" class="w-auto btn btn-danger btn-upload" data-bs-dismiss="modal"--}}
+{{--                                aria-label="Close">Close--}}
+{{--                        </button>--}}
+{{--                        <button type="button"--}}
+{{--                                class="w-auto btn btn-primary btn-upload at1 ms-2 me-3 btn-create-location">--}}
+{{--                            Create--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
     <div class="modal fade team-project-modal modal-xl">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -450,38 +450,38 @@
 
 @section('script')
     <script>
-        $('.add-location').off('click').click(function () {
-            var id = $(this).attr('data');
-            $('.location-modal .modal-title').text('Add New Location');
-            $('.location-modal').modal('show');
-            $('.btn-create-location').off('click').click(function () {
-                $.ajax({
-                    url: `{{action('App\Http\Controllers\ProjectLocationController@addLocation')}}`,
-                    type: "PUT",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        'project_location_name': $('.location-name').val(),
-                        'start_date': $('.location-start-date').val(),
-                        'end_date': $('.location-end-date').val(),
-                        'location_amount': $('.location-amount').val(),
-                        'project_id': id
-                    },
-                    success: function (result) {
-                        result = JSON.parse(result);
-                        if (result.status === 200) {
-                            toastr.success(result.message, "Successfully");
-                            setTimeout(function () {
-                                location.reload();
-                            }, 500);
-                        } else {
-                            toastr.error(result.message, "Failed Action");
-                        }
-                    }
-                });
-            });
-        });
+        {{--$('.add-location').off('click').click(function () {--}}
+        {{--    var id = $(this).attr('data');--}}
+        {{--    $('.location-modal .modal-title').text('Add New Location');--}}
+        {{--    $('.location-modal').modal('show');--}}
+        {{--    $('.btn-create-location').off('click').click(function () {--}}
+        {{--        $.ajax({--}}
+        {{--            url: `{{action('App\Http\Controllers\ProjectLocationController@addLocation')}}`,--}}
+        {{--            type: "PUT",--}}
+        {{--            headers: {--}}
+        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+        {{--            },--}}
+        {{--            data: {--}}
+        {{--                'project_location_name': $('.location-name').val(),--}}
+        {{--                'start_date': $('.location-start-date').val(),--}}
+        {{--                'end_date': $('.location-end-date').val(),--}}
+        {{--                'location_amount': $('.location-amount').val(),--}}
+        {{--                'project_id': id--}}
+        {{--            },--}}
+        {{--            success: function (result) {--}}
+        {{--                result = JSON.parse(result);--}}
+        {{--                if (result.status === 200) {--}}
+        {{--                    toastr.success(result.message, "Successfully");--}}
+        {{--                    setTimeout(function () {--}}
+        {{--                        location.reload();--}}
+        {{--                    }, 500);--}}
+        {{--                } else {--}}
+        {{--                    toastr.error(result.message, "Failed Action");--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    });--}}
+        {{--});--}}
     </script>
     <script>
         var table = $('#teamListTable').DataTable({

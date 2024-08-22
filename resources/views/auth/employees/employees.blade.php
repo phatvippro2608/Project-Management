@@ -156,6 +156,12 @@
                                                 <input type="number" class="form-control phone_number" name="" required>
                                             </div>
                                         </div>
+                                        <div class="row mb-3">
+                                            <label for="inputText" class="col-sm-4 col-form-label">Email</label>
+                                            <div class="col-sm-8">
+                                                <input type="email" class="form-control email" name="" required>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-6">
                                         <fieldset class="row mb-3">
@@ -267,7 +273,7 @@
         });
 
         function validateNameInput(input) {
-            const regex = /^[a-zA-Z\s]+$/;
+            const regex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăắằẳẵặâầấẩẫậêềếểễệỉịôồốổỗộơờớởỡợùúủứừửữựỳỵỷỹ\s]+$/;
             if (!regex.test(input.val())) {
                 return false;
             }
@@ -289,9 +295,9 @@
         function validateForm() {
             const firstName = $('.first_name');
             const lastName = $('.last_name');
-            const enName = $('.en_name');
             const phoneNumber = $('.phone_number');
             const dateOfBirth = $('.date_of_birth');
+            const email = $('.email');
             let countError = 0;
             if (!validateNameInput(firstName)) {
                 toastr.error('Name should not contain numbers or special characters.', 'Please enter the first name again!');
@@ -325,6 +331,11 @@
                     countError++;
                 }
             }
+            if(email.val().length === 0){
+                toastr.error('Please enter the email!', 'Please enter the email!');
+                countError++;
+            }
+
 
             return countError === 0;
         }
@@ -345,11 +356,12 @@
                         'date_of_birth': $('.md1 .date_of_birth').val(),
                         'national': $('.md1 .national :checked').val(),
                         'phone_number': $('.md1 .phone_number').val(),
+                        'email': $('.md1 .email').val(),
                     };
 
                     $.ajax({
                         url: _put,
-                        type: 'PUT',
+                        type: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },

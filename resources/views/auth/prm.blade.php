@@ -258,15 +258,15 @@ $token = 'position';
                     <div class="nav-title w-100">
                         <span>{{$item->project_name}}</span>
                     </div>
-{{--                    <i class="bi bi-chevron-down ms-auto"></i>--}}
+                    <i class="bi bi-chevron-down ms-auto text-primary"></i>
                 </a>
-                <div class="actions text-nowrap" style=" position: absolute; top: 10px; right: 16px; cursor: pointer;">
-                    <i class="bi bi-gear ms-auto"></i>
+                <div class="actions text-nowrap" style=" position: absolute; top: 10px; right: 48px; cursor: pointer;">
+                    <i class="bi bi-gear ms-auto text-primary me-1"></i>
                     <a class="add-location"  data="{{$item->project_id}}">
                         <i class="bi bi-plus-square ms-auto" ></i>
                     </a>
 
-                    <i class="bi bi-star ms-auto"></i>
+{{--                    <i class="bi bi-star ms-auto"></i>--}}
                 </div>
                 <ul id="projects-nav-{{$item->project_id}}" class="nav-content collapse list-unstyled" data-bs-parent="#sidebar-nav">
                     <li>
@@ -442,7 +442,7 @@ $token = 'position';
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center justify-content-between">
-                <h4>Add Location</h4>
+                <h4 class="modal-title">Add Location</h4>
                 <i class="bi bi-x-lg fs-4" style="cursor:pointer" data-bs-dismiss="modal" aria-label="Close"></i>
             </div>
             <div class="modal-body">
@@ -493,7 +493,8 @@ $token = 'position';
 <script>
     $('.add-location').off('click').click(function () {
         var id = $(this).attr('data');
-        $('.location-modal .modal-title').text('Add New Location');
+        $('.location-modal .modal-title').text('Add Location');
+        $('.btn-create-location').text('Create');
         $('.location-modal').modal('show');
         $('.btn-create-location').off('click').click(function () {
             $.ajax({
