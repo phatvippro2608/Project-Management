@@ -324,8 +324,31 @@ $token = 'position';
 
     </header>
 
-
+    @php
+        $accountId =
+        $info = \Illuminate\Support\Facades\DB::table('accounts')
+            ->join('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->where(
+                'accounts.account_id',
+                \Illuminate\Support\Facades\Request::session()->get(\App\StaticString::ACCOUNT_ID),
+            )
+            ->first();
+    @endphp
     <aside id="sidebar" class="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center">
+            <img class="rounded-circle" src="{{ $info->photo ? asset($info->photo) : asset('assets/img/avt.png') }}" style="width: 80px" />
+        </div>
+        <div class="account-info d-flex justify-content-center align-items-center mt-3 flex-column">
+            <span class="full-name h4 fw-bold fs-3">
+                {{$info->last_name . " " . $info->first_name}}
+            </span>
+            <span class="gmail">
+                <small class="text-muted">
+                    {{$info->email}}
+                </small>
+            </span>
+        </div>
+        <hr />
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
                 <a class="nav-link fs-5 fw-bold "
