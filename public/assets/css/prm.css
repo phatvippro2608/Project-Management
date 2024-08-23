@@ -589,10 +589,11 @@ h6 {
 }
 
 .sidebar {
-    position: fixed;
+    position: absolute;
     top: 60px;
-    left: 0;
-    bottom: 0;
+    /*left: 0;*/
+    /*bottom: 0;*/
+    height: 1310px;
     width: 400px;
     z-index: 996;
     transition: all 0.3s;

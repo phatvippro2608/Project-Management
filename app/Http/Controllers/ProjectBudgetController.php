@@ -43,6 +43,7 @@ class ProjectBudgetController extends Controller
             $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $index)->get();
         }
         $contingency_price = DB::table('projects')->where('project_id', $id)->first();
+
         $total=0;
             $subtotal2=0;
             $chart=[];
@@ -72,7 +73,7 @@ class ProjectBudgetController extends Controller
             'location' => $index
         ]);
     }
-    
+
     public function budget_import(Request $request, $id) {
         try {
             // Read Excel data
@@ -101,12 +102,12 @@ class ProjectBudgetController extends Controller
             //         'message' => 'why did you import location ' . $prjLocationName . ' instead on location ' . $prjLocationNameCurrent,
             //     ]);
             // }
-    
+
             $num_row = 4; // Start reading from row 3
             while ($num_row < count($dataExcel['data'])) {
                 if (strpos(trim($dataExcel['data'][$num_row][0]), "NAME: ") !== false) {
                     $name = str_replace("NAME: ", "", trim($dataExcel['data'][$num_row][0]));
-    
+
                     // Insert a new cost group and get its ID
                     $group_id = DB::table('project_cost_group')->insertGetId([
                         'project_cost_group_name' => $name,
@@ -123,12 +124,12 @@ class ProjectBudgetController extends Controller
                     $otBudget = trim($dataExcel['data'][$num_row][7] ?? '');
                     $perDiemPay = trim($dataExcel['data'][$num_row][8] ?? '');
                     $remark = trim($dataExcel['data'][$num_row][9] ?? '');
-    
+
                     // Check if all required fields are not empty
                     if (!empty($description) || !empty($laborQTY) || !empty($laborUnit) ||
                         !empty($budgetQTY) || !empty($budgetUnit) || !empty($laborCost) ||
                         !empty($miscCost) || !empty($otBudget) || !empty($perDiemPay) || !empty($remark)) {
-    
+
                         // Insert project costs
                         DB::table('project_costs')->insert([
                             'project_id' => $id,
@@ -149,14 +150,14 @@ class ProjectBudgetController extends Controller
                     $num_row++;
                     continue;
                 }
-    
+
                 $num_row++;
             }
             return response()->json([
                 'success' => true,
                 'message' => 'Import successfully!',
             ]);
-    
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -164,9 +165,9 @@ class ProjectBudgetController extends Controller
             ]);
         }
 
-            
+
     }
-    
+
     public function showProjects()
     {
 
@@ -233,7 +234,7 @@ public function showProjectDetail(Request $request,$id)
             ->where('project_cost_group.project_location_id', $keyword)
             ->get();
             $dataCostGroup = DB::table('project_cost_group')->where('project_location_id', $keyword)->get();
-        
+
         //get data material costs
         $materialData = DB::table('project_materials')
                 ->join('project_locations', 'project_materials.project_location_id', '=', 'project_locations.project_location_id')
@@ -291,7 +292,7 @@ public function showProjectDetail(Request $request,$id)
         $total1 = array_sum($subtotal1);
         $vat1 = array_sum($subvat1);
         $materialCost = $total1 - $vat1;
-
+//    dd($dataLoca);
     return view('auth.project-budget.project-budget', [
         'data' => $data,
         'id' => $id,
@@ -308,7 +309,7 @@ public function showProjectDetail(Request $request,$id)
 }
 
 
-    
+
 
     public function getBudgetData($id, $costGroupId, $costId)
     {
@@ -500,7 +501,7 @@ public function addNewCost(Request $request, $id)
     return redirect()->back()->with('success', 'New cost added successfully.');
 }
 
-    
+
 
 
 public function cost_exportCsv($id)

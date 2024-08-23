@@ -70,8 +70,8 @@ $token = 'position';
             ";
 
         $item->all_employees = DB::select($sql);
-
         $item->locations = DB::table('project_locations')->where('project_id', $item->project_id)->get();
+        $item->contract_name = DB::table('contracts')->where('contract_id', $item->contract_id)->first()->contract_name;
     }
     $teams = DB::table('teams')->get();
     $team_positions = DB::table("team_positions")->get();
@@ -81,7 +81,7 @@ $token = 'position';
 @endphp
 <header id="header" class="header fixed-top d-flex align-items-center">
 
-{{--    /**HEADING--}}
+    {{--    /**HEADING--}}
     <div class="d-flex align-items-center justify-content-between">
         <a href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}"
            class="d-flex align-items-center logo justify-content-center">
@@ -96,17 +96,18 @@ $token = 'position';
             </li>
 
             @if (in_array(AccountController::permissionStr(), ['super', 'admin','director', 'customer_manager']))
-            <li class="nav-item" role="presentation">
-                <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
-                   class="nav-link fw-bold">CRM </a>
-            </li>
+                <li class="nav-item" role="presentation">
+                    <a href="{{action('App\Http\Controllers\CustomerController@getView')}}"
+                       class="nav-link fw-bold">CRM </a>
+                </li>
             @endif
 
             @if (in_array(AccountController::permissionStr(), ['employee','super','admin','director', 'project_manager']))
-            <li class="nav-item" role="presentation">
-                <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}" class="nav-link fw-bold active">PRM
-                </a>
-            </li>
+                <li class="nav-item" role="presentation">
+                    <a href="{{action('\App\Http\Controllers\ProjectController@getView')}}"
+                       class="nav-link fw-bold active">PRM
+                    </a>
+                </li>
             @endif
         </ul>
     </div>
@@ -190,7 +191,6 @@ $token = 'position';
 
                         <a class="dropdown-item d-flex align-items-center"
                            href="{{ action('App\Http\Controllers\ProfileController@getViewProfile', ['employee_id' => $data->employee_id]) }}">
-
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -251,7 +251,8 @@ $token = 'position';
     <ul class="sidebar-nav" id="sidebar-nav">
         @foreach($project as $item)
             <li class="nav-item position-relative" style="cursor: default">
-                <a class="nav-link collapsed d-flex justify-content-between" style="cursor: default" data-bs-target="#projects-nav-{{$item->project_id}}"
+                <a class="nav-link collapsed d-flex justify-content-between" style="cursor: default"
+                   data-bs-target="#projects-nav-{{$item->project_id}}"
                    data-bs-toggle="collapse"
                    href="">
                     <i class="bi bi-folder ms-auto"></i>
@@ -261,14 +262,20 @@ $token = 'position';
                     <i class="bi bi-chevron-down ms-auto text-primary"></i>
                 </a>
                 <div class="actions text-nowrap" style=" position: absolute; top: 10px; right: 48px; cursor: pointer;">
-                    <i class="bi bi-gear ms-auto text-primary me-1"></i>
-                    <a class="add-location"  data="{{$item->project_id}}">
-                        <i class="bi bi-plus-square ms-auto" ></i>
+                    <i class="bi bi-gear ms-auto text-primary me-1 setting-project" id="dropdownMenuButton"
+                       data-bs-toggle="dropdown" aria-expanded="false"></i>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#" data="{{AccountController::toAttrJson($item)}}">Edit Project</a></li>
+                        <li><a class="dropdown-item" href="#" data="{{$item->project_id}}">Delete Project</a></li>
+                    </ul>
+                    <a class="add-location" data="{{$item->project_id}}">
+                        <i class="bi bi-plus-square ms-auto"></i>
                     </a>
 
-{{--                    <i class="bi bi-star ms-auto"></i>--}}
+                    {{--                    <i class="bi bi-star ms-auto"></i>--}}
                 </div>
-                <ul id="projects-nav-{{$item->project_id}}" class="nav-content collapse list-unstyled" data-bs-parent="#sidebar-nav">
+                <ul id="projects-nav-{{$item->project_id}}" class="nav-content collapse list-unstyled"
+                    data-bs-parent="#sidebar-nav">
                     <li>
                         <a class="nav-sub-link"
                            href="{{ route('project.details', ['project_id' => $item->project_id]) }}">
@@ -279,7 +286,7 @@ $token = 'position';
                     @foreach($item->locations as $location)
                         <li>
                             <a class="nav-sub-link"
-                                href="{{ route('project.details', ['project_id' => $item->project_id, 'location' => $location->project_location_id]) }}">
+                               href="{{ route('project.details', ['project_id' => $item->project_id, 'location' => $location->project_location_id]) }}">
                                 <i class="bi bi-pin-map fs-6"></i>
                                 <span>{{$location->project_location_name}}</span>
                             </a>
@@ -291,9 +298,9 @@ $token = 'position';
     </ul>
 
     <div class="position-absolute" style="bottom: 5px; width: 100%; border-top: 1px solid #c3c3c3">
-        <button class="btn btn-primary bg-transparent text-black border-0 text-end w-100" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+        <button class="btn btn-primary bg-transparent text-black border-0 text-end w-100 add-new-button">
             <i class="bi bi-plus"></i>
-            <span class="fw-bold" >Add New Project</span>
+            <span class="fw-bold">Add New Project</span>
         </button>
     </div>
 </aside>
@@ -377,7 +384,7 @@ $token = 'position';
                         </div>
                         <div class="col-md-6">
                             <label for="project_contact_address" class="form-label">Contact Address</label>
-                            <input type="text" class="form-control" id="project_contact_address"
+                            <input type="text" class="form-control " id="project_contact_address"
                                    name="project_contact_address" required>
                         </div>
                     </div>
@@ -406,7 +413,7 @@ $token = 'position';
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="btnSubmitProject">Submit</button>
+                <button type="button" class="btn btn-success btn-project-m">Submit</button>
             </div>
         </div>
     </div>
@@ -491,6 +498,127 @@ $token = 'position';
 </html>
 @yield('script')
 <script>
+
+    $('.dropdown-item').on('click', function (e) {
+        // e.preventDefault();
+        var action = $(this).text().trim();
+        var project_id = -1;
+        if (action === 'Edit Project') {
+            var data = JSON.parse($(this).attr('data'));
+            project_id = data.project_id;
+            console.log(data);
+            $('#project_name').val(data.project_name);
+            $('#project_date_start').val(data.project_date_start);
+            $('#project_date_end').val(data.project_date_end);
+            $('#project_address').val(data.project_address);
+            $('#project_contact_name').val(data.project_contact_name);
+            $('#project_description').val(data.project_description);
+            $('#project_contact_phone').val(data.project_contact_phone);
+            $('.contract_id').append(`<option value="${data.contract_id}" selected disabled>${data.contract_name}</option>`);
+            $('.contract_id').prop('disabled', true);
+            $('.add-contract').prop('disabled', true);
+            $('.select_team').val(data.team_id);
+            $('#project_contact_address').val(data.project_contact_address);
+            $('#project_contact_website').val(data.project_contact_website);
+            $('#addProjectModal').modal('show');
+
+            $('#addProjectModal').on('hidden.bs.modal', function () {
+                $('#projectForm')[0].reset();
+                $('.contract_id option[value="' + data.contract_id + '"]').remove();
+                $('.contract_id').prop('disabled', false);
+                $('.add-contract').prop('disabled', false);
+            });
+        } else if (action === 'Delete Project') {
+            if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
+                return;
+            }
+            var id = $(this).attr('data');
+            $.ajax({
+                url: `{{action('\App\Http\Controllers\ProjectController@delete')}}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'project_id': id,
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Successfully");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 300);
+                    } else {
+                        toastr.error(result.message, "Fail Action");
+                    }
+                }
+            });
+        }
+        $('.btn-project-m').off('click').click(function () {
+            let form = document.getElementById('projectForm');
+
+            let formData = new FormData(form);
+            formData.append('project_id', project_id);
+
+            fetch('{{ action('\App\Http\Controllers\ProjectController@update') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        toastr.success(data.message, "Successfully");
+                        setTimeout(function () {
+                            // location.reload();
+                        }, 500);
+                    } else {
+                        const errorRes = JSON.parse(data.message);
+                        let strMes = "";
+                        if (errorRes.project_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_name}</div>`;
+                        if (errorRes.project_description) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_description}</div>`;
+                        if (errorRes.project_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_address}</div>`;
+                        if (errorRes.project_date_start) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_start}</div>`;
+                        if (errorRes.project_date_end) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_end}</div>`;
+                        if (errorRes.project_contact_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_name}</div>`;
+                        if (errorRes.project_contact_phone) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_phone}</div>`;
+                        if (errorRes.project_contact_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_address}</div>`;
+                        if (errorRes.project_contact_website) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_website}</div>`;
+                        if (errorRes.contract_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_id}</div>`;
+                        if (errorRes.select_team) strMes += `<div style="color: red; text-align: left;">-${errorRes.select_team}</div>`;
+
+                        Swal.fire({
+                            html: strMes,
+                            icon: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Back and continue edit!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                            }
+                        });
+
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Error detected. Please try again!', "Failed");
+                });
+        });
+    });
+</script>
+<script>
+    $('.location-modal').on('hidden.bs.modal', function () {
+        $('.location-name').val('')
+            $('.location-start-date').val('')
+            $('.location-end-date').val('')
+            $('.location-amount').val('')
+    });
     $('.add-location').off('click').click(function () {
         var id = $(this).attr('data');
         $('.location-modal .modal-title').text('Add Location');
@@ -524,100 +652,146 @@ $token = 'position';
             });
         });
     });
+    $('.edit_location').off('click').click(function () {
+        var data = JSON.parse($(this).attr('data'));
+        $('.location-modal .modal-title').text('Edit Location');
+        $('.btn-create-location').text('Update');
+
+        $('.location-name').val(data.project_location_name);
+        $('.location-start-date').val(data.start_date);
+        $('.location-end-date').val(data.end_date);
+        $('.location-amount').val(data.location_amount);
+        $('.location-modal').modal('show');
+
+        $('.btn-create-location').off('click').click(function () {
+            $.ajax({
+                url: `{{action('App\Http\Controllers\ProjectLocationController@updateLocation')}}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'project_location_name': $('.location-name').val(),
+                    'start_date': $('.location-start-date').val(),
+                    'end_date': $('.location-end-date').val(),
+                    'location_amount': $('.location-amount').val(),
+                    'project_location_id': data.project_location_id
+                },
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.status === 200) {
+                        toastr.success(result.message, "Successfully");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        toastr.error(result.message, "Failed Action");
+                    }
+                }
+            });
+        });
+    })
+    $('.delete_location').off('click').click(function () {
+        if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
+            return;
+        }
+        var id = $(this).attr('data');
+        $.ajax({
+            url: `{{action('App\Http\Controllers\ProjectLocationController@deleteLocation')}}`,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                'project_location_id': id,
+            },
+            success: function (result) {
+                result = JSON.parse(result);
+                if (result.status === 200) {
+                    toastr.success(result.message, "Successfully");
+                    setTimeout(function () {
+                        window.location.href = `{{route('project.projects')}}`;
+                    }, 300);
+                } else {
+                    toastr.error(result.message, "Fail Action");
+                }
+            }
+        });
+    });
 </script>
 <script>
     $('.md1').on('hidden.bs.modal', function () {
         $('#addProjectModal').css('opacity', '1');
     });
 
-    $('.add-team').click(function () {
-        $('.md1 .modal-title').text('Add New Team');
+    $('#addProjectModal').on('hidden.bs.modal', function () {
+        $('#projectForm')[0].reset();
+        $('.contract_id').prop('disabled', false);
+        $('.add-contract').prop('disabled', false);
+    });
 
-        $('.md1').modal('show');
-        $('#addProjectModal').css('opacity', '0.95');
 
-        $('.btn-create-team').off('click').click(function () {
-            let team_name = $('.val-team-name').val();
-            $.ajax({
-                url: `{{action('App\Http\Controllers\TeamController@addFromProject')}}`,
-                type: "PUT",
+    $('.add-new-button').click(function () {
+        $('#addProjectModal').modal('show');
+        $('.btn-project-m').off('click').click(function () {
+            let form = document.getElementById('projectForm');
+            let startDate = form.querySelector('#project_date_start').value;
+            let endDate = form.querySelector('#project_date_end').value;
+
+            let formData = new FormData(form);
+
+            fetch('{{ route('projects.insert') }}', {
+                method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                data: {
-                    'team_name': team_name,
-                },
-                success: function (result) {
-                    result = JSON.parse(result);
-                    if (result.status === 200) {
-                        toastr.success("Added a new team", "Successfully");
-                        $('.form-select.select_team').append(`<option value="${result.message}">${team_name}</option>`);
-                        $('.form-select.select_team').val(result.message);
-                        $('.val-team-name').val("");
-                        $('.md1').modal('hide');
-                    } else {
-                        toastr.error(result.message, "Failed Action");
-                    }
-                }
-            });
-        })
-    });
-    document.getElementById('btnSubmitProject').addEventListener('click', function (event) {
-        let form = document.getElementById('projectForm');
-        let startDate = form.querySelector('#project_date_start').value;
-        let endDate = form.querySelector('#project_date_end').value;
-
-        let formData = new FormData(form);
-
-        fetch('{{ route('projects.insert') }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 200) {
-                    toastr.success(data.message, "Successfully");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 500);
-                } else {
-                    const errorRes = JSON.parse(data.message);
-                    let strMes = "";
-                    if (errorRes.project_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_name}</div>`;
-                    if (errorRes.project_description) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_description}</div>`;
-                    if (errorRes.project_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_address}</div>`;
-                    if (errorRes.project_date_start) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_start}</div>`;
-                    if (errorRes.project_date_end) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_end}</div>`;
-                    if (errorRes.project_contact_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_name}</div>`;
-                    if (errorRes.project_contact_phone) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_phone}</div>`;
-                    if (errorRes.project_contact_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_address}</div>`;
-                    if (errorRes.project_contact_website) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_website}</div>`;
-                    if (errorRes.contract_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_id}</div>`;
-                    if (errorRes.select_team) strMes += `<div style="color: red; text-align: left;">-${errorRes.select_team}</div>`;
-
-                    Swal.fire({
-                        html: strMes,
-                        icon: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Back and continue edit!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-
-                        }
-                    });
-
-
-                }
+                body: formData
             })
-            .catch(error => {
-                console.error('Error:', error);
-                toastr.error('Error detected. Please try again!', "Failed");
-            });
-    });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        toastr.success(data.message, "Successfully");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        const errorRes = JSON.parse(data.message);
+                        let strMes = "";
+                        if (errorRes.project_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_name}</div>`;
+                        if (errorRes.project_description) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_description}</div>`;
+                        if (errorRes.project_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_address}</div>`;
+                        if (errorRes.project_date_start) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_start}</div>`;
+                        if (errorRes.project_date_end) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_date_end}</div>`;
+                        if (errorRes.project_contact_name) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_name}</div>`;
+                        if (errorRes.project_contact_phone) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_phone}</div>`;
+                        if (errorRes.project_contact_address) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_address}</div>`;
+                        if (errorRes.project_contact_website) strMes += `<div style="color: red; text-align: left;">-${errorRes.project_contact_website}</div>`;
+                        if (errorRes.contract_id) strMes += `<div style="color: red; text-align: left;">-${errorRes.contract_id}</div>`;
+                        if (errorRes.select_team) strMes += `<div style="color: red; text-align: left;">-${errorRes.select_team}</div>`;
+
+                        Swal.fire({
+                            html: strMes,
+                            icon: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Back and continue edit!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                            }
+                        });
+
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('Error detected. Please try again!', "Failed");
+                });
+        });
+
+    })
+
 
     $('.add-contract').click(function () {
         let timerInterval;
