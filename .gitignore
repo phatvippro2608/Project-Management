@@ -9,7 +9,6 @@
 /storage/app/public
 /storage/app/uploads
 /storage/*.key
-
 .env
 .env.backup
 .env.production
