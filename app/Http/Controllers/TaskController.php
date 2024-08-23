@@ -186,8 +186,8 @@ class TaskController extends Controller
             $empl_allow_ids = array_map(function($empl) {
                     return $empl->employee_id;
             }, $empl_allow);
-            if (!in_array($empl_id, $empl_allow_ids)){
-                return response()->json(['success' => false,'message' => 'You do not have permission to update task']);
+            if (!in_array($empl_id, $leader_arr) && !in_array(AccountController::permissionStr(), ['super', 'admin', 'project_manager'])){
+                return response()->json(['success' => false,'message' => 'You do not have permission to add task']);
             }
 
             if(!in_array($validatedData['employee_id'], $empl_allow_ids)){
