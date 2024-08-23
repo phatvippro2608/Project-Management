@@ -365,7 +365,7 @@ class EmployeesController extends Controller
         return DB::table('employees')->where('employee_code', $employee_code)->value('employee_id');
     }
     public function loadExcel(Request $request){
-        $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
+        $dataExcel = SpreadSheetController::readExcel($request->file('file-excel'));
         $tong = 0;
         $num_row = 0;
         $tt = 0;

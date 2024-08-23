@@ -212,7 +212,7 @@ public function export(Request $request, $id) {
     $stt = 1;
     $num_row = 2;  // bắt đầu từ dòng thứ 2 sau tiêu đề
     $cell = $excel->getActiveSheet();
-    
+
     foreach ($materialData as $row) {
         $cell->setCellValue('A' . $num_row, $stt++);
         $cell->setCellValue('B' . $num_row, $row->project_material_name);
@@ -238,7 +238,7 @@ public function export(Request $request, $id) {
 
         $num_row++;
     }
-    
+
     foreach (range('A', 'P') as $columnID) {
         $excel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
     }
@@ -254,7 +254,7 @@ public function export(Request $request, $id) {
 public function import(Request $request, $id) {
     try {
         // Read Excel data
-        $dataExcel = SpreadsheetModel::readExcel($request->file('file'));
+        $dataExcel = SpreadSheetController::readExcel($request->file('file'));
         $location = $request->input('location', '');
         $project = DB::table('projects')->select('project_name')
                 ->where('project_id', $id)
@@ -276,19 +276,19 @@ public function import(Request $request, $id) {
             // Bắt đầu từ dòng 5 trong file Excel
             for ($i = 4; $i < count($dataExcel['data']); $i++) {
                 DB::table('project_materials')->insert([
-                    'project_material_name' => $dataExcel['data'][$i][1], 
-                    'project_material_code' => $dataExcel['data'][$i][2], 
-                    'project_material_description' => $dataExcel['data'][$i][3], 
-                    'project_material_brand' => $dataExcel['data'][$i][4], 
-                    'project_material_origin' => $dataExcel['data'][$i][5], 
-                    'project_material_unit' => $dataExcel['data'][$i][6], 
-                    'project_material_quantity' => $dataExcel['data'][$i][7], 
-                    'project_material_unit_price' => $dataExcel['data'][$i][8], 
-                    'project_material_labor_price' => $dataExcel['data'][$i][9], 
-                    'project_material_vat' => $dataExcel['data'][$i][10], 
-                    'project_material_delivery_time' => $dataExcel['data'][$i][11], 
-                    'project_material_warranty_time' => $dataExcel['data'][$i][12], 
-                    'project_material_remark' => $dataExcel['data'][$i][13], 
+                    'project_material_name' => $dataExcel['data'][$i][1],
+                    'project_material_code' => $dataExcel['data'][$i][2],
+                    'project_material_description' => $dataExcel['data'][$i][3],
+                    'project_material_brand' => $dataExcel['data'][$i][4],
+                    'project_material_origin' => $dataExcel['data'][$i][5],
+                    'project_material_unit' => $dataExcel['data'][$i][6],
+                    'project_material_quantity' => $dataExcel['data'][$i][7],
+                    'project_material_unit_price' => $dataExcel['data'][$i][8],
+                    'project_material_labor_price' => $dataExcel['data'][$i][9],
+                    'project_material_vat' => $dataExcel['data'][$i][10],
+                    'project_material_delivery_time' => $dataExcel['data'][$i][11],
+                    'project_material_warranty_time' => $dataExcel['data'][$i][12],
+                    'project_material_remark' => $dataExcel['data'][$i][13],
                     'project_location_id' => $prjLocationId,
                     'date_create' => today()
                 ]);
