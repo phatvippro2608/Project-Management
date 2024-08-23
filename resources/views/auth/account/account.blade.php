@@ -338,8 +338,7 @@ use App\Http\Controllers\AccountController;
             });
         });
 
-
-        $('.ic-delete').click(function () {
+        $(document).on('click', '.ic-delete', function () {
             if (!confirm("Chọn vào 'YES' để xác nhận xóa thông tin?\nSau khi xóa dữ liệu sẽ không thể phục hồi lại được.")) {
                 return;
             }

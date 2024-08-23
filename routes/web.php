@@ -131,10 +131,14 @@ Route::group(['prefix' => '/', 'middleware' => 'isLogin'], function () {
         //Project
         Route::get('/', [\App\Http\Controllers\ProjectController::class, 'getView'])->name('project.projects');
         Route::post('/', [\App\Http\Controllers\ProjectController::class, 'InsPJ'])->name('projects.insert');
+        Route::post('/update', '\App\Http\Controllers\ProjectController@update');
+        Route::post('/delete', '\App\Http\Controllers\ProjectController@delete');
 
         //Project location
         Route::group(['prefix' => '/project-location'], function () {
             Route::put('/add', 'App\Http\Controllers\ProjectLocationController@addLocation');
+            Route::post('/update', 'App\Http\Controllers\ProjectLocationController@updateLocation');
+            Route::post('/delete', 'App\Http\Controllers\ProjectLocationController@deleteLocation');
         });
 
         //Detaill

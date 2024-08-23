@@ -109,7 +109,59 @@ class ProjectController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        $rules = [
+            'project_name' => 'required|string|max:255|min:5',
+            'project_description' => 'required|string',
+            'project_address' => 'required|string',
+            'project_date_start' => 'required|date|before:project_date_end',
+            'project_date_end' => 'required|date',
+            'project_contact_name' => 'required|string',
+            'project_contact_phone' => 'required|string',
+            'project_contact_address' => 'required|string',
+            'project_contact_website' => 'nullable|string',
+            'contract_id' => 'required|integer',
+            'select_team' => 'required|integer',
+        ];
 
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json(['status' => 422, 'message' => json_encode($errors->toArray())]);
+        }
+        try {
+            $projectData = $request->only([
+                'project_name',
+                'project_description',
+                'project_address',
+                'project_date_start',
+                'project_date_end',
+                'project_contact_name',
+                'project_contact_phone',
+                'project_contact_address',
+                'project_contact_website',
+                'contract_id',
+            ]);
+//            $projectData['employee_id'] = AccountController::getEmployeeId();
+            DB::table('projects')->where('project_id', $request->project_id)->update($projectData);
+            $team_id = $request->input('select_team');
+            DB::table('project_teams')->where('project_id', $request->project_id)->update(['team_id' => $team_id]);
+            return response()->json(['status' => 200, 'message' => 'Updated project']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 500, 'message' => 'Failed to update project', 'error' => $e->getMessage()]);
+        }
+    }
+
+    function delete(Request $request)
+    {
+        if(DB::table('projects')->where('project_id', $request->project_id)->delete()){
+            return AccountController::status('Deleted project', 200);
+        }else{
+            return AccountController::status('Failed to delete project', 500);
+        }
+    }
 
     public function getAttachmentView(Request $request, $project_id){
         $contracts_id = DB::table('projects')->where('project_id', $project_id)->value('contract_id');

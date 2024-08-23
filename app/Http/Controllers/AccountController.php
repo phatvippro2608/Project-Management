@@ -76,7 +76,9 @@ class AccountController extends Controller
             ->where('permission', '>=', self::permissionNum())->orWhere('permission', 0)->get();
 
         $sql = "SELECT * from employees";
-        $employees = DB::select($sql);
+        $employees = DB::table('accounts')->rightJoin('employees', 'accounts.employee_id', '=', 'employees.employee_id')
+            ->whereNull('accounts.employee_id')->get();
+//        dd($employees);
 
         $status = $this->status;
         return view('auth.account.account', ['account' => $account, 'employees' => $employees, 'status' => $this->status, 'permission' => self::getAllPermission()]);

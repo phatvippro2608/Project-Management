@@ -1,12 +1,18 @@
 @extends('auth.prm')
-
+@section('head')
+    <style>
+        td {
+            width: 800px;
+        }
+    </style>
+@endsection
 @section('contents')
     <div class="pagetitle">
-        <h1>Project Budget</h1>
+        <h1>{{ !empty($keyword) ? "Location: ".$dataLoca->project_location_name :$data->project_name }}</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a
-                            href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
+                        href="{{ action('App\Http\Controllers\DashboardController@getViewDashboard') }}">Home</a>
                 </li>
                 <li class="breadcrumb-item active">Project List</li>
                 <li class="breadcrumb-item active">Details and Costs</li>
@@ -15,26 +21,6 @@
     </div>
 
     <section class="sectionBudget">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3>Budget Estimates of Project</h3>
-            <div class="btn-group">
-{{--                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown"--}}
-{{--                        aria-expanded="false">--}}
-{{--                    Select Location--}}
-{{--                </button>--}}
-{{--                <ul class="dropdown-menu">--}}
-{{--                    <li><a class="dropdown-item" href="{{ route('project.details', ['project_id' => $id]) }}">All</a>--}}
-{{--                    </li>--}}
-{{--                    @foreach ($locations as $location)--}}
-{{--                        <li><a class="dropdown-item"--}}
-{{--                               href="{{ route('project.details', ['project_id' => $id, 'location' => $location->project_location_id]) }}">{{ $location->project_location_name }}</a>--}}
-{{--                        </li>--}}
-{{--                    @endforeach--}}
-{{--                </ul>--}}
-            </div>
-        </div>
-
-        <h5>Project Budget Summary</h5>
         <div class="card rounded-4 p-2 mt-4">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -95,59 +81,102 @@
                         </div>
 
                         <table class="table datatable">
-                            <tbody id="project-info">
-                            <tr>
-                                <th>Project Name</th>
-                                <td id="project_name">{{ $data->project_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Project Description</th>
-                                <td id="project_description">{{ $data->project_description }}</td>
-                            </tr>
-                            <tr>
-                                <th>Contract</th>
-                                <td id="Contract">{{ $contract->contract_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Main Contractor Company</th>
-                                <td id="project_contractor">{{ $customer->company_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Contact Name</th>
-                                <td id="project_contact_name">{{ $customer->first_name }} {{ $customer->last_name }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Contact Website</th>
-                                <td id="project_contact_website"><a href="{{ $customer->website }}"
-                                                                    target="_blank">{{ $customer->website }}</a></td>
-                            </tr>
-                            <tr>
-                                <th>Contact Phone</th>
-                                <td id="project_contact_phone">{{ $customer->phone_number }}</td>
-                            </tr>
-                            <tr>
-                                <th>Contact Address</th>
-                                <td id="project_contact_address">{{ $customer->address }}</td>
-                            </tr>
-                            <tr>
-                                <th>Leader Of Project</th>
-                                <td id="project_lead">{{ $contactEmployee->first_name }}
-                                    {{ $contactEmployee->last_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Start Date</th>
-                                <td id="project_date_start">
-                                    {{ \Carbon\Carbon::parse($data->project_date_start)->format('d M Y') }}</td>
-                            </tr>
-                            <tr>
-                                <th>End Date</th>
-                                <td id="project_date_end">
-                                    {{ \Carbon\Carbon::parse($data->project_date_end)->format('d M Y') }}</td>
-                            </tr>
-                            </tbody>
+                                <tbody id="project-info">
+                                <tr>
+                                    <th>Project Name</th>
+                                    <td id="project_name">{{ $data->project_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Project Description</th>
+                                    <td id="project_description">{{ $data->project_description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contract</th>
+                                    <td id="Contract">{{ $contract->contract_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Main Contractor Company</th>
+                                    <td id="project_contractor">{{ $customer->company_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact Name</th>
+                                    <td id="project_contact_name">{{ $customer->first_name }} {{ $customer->last_name }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Contact Website</th>
+                                    <td id="project_contact_website"><a href="{{ $customer->website }}"
+                                                                        target="_blank">{{ $customer->website }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Contact Phone</th>
+                                    <td id="project_contact_phone">{{ $customer->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact Address</th>
+                                    <td id="project_contact_address">{{ $customer->address }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Leader Of Project</th>
+                                    <td id="project_lead">{{ $contactEmployee->first_name }}
+                                        {{ $contactEmployee->last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Start Date</th>
+                                    <td id="project_date_start">
+                                        {{ \Carbon\Carbon::parse($data->project_date_start)->format('d M Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>End Date</th>
+                                    <td id="project_date_end">
+                                        {{ \Carbon\Carbon::parse($data->project_date_end)->format('d M Y') }}</td>
+                                </tr>
+                                </tbody>
+
+
+
                         </table>
                     </div>
+                    @if(!empty($keyword))
+                        <div class="card-body px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">LOCATION INFORMATION</h5>
+                                <div class="d-flex ms-auto">
+                                    <button type="button" class="btn btn-primary btn-sm me-2 edit_location" data="{{\App\Http\Controllers\AccountController::toAttrJson($dataLoca)}}"><i class="bi bi-pencil-square"></i> Edit Location
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="table datatable">
+                                <tbody id="project-info">
+                                <tr>
+                                    <th>Location Name</th>
+                                    <td id="project_name">{{ $dataLoca->project_location_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Start date</th>
+                                    <td id="project_name">{{ $dataLoca->start_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>End date</th>
+                                    <td id="project_name">{{ $dataLoca->end_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Location amount</th>
+                                    <td id="project_name">{{ number_format($dataLoca->location_amount, 0, ',', '.') }}
+                                        VND</td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-danger  btn-sm delete_location" data="{{$dataLoca->project_location_id}}">
+                                <i class="bi bi-trash"></i> Delete Location
+                            </button>
+                        </div>
+
+
+                    @endif
                 </div>
             </div>
         </div>
