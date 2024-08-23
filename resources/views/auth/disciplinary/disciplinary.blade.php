@@ -1,6 +1,6 @@
 @section('title', $title)
 
-@extends('auth.main')
+@extends('auth.hrm')
 
 @section('head')
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
