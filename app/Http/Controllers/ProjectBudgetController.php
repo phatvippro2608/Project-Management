@@ -77,7 +77,7 @@ class ProjectBudgetController extends Controller
     public function budget_import(Request $request, $id) {
         try {
             // Read Excel data
-            $dataExcel = SpreadsheetModel::readExcel($request->file('file'));
+            $dataExcel = SpreadSheetController::readExcel($request->file('file'));
             $location = $request->input('location', '');
             // Fetch project name
             $project = DB::table('projects')->select('project_name')

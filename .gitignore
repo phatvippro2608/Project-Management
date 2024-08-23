@@ -15,7 +15,7 @@
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
-auth.json
+auth.jsonq
 npm-debug.log
 yarn-error.log
 /.fleet
