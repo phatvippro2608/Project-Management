@@ -572,28 +572,35 @@
             });
         });
         $(document).on('click', '.delete-btn', function() {
-            let materialId = $(this).data('id');
-            let projectId =
-                "{{ $id }}"; // Make sure this variable is correctly set in your Blade template
-            let url = `/project/${projectId}/materials/${materialId}/delete`;
+    let materialId = $(this).data('id');
+    let projectId = "{{ $id }}"; // Make sure this variable is correctly set in your Blade template
+    let url = `/project/${projectId}/materials/${materialId}/delete`;
 
-            $.ajax({
-                url: url,
-                method: 'DELETE',
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success(response.message, "Successful");
-                        setTimeout(function() {
-                            location.reload();
-                        }, 300);
-                    } else {
-                        toastr.error(response.message, "Failed");
-                    }
-                },
-                error: function() {
-                    toastr.error('Something went wrong.', "Failed");
+    // Confirm deletion
+    let confirmDelete = confirm("Do you really want to delete this material?");
+    
+    if (confirmDelete) {
+        $.ajax({
+            url: url,
+            method: 'DELETE',
+            success: function(response) {
+                if (response.success) {
+                    toastr.success(response.message, "Successful");
+                    setTimeout(function() {
+                        location.reload();
+                    }, 300);
+                } else {
+                    toastr.error(response.message, "Failed");
                 }
-            });
+            },
+            error: function() {
+                toastr.error('Something went wrong.', "Failed");
+            }
         });
+    } else {
+        toastr.info('Deletion cancelled.', "Cancelled");
+    }
+});
+
     </script>
 @endsection
