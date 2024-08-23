@@ -9,14 +9,13 @@
 /storage/app/public
 /storage/app/uploads
 /storage/*.key
-
 .env
 .env.backup
 .env.production
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
-auth.json
+auth.jsonq
 npm-debug.log
 yarn-error.log
 /.fleet

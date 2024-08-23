@@ -185,7 +185,7 @@ class QuizController extends Controller
     public function import(Request $request, $id)
     {
         try {
-            $dataExcel = SpreadsheetModel::readExcel($request->file('file-excel'));
+            $dataExcel = SpreadSheetController::readExcel($request->file('file-excel'));
             $num_row = 0;
             $dataArray = array();
             //            dd($dataExcel['data']);
