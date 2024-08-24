@@ -318,9 +318,13 @@ class UploadFileController extends Controller
         $folder = $imageData['folder'];
         $tmp_file = TemporaryFile::where('folder', $folder)->first();
         if($tmp_file){
+            $pathFolder = 'uploads/'.$employee_id;
             $path = 'uploads/'.$employee_id.'/'.$tmp_file->file;
             $fileContentPath = 'uploads/img/'. $tmp_file->folder .'/'. $tmp_file->file;
             $fileContent = Storage::disk('public')->get($fileContentPath);
+            if (!file_exists($pathFolder)) {
+                mkdir($pathFolder, 0777, true);
+            }
             Storage::disk('public_uploads')->put($path, $fileContent);
             DB::table('employees')->where('employee_id', $employee_id)->update(['photo' => $path]);
             Storage::disk('public')->deleteDirectory('uploads/img/' . $tmp_file->folder);
